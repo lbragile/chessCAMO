@@ -51,9 +51,17 @@ public:
 	unsigned int getPieceSquare() const;
 	void setPieceSquare(unsigned int square); // useful when moving a piece
 
+	// Mutator and accessor functions for determining/setting the moving state of an object
+	unsigned int getPieceMovevement() const;
+	void setPieceMovement(bool movement);
+
 	// Checks if a given move is valid according to objects type and 'start' & 'end' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
 	bool isValidMove(unsigned int start_square, unsigned int end_square) const;
+
+	// if move is valid, make the move
+	// On return, the piece's square value is updated
+	bool makeMove(vector<Switcher> & board, unsigned int dest);
 
 private:
 	unsigned int square; // 0 - 63 for an 8x8 board with 0 being top left & 63 being bottom right
@@ -62,6 +70,9 @@ private:
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 };
+
+// Board intialization
+vector<Switcher> initBoard(unsigned int BOARD_SIZE);
 
 // Print the current board position
 void printBoard(const vector<Switcher> & v);

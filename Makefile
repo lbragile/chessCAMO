@@ -10,16 +10,15 @@ ALL_FLAGS = -g -Wall
 FILE = switcher
 MAIN = main
 
-all: $(FILE).o $(MAIN).o $(MAIN).exe
+all: $(FILE).o $(MAIN).o main
 
 $(FILE).o: $(FILE).cpp $(FILE).h
 	$(CC) $(CFLAGS) $(FILE).cpp
 
-$(MAIN).o: $(MAIN).cpp
+$(MAIN).o: $(MAIN).cpp $(FILE).cpp $(FILE).h
 	$(CC) $(CFLAGS) $(MAIN).cpp
-	-del $(MAIN).exe
 
-$(MAIN).exe:
+main:
 	$(CC) $(ALL_FLAGS) $(FILE).o $(MAIN).o -o $(MAIN)
 
 clean:
