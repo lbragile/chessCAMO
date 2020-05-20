@@ -94,44 +94,162 @@ void Switcher::setPieceMovement(bool movement)
 }
 
 
-// Checks if a given move is valid according to objects type and 'start' & 'end' square coordinates
+// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 // Return 'true' if move is valid, 'false' otherwise
-bool Switcher::isValidMove(unsigned int start_square, unsigned int end_square) const
+bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 {
 	/* TODO: 
 		1. add attacking move for pawn
 		2. add piece barrier conditions
-		3. Knight conditions must be stricter
+		3. castling
+		4. move into square with a piece of opponent (attack)
+		5. Promotion?
 	*/
 
+	int src_row = src / 8, src_col = src % 8;
+	int dest_row = dest / 8, dest_col = dest % 8;
+
 	bool valid;
-	unsigned int diff = end_square - start_square > 0 ? end_square - start_square : start_square - end_square;
+	int diff = (dest - src) > 0 ? dest - src : src - dest;
 
 	switch(this->getPieceType())
 	{
-		case Rook:
-			valid = (diff % 8 == 0 && diff != 0);
+		case Rook: // moves in same row and column
+			valid = (src_row == dest_row || src_col == dest_col) && diff != 0;
 			break;
-		case Knight:
-			valid = (diff == 6 || diff == 10 || diff == 15 || diff == 17);
+		case Knight: // most complicated piece (can jump over pieces also)
+			//  8 possible moves - middle of board with 2 squares from edge minimum
+			if(src_row > 1 && src_row < 6 && src_col > 1 && src_col < 6) 
+				valid = (diff == 6 || diff == 10 || diff == 15 || diff == 17);
+
+			// 6 possible moves - row 1
+			else if(src_row == 1 && src_col > 1 && src_col < 6)
+				valid = (diff == 6 || diff == 10 || dest - src == 15 || dest - src == 17);
+
+			// 6 possible moves - row 6
+			else if(src_row == 6 && src_col > 1 && src_col < 6)
+				valid = (diff == 6 || diff == 10 || src-dest == 15 || src-dest == 17);
+
+			// 6 possible moves - col 1
+			else if(src_col == 1 && src_row > 1 && src_row < 6)
+				valid = (src-dest == 6 || dest - src == 10 || diff == 15 || diff == 17);
+
+			// 6 possible moves - col 6
+			else if(src_col == 6 && src_row > 1 && src_row < 6)
+				valid = (dest - src == 6 || src-dest == 10 || diff == 15 || diff == 17);
+
+			// 4 possible moves - row 0
+			else if(src_row == 0 && src_col > 1 && src_col < 6)
+				valid = (dest - src == 6 || dest - src == 10 || dest - src == 15 || dest - src == 17);
+
+			// 4 possible moves - row 7
+			else if(src_row == 7 && src_col > 1 && src_col < 6)
+				valid = (src-dest == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
+
+			// 4 possible moves - col 0
+			else if(src_col == 0 && src_row > 1 && src_row < 6)
+				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15 || dest - src == 17);
+
+			// 4 possible moves - col 7
+			else if(src_col == 7 && src_row > 1 && src_row < 6)
+				valid = (src-dest == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
+
+			// 4 possible moves - col 1, row 1
+			else if(src_col == 1 && src_row == 1)
+				valid = (src-dest == 6 || dest - src == 10 || dest - src == 15 || dest - src == 17);
+
+			// 4 possible moves - col 6, row 1
+			else if(src_col == 6 && src_row == 1)
+				valid = (dest - src == 6 || src-dest == 10 || dest - src == 15 || dest - src == 17);
+
+			// 4 possible moves - col 1, row 6
+			else if(src_col == 1 && src_row == 6)
+				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15 || src-dest == 17);
+
+			// 4 possible moves - col 6, row 6
+			else if(src_col == 6 && src_row == 6)
+				valid = (dest - src == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
+
+			// 3 possible moves - col 0, row 1
+			else if(src_col == 0 && src_row == 1)
+				valid = (src-dest == 6 || dest - src == 10 || dest - src == 17);
+
+			// 3 possible moves - col 7, row 1
+			else if(src_col == 7 && src_row == 1)
+				valid = (dest - src == 6 || src-dest == 10 || dest - src == 15);
+
+			// 3 possible moves - col 0, row 6
+			else if(src_col == 0 && src_row == 6)
+				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15);
+
+			// 3 possible moves - col 7, row 6
+			else if(src_col == 7 && src_row == 6)
+				valid = (dest - src == 6 || src-dest == 10 || src-dest == 17);
+
+			// 3 possible moves - col 1, row 0
+			else if(src_col == 1 && src_row == 0)
+				valid = (dest - src == 10 || dest - src == 15 || dest - src == 17);
+
+			// 3 possible moves - col 6, row 0
+			else if(src_col == 6 && src_row == 0)
+				valid = (dest - src == 6 || dest - src == 15 || dest - src == 17);
+
+			// 3 possible moves - col 1, row 7
+			else if(src_col == 1 && src_row == 7)
+				valid = (src-dest == 6 || src-dest == 15 || src-dest == 17);
+
+			// 3 possible moves - col 6, row 7
+			else if(src_col == 6 && src_row == 7)
+				valid = (src-dest == 10 || src-dest == 15 || src-dest == 17);
+
+			// 2 possible moves - col 0, row 0
+			else if(src_col == 0 && src_row == 0)
+				valid = (dest - src == 10 || dest - src == 17);
+
+			// 2 possible moves - col 0, row 7
+			else if(src_col == 0 && src_row == 7)
+				valid = (dest - src == 6 || dest - src == 15);
+
+			// 2 possible moves - col 7, row 0
+			else if(src_col == 7 && src_row == 0)
+				valid = (src-dest == 6 || src-dest == 15);
+
+			// 2 possible moves - col 7, row 7
+			else if(src_col == 7 && src_row == 7)
+				valid = (src-dest == 10 || src-dest == 17);
+
+			valid = (valid && diff != 0);
 			break;
+
 		case Bishop:
-			valid = (diff % 7 == 0 && diff != 0);
+			valid = (diff % 7 == 0 || diff % 9 == 0) && diff != 0;
 			break;
-		case King:
-			valid = (diff == 1 && diff != 0);
+
+		case King: // like rook and bishop but with end square being 1 away
+			valid = (src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1;
 			break;
-		case Queen:
-			valid = (diff % 7 == 0 && diff != 0);
+
+		case Queen: // like rook and bishop
+			valid = (diff % 7 == 0 || diff % 9 == 0 || src_row == dest_row || src_col == dest_col) && diff != 0;
 			break;
-		case Pawn: // need to add attacks
+
+		case Pawn: // on attack, it can move sideways & first move can be 2 squares forward
 			if(this->getPieceMovevement())
-				valid = (diff == 1 && diff != 0);
-			else
 			{
-				valid = ((diff == 1 || diff == 2) && diff != 0);
+				if(this->getPieceColor() == White) // goes up
+					valid = src-dest == 8 || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
+				else // black, goes down
+					valid = dest-src == 8 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
+			}
+			else
+			{	
+				if(this->getPieceColor() == White) // goes up
+					valid = src-dest == 8 || src-dest == 16 || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
+				else // black, goes down
+					valid = dest-src == 8 || src-dest == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 			break;
+
 		default:
 			valid = false;
 	}
@@ -143,9 +261,14 @@ bool Switcher::isValidMove(unsigned int start_square, unsigned int end_square) c
 // On return, the piece's square value is updated
 bool Switcher::makeMove(vector<Switcher> & board, unsigned int dest)
 {
-	if(this->isValidMove(this->getPieceSquare(), dest))
+	/* TODO:
+		For pawns this condition must be stricter
+		Likewise for castling
+	*/
+	if(this->isValidMove(this->getPieceSquare(), dest, board))
 	{
 		std::swap(*this, board[dest]);
+		this->setPieceMovement(true); // note that the piece moved (important for castling and pawn's first move)
 		return true;
 	}
 	

@@ -18,7 +18,10 @@ int main()
 	{
 		cout << endl << "Enter destination square in [0, 63]: ";
 		cin >> dest;
-		valid = board[63].makeMove(board, dest);
+		if(0 <= dest && dest <= 63)
+			valid = board[52].makeMove(board, dest);
+		else
+			cout << endl << "Invalid move, try again!" << endl;
 	}
 
 	printBoard(board);

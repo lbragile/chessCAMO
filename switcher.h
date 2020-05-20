@@ -55,9 +55,9 @@ public:
 	unsigned int getPieceMovevement() const;
 	void setPieceMovement(bool movement);
 
-	// Checks if a given move is valid according to objects type and 'start' & 'end' square coordinates
+	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(unsigned int start_square, unsigned int end_square) const;
+	bool isValidMove(int src, int dest, vector<Switcher> & board) const;
 
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
