@@ -61,7 +61,7 @@ public:
 
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
-	bool makeMove(vector<Switcher> & board, unsigned int dest);
+	bool makeMove(vector<Switcher> & board, int dest);
 
 private:
 	unsigned int square; // 0 - 63 for an 8x8 board with 0 being top left & 63 being bottom right
@@ -69,6 +69,14 @@ private:
 	pieceType type;
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
+
+	// given a path (src -> dest) determine if there are peices in that path
+	// returns "true" if path has only empty squares, else "false"
+	bool pathEmptyRook(int src, int dest, vector<Switcher> & board) const;
+	bool pathEmptyBishop(int src, int dest, vector<Switcher> & board) const;
+	// bool pathEmptyQueen(int src, int dest, vector<Switcher> & board) const; // queen is just bishop || rook
+	// bool pathEmptyPawn(int src, int dest, vector<Switcher> & board) const;
+
 };
 
 // Board intialization

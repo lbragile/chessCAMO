@@ -115,8 +115,9 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 	switch(this->getPieceType())
 	{
 		case Rook: // moves in same row and column
-			valid = (src_row == dest_row || src_col == dest_col) && diff != 0;
+			valid = (src_row == dest_row || src_col == dest_col) && diff != 0 && pathEmptyRook(src, dest, board);
 			break;
+
 		case Knight: // most complicated piece (can jump over pieces also)
 			//  8 possible moves - middle of board with 2 squares from edge minimum
 			if(src_row > 1 && src_row < 6 && src_col > 1 && src_col < 6) 
@@ -218,11 +219,11 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 			else if(src_col == 7 && src_row == 7)
 				valid = (src-dest == 10 || src-dest == 17);
 
-			valid = (valid && diff != 0);
+			valid = valid && diff != 0;
 			break;
 
 		case Bishop:
-			valid = (diff % 7 == 0 || diff % 9 == 0) && diff != 0;
+			valid = (diff % 7 == 0 || diff % 9 == 0) && diff != 0 && pathEmptyBishop(src, dest, board);
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away
@@ -230,7 +231,8 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 			break;
 
 		case Queen: // like rook and bishop
-			valid = (diff % 7 == 0 || diff % 9 == 0 || src_row == dest_row || src_col == dest_col) && diff != 0;
+			valid = (diff % 7 == 0 || diff % 9 == 0 || src_row == dest_row || src_col == dest_col) && diff != 0 &&
+					 (pathEmptyRook(src, dest, board) || pathEmptyBishop(src, dest, board));
 			break;
 
 		case Pawn: // on attack, it can move sideways & first move can be 2 squares forward
@@ -246,8 +248,10 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 				if(this->getPieceColor() == White) // goes up
 					valid = src-dest == 8 || src-dest == 16 || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
 				else // black, goes down
-					valid = dest-src == 8 || src-dest == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
+					valid = dest-src == 8 || dest-src == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
+
+			valid = valid && 1;
 			break;
 
 		default:
@@ -259,7 +263,7 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 
 // if move is valid, make the move
 // On return, the piece's square value is updated
-bool Switcher::makeMove(vector<Switcher> & board, unsigned int dest)
+bool Switcher::makeMove(vector<Switcher> & board, int dest)
 {
 	/* TODO:
 		For pawns this condition must be stricter
@@ -272,10 +276,91 @@ bool Switcher::makeMove(vector<Switcher> & board, unsigned int dest)
 		return true;
 	}
 	
-	cout << endl << "Invalid move, try again!" << endl;
 	return false;
 }
 
+// given a path (src -> dest) determine if there are peices in that path
+// returns "true" if path has only empty squares, else "false"
+bool Switcher::pathEmptyRook(int src, int dest, vector<Switcher> & board) const
+{
+	bool empty = false;
+
+	// path doesn't care which way you go
+	if(src > dest)
+		std::swap(src, dest);
+
+	int src_row = src / 8, src_col = src % 8;
+	int dest_row = dest / 8, dest_col = dest % 8;
+	int diff = dest-src;
+
+	if(diff == 0) // same square so nothing can be between
+		return true;
+	else if(diff == 1 || diff == 8) // 1 square apart, must make sure not same color as attack can be between differing colors
+		return !(board[src].getPieceColor() == board[dest].getPieceColor());
+
+	while(src < dest-8)
+	{
+		if(src_row == dest_row)
+			src++;
+		else if(src_col == dest_col)
+			src += 8;
+		else
+			break;
+
+		empty = board[src].getPieceType() == Empty;
+	}
+	return empty;
+}
+
+bool Switcher::pathEmptyBishop(int src, int dest, vector<Switcher> & board) const
+{
+	bool empty = false;
+
+	// path doesn't care which way you go
+	if(src > dest)
+		std::swap(src, dest);
+
+	int diff = dest-src;
+
+	if(diff == 0) // same square so nothing can be between
+		return true;
+	else if(diff == 7 || diff == 9) // 1 square apart, must make sure not same color as attack can be between differing colors
+		return !(board[src].getPieceColor() == board[dest].getPieceColor());
+
+	while(src < dest-10)
+	{
+		if(diff % 9 == 0)
+			src += 9;
+		else if(diff % 7 == 0)
+			src += 7;
+
+		empty = board[src].getPieceType() == Empty;
+	}
+	return empty;
+}
+
+
+// bool Switcher::pathEmptyPawn(int src, int dest, vector<Switcher> & board) const
+// {
+// 	// path doesn't care which way you go
+// 	if(src > dest)
+// 		std::swap(src, dest);
+
+// 	int src_row = src / 8, src_col = src % 8;
+// 	int dest_row = dest / 8, dest_col = dest % 8;
+
+// 	while(src < dest)
+// 	{
+// 		if(src_row == dest_row)
+// 			src++;
+// 		else
+// 			src += 8;
+
+// 		if(board[src].getPieceType() != Empty)
+// 			return true;
+// 	}
+// 	return false;
+// }
 
 // Board intialization
 vector<Switcher> initBoard(unsigned int BOARD_SIZE)
