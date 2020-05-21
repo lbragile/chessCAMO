@@ -1,6 +1,7 @@
 #include "switcher.h"
 #include <iomanip>
 #include <vector>
+#include <stdlib.h>     /* abs */
 
 using namespace std;
 
@@ -24,7 +25,7 @@ using namespace std;
 // }
 
 // default constructor
-Switcher::Switcher() : square{0}, value{0}, type{Empty}, color{Black}, moved{false}
+Switcher::Switcher() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
 {
  // intentionally blank
 }
@@ -105,125 +106,24 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 		4. move into square with a piece of opponent (attack)
 		5. Promotion?
 	*/
+	bool valid;
 
 	int src_row = src / 8, src_col = src % 8;
 	int dest_row = dest / 8, dest_col = dest % 8;
-
-	bool valid;
 	int diff = (dest - src) > 0 ? dest - src : src - dest;
 
 	switch(this->getPieceType())
 	{
 		case Rook: // moves in same row and column
-			valid = (src_row == dest_row || src_col == dest_col) && diff != 0 && pathEmptyRook(src, dest, board);
+			valid = (src_row == dest_row || src_col == dest_col);
 			break;
 
-		case Knight: // most complicated piece (can jump over pieces also)
-			//  8 possible moves - middle of board with 2 squares from edge minimum
-			if(src_row > 1 && src_row < 6 && src_col > 1 && src_col < 6) 
-				valid = (diff == 6 || diff == 10 || diff == 15 || diff == 17);
-
-			// 6 possible moves - row 1
-			else if(src_row == 1 && src_col > 1 && src_col < 6)
-				valid = (diff == 6 || diff == 10 || dest - src == 15 || dest - src == 17);
-
-			// 6 possible moves - row 6
-			else if(src_row == 6 && src_col > 1 && src_col < 6)
-				valid = (diff == 6 || diff == 10 || src-dest == 15 || src-dest == 17);
-
-			// 6 possible moves - col 1
-			else if(src_col == 1 && src_row > 1 && src_row < 6)
-				valid = (src-dest == 6 || dest - src == 10 || diff == 15 || diff == 17);
-
-			// 6 possible moves - col 6
-			else if(src_col == 6 && src_row > 1 && src_row < 6)
-				valid = (dest - src == 6 || src-dest == 10 || diff == 15 || diff == 17);
-
-			// 4 possible moves - row 0
-			else if(src_row == 0 && src_col > 1 && src_col < 6)
-				valid = (dest - src == 6 || dest - src == 10 || dest - src == 15 || dest - src == 17);
-
-			// 4 possible moves - row 7
-			else if(src_row == 7 && src_col > 1 && src_col < 6)
-				valid = (src-dest == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
-
-			// 4 possible moves - col 0
-			else if(src_col == 0 && src_row > 1 && src_row < 6)
-				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15 || dest - src == 17);
-
-			// 4 possible moves - col 7
-			else if(src_col == 7 && src_row > 1 && src_row < 6)
-				valid = (src-dest == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
-
-			// 4 possible moves - col 1, row 1
-			else if(src_col == 1 && src_row == 1)
-				valid = (src-dest == 6 || dest - src == 10 || dest - src == 15 || dest - src == 17);
-
-			// 4 possible moves - col 6, row 1
-			else if(src_col == 6 && src_row == 1)
-				valid = (dest - src == 6 || src-dest == 10 || dest - src == 15 || dest - src == 17);
-
-			// 4 possible moves - col 1, row 6
-			else if(src_col == 1 && src_row == 6)
-				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15 || src-dest == 17);
-
-			// 4 possible moves - col 6, row 6
-			else if(src_col == 6 && src_row == 6)
-				valid = (dest - src == 6 || src-dest == 10 || src-dest == 15 || src-dest == 17);
-
-			// 3 possible moves - col 0, row 1
-			else if(src_col == 0 && src_row == 1)
-				valid = (src-dest == 6 || dest - src == 10 || dest - src == 17);
-
-			// 3 possible moves - col 7, row 1
-			else if(src_col == 7 && src_row == 1)
-				valid = (dest - src == 6 || src-dest == 10 || dest - src == 15);
-
-			// 3 possible moves - col 0, row 6
-			else if(src_col == 0 && src_row == 6)
-				valid = (src-dest == 6 || dest - src == 10 || src-dest == 15);
-
-			// 3 possible moves - col 7, row 6
-			else if(src_col == 7 && src_row == 6)
-				valid = (dest - src == 6 || src-dest == 10 || src-dest == 17);
-
-			// 3 possible moves - col 1, row 0
-			else if(src_col == 1 && src_row == 0)
-				valid = (dest - src == 10 || dest - src == 15 || dest - src == 17);
-
-			// 3 possible moves - col 6, row 0
-			else if(src_col == 6 && src_row == 0)
-				valid = (dest - src == 6 || dest - src == 15 || dest - src == 17);
-
-			// 3 possible moves - col 1, row 7
-			else if(src_col == 1 && src_row == 7)
-				valid = (src-dest == 6 || src-dest == 15 || src-dest == 17);
-
-			// 3 possible moves - col 6, row 7
-			else if(src_col == 6 && src_row == 7)
-				valid = (src-dest == 10 || src-dest == 15 || src-dest == 17);
-
-			// 2 possible moves - col 0, row 0
-			else if(src_col == 0 && src_row == 0)
-				valid = (dest - src == 10 || dest - src == 17);
-
-			// 2 possible moves - col 0, row 7
-			else if(src_col == 0 && src_row == 7)
-				valid = (dest - src == 6 || dest - src == 15);
-
-			// 2 possible moves - col 7, row 0
-			else if(src_col == 7 && src_row == 0)
-				valid = (src-dest == 6 || src-dest == 15);
-
-			// 2 possible moves - col 7, row 7
-			else if(src_col == 7 && src_row == 7)
-				valid = (src-dest == 10 || src-dest == 17);
-
-			valid = valid && diff != 0;
+		case Knight: 
+			valid = abs(src_row - dest_row) <= 2 && abs(src_col - dest_col) <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17);
 			break;
 
 		case Bishop:
-			valid = (diff % 7 == 0 || diff % 9 == 0) && diff != 0 && pathEmptyBishop(src, dest, board);
+			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col));
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away
@@ -231,8 +131,7 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 			break;
 
 		case Queen: // like rook and bishop
-			valid = (diff % 7 == 0 || diff % 9 == 0 || src_row == dest_row || src_col == dest_col) && diff != 0 &&
-					 (pathEmptyRook(src, dest, board) || pathEmptyBishop(src, dest, board));
+			valid = (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col));
 			break;
 
 		case Pawn: // on attack, it can move sideways & first move can be 2 squares forward
@@ -251,7 +150,6 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 					valid = dest-src == 8 || dest-src == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 
-			valid = valid && 1;
 			break;
 
 		default:
@@ -269,10 +167,13 @@ bool Switcher::makeMove(vector<Switcher> & board, int dest)
 		For pawns this condition must be stricter
 		Likewise for castling
 	*/
-	if(this->isValidMove(this->getPieceSquare(), dest, board))
+	int src = this->getPieceSquare();
+	if(this->isValidMove(src, dest, board))
 	{
-		std::swap(*this, board[dest]);
 		this->setPieceMovement(true); // note that the piece moved (important for castling and pawn's first move)
+		this->setPieceSquare(dest);
+		board[dest].setPieceSquare(src);
+		std::swap(*this, board[dest]);
 		return true;
 	}
 	
@@ -340,39 +241,33 @@ bool Switcher::pathEmptyBishop(int src, int dest, vector<Switcher> & board) cons
 }
 
 
-// bool Switcher::pathEmptyPawn(int src, int dest, vector<Switcher> & board) const
-// {
-// 	// path doesn't care which way you go
-// 	if(src > dest)
-// 		std::swap(src, dest);
+bool Switcher::pathEmptyPawn(int src, int dest, vector<Switcher> & board) const
+{
+	// path doesn't care which way you go
+	if(src > dest)
+		std::swap(src, dest);
 
-// 	int src_row = src / 8, src_col = src % 8;
-// 	int dest_row = dest / 8, dest_col = dest % 8;
+	int diff = dest-src;
 
-// 	while(src < dest)
-// 	{
-// 		if(src_row == dest_row)
-// 			src++;
-// 		else
-// 			src += 8;
+	if(diff == 0) // same square so nothing can be between
+		return true;
+	else if(diff == 1) // 1 square apart, must make sure not same color as attack can be between differing colors
+		return !(board[src].getPieceColor() == board[dest].getPieceColor());
 
-// 		if(board[src].getPieceType() != Empty)
-// 			return true;
-// 	}
-// 	return false;
-// }
+	return board[src+1].getPieceType() == Empty;
+}
 
 // Board intialization
 vector<Switcher> initBoard(unsigned int BOARD_SIZE)
 {
-	Switcher piece;
-
 	// 8x8 board stored as vector of vectors, each row contains the piece objects
 	vector<Switcher> board; 
 
 	// initialize the board
 	for(unsigned int i = 0; i < BOARD_SIZE; i++)
 	{
+		Switcher piece;
+
 		if(i < BOARD_SIZE/4) // black
 		{
 			piece.setPieceSquare(i);
@@ -407,15 +302,13 @@ vector<Switcher> initBoard(unsigned int BOARD_SIZE)
 				piece.setPieceType(Pawn);
 			}
 			
+			piece.setPieceColor(Black);
 			board.push_back(piece);
 		}
 
 		else if(BOARD_SIZE/4 <= i && i < BOARD_SIZE*3/4) // blank squares
 		{	
 			piece.setPieceSquare(i);
-			piece.setPieceValue(0);
-			piece.setPieceType(Empty);
-			piece.setPieceColor(Neutral);
 			board.push_back(piece);
 		}
 		else // white

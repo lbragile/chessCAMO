@@ -74,8 +74,7 @@ private:
 	// returns "true" if path has only empty squares, else "false"
 	bool pathEmptyRook(int src, int dest, vector<Switcher> & board) const;
 	bool pathEmptyBishop(int src, int dest, vector<Switcher> & board) const;
-	// bool pathEmptyQueen(int src, int dest, vector<Switcher> & board) const; // queen is just bishop || rook
-	// bool pathEmptyPawn(int src, int dest, vector<Switcher> & board) const;
+	bool pathEmptyPawn(int src, int dest, vector<Switcher> & board) const;
 
 };
 

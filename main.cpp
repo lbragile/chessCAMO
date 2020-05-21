@@ -8,25 +8,23 @@ using namespace std;
 int main()
 {
 	int src, dest;
-	bool valid = false;
+	bool valid;
 	vector<Switcher> board = initBoard(BOARD_SIZE);
 	printBoard(board);
 
 	// cout << board[63].isValidMove(board[63].getPieceSquare(), 46);
 	while(true)
 	{
+		valid = false;
 		cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		cin >> src >> dest;
-		if(0 <= dest && dest <= 63)
+		if(0 <= dest && dest <= 63 && (dest-src) != 0)
 			valid = board[src].makeMove(board, dest);
 			
 		if(valid)
 			printBoard(board);
 		else
 			cout << endl << "Invalid move, try again!" << endl;
-
-		if(src == -100)
-			break;
 	}
 	
 	return 0;
