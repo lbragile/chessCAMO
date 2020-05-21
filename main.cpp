@@ -9,10 +9,31 @@ int main()
 {
 	int src, dest;
 	bool valid;
-	vector<Switcher> board = initBoard(BOARD_SIZE);
+	vector<Chess> board = initBoard(BOARD_SIZE);
 	printBoard(board);
 
-	// cout << board[63].isValidMove(board[63].getPieceSquare(), 46);
+	int i = 19;
+	for(auto val : board[i].bitify(Diag_R, board))
+	{
+		cout << val << " ";
+	}
+	cout << endl;
+	for(auto val : board[i].bitify(Diag_L, board))
+	{
+		cout << val << " ";
+	}
+
+	cout << endl;
+	for(auto val : board[i].bitify(Row, board))
+	{
+		cout << val << " ";
+	}
+	cout << endl;
+	for(auto val : board[i].bitify(Col, board))
+	{
+		cout << val << " ";
+	}
+
 	while(true)
 	{
 		valid = false;

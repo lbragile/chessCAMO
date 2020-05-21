@@ -6,7 +6,7 @@
 using namespace std;
 
 // // copy assignment
-// Switcher & Switcher::operator =(const Switcher & object)
+// Chess & Chess::operator =(const Chess & object)
 // {
 // 	this->square = object.square;
 // 	this->value = object.value;
@@ -18,20 +18,20 @@ using namespace std;
 // }
 
 // // move assignment
-// Switcher  &Switcher::operator =(Switcher && object)
+// Chess  &Chess::operator =(Chess && object)
 // {
 // 	*this = std::move(object);
 // 	return *this;
 // }
 
 // default constructor
-Switcher::Switcher() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
+Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
 {
  // intentionally blank
 }
 
 // constructor with piece initialization
-Switcher::Switcher(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}
+Chess::Chess(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}
 {
 	this->square = square;
 	this->value = value;
@@ -40,56 +40,56 @@ Switcher::Switcher(unsigned int square, unsigned int value, pieceType type, piec
 }
 
 // Mutator and accessor functions for determining/setting the piece type of an object
-pieceType Switcher::getPieceType() const
+pieceType Chess::getPieceType() const
 {
 	return type;
 }
 
-void Switcher::setPieceType(pieceType type)
+void Chess::setPieceType(pieceType type)
 {
 	this->type = type;
 }
 
 // Mutator and accessor functions for determining/setting the piece color of an object
-pieceColor Switcher::getPieceColor() const
+pieceColor Chess::getPieceColor() const
 {
 	return color;
 }
 
-void Switcher::setPieceColor(pieceColor color)
+void Chess::setPieceColor(pieceColor color)
 {
 	this->color = color;
 }
 
 // Mutator and accessor functions for determining/setting the piece value of an object
-unsigned int Switcher::getPieceValue() const
+unsigned int Chess::getPieceValue() const
 {
 	return value;
 }
 
-void Switcher::setPieceValue(unsigned int value)
+void Chess::setPieceValue(unsigned int value)
 {
 	this->value = value;
 }
 
 // Mutator and accessor functions for determining/setting the piece square of an object
-unsigned int Switcher::getPieceSquare() const
+unsigned int Chess::getPieceSquare() const
 {
 	return square;
 }
 
-void Switcher::setPieceSquare(unsigned int square)
+void Chess::setPieceSquare(unsigned int square)
 {
 	this->square = square;
 }
 
 // Mutator and accessor functions for determining/setting the moving state of an object
-unsigned int Switcher::getPieceMovevement() const
+unsigned int Chess::getPieceMovevement() const
 {
 	return moved;
 }
 
-void Switcher::setPieceMovement(bool movement)
+void Chess::setPieceMovement(bool movement)
 {
 	moved = movement;
 }
@@ -97,7 +97,7 @@ void Switcher::setPieceMovement(bool movement)
 
 // Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 // Return 'true' if move is valid, 'false' otherwise
-bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
+bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 {
 	/* TODO: 
 		1. add attacking move for pawn
@@ -161,7 +161,7 @@ bool Switcher::isValidMove(int src, int dest, vector<Switcher> & board) const
 
 // if move is valid, make the move
 // On return, the piece's square value is updated
-bool Switcher::makeMove(vector<Switcher> & board, int dest)
+bool Chess::makeMove(vector<Chess> & board, int dest)
 {
 	/* TODO:
 		For pawns this condition must be stricter
@@ -180,93 +180,114 @@ bool Switcher::makeMove(vector<Switcher> & board, int dest)
 	return false;
 }
 
-// given a path (src -> dest) determine if there are peices in that path
-// returns "true" if path has only empty squares, else "false"
-bool Switcher::pathEmptyRook(int src, int dest, vector<Switcher> & board) const
+// Converts a row, column, or diagonal of the current board state into a bit vector
+// Returns a bit vector where -1 (black), 0 (blank), 1 (white)
+vector<int> Chess::bitify(pieceDirection dir, const vector<Chess> & board)
 {
-	bool empty = false;
+	int src = this->getPieceSquare();
+	int row, col, diag_l, diag_r;
+	row = src - (src%8);
+	col = src - row;
+	diag_l = src%8 < src/8 ? src - 7*(src%8) : src - 7*(src/8);
+	diag_r = src%8 < src/8 ? src - 9*(src%8) : src - 9*(src/8);
 
-	// path doesn't care which way you go
-	if(src > dest)
-		std::swap(src, dest);
+	cout << row << " " << col << " " << diag_l << " " << diag_r << endl;
 
-	int src_row = src / 8, src_col = src % 8;
-	int dest_row = dest / 8, dest_col = dest % 8;
-	int diff = dest-src;
-
-	if(diff == 0) // same square so nothing can be between
-		return true;
-	else if(diff == 1 || diff == 8) // 1 square apart, must make sure not same color as attack can be between differing colors
-		return !(board[src].getPieceColor() == board[dest].getPieceColor());
-
-	while(src < dest-8)
+	vector<int> bit_map;
+	for(int i = 0; i < 8; i++)
 	{
-		if(src_row == dest_row)
-			src++;
-		else if(src_col == dest_col)
-			src += 8;
-		else
-			break;
+		if(dir == Row)
+		{
+			switch(board[row].getPieceColor())
+			{
+				case 0:
+					bit_map.push_back(-1);
+					break;
+				case 1:
+					bit_map.push_back(0);
+					break;
+				case 2:
+					bit_map.push_back(1);
+					break;
+			}
 
-		empty = board[src].getPieceType() == Empty;
+			row++;
+		}
+		else if(dir == Col)
+		{
+			switch(board[col].getPieceColor())
+			{
+				case 0:
+					bit_map.push_back(-1);
+					break;
+				case 1:
+					bit_map.push_back(0);
+					break;
+				case 2:
+					bit_map.push_back(1);
+					break;
+			}
+
+			col += 8;
+		}
+		else if(dir == Diag_L) // doesn't have to be size 8, e.g. if on the first column already
+		{
+			switch(board[diag_l].getPieceColor())
+			{
+				case 0:
+					bit_map.push_back(-1);
+					break;
+				case 1:
+					bit_map.push_back(0);
+					break;
+				case 2:
+					bit_map.push_back(1);
+					break;
+			}
+
+			if(diag_l % 8 == 0)
+			{
+				break;
+			}
+
+			diag_l += 7;
+		}
+		else // dir == Diag_R
+		{
+			switch(board[diag_r].getPieceColor())
+			{
+				case 0:
+					bit_map.push_back(-1);
+					break;
+				case 1:
+					bit_map.push_back(0);
+					break;
+				case 2:
+					bit_map.push_back(1);
+					break;
+			}
+
+			if(diag_r % 8 == 7)
+			{
+				break;
+			}
+
+			diag_r += 9;
+		}
 	}
-	return empty;
-}
-
-bool Switcher::pathEmptyBishop(int src, int dest, vector<Switcher> & board) const
-{
-	bool empty = false;
-
-	// path doesn't care which way you go
-	if(src > dest)
-		std::swap(src, dest);
-
-	int diff = dest-src;
-
-	if(diff == 0) // same square so nothing can be between
-		return true;
-	else if(diff == 7 || diff == 9) // 1 square apart, must make sure not same color as attack can be between differing colors
-		return !(board[src].getPieceColor() == board[dest].getPieceColor());
-
-	while(src < dest-10)
-	{
-		if(diff % 9 == 0)
-			src += 9;
-		else if(diff % 7 == 0)
-			src += 7;
-
-		empty = board[src].getPieceType() == Empty;
-	}
-	return empty;
-}
-
-
-bool Switcher::pathEmptyPawn(int src, int dest, vector<Switcher> & board) const
-{
-	// path doesn't care which way you go
-	if(src > dest)
-		std::swap(src, dest);
-
-	int diff = dest-src;
-
-	if(diff == 0) // same square so nothing can be between
-		return true;
-	else if(diff == 1) // 1 square apart, must make sure not same color as attack can be between differing colors
-		return !(board[src].getPieceColor() == board[dest].getPieceColor());
-
-	return board[src+1].getPieceType() == Empty;
+	return bit_map;	
 }
 
 // Board intialization
-vector<Switcher> initBoard(unsigned int BOARD_SIZE)
+vector<Chess> initBoard(unsigned int BOARD_SIZE)
 {
 	// 8x8 board stored as vector of vectors, each row contains the piece objects
-	vector<Switcher> board; 
+	vector<Chess> board; 
 
 	// initialize the board
 	for(unsigned int i = 0; i < BOARD_SIZE; i++)
 	{
-		Switcher piece;
+		Chess piece;
 
 		if(i < BOARD_SIZE/4) // black
 		{
@@ -354,12 +375,12 @@ vector<Switcher> initBoard(unsigned int BOARD_SIZE)
 }
 
 // Print the current board position
-void printBoard(const vector<Switcher> & v)
+void printBoard(const vector<Chess> & v)
 {
 	cout << endl;
 
 	char temp;
-	vector<Switcher>::const_iterator itr; // due to const in the signature, this must be const
+	vector<Chess>::const_iterator itr; // due to const in the signature, this must be const
 
 	int count = 0;
 	for(itr = v.begin(); itr != v.end(); itr++)
