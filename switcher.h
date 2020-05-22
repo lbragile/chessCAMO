@@ -88,4 +88,7 @@ vector<Chess> initBoard(unsigned int BOARD_SIZE);
 // Print the current board position
 void printBoard(const vector<Chess> & v);
 
+// Change player's turn and print whose turn it is after a move is played
+void playerTurn(int & turn);
+
 #endif // Chess_H

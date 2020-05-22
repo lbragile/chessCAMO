@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-	int src, dest;
+	int src, dest, turn = 1;
 	bool valid;
 	vector<Chess> board = initBoard(BOARD_SIZE);
 	printBoard(board);
@@ -18,13 +18,20 @@ int main()
 		valid = false;
 		cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		cin >> src >> dest;
-		if(0 <= dest && dest <= 63 && (dest-src) != 0)
+		if(0 <= dest && dest <= 63 && (dest-src) != 0 && board[src].getPieceColor() == turn+1)
+		{
 			valid = board[src].makeMove(board, dest);
+		}
 			
 		if(valid)
+		{
 			printBoard(board);
+			playerTurn(turn);
+		}
 		else
+		{
 			cout << endl << "Invalid move, try again!" << endl;
+		}
 	}
 	
 	return 0;

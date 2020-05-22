@@ -189,10 +189,6 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 // On return, the piece's square value is updated
 bool Chess::makeMove(vector<Chess> & board, int dest)
 {
-	/* TODO:
-		For pawns this condition must be stricter
-		Likewise for castling
-	*/
 	int src = this->getPieceSquare();
 	if(this->isValidMove(src, dest, board))
 	{
@@ -271,7 +267,7 @@ void Chess::promotePawn()
 			break;
 		}
 
-		cout << "Please make sure to pick correct value!";
+		cout << "Please make sure to pick correct value!" << endl;
 	}
 }
 
@@ -412,5 +408,19 @@ void printBoard(const vector<Chess> & v)
 		if(count % 8 == 7)
 			cout << endl;
 		count++;
+	}
+}
+
+// Print whose turn it is after a move is played
+void playerTurn(int & turn)
+{
+	turn = turn == 1 ? -1 : 1; // switch turns
+	if(turn == 1)
+	{
+		cout << endl << "White's turn" << endl;
+	}
+	else
+	{
+		cout << endl << "Black's turn" << endl;
 	}
 }
