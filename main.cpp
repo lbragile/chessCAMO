@@ -1,7 +1,7 @@
 #include "switcher.h"
-#include <vector>
 
-using namespace std;
+// extern variable
+stack<Chess> checkStack; // needed to determine if a given player's king is in check
 
 // #define BOARD_SIZE 64
 

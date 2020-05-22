@@ -1,18 +1,13 @@
 #include "switcher.h"
-#include <iomanip>
-#include <vector>
-#include <stdlib.h>     /* abs */
-
-using namespace std;
 
 // default constructor
-Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}, check{false}
+Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
 {
  	// intentionally blank
 }
 
 // constructor with piece initialization
-Chess::Chess(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}, check{false}
+Chess::Chess(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}
 {
 	this->square = square;
 	this->value = value;
@@ -74,18 +69,6 @@ void Chess::setPieceMovement()
 {
 	this->moved = !this->moved; // flip if piece was moved
 }
-
-// Mutator and accessor functions for determining/setting whether a king is/was checked
-bool Chess::getPieceCheck() const
-{
-	return check;
-}
-
-void Chess::setPieceCheck()
-{
-	this->check = !this->check; // flip if king is in check or gets out of check
-}
-
 
 // Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 // Return 'true' if move is valid, 'false' otherwise
@@ -204,33 +187,25 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool valid)
 	
 	if(0 <= dest && dest <= 63 && (dest-src) != 0 && board[src].getPieceColor() == turn+1 && this->isValidMove(src, dest, board))
 	{
-		// pawn promotion
-		if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
+		if(!checkDetect(src, dest, board))
 		{
-			this->promotePawn();
-		}
+			// pawn promotion
+			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
+			{
+				this->promotePawn();
+			}
 
-		// note that the piece moved (important for castling and pawn's first move)
-		this->setPieceMovement(); 
-		if(board[dest].getPieceType() == Empty)
-		{
-			this->setPieceSquare(dest);
-			board[dest].setPieceSquare(src);
-			std::swap(*this, board[dest]);
-		}
-		else
-		{
-			this->attackMove(src, dest, board);
-		}
+			// note that the piece moved (important for castling and pawn's first move)
+			this->setPieceMovement(); 
+			board = moveChoice(src, dest, board);
 
-		valid = true;
+			valid = true;
+		}
 	}
 		
 	if(valid)
 	{
 		printBoard(board);
-		// check detection
-		// checkDetect(src, dest, board); 
 		playerTurn(turn);
 	}
 	else
@@ -239,37 +214,25 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool valid)
 	}
 }
 
-// // A valid move was made
-// // Return true if king is in check, otherwise return false
-// void Chess::checkDetect(int src, int dest, vector<Chess> & board)
-// {
-// 	int king_pos;
-// 	vector<Chess>::const_iterator itr;
-// 	for(itr = board.begin(); itr != board.end(); itr++)
-// 	{
-// 		if(itr->getPieceType() == King && itr->getPieceColor() != board[dest].getPieceColor())
-// 		{
-// 			king_pos = itr->getPieceSquare();
-// 			break;
-// 		}
-// 	}
+// Decide if it is an attacking move or regular move
+vector<Chess> Chess::moveChoice(int src, int dest, vector<Chess> board)
+{
+	if(board[dest].getPieceType() == Empty)
+	{
+		board[src].setPieceSquare(dest);
+		board[dest].setPieceSquare(src);
+		std::swap(board[src], board[dest]);
+	}
+	else
+	{
+		board = board[src].attackMove(src, dest, board);
+	}
 
-// 	if(dest != king_pos && board[dest].isValidMove(dest, king_pos, board))
-// 	{
-// 		cout << "Check! ";
-// 		board[king_pos].setPieceCheck();
-// 		cout << board[king_pos].getPieceCheck();
-// 	}
-// 	// if the king is already in check but the move is no longer valid -> un-check the king
-// 	else if(dest == king_pos && !board[src].isValidMove(src, king_pos, board))
-// 	{
-// 		board[king_pos].setPieceCheck();
-// 		cout << board[king_pos].getPieceCheck();
-// 	}
-// }
+	return board;
+}
 
 // When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
-void Chess::attackMove(int src, int dest, vector<Chess> & board)
+vector<Chess> Chess::attackMove(int src, int dest, vector<Chess> board)
 {
 	// dest
 	board[dest].setPieceType(board[src].getPieceType());
@@ -282,6 +245,59 @@ void Chess::attackMove(int src, int dest, vector<Chess> & board)
 	board[src].setPieceValue(0);
 	board[src].setPieceColor(Neutral);
 	board[src].setPieceSquare(src);
+
+	return board;
+}
+
+// A valid move was made
+// Return true if king is in check, otherwise return false
+bool Chess::checkDetect(int src, int dest, vector<Chess> board)
+{
+	board = moveChoice(src, dest, board); // make the move without affecting the main board!
+	if(checkStack.empty())
+	{
+		int king_pos;
+		vector<Chess>::const_iterator itr;
+		for(itr = board.begin(); itr != board.end(); itr++)
+		{
+			if(itr->getPieceType() == King && itr->getPieceColor() != board[dest].getPieceColor())
+			{
+				king_pos = itr->getPieceSquare();
+				break;
+			}
+		}
+
+		if(board[dest].isValidMove(dest, king_pos, board)) 
+		{
+			cout << "Check!";
+			checkStack.push(board[king_pos]);
+			checkStack.push(board[dest]);
+		}
+
+		return false;
+	}
+
+	else // checkStack is not empty
+	{
+		bool result;
+		Chess piece, king;
+
+		piece = checkStack.top();
+		checkStack.pop();
+		king = checkStack.top();
+		checkStack.pop();
+
+		result = piece.isValidMove(piece.getPieceSquare(), king.getPieceSquare(), board);
+
+		// push back on stack if move was not valid
+		if(result)
+		{
+			checkStack.push(king);
+			checkStack.push(piece);
+		}
+
+		return result;
+	}
 }
 
 // When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight

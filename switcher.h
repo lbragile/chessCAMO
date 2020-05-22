@@ -4,6 +4,9 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <stack>
+#include <stdlib.h>     /* abs */
+
 using namespace std;
 
 enum pieceType {Pawn, Knight, Bishop, Rook, Queen, King, Empty};
@@ -56,10 +59,6 @@ public:
 	bool getPieceMovevement() const;
 	void setPieceMovement();
 
-	// Mutator and accessor functions for determining/setting whether a king is/was checked
-	bool getPieceCheck() const;
-	void setPieceCheck();
-
 	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
 	bool isValidMove(int src, int dest, const vector<Chess> & board);
@@ -74,7 +73,6 @@ private:
 	pieceType type;
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
-	bool check; // information about king's safety (when/if in check) -> true if in check, else false
 
 	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
 	// Also makes sure that piece on 'dest' is not the same color as 'src'
@@ -84,12 +82,17 @@ private:
 	void promotePawn();
 
 	// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
-	void attackMove(int src, int dest, vector<Chess> & board);
+	vector<Chess> attackMove(int src, int dest, vector<Chess> board);
 
-	// // A valid move was made
-	// // Return true if king is in check, otherwise return false
-	// void checkDetect(int src, int dest, vector<Chess> & board);
+	// A valid move was made
+	// Return true if king is in check, otherwise return false
+	bool checkDetect(int src, int dest, vector<Chess> board);
+
+	// Decide if it is an attacking move or regular move
+	vector<Chess> moveChoice(int src, int dest, vector<Chess> board);
 };
+
+extern stack<Chess> checkStack; // needed to determine if a given player's king is in check
 
 // Board intialization
 void initBoard(vector<Chess> & board);
