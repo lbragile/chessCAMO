@@ -1,4 +1,4 @@
-#include "switcher.h"
+#include "chess.h"
 
 // extern variable
 stack<Chess> checkStack; // needed to determine if a given player's king is in check

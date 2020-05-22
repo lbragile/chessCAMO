@@ -7,7 +7,7 @@ CC = g++
 CFLAGS  = -g -c -Wall
 ALL_FLAGS = -g -Wall
 
-FILE = switcher
+FILE = chess
 MAIN = main
 
 all: $(FILE).o $(MAIN).o main

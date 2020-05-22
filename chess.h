@@ -1,5 +1,5 @@
-#ifndef Chess_H
-#define Chess_H
+#ifndef CHESS_H
+#define CHESS_H
 
 #include <iostream>
 #include <iomanip>
@@ -103,4 +103,4 @@ void printBoard(const vector<Chess> & board);
 // Change player's turn and print whose turn it is after a move is played
 void playerTurn(int & turn);
 
-#endif // Chess_H
+#endif // CHESS_H

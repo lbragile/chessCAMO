@@ -1,4 +1,4 @@
-#include "switcher.h"
+#include "chess.h"
 
 // default constructor
 Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
