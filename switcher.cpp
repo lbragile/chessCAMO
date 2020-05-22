@@ -5,29 +5,10 @@
 
 using namespace std;
 
-// // copy assignment
-// Chess & Chess::operator =(const Chess & object)
-// {
-// 	this->square = object.square;
-// 	this->value = object.value;
-// 	this->type = object.type;
-// 	this->color = object.color;
-// 	this->moved = object.moved;
-
-// 	return *this;
-// }
-
-// // move assignment
-// Chess  &Chess::operator =(Chess && object)
-// {
-// 	*this = std::move(object);
-// 	return *this;
-// }
-
 // default constructor
 Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
 {
- // intentionally blank
+ 	// intentionally blank
 }
 
 // constructor with piece initialization
@@ -99,13 +80,6 @@ void Chess::setPieceMovement(bool movement)
 // Return 'true' if move is valid, 'false' otherwise
 bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 {
-	/* TODO: 
-		1. add attacking move for pawn
-		2. add piece barrier conditions
-		3. castling
-		4. move into square with a piece of opponent (attack)
-		5. Promotion?
-	*/
 	bool valid;
 	vector<int> bit_map_row, bit_map_col, bit_map_diagl, bit_map_diagr;
 
@@ -139,16 +113,16 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			if(this->getPieceMovevement())
 			{
 				if(this->getPieceColor() == White) // goes up
-					valid = src-dest == 8 || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
+					valid = (src-dest == 8 && board[dest].getPieceType() == Empty) || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
 				else // black, goes down
-					valid = dest-src == 8 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
+					valid = (dest-src == 8 && board[dest].getPieceType() == Empty) || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 			else
 			{	
 				if(this->getPieceColor() == White) // goes up
-					valid = src-dest == 8 || src-dest == 16 || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
+					valid = ((src-dest == 8 || src-dest == 16) && board[dest].getPieceType() == Empty) || ((src-dest == 7 || src-dest == 9) && board[dest].getPieceType() != Empty);
 				else // black, goes down
-					valid = dest-src == 8 || dest-src == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
+					valid = ((dest-src == 8 || dest-src == 16) && board[dest].getPieceType() == Empty) || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 
 			valid = valid && freePath(src, dest, board);

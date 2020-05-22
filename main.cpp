@@ -29,3 +29,12 @@ int main()
 	
 	return 0;
 }
+
+/* TODO: 
+	1. castling
+	2. En-passent
+	3. Check detection
+	4. Avoid castling through check
+	5. Stalemate
+	6. Alternate Gameplay
+*/
