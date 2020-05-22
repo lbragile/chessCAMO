@@ -277,7 +277,7 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 		return false;
 	}
 
-	else // checkStack is not empty
+	else // checkStack is not empty (a player must be in check!)
 	{
 		bool result;
 		Chess piece, king;
@@ -287,6 +287,11 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 		king = checkStack.top();
 		checkStack.pop();
 
+		// the player's king made the move to try to get out of check
+		if(board[dest].getPieceType() == King)
+		{
+			king.setPieceSquare(dest);
+		}
 		result = piece.isValidMove(piece.getPieceSquare(), king.getPieceSquare(), board);
 
 		// push back on stack if move was not valid
