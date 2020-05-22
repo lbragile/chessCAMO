@@ -228,15 +228,39 @@ bool Chess::makeMove(vector<Chess> & board, int dest)
 			this->promotePawn();
 		}
 
-		this->setPieceMovement(true); // note that the piece moved (important for castling and pawn's first move)
-		this->setPieceSquare(dest);
-		board[dest].setPieceSquare(src);
-		std::swap(*this, board[dest]);
+		// note that the piece moved (important for castling and pawn's first move)
+		this->setPieceMovement(true); 
+		if(board[dest].getPieceType() == Empty)
+		{
+			this->setPieceSquare(dest);
+			board[dest].setPieceSquare(src);
+			std::swap(*this, board[dest]);
+		}
+		else
+		{
+			this->attackMove(src, dest, board);
+		}
 
 		return true;
 	}
 	
 	return false;
+}
+
+// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
+void Chess::attackMove(int src, int dest, vector<Chess> & board)
+{
+	// dest
+	board[dest].setPieceType(board[src].getPieceType());
+	board[dest].setPieceValue(board[src].getPieceValue());
+	board[dest].setPieceColor(board[src].getPieceColor());
+	board[dest].setPieceSquare(dest);
+
+	// src
+	board[src].setPieceType(Empty);
+	board[src].setPieceValue(0);
+	board[src].setPieceColor(Neutral);
+	board[src].setPieceSquare(src);
 }
 
 // When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight

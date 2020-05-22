@@ -77,6 +77,9 @@ private:
 
 	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
 	void promotePawn();
+
+	// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
+	void attackMove(int src, int dest, vector<Chess> & board);
 };
 
 // Board intialization
