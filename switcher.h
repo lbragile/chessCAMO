@@ -53,8 +53,12 @@ public:
 	void setPieceSquare(unsigned int square); // useful when moving a piece
 
 	// Mutator and accessor functions for determining/setting the moving state of an object
-	unsigned int getPieceMovevement() const;
-	void setPieceMovement(bool movement);
+	bool getPieceMovevement() const;
+	void setPieceMovement();
+
+	// Mutator and accessor functions for determining/setting whether a king is/was checked
+	bool getPieceCheck() const;
+	void setPieceCheck();
 
 	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
@@ -62,7 +66,7 @@ public:
 
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
-	bool makeMove(vector<Chess> & board, int dest);
+	void makeMove(int dest, vector<Chess> & board, int & turn, bool valid);
 
 private:
 	unsigned int square; // 0 - 63 for an 8x8 board with 0 being top left & 63 being bottom right
@@ -70,6 +74,7 @@ private:
 	pieceType type;
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
+	bool check; // information about king's safety (when/if in check) -> true if in check, else false
 
 	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
 	// Also makes sure that piece on 'dest' is not the same color as 'src'
@@ -80,13 +85,17 @@ private:
 
 	// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
 	void attackMove(int src, int dest, vector<Chess> & board);
+
+	// // A valid move was made
+	// // Return true if king is in check, otherwise return false
+	// void checkDetect(int src, int dest, vector<Chess> & board);
 };
 
 // Board intialization
-vector<Chess> initBoard(unsigned int BOARD_SIZE);
+void initBoard(vector<Chess> & board);
 
 // Print the current board position
-void printBoard(const vector<Chess> & v);
+void printBoard(const vector<Chess> & board);
 
 // Change player's turn and print whose turn it is after a move is played
 void playerTurn(int & turn);

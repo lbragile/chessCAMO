@@ -3,45 +3,30 @@
 
 using namespace std;
 
-#define BOARD_SIZE 64
+// #define BOARD_SIZE 64
 
 int main()
 {
+	// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
 	int src, dest, turn = 1;
-	bool valid;
-	vector<Chess> board = initBoard(BOARD_SIZE);
-	printBoard(board);
 
+	// 8x8 board stored as a vector of objects
+	vector<Chess> board{64}; 
+	initBoard(board);
 
-	while(true)
+	while(true) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
 	{
-		valid = false;
 		cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		cin >> src >> dest;
-		if(0 <= dest && dest <= 63 && (dest-src) != 0 && board[src].getPieceColor() == turn+1)
-		{
-			valid = board[src].makeMove(board, dest);
-		}
-			
-		if(valid)
-		{
-			printBoard(board);
-			playerTurn(turn);
-		}
-		else
-		{
-			cout << endl << "Invalid move, try again!" << endl;
-		}
+		board[src].makeMove(dest, board, turn, false);
 	}
 	
 	return 0;
 }
 
 /* TODO: 
-	1. castling
-	2. En-passent
-	3. Check detection
-	4. Avoid castling through check
-	5. Stalemate
-	6. Alternate Gameplay
+	1. Check detection, checkmate, stalemate
+	2. castling, avoid castling through check
+	3. En-passent
+	4. Resign / Draw offers
 */

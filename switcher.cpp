@@ -6,13 +6,13 @@
 using namespace std;
 
 // default constructor
-Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}
+Chess::Chess() : square{0}, value{0}, type{Empty}, color{Neutral}, moved{false}, check{false}
 {
  	// intentionally blank
 }
 
 // constructor with piece initialization
-Chess::Chess(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}
+Chess::Chess(unsigned int square, unsigned int value, pieceType type, pieceColor color) : moved{false}, check{false}
 {
 	this->square = square;
 	this->value = value;
@@ -65,14 +65,25 @@ void Chess::setPieceSquare(unsigned int square)
 }
 
 // Mutator and accessor functions for determining/setting the moving state of an object
-unsigned int Chess::getPieceMovevement() const
+bool Chess::getPieceMovevement() const
 {
 	return moved;
 }
 
-void Chess::setPieceMovement(bool movement)
+void Chess::setPieceMovement()
 {
-	moved = movement;
+	this->moved = !this->moved; // flip if piece was moved
+}
+
+// Mutator and accessor functions for determining/setting whether a king is/was checked
+bool Chess::getPieceCheck() const
+{
+	return check;
+}
+
+void Chess::setPieceCheck()
+{
+	this->check = !this->check; // flip if king is in check or gets out of check
 }
 
 
@@ -187,10 +198,11 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 
 // if move is valid, make the move
 // On return, the piece's square value is updated
-bool Chess::makeMove(vector<Chess> & board, int dest)
+void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool valid)
 {
 	int src = this->getPieceSquare();
-	if(this->isValidMove(src, dest, board))
+	
+	if(0 <= dest && dest <= 63 && (dest-src) != 0 && board[src].getPieceColor() == turn+1 && this->isValidMove(src, dest, board))
 	{
 		// pawn promotion
 		if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
@@ -199,7 +211,7 @@ bool Chess::makeMove(vector<Chess> & board, int dest)
 		}
 
 		// note that the piece moved (important for castling and pawn's first move)
-		this->setPieceMovement(true); 
+		this->setPieceMovement(); 
 		if(board[dest].getPieceType() == Empty)
 		{
 			this->setPieceSquare(dest);
@@ -211,11 +223,50 @@ bool Chess::makeMove(vector<Chess> & board, int dest)
 			this->attackMove(src, dest, board);
 		}
 
-		return true;
+		valid = true;
 	}
-	
-	return false;
+		
+	if(valid)
+	{
+		printBoard(board);
+		// check detection
+		// checkDetect(src, dest, board); 
+		playerTurn(turn);
+	}
+	else
+	{
+		cout << endl << "Invalid move, try again!" << endl;
+	}
 }
+
+// // A valid move was made
+// // Return true if king is in check, otherwise return false
+// void Chess::checkDetect(int src, int dest, vector<Chess> & board)
+// {
+// 	int king_pos;
+// 	vector<Chess>::const_iterator itr;
+// 	for(itr = board.begin(); itr != board.end(); itr++)
+// 	{
+// 		if(itr->getPieceType() == King && itr->getPieceColor() != board[dest].getPieceColor())
+// 		{
+// 			king_pos = itr->getPieceSquare();
+// 			break;
+// 		}
+// 	}
+
+// 	if(dest != king_pos && board[dest].isValidMove(dest, king_pos, board))
+// 	{
+// 		cout << "Check! ";
+// 		board[king_pos].setPieceCheck();
+// 		cout << board[king_pos].getPieceCheck();
+// 	}
+// 	// if the king is already in check but the move is no longer valid -> un-check the king
+// 	else if(dest == king_pos && !board[src].isValidMove(src, king_pos, board))
+// 	{
+// 		board[king_pos].setPieceCheck();
+// 		cout << board[king_pos].getPieceCheck();
+// 	}
+// }
 
 // When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
 void Chess::attackMove(int src, int dest, vector<Chess> & board)
@@ -272,103 +323,96 @@ void Chess::promotePawn()
 }
 
 // Board intialization
-vector<Chess> initBoard(unsigned int BOARD_SIZE)
+void initBoard(vector<Chess> & board)
 {
-	// 8x8 board stored as vector of vectors, each row contains the piece objects
-	vector<Chess> board; 
-
 	// initialize the board
-	for(unsigned int i = 0; i < BOARD_SIZE; i++)
+	for(unsigned int i = 0; i < board.size(); i++)
 	{
-		Chess piece;
-
-		if(i < BOARD_SIZE/4) // black
+		if(i < board.size()/4) // black
 		{
-			piece.setPieceSquare(i);
+			board[i].setPieceSquare(i);
 			if(i == 0 || i == 7) // rook
 			{
-				piece.setPieceValue(5);
-				piece.setPieceType(Rook);
+				board[i].setPieceValue(5);
+				board[i].setPieceType(Rook);
 			}
 			else if(i == 1 || i == 6) // knight
 			{
-				piece.setPieceValue(3);
-				piece.setPieceType(Knight);
+				board[i].setPieceValue(3);
+				board[i].setPieceType(Knight);
 			}
 			else if(i == 2 || i == 5) // bishop
 			{
-				piece.setPieceValue(3);
-				piece.setPieceType(Bishop);
+				board[i].setPieceValue(3);
+				board[i].setPieceType(Bishop);
 			}
 			else if(i == 3) // queen
 			{
-				piece.setPieceValue(9);
-				piece.setPieceType(Queen);
+				board[i].setPieceValue(9);
+				board[i].setPieceType(Queen);
 			}
 			else if(i == 4) // king
 			{
-				piece.setPieceValue(10);
-				piece.setPieceType(King);
+				board[i].setPieceValue(10);
+				board[i].setPieceType(King);
 			}
 			else // pawn
 			{
-				piece.setPieceValue(1);
-				piece.setPieceType(Pawn);
+				board[i].setPieceValue(1);
+				board[i].setPieceType(Pawn);
 			}
 			
-			piece.setPieceColor(Black);
-			board.push_back(piece);
+			board[i].setPieceColor(Black);
 		}
 
-		else if(BOARD_SIZE/4 <= i && i < BOARD_SIZE*3/4) // blank squares
+		else if(board.size()/4 <= i && i < board.size()*3/4) // blank squares
 		{	
-			piece.setPieceSquare(i);
-			board.push_back(piece);
+			board[i].setPieceSquare(i);
 		}
 		else // white
 		{
-			piece.setPieceSquare(i);
+			board[i].setPieceSquare(i);
 			if(i == 56 || i == 63) // rook
 			{
-				piece.setPieceValue(5);
-				piece.setPieceType(Rook);
+				board[i].setPieceValue(5);
+				board[i].setPieceType(Rook);
 			}
 			else if(i == 57 || i == 62) // knight
 			{
-				piece.setPieceValue(3);
-				piece.setPieceType(Knight);
+				board[i].setPieceValue(3);
+				board[i].setPieceType(Knight);
 			}
 			else if(i == 58 || i == 61) // bishop
 			{
-				piece.setPieceValue(3);
-				piece.setPieceType(Bishop);
+				board[i].setPieceValue(3);
+				board[i].setPieceType(Bishop);
 			}
 			else if(i == 59) // queen
 			{
-				piece.setPieceValue(9);
-				piece.setPieceType(Queen);
+				board[i].setPieceValue(9);
+				board[i].setPieceType(Queen);
 			}
 			else if(i == 60) // king
 			{
-				piece.setPieceValue(10);
-				piece.setPieceType(King);
+				board[i].setPieceValue(10);
+				board[i].setPieceType(King);
 			}
 			else // pawn
 			{
-				piece.setPieceValue(1);
-				piece.setPieceType(Pawn);
+				board[i].setPieceValue(1);
+				board[i].setPieceType(Pawn);
 			}
 			
-			piece.setPieceColor(White);
-			board.push_back(piece);
+			board[i].setPieceColor(White);
 		}
 	}
 
-	return board;
+	cout << "\nWhite to move first (as always)!" << endl;
+	printBoard(board);
 }
 
 // Print the current board position
-void printBoard(const vector<Chess> & v)
+void printBoard(const vector<Chess> & board)
 {
 	cout << endl;
 
@@ -376,7 +420,7 @@ void printBoard(const vector<Chess> & v)
 	vector<Chess>::const_iterator itr; // due to const in the signature, this must be const
 
 	int count = 0;
-	for(itr = v.begin(); itr != v.end(); itr++)
+	for(itr = board.begin(); itr != board.end(); itr++)
 	{
 		switch(itr->getPieceType())
 		{
@@ -402,7 +446,7 @@ void printBoard(const vector<Chess> & v)
 				temp = '.';
 		}
 
-		cout << std::right << std::setw(2) << temp;
+		cout << std::left << std::setw(2) << temp;
 
 		// go to next row if reached last column
 		if(count % 8 == 7)
