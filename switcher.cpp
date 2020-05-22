@@ -97,7 +97,7 @@ void Chess::setPieceMovement(bool movement)
 
 // Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 // Return 'true' if move is valid, 'false' otherwise
-bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
+bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 {
 	/* TODO: 
 		1. add attacking move for pawn
@@ -107,6 +107,7 @@ bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 		5. Promotion?
 	*/
 	bool valid;
+	vector<int> bit_map_row, bit_map_col, bit_map_diagl, bit_map_diagr;
 
 	int src_row = src / 8, src_col = src % 8;
 	int dest_row = dest / 8, dest_col = dest % 8;
@@ -115,15 +116,15 @@ bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 	switch(this->getPieceType())
 	{
 		case Rook: // moves in same row and column
-			valid = (src_row == dest_row || src_col == dest_col);
+			valid = (src_row == dest_row || src_col == dest_col) && freePath(src, dest, board);
 			break;
 
-		case Knight: 
-			valid = abs(src_row - dest_row) <= 2 && abs(src_col - dest_col) <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17);
+		case Knight: // knight can jump over obstacles
+			valid = abs(src_row - dest_row) <= 2 && abs(src_col - dest_col) <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && board[dest].getPieceColor() != board[src].getPieceColor();
 			break;
 
 		case Bishop:
-			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col));
+			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && freePath(src, dest, board);;
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away
@@ -131,7 +132,7 @@ bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 			break;
 
 		case Queen: // like rook and bishop
-			valid = (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col));
+			valid = (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col)) && freePath(src, dest, board);
 			break;
 
 		case Pawn: // on attack, it can move sideways & first move can be 2 squares forward
@@ -150,6 +151,7 @@ bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 					valid = dest-src == 8 || dest-src == 16 || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 
+			valid = valid && freePath(src, dest, board);
 			break;
 
 		default:
@@ -157,6 +159,57 @@ bool Chess::isValidMove(int src, int dest, vector<Chess> & board) const
 	}
     
     return valid;
+}
+
+// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
+// Also makes sure that piece on 'dest' is not the same color as 'src'
+bool Chess::freePath(int src, int dest, const vector<Chess> & board)
+{
+	bool empty = true;
+
+	int src_row = src / 8, src_col = src % 8;
+	int dest_row = dest / 8, dest_col = dest % 8;
+
+	// make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
+	if(src > dest) 
+	{
+		std::swap(src, dest);
+	}
+
+	if(src_row == dest_row) // row path
+	{
+		for(int i = src+1; i<dest; i++)
+		{
+			if(board[i].getPieceType() != Empty)
+				empty = false;
+		}
+	}
+	else if(src_col == dest_col) // column path
+	{
+		for(int i = src+8; i<dest; i+=8)
+		{
+			if(board[i].getPieceType() != Empty)
+				empty = false;
+		}
+	}
+	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
+	{
+		cout << "hi" << endl;
+		// figure out which direction the diagonal is in
+		int increment;
+		if(abs(dest-src) % 7 == 0)
+			increment = 7;
+		else
+			increment = 9;
+
+		for(int i = src+increment; i<dest; i+=increment)
+		{
+			if(board[i].getPieceType() != Empty)
+				empty = false;
+		}
+	}
+
+	return empty && board[src].getPieceColor() != board[dest].getPieceColor();
 }
 
 // if move is valid, make the move
@@ -178,104 +231,6 @@ bool Chess::makeMove(vector<Chess> & board, int dest)
 	}
 	
 	return false;
-}
-
-// Converts a row, column, or diagonal of the current board state into a bit vector
-// Returns a bit vector where -1 (black), 0 (blank), 1 (white)
-vector<int> Chess::bitify(pieceDirection dir, const vector<Chess> & board)
-{
-	int src = this->getPieceSquare();
-	int row, col, diag_l, diag_r;
-	row = src - (src%8);
-	col = src - row;
-	diag_l = src%8 < src/8 ? src - 7*(src%8) : src - 7*(src/8);
-	diag_r = src%8 < src/8 ? src - 9*(src%8) : src - 9*(src/8);
-
-	cout << row << " " << col << " " << diag_l << " " << diag_r << endl;
-
-	vector<int> bit_map;
-	for(int i = 0; i < 8; i++)
-	{
-		if(dir == Row)
-		{
-			switch(board[row].getPieceColor())
-			{
-				case 0:
-					bit_map.push_back(-1);
-					break;
-				case 1:
-					bit_map.push_back(0);
-					break;
-				case 2:
-					bit_map.push_back(1);
-					break;
-			}
-
-			row++;
-		}
-		else if(dir == Col)
-		{
-			switch(board[col].getPieceColor())
-			{
-				case 0:
-					bit_map.push_back(-1);
-					break;
-				case 1:
-					bit_map.push_back(0);
-					break;
-				case 2:
-					bit_map.push_back(1);
-					break;
-			}
-
-			col += 8;
-		}
-		else if(dir == Diag_L) // doesn't have to be size 8, e.g. if on the first column already
-		{
-			switch(board[diag_l].getPieceColor())
-			{
-				case 0:
-					bit_map.push_back(-1);
-					break;
-				case 1:
-					bit_map.push_back(0);
-					break;
-				case 2:
-					bit_map.push_back(1);
-					break;
-			}
-
-			if(diag_l % 8 == 0)
-			{
-				break;
-			}
-
-			diag_l += 7;
-		}
-		else // dir == Diag_R
-		{
-			switch(board[diag_r].getPieceColor())
-			{
-				case 0:
-					bit_map.push_back(-1);
-					break;
-				case 1:
-					bit_map.push_back(0);
-					break;
-				case 2:
-					bit_map.push_back(1);
-					break;
-			}
-
-			if(diag_r % 8 == 7)
-			{
-				break;
-			}
-
-			diag_r += 9;
-		}
-	}
-	return bit_map;	
 }
 
 // Board intialization

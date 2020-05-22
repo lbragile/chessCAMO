@@ -58,7 +58,7 @@ public:
 
 	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, vector<Chess> & board) const;
+	bool isValidMove(int src, int dest, const vector<Chess> & board);
 
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
@@ -71,9 +71,9 @@ private:
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 
-	// Converts a row, column, or diagonal of the current board state into a bit vector
-	// Returns a bit vector where -1 (black), 0 (blank), 1 (white)
-	vector<int> bitify(pieceDirection dir, const vector<Chess> & board);
+	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
+	// Also makes sure that piece on 'dest' is not the same color as 'src'
+	bool freePath(int src, int dest, const vector<Chess> & board);
 };
 
 // Board intialization
