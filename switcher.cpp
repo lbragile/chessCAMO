@@ -102,7 +102,7 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away
-			valid = (src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1;
+			valid = (diff == 1 || diff == 7 || diff == 8|| diff == 9) && board[dest].getPieceColor() != board[src].getPieceColor();
 			break;
 
 		case Queen: // like rook and bishop
