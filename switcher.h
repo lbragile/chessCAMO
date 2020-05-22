@@ -74,6 +74,9 @@ private:
 	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
 	// Also makes sure that piece on 'dest' is not the same color as 'src'
 	bool freePath(int src, int dest, const vector<Chess> & board);
+
+	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
+	void promotePawn();
 };
 
 // Board intialization

@@ -194,7 +194,6 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 	}
 	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
 	{
-		cout << "hi" << endl;
 		// figure out which direction the diagonal is in
 		int increment;
 		if(abs(dest-src) % 7 == 0)
@@ -223,14 +222,59 @@ bool Chess::makeMove(vector<Chess> & board, int dest)
 	int src = this->getPieceSquare();
 	if(this->isValidMove(src, dest, board))
 	{
+		// pawn promotion
+		if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
+		{
+			this->promotePawn();
+		}
+
 		this->setPieceMovement(true); // note that the piece moved (important for castling and pawn's first move)
 		this->setPieceSquare(dest);
 		board[dest].setPieceSquare(src);
 		std::swap(*this, board[dest]);
+
 		return true;
 	}
 	
 	return false;
+}
+
+// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
+void Chess::promotePawn()
+{
+	char piece;
+
+	while(true)
+	{
+		cout << "Which Piece: Q/q | R/r | B/b | N/n?";
+		cin >> piece;
+		if(piece == 'Q' || piece == 'q')
+		{
+			this->setPieceValue(9);
+			this->setPieceType(Queen);
+			break;
+		}
+		if(piece == 'R' || piece == 'r')
+		{
+			this->setPieceValue(5);
+			this->setPieceType(Rook);
+			break;
+		}
+		if(piece == 'B' || piece == 'b')
+		{
+			this->setPieceValue(3);
+			this->setPieceType(Bishop);
+			break;
+		}
+		if(piece == 'N' || piece == 'n')
+		{
+			this->setPieceValue(3);
+			this->setPieceType(Knight);
+			break;
+		}
+
+		cout << "Please make sure to pick correct value!";
+	}
 }
 
 // Board intialization
