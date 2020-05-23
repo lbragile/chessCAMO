@@ -184,42 +184,31 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 
 // if move is valid, make the move
 // On return, the piece's square value is updated
-void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool valid)
+void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check)
 {
 	int src = this->getPieceSquare();
 	
-	if(0 <= dest && dest <= 63 && (dest-src) != 0 && board[src].getPieceColor() == turn+1 && this->isValidMove(src, dest, board))
+	valid = this->isValidMove(src, dest, board);
+	if(0 <= dest && dest <= 63 && (dest-src) != 0 && this->getPieceColor() == turn+1 && valid)
 	{
-		if(!checkDetect(src, dest, board))
+		if(!checkDetect(src, dest, board, check))
 		{
 			// pawn promotion
 			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
-			{
 				this->promotePawn();
-			}
 
-			// note that the piece moved (important for castling and pawn's first move)
-			this->setPieceMovement(); 
 			board = moveChoice(src, dest, board);
-
-			valid = true;
 		}
-	}
-		
-	if(valid)
-	{
-		printBoard(board);
-		playerTurn(turn);
-	}
-	else
-	{
-		cout << endl << "Invalid move, try again!" << endl;
 	}
 }
 
 // Decide if it is an attacking move or regular move
 vector<Chess> Chess::moveChoice(int src, int dest, vector<Chess> board)
 {
+
+	// note that the piece moved (important for castling and pawn's first move)
+	board[src].setPieceMovement(); 
+
 	if(board[dest].getPieceType() == Empty)
 	{
 		board[src].setPieceSquare(dest);
@@ -228,58 +217,52 @@ vector<Chess> Chess::moveChoice(int src, int dest, vector<Chess> board)
 	}
 	else
 	{
-		board = board[src].attackMove(src, dest, board);
+		// dest
+		board[dest].setPieceType(board[src].getPieceType());
+		board[dest].setPieceValue(board[src].getPieceValue());
+		board[dest].setPieceColor(board[src].getPieceColor());
+		board[dest].setPieceSquare(dest);
+
+		// src
+		board[src].setPieceType(Empty);
+		board[src].setPieceValue(0);
+		board[src].setPieceColor(Neutral);
+		board[src].setPieceSquare(src);
 	}
-
-	return board;
-}
-
-// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
-vector<Chess> Chess::attackMove(int src, int dest, vector<Chess> board)
-{
-	// dest
-	board[dest].setPieceType(board[src].getPieceType());
-	board[dest].setPieceValue(board[src].getPieceValue());
-	board[dest].setPieceColor(board[src].getPieceColor());
-	board[dest].setPieceSquare(dest);
-
-	// src
-	board[src].setPieceType(Empty);
-	board[src].setPieceValue(0);
-	board[src].setPieceColor(Neutral);
-	board[src].setPieceSquare(src);
 
 	return board;
 }
 
 // A valid move was made
 // Return true if king is in check, otherwise return false
-bool Chess::checkDetect(int src, int dest, vector<Chess> board)
+bool Chess::checkDetect(int src, int dest, vector<Chess> board, bool & check)
 {
+	int king_pos;
+	Chess piece, king;
+
 	board = moveChoice(src, dest, board); // make the move without affecting the main board!
 
 	// Avoid going into check
 	// if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
 	if(board[dest].getPieceType() == King)
 	{
-		for(int i = 0; i < 64; i++)
+		for(auto elem : board)
 		{
-			if(board[i].getPieceType() != Empty && board[i].getPieceColor() != board[dest].getPieceColor() && board[i].isValidMove(i, dest, board))
+			if(elem.getPieceType() != Empty && elem.getPieceColor() != board[dest].getPieceColor() && elem.isValidMove(elem.getPieceSquare(), dest, board))
 			{
-				return true;
+				check = true;
+				return check;
 			}
 		}
 	}
 
 	if(checkStack.empty())
 	{
-		int king_pos;
-		vector<Chess>::const_iterator itr;
-		for(itr = board.begin(); itr != board.end(); itr++)
+		for(auto elem : board)
 		{
-			if(itr->getPieceType() == King && itr->getPieceColor() != board[dest].getPieceColor())
+			if(elem.getPieceType() == King && elem.getPieceColor() != board[dest].getPieceColor())
 			{
-				king_pos = itr->getPieceSquare();
+				king_pos = elem.getPieceSquare();
 				break;
 			}
 		}
@@ -290,16 +273,16 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 			cout << "Check!";
 			checkStack.push(board[king_pos]);
 			checkStack.push(board[dest]);
+
+			// board[king_pos].isCheckmate(board[king_pos], board[dest], board, valid, check);
 		}
 
-		return false;
+		check = false;
+		return check;
 	}
 
 	else // checkStack is not empty (a player must be in check!)
 	{
-		bool result;
-		Chess piece, king;
-
 		piece = checkStack.top();
 		checkStack.pop();
 		king = checkStack.top();
@@ -310,18 +293,99 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 		{
 			king.setPieceSquare(dest);
 		}
-		result = piece.isValidMove(piece.getPieceSquare(), king.getPieceSquare(), board);
+		check = piece.isValidMove(piece.getPieceSquare(), king.getPieceSquare(), board);
 
-		// push back on stack if move was not valid
-		if(result)
+		// push back on stack if move was valid, since the king is still not safe
+		if(check)
 		{
 			checkStack.push(king);
 			checkStack.push(piece);
 		}
 
-		return result;
+		return check;
 	}
 }
+
+// void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board, bool & valid, bool & check)
+// {
+// 	int src = piece.getPieceSquare(), dest = king.getPieceSquare();
+// 	int src_row = src / 8, src_col = src % 8;
+// 	int dest_row = dest / 8, dest_col = dest % 8;
+// 	int player_turn = king.getPieceColor() == 2 ? 1 : -1;
+// 	int increment, counter = 0;	
+
+// 	vector<Chess> previous_board; // used to undo a move
+
+// 	// make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
+// 	if(src > dest) 
+// 	{
+// 		std::swap(src, dest);
+// 	}
+
+// 	if(src_row == dest_row) // row path
+// 	{
+// 		for(int i = src+1; i<=dest; i++)
+// 		{
+// 			previous_board = board;
+// 			board[src].makeMove(i, board, player_turn, valid, check);
+// 			if(valid)
+// 			{
+// 				counter++;
+// 			}
+// 			else
+// 			{
+// 				board = previous_board; // undo the move
+// 			}
+// 		}
+// 	}
+// 	else if(src_col == dest_col) // column path
+// 	{
+// 		for(int i = src+8; i<=dest; i+=8)
+// 		{
+// 			previous_board = board;
+// 			board[src].makeMove(i, board, player_turn, valid, check);
+// 			if(valid)
+// 			{
+// 				counter++;
+// 			}
+// 			else
+// 			{
+// 				board = previous_board; // undo the move
+// 			}
+// 		}
+// 	}
+// 	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
+// 	{
+// 		// figure out which direction the diagonal is in
+// 		if(abs(dest-src) % 7 == 0)
+// 			increment = 7;
+// 		else
+// 			increment = 9;
+
+// 		for(auto player_piece : board)
+// 		{
+// 			if(player_piece.getPieceColor() == king.getPieceColor())
+// 			{
+// 				for(int i = src+increment; i<=dest; i+=increment)
+// 				{
+// 					cout << player_piece.getPieceSquare() << " " << counter << endl;
+// 					previous_board = board;
+// 					player_piece.makeMove(i, board, player_turn, valid, check);
+// 					if(valid)
+// 					{
+// 						counter++;
+// 					}
+// 					board = previous_board; // undo the move
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	if(counter == 0)
+// 	{
+// 		checkmate = true;
+// 	}
+// }
 
 // When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
 void Chess::promotePawn()
@@ -505,5 +569,45 @@ void playerTurn(int & turn)
 	else
 	{
 		cout << endl << "Black's turn" << endl;
+	}
+}
+
+// Updates the board as needed
+void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid, bool check)
+{	
+	if(valid)
+	{
+		printBoard(board);
+		playerTurn(turn);
+	}
+	else if(!checkmate && !stalemate)
+	{
+		cout << endl << "Invalid move, try again!" << endl;
+	}
+	else if(checkmate)
+	{
+		cout << "Game Over!" << endl;
+		if(piece.getPieceColor() == 2)
+		{
+			cout << "White won by checkmate" << endl;
+		}
+		else
+		{
+			cout << "black won by checkmate" << endl;
+		}
+		printBoard(board);
+	}
+	else if(stalemate)
+	{
+		cout << "Draw!" << endl;
+		if(piece.getPieceColor() == 2)
+		{
+			cout << "Black cannot move" << endl;
+		}
+		else
+		{
+			cout << "White cannot move" << endl;
+		}
+		printBoard(board);
 	}
 }

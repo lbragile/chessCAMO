@@ -59,13 +59,9 @@ public:
 	bool getPieceMovevement() const;
 	void setPieceMovement();
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Chess> & board);
-
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
-	void makeMove(int dest, vector<Chess> & board, int & turn, bool valid);
+	void makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check);
 
 private:
 	unsigned int square; // 0 - 63 for an 8x8 board with 0 being top left & 63 being bottom right
@@ -81,18 +77,23 @@ private:
 	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
 	void promotePawn();
 
-	// When a piece attacks another, cannot simply swap, must replace 'dest' piece while making 'src' blank
-	vector<Chess> attackMove(int src, int dest, vector<Chess> board);
-
 	// A valid move was made
 	// Return true if king is in check, otherwise return false
-	bool checkDetect(int src, int dest, vector<Chess> board);
+	bool checkDetect(int src, int dest, vector<Chess> board, bool & check);
 
 	// Decide if it is an attacking move or regular move
 	vector<Chess> moveChoice(int src, int dest, vector<Chess> board);
+
+	void isCheckmate(Chess king, Chess piece, vector<Chess> board, bool & valid, bool & check);
+
+	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
+	// Return 'true' if move is valid, 'false' otherwise
+	bool isValidMove(int src, int dest, const vector<Chess> & board);
 };
 
 extern stack<Chess> checkStack; // needed to determine if a given player's king is in check
+extern bool checkmate;
+extern bool stalemate;
 
 // Board intialization
 void initBoard(vector<Chess> & board);
@@ -102,5 +103,8 @@ void printBoard(const vector<Chess> & board);
 
 // Change player's turn and print whose turn it is after a move is played
 void playerTurn(int & turn);
+
+// Updates the board as needed
+void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid, bool check);
 
 #endif // CHESS_H
