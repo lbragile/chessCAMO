@@ -30,9 +30,9 @@ int main()
 }
 
 /* TODO: 
-	1. checkmate, stalemate
-	2. castling, avoid castling through check
-	3. En-passent
-	4. Resign / Draw offers
-	5. Double Checks
+	1. castling, avoid castling through check
+	2. En-passent
+	3. Resign / Draw offers
+	4. Double Checks
+	5. stalemate
 */

@@ -83,7 +83,7 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 	switch(this->getPieceType())
 	{
 		case Rook: // moves in same row and column
-			valid = (src_row == dest_row || src_col == dest_col) && freePath(src, dest, board);
+			valid = (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest, board);
 			break;
 
 		case Knight: // knight can jump over obstacles
@@ -91,7 +91,7 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			break;
 
 		case Bishop:
-			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && freePath(src, dest, board);;
+			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && isPathFree(src, dest, board);;
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away
@@ -99,7 +99,7 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			break;
 
 		case Queen: // like rook and bishop
-			valid = (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col)) && freePath(src, dest, board);
+			valid = (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest, board);
 			break;
 
 		case Pawn: // on attack, it can move sideways & first move can be 2 squares forward
@@ -118,7 +118,7 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 					valid = ((dest-src == 8 || dest-src == 16) && board[dest].getPieceType() == Empty) || ((dest-src == 7 || dest-src == 9) && board[dest].getPieceType() != Empty);
 			}
 
-			valid = valid && freePath(src, dest, board);
+			valid = valid && isPathFree(src, dest, board);
 			break;
 
 		default:
@@ -128,9 +128,19 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
     return valid;
 }
 
+
+void Chess::pathIterator(int src, int dest, vector<Chess> board, int increment, bool & empty)
+{
+	for(int i = src+increment; i<dest; i+=increment)
+	{
+		if(board[i].getPieceType() != Empty)
+			empty = false;
+	}
+}
+
 // Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
 // Also makes sure that piece on 'dest' is not the same color as 'src'
-bool Chess::freePath(int src, int dest, const vector<Chess> & board)
+bool Chess::isPathFree(int src, int dest, const vector<Chess> & board)
 {
 	bool empty = true;
 
@@ -145,34 +155,15 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 
 	if(src_row == dest_row) // row path
 	{
-		for(int i = src+1; i<dest; i++)
-		{
-			if(board[i].getPieceType() != Empty)
-				empty = false;
-		}
+		pathIterator(src, dest, board, 1, empty);
 	}
 	else if(src_col == dest_col) // column path
 	{
-		for(int i = src+8; i<dest; i+=8)
-		{
-			if(board[i].getPieceType() != Empty)
-				empty = false;
-		}
+		pathIterator(src, dest, board, 8, empty);
 	}
 	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
 	{
-		// figure out which direction the diagonal is in
-		int increment;
-		if(abs(dest-src) % 7 == 0)
-			increment = 7;
-		else
-			increment = 9;
-
-		for(int i = src+increment; i<dest; i+=increment)
-		{
-			if(board[i].getPieceType() != Empty)
-				empty = false;
-		}
+		pathIterator(src, dest, board, abs(dest-src) % 7 == 0 ? 7 : 9, empty);
 	}
 	else
 	{
@@ -191,13 +182,13 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, 
 	valid = this->isValidMove(src, dest, board);
 	if(0 <= dest && dest <= 63 && (dest-src) != 0 && this->getPieceColor() == turn+1 && valid)
 	{
-		if(!checkDetect(src, dest, board, check))
+		if(!isCheck(src, dest, board, check))
 		{
 			// pawn promotion
 			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
 				this->promotePawn();
 
-			board = moveChoice(src, dest, board);
+			board = makeMoveForType(src, dest, board);
 		}
 		else
 		{
@@ -207,7 +198,7 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, 
 }
 
 // Decide if it is an attacking move or regular move
-vector<Chess> Chess::moveChoice(int src, int dest, vector<Chess> board)
+vector<Chess> Chess::makeMoveForType(int src, int dest, vector<Chess> board)
 {
 
 	// note that the piece moved (important for castling and pawn's first move)
@@ -239,12 +230,12 @@ vector<Chess> Chess::moveChoice(int src, int dest, vector<Chess> board)
 
 // A valid move was made
 // Return true if king is in check, otherwise return false
-bool Chess::checkDetect(int src, int dest, vector<Chess> board, bool & check)
+bool Chess::isCheck(int src, int dest, vector<Chess> board, bool & check)
 {
 	int king_pos;
 	Chess piece, king;
 
-	board = moveChoice(src, dest, board); // make the move without affecting the main board!
+	board = makeMoveForType(src, dest, board); // make the move without affecting the main board!
 
 	// Avoid going into check
 	// if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king

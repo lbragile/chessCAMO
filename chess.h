@@ -70,27 +70,31 @@ private:
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 
-	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
-	// Also makes sure that piece on 'dest' is not the same color as 'src'
-	bool freePath(int src, int dest, const vector<Chess> & board);
-
-	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
-	void promotePawn();
-
-	// A valid move was made
-	// Return true if king is in check, otherwise return false
-	bool checkDetect(int src, int dest, vector<Chess> board, bool & check);
-
-	// Decide if it is an attacking move or regular move
-	vector<Chess> moveChoice(int src, int dest, vector<Chess> board);
-
-	void isCheckmate(Chess king, Chess piece, vector<Chess> board);
-
 	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
 	bool isValidMove(int src, int dest, const vector<Chess> & board);
 
+	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
+	// Also makes sure that piece on 'dest' is not the same color as 'src'
+	bool isPathFree(int src, int dest, const vector<Chess> & board);
+
+	// A valid move was made
+	// Return true if king is in check, otherwise return false
+	bool isCheck(int src, int dest, vector<Chess> board, bool & check);
+
+	void isCheckmate(Chess king, Chess piece, vector<Chess> board);
+
+	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
+	void promotePawn();
+
+	// Decide if it is an attacking move or regular move
+	vector<Chess> makeMoveForType(int src, int dest, vector<Chess> board);
+
+	// for isCheckmate
 	int pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment);
+
+	// for isPathFree
+	void pathIterator(int src, int dest, vector<Chess> board, int increment, bool & empty);
 };
 
 extern stack<Chess> checkStack; // needed to determine if a given player's king is in check
