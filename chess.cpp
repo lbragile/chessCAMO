@@ -92,6 +92,10 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, 
 			valid = false;
 		}
 	}
+	else
+	{
+		valid = false;
+	}
 }
 
 // Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
