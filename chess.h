@@ -84,11 +84,13 @@ private:
 	// Decide if it is an attacking move or regular move
 	vector<Chess> moveChoice(int src, int dest, vector<Chess> board);
 
-	void isCheckmate(Chess king, Chess piece, vector<Chess> board, bool & valid, bool & check);
+	void isCheckmate(Chess king, Chess piece, vector<Chess> board);
 
 	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 	// Return 'true' if move is valid, 'false' otherwise
 	bool isValidMove(int src, int dest, const vector<Chess> & board);
+
+	int pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment);
 };
 
 extern stack<Chess> checkStack; // needed to determine if a given player's king is in check

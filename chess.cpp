@@ -199,6 +199,10 @@ void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, 
 
 			board = moveChoice(src, dest, board);
 		}
+		else
+		{
+			valid = false;
+		}
 	}
 }
 
@@ -270,11 +274,11 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board, bool & check)
 		// if opponent move caused you to be in check
 		if(board[dest].isValidMove(dest, king_pos, board)) 
 		{
-			cout << "Check!";
+			cout << "Check!" << endl;
 			checkStack.push(board[king_pos]);
 			checkStack.push(board[dest]);
 
-			// board[king_pos].isCheckmate(board[king_pos], board[dest], board, valid, check);
+			board[king_pos].isCheckmate(board[king_pos], board[dest], board);
 		}
 
 		check = false;
@@ -306,86 +310,64 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board, bool & check)
 	}
 }
 
-// void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board, bool & valid, bool & check)
-// {
-// 	int src = piece.getPieceSquare(), dest = king.getPieceSquare();
-// 	int src_row = src / 8, src_col = src % 8;
-// 	int dest_row = dest / 8, dest_col = dest % 8;
-// 	int player_turn = king.getPieceColor() == 2 ? 1 : -1;
-// 	int increment, counter = 0;	
+int Chess::pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment)
+{
+	int counter = 0;
+	bool valid = false;
+	vector<Chess> previous_board; // used to undo a move
 
-// 	vector<Chess> previous_board; // used to undo a move
+	for(auto player_piece : board)
+	{
+		if(player_piece.getPieceColor() == king.getPieceColor() && player_piece.getPieceSquare() != king.getPieceSquare())
+		{
+			for(int i = src+increment; i<=dest; i+=increment)
+			{
+				previous_board = board;
+				valid = player_piece.isValidMove(player_piece.getPieceSquare(), i, board);
+				if(valid)
+				{
+					counter++;
+				}
+				board = previous_board; // undo the move
+			}
+		}
+	}
 
-// 	// make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
-// 	if(src > dest) 
-// 	{
-// 		std::swap(src, dest);
-// 	}
+	return counter;
+}
 
-// 	if(src_row == dest_row) // row path
-// 	{
-// 		for(int i = src+1; i<=dest; i++)
-// 		{
-// 			previous_board = board;
-// 			board[src].makeMove(i, board, player_turn, valid, check);
-// 			if(valid)
-// 			{
-// 				counter++;
-// 			}
-// 			else
-// 			{
-// 				board = previous_board; // undo the move
-// 			}
-// 		}
-// 	}
-// 	else if(src_col == dest_col) // column path
-// 	{
-// 		for(int i = src+8; i<=dest; i+=8)
-// 		{
-// 			previous_board = board;
-// 			board[src].makeMove(i, board, player_turn, valid, check);
-// 			if(valid)
-// 			{
-// 				counter++;
-// 			}
-// 			else
-// 			{
-// 				board = previous_board; // undo the move
-// 			}
-// 		}
-// 	}
-// 	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
-// 	{
-// 		// figure out which direction the diagonal is in
-// 		if(abs(dest-src) % 7 == 0)
-// 			increment = 7;
-// 		else
-// 			increment = 9;
+void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
+{
+	int src = piece.getPieceSquare(), dest = king.getPieceSquare();
+	int src_row = src / 8, src_col = src % 8;
+	int dest_row = dest / 8, dest_col = dest % 8;
 
-// 		for(auto player_piece : board)
-// 		{
-// 			if(player_piece.getPieceColor() == king.getPieceColor())
-// 			{
-// 				for(int i = src+increment; i<=dest; i+=increment)
-// 				{
-// 					cout << player_piece.getPieceSquare() << " " << counter << endl;
-// 					previous_board = board;
-// 					player_piece.makeMove(i, board, player_turn, valid, check);
-// 					if(valid)
-// 					{
-// 						counter++;
-// 					}
-// 					board = previous_board; // undo the move
-// 				}
-// 			}
-// 		}
-// 	}
+	int counter;	
 
-// 	if(counter == 0)
-// 	{
-// 		checkmate = true;
-// 	}
-// }
+	// make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
+	if(src > dest) 
+	{
+		std::swap(src, dest);
+	}
+
+	if(src_row == dest_row) // row path
+	{
+		counter = pieceIterator(src, dest, king, piece, board, 1);
+	}
+	else if(src_col == dest_col) // column path
+	{
+		counter = pieceIterator(src, dest, king, piece, board, 8);
+	}
+	else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
+	{
+		counter = pieceIterator(src, dest, king, piece, board, abs(dest-src) % 7 == 0 ? 7 : 9);
+	}
+
+	if(counter == 0)
+	{
+		checkmate = true;
+	}
+}
 
 // When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
 void Chess::promotePawn()
@@ -575,7 +557,7 @@ void playerTurn(int & turn)
 // Updates the board as needed
 void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid, bool check)
 {	
-	if(valid)
+	if(valid && !checkmate && !stalemate)
 	{
 		printBoard(board);
 		playerTurn(turn);
@@ -584,16 +566,18 @@ void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bo
 	{
 		cout << endl << "Invalid move, try again!" << endl;
 	}
-	else if(checkmate)
+
+	// checkmate or stalemate checking
+	if(checkmate)
 	{
 		cout << "Game Over!" << endl;
 		if(piece.getPieceColor() == 2)
 		{
-			cout << "White won by checkmate" << endl;
+			cout << "Black won by checkmate" << endl;
 		}
 		else
 		{
-			cout << "black won by checkmate" << endl;
+			cout << "White won by checkmate" << endl;
 		}
 		printBoard(board);
 	}
@@ -602,11 +586,11 @@ void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bo
 		cout << "Draw!" << endl;
 		if(piece.getPieceColor() == 2)
 		{
-			cout << "Black cannot move" << endl;
+			cout << "White cannot move" << endl;
 		}
 		else
 		{
-			cout << "White cannot move" << endl;
+			cout << "Black cannot move" << endl;
 		}
 		printBoard(board);
 	}
