@@ -75,7 +75,6 @@ void Chess::setPieceMovement()
 bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 {
 	bool valid;
-	vector<int> bit_map_row, bit_map_col, bit_map_diagl, bit_map_diagr;
 
 	int src_row = src / 8, src_col = src % 8;
 	int dest_row = dest / 8, dest_col = dest % 8;
@@ -175,6 +174,10 @@ bool Chess::freePath(int src, int dest, const vector<Chess> & board)
 				empty = false;
 		}
 	}
+	else
+	{
+		empty = false;
+	}
 
 	return empty && board[src].getPieceColor() != board[dest].getPieceColor();
 }
@@ -254,6 +257,20 @@ vector<Chess> Chess::attackMove(int src, int dest, vector<Chess> board)
 bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 {
 	board = moveChoice(src, dest, board); // make the move without affecting the main board!
+
+	// Avoid going into check
+	// if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
+	if(board[dest].getPieceType() == King)
+	{
+		for(int i = 0; i < 64; i++)
+		{
+			if(board[i].getPieceType() != Empty && board[i].getPieceColor() != board[dest].getPieceColor() && board[i].isValidMove(i, dest, board))
+			{
+				return true;
+			}
+		}
+	}
+
 	if(checkStack.empty())
 	{
 		int king_pos;
@@ -266,7 +283,8 @@ bool Chess::checkDetect(int src, int dest, vector<Chess> board)
 				break;
 			}
 		}
-
+		
+		// if opponent move caused you to be in check
 		if(board[dest].isValidMove(dest, king_pos, board)) 
 		{
 			cout << "Check!";
