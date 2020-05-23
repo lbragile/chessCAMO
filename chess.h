@@ -78,23 +78,25 @@ private:
 	// Also makes sure that piece on 'dest' is not the same color as 'src'
 	bool isPathFree(int src, int dest, const vector<Chess> & board);
 
+	bool isCastled(int src, int dest, vector<Chess> board);
+
 	// A valid move was made
 	// Return true if king is in check, otherwise return false
 	bool isCheck(int src, int dest, vector<Chess> board, bool & check);
 
 	void isCheckmate(Chess king, Chess piece, vector<Chess> board);
 
-	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
-	void promotePawn();
-
 	// Decide if it is an attacking move or regular move
 	vector<Chess> makeMoveForType(int src, int dest, vector<Chess> board);
+
+	// When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
+	void promotePawn();
 
 	// for isCheckmate
 	int pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment);
 
 	// for isPathFree
-	void pathIterator(int src, int dest, vector<Chess> board, int increment, bool & empty);
+	void pathIterator(int src, int dest, const vector<Chess> & board, int increment, bool & empty);
 };
 
 extern stack<Chess> checkStack; // needed to determine if a given player's king is in check

@@ -70,11 +70,35 @@ void Chess::setPieceMovement()
 	this->moved = !this->moved; // flip if piece was moved
 }
 
+// if move is valid, make the move
+// On return, the piece's square value is updated
+void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check)
+{
+	int src = this->getPieceSquare();
+	
+	valid = this->isValidMove(src, dest, board);
+	if(0 <= dest && dest <= 63 && (dest-src) != 0 && this->getPieceColor() == turn+1 && valid)
+	{
+		if(!isCheck(src, dest, board, check))
+		{
+			// pawn promotion
+			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
+				this->promotePawn();
+
+			board = makeMoveForType(src, dest, board);
+		}
+		else
+		{
+			valid = false;
+		}
+	}
+}
+
 // Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
 // Return 'true' if move is valid, 'false' otherwise
 bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 {
-	bool valid;
+	bool valid, castled=false;
 
 	int src_row = src / 8, src_col = src % 8;
 	int dest_row = dest / 8, dest_col = dest % 8;
@@ -94,8 +118,18 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			valid = (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && isPathFree(src, dest, board);;
 			break;
 
-		case King: // like rook and bishop but with end square being 1 away
-			valid = (diff == 1 || diff == 7 || diff == 8|| diff == 9) && board[dest].getPieceColor() != board[src].getPieceColor();
+		case King: // like rook and bishop but with end square being 1 away, also can castle
+			if((diff == 3 || diff == 4) && isPathFree(src, dest, board)) // castling will always have this difference
+			{
+				castled = isCastled(src, dest, board);
+				valid = castled;
+				cout << castled << endl;
+			}
+
+			if(!castled) // regular king move (not castling)
+			{
+				valid = (diff == 1 || diff == 7 || diff == 8|| diff == 9) && board[dest].getPieceColor() != board[src].getPieceColor();
+			}
 			break;
 
 		case Queen: // like rook and bishop
@@ -126,16 +160,6 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 	}
     
     return valid;
-}
-
-
-void Chess::pathIterator(int src, int dest, vector<Chess> board, int increment, bool & empty)
-{
-	for(int i = src+increment; i<dest; i+=increment)
-	{
-		if(board[i].getPieceType() != Empty)
-			empty = false;
-	}
 }
 
 // Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
@@ -170,63 +194,20 @@ bool Chess::isPathFree(int src, int dest, const vector<Chess> & board)
 		empty = false;
 	}
 
-	return empty && board[src].getPieceColor() != board[dest].getPieceColor();
-}
-
-// if move is valid, make the move
-// On return, the piece's square value is updated
-void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check)
-{
-	int src = this->getPieceSquare();
-	
-	valid = this->isValidMove(src, dest, board);
-	if(0 <= dest && dest <= 63 && (dest-src) != 0 && this->getPieceColor() == turn+1 && valid)
-	{
-		if(!isCheck(src, dest, board, check))
-		{
-			// pawn promotion
-			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
-				this->promotePawn();
-
-			board = makeMoveForType(src, dest, board);
-		}
-		else
-		{
-			valid = false;
-		}
-	}
-}
-
-// Decide if it is an attacking move or regular move
-vector<Chess> Chess::makeMoveForType(int src, int dest, vector<Chess> board)
-{
-
-	// note that the piece moved (important for castling and pawn's first move)
-	board[src].setPieceMovement(); 
-
-	if(board[dest].getPieceType() == Empty)
-	{
-		board[src].setPieceSquare(dest);
-		board[dest].setPieceSquare(src);
-		std::swap(board[src], board[dest]);
-	}
+	if(!isCastled(src, dest, board))
+		return empty && board[src].getPieceColor() != board[dest].getPieceColor();
 	else
-	{
-		// dest
-		board[dest].setPieceType(board[src].getPieceType());
-		board[dest].setPieceValue(board[src].getPieceValue());
-		board[dest].setPieceColor(board[src].getPieceColor());
-		board[dest].setPieceSquare(dest);
-
-		// src
-		board[src].setPieceType(Empty);
-		board[src].setPieceValue(0);
-		board[src].setPieceColor(Neutral);
-		board[src].setPieceSquare(src);
-	}
-
-	return board;
+		return empty;
 }
+
+bool Chess::isCastled(int src, int dest, vector<Chess> board)
+{
+	/* TODO
+		check for castling through a check
+	*/
+	return (board[src].getPieceMovevement() == false && board[dest].getPieceMovevement() == false && src/8 == dest/8);
+}
+
 
 // A valid move was made
 // Return true if king is in check, otherwise return false
@@ -301,32 +282,6 @@ bool Chess::isCheck(int src, int dest, vector<Chess> board, bool & check)
 	}
 }
 
-int Chess::pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment)
-{
-	int counter = 0;
-	bool valid = false;
-	vector<Chess> previous_board; // used to undo a move
-
-	for(auto player_piece : board)
-	{
-		if(player_piece.getPieceColor() == king.getPieceColor() && player_piece.getPieceSquare() != king.getPieceSquare())
-		{
-			for(int i = src+increment; i<=dest; i+=increment)
-			{
-				previous_board = board;
-				valid = player_piece.isValidMove(player_piece.getPieceSquare(), i, board);
-				if(valid)
-				{
-					counter++;
-				}
-				board = previous_board; // undo the move
-			}
-		}
-	}
-
-	return counter;
-}
-
 void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
 {
 	int src = piece.getPieceSquare(), dest = king.getPieceSquare();
@@ -358,6 +313,72 @@ void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
 	{
 		checkmate = true;
 	}
+}
+
+// Decide if it is an attacking move or regular move
+vector<Chess> Chess::makeMoveForType(int src, int dest, vector<Chess> board)
+{
+	if(isCastled(src, dest, board))
+	{
+		// note that the pieces are moved
+		board[src].setPieceMovement();
+		board[dest].setPieceMovement();
+
+		if(abs(src - dest) == 3) // king side castle
+		{
+			// king move
+			board[src].setPieceSquare(src + 2);
+			board[src + 2].setPieceSquare(src);
+			std::swap(board[src], board[src + 2]);
+
+			// rook move
+			board[dest].setPieceSquare(dest - 2);
+			board[dest - 2].setPieceSquare(dest);
+			std::swap(board[dest - 2], board[dest]);
+		}
+
+		else // abs(src-dest) == 4 -> queen side castle
+		{
+			// king move
+			board[src].setPieceSquare(src - 2);
+			board[src - 2].setPieceSquare(src);
+			std::swap(board[src], board[src - 2]);
+
+			// rook move
+			board[dest].setPieceSquare(dest + 3);
+			board[dest + 3].setPieceSquare(dest);
+			std::swap(board[dest + 3], board[dest]);
+		}
+	}
+
+	else
+	{
+		// note that the piece moved
+		board[src].setPieceMovement(); 
+
+		if(board[dest].getPieceType() == Empty)
+		{
+			board[src].setPieceSquare(dest);
+			board[dest].setPieceSquare(src);
+			std::swap(board[src], board[dest]);
+		}
+		else
+		{
+			// dest
+			board[dest].setPieceType(board[src].getPieceType());
+			board[dest].setPieceValue(board[src].getPieceValue());
+			board[dest].setPieceColor(board[src].getPieceColor());
+			board[dest].setPieceSquare(dest);
+
+			// src
+			board[src].setPieceType(Empty);
+			board[src].setPieceValue(0);
+			board[src].setPieceColor(Neutral);
+			board[src].setPieceSquare(src);
+		}
+	}
+
+	return board;
 }
 
 // When a pawn reaches the end of the board, it can be exchanged for either a queen, rook, bishop or knight
@@ -395,6 +416,41 @@ void Chess::promotePawn()
 		}
 
 		cout << "Please make sure to pick correct value!" << endl;
+	}
+}
+
+int Chess::pieceIterator(int src, int dest, Chess king, Chess piece, vector<Chess> board, int increment)
+{
+	int counter = 0;
+	bool valid = false;
+	vector<Chess> previous_board; // used to undo a move
+
+	for(auto player_piece : board)
+	{
+		if(player_piece.getPieceColor() == king.getPieceColor() && player_piece.getPieceSquare() != king.getPieceSquare())
+		{
+			for(int i = src+increment; i<=dest; i+=increment)
+			{
+				previous_board = board;
+				valid = player_piece.isValidMove(player_piece.getPieceSquare(), i, board);
+				if(valid)
+				{
+					counter++;
+				}
+				board = previous_board; // undo the move
+			}
+		}
+	}
+
+	return counter;
+}
+
+void Chess::pathIterator(int src, int dest, const vector<Chess> & board, int increment, bool & empty)
+{
+	for(int i = src+increment; i<dest; i+=increment)
+	{
+		if(board[i].getPieceType() != Empty)
+			empty = false;
 	}
 }
 
