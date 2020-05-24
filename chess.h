@@ -61,7 +61,7 @@ public:
 
 	// if move is valid, make the move
 	// On return, the piece's square value is updated
-	void makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check);
+	void makeMove(int dest, vector<Chess> & board, int & turn, bool & valid);
 
 private:
 	unsigned int square; // 0 - 63 for an 8x8 board with 0 being top left & 63 being bottom right
@@ -78,11 +78,11 @@ private:
 	// Also makes sure that piece on 'dest' is not the same color as 'src'
 	bool isPathFree(int src, int dest, const vector<Chess> & board);
 
-	bool isCastled(int src, int dest, vector<Chess> board);
+	bool isCastled(int src, int dest, const vector<Chess> & board);
 
 	// A valid move was made
 	// Return true if king is in check, otherwise return false
-	bool isCheck(int src, int dest, vector<Chess> board, bool & check);
+	bool isCheck(int src, int dest, vector<Chess> board);
 
 	void isCheckmate(Chess king, Chess piece, vector<Chess> board);
 
@@ -97,11 +97,14 @@ private:
 
 	// for isPathFree
 	void pathIterator(int src, int dest, const vector<Chess> & board, int increment, bool & empty);
+
+	int numberOfKingMoves(int src, int dest, vector<Chess> board, int counter);
 };
 
 extern stack<Chess> checkStack; // needed to determine if a given player's king is in check
 extern bool checkmate;
 extern bool stalemate;
+extern bool check;
 
 // Board intialization
 void initBoard(vector<Chess> & board);
@@ -113,6 +116,6 @@ void printBoard(const vector<Chess> & board);
 void playerTurn(int & turn);
 
 // Updates the board as needed
-void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid, bool check);
+void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid);
 
 #endif // CHESS_H

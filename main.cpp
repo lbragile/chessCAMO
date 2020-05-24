@@ -2,13 +2,13 @@
 
 // extern variables
 stack<Chess> checkStack; // needed to determine if a given player's king is in check
-bool checkmate = false, stalemate = false;
+bool checkmate = false, stalemate = false, check = false;
 
 // #define BOARD_SIZE 64
 
 int main()
 {
-	bool valid = false, check = false;
+	bool valid = false;
 
 	// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
 	int src, dest, turn = 1;
@@ -21,9 +21,9 @@ int main()
 	{
 		cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		cin >> src >> dest;
-		board[src].makeMove(dest, board, turn, valid, check);
+		board[src].makeMove(dest, board, turn, valid);
 
-		updatedBoardStatus(board, board[src], turn, valid, check);
+		updatedBoardStatus(board, board[src], turn, valid);
 	}
 	
 	return 0;

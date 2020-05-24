@@ -72,14 +72,14 @@ void Chess::setPieceMovement()
 
 // if move is valid, make the move
 // On return, the piece's square value is updated
-void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid, bool & check)
+void Chess::makeMove(int dest, vector<Chess> & board, int & turn, bool & valid)
 {
 	int src = this->getPieceSquare();
 	
 	valid = this->isValidMove(src, dest, board);
 	if(0 <= dest && dest <= 63 && (dest-src) != 0 && this->getPieceColor() == turn+1 && valid)
 	{
-		if(!isCheck(src, dest, board, check))
+		if(!isCheck(src, dest, board))
 		{
 			// pawn promotion
 			if(this->getPieceType() == Pawn && (dest/8 == 0 || dest/8 == 7))
@@ -123,14 +123,12 @@ bool Chess::isValidMove(int src, int dest, const vector<Chess> & board)
 			break;
 
 		case King: // like rook and bishop but with end square being 1 away, also can castle
-			if((diff == 3 || diff == 4) && isPathFree(src, dest, board)) // castling will always have this difference
+			if(!check && (diff == 3 || diff == 4) && isPathFree(src, dest, board)) // not in check currently
 			{
 				castled = isCastled(src, dest, board);
 				valid = castled;
-				cout << castled << endl;
 			}
-
-			if(!castled) // regular king move (not castling)
+			else // regular king move (not castling)
 			{
 				valid = (diff == 1 || diff == 7 || diff == 8|| diff == 9) && board[dest].getPieceColor() != board[src].getPieceColor();
 			}
@@ -204,7 +202,7 @@ bool Chess::isPathFree(int src, int dest, const vector<Chess> & board)
 		return empty;
 }
 
-bool Chess::isCastled(int src, int dest, vector<Chess> board)
+bool Chess::isCastled(int src, int dest, const vector<Chess> & board)
 {
 	/* TODO
 		check for castling through a check
@@ -215,7 +213,7 @@ bool Chess::isCastled(int src, int dest, vector<Chess> board)
 
 // A valid move was made
 // Return true if king is in check, otherwise return false
-bool Chess::isCheck(int src, int dest, vector<Chess> board, bool & check)
+bool Chess::isCheck(int src, int dest, vector<Chess> board)
 {
 	int king_pos;
 	Chess piece, king;
@@ -292,7 +290,8 @@ void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
 	int src_row = src / 8, src_col = src % 8;
 	int dest_row = dest / 8, dest_col = dest % 8;
 
-	int counter;	
+	int counter;
+		
 
 	// make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
 	if(src > dest) 
@@ -300,6 +299,7 @@ void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
 		std::swap(src, dest);
 	}
 
+	// piece trying defend king or capture the attacker
 	if(src_row == dest_row) // row path
 	{
 		counter = pieceIterator(src, dest, king, piece, board, 1);
@@ -313,10 +313,41 @@ void Chess::isCheckmate(Chess king, Chess piece, vector<Chess> board)
 		counter = pieceIterator(src, dest, king, piece, board, abs(dest-src) % 7 == 0 ? 7 : 9);
 	}
 
+	// king move
+	counter = numberOfKingMoves(src, dest, board, counter);
+
 	if(counter == 0)
 	{
 		checkmate = true;
 	}
+}
+
+int Chess::numberOfKingMoves(int src, int dest, vector<Chess> board, int counter)
+{
+	vector<Chess> previous_board;
+
+	int i = -10;
+	while(i < 10)
+	{
+		previous_board = board;
+		if((abs(i) == 1 || abs(i) == 7 || abs(i) == 8 || abs(i) == 9) && board[src].isValidMove(src, src+i, board) && src + i >= 0 && src + i <= 63)
+		{
+			board = makeMoveForType(src, src + i, board);
+			if(isPathFree(dest, src+i, board))
+			{
+				board = previous_board;
+			}
+			else
+			{
+				counter++;
+				break;
+			}
+		}
+
+		i++;
+	}
+
+	return counter;
 }
 
 // Decide if it is an attacking move or regular move
@@ -606,7 +637,7 @@ void playerTurn(int & turn)
 }
 
 // Updates the board as needed
-void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid, bool check)
+void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid)
 {	
 	if(valid && !checkmate && !stalemate)
 	{
