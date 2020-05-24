@@ -19,6 +19,8 @@ int main()
 
 	while(!checkmate && !stalemate) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
 	{
+		userEnded(turn);
+
 		cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		cin >> src >> dest;
 		board[src].makeMove(dest, board, turn, valid);
@@ -30,9 +32,8 @@ int main()
 }
 
 /* TODO: 
-	1. castling, avoid castling through check
+	1. avoid castling through check
 	2. En-passent
-	3. Resign / Draw offers
-	4. Double Checks
-	5. stalemate
+	3. Double Checks
+	4. stalemate
 */

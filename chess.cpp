@@ -677,3 +677,35 @@ void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bo
 		printBoard(board);
 	}
 }
+
+void userEnded(int turn)
+{
+	char user_input, draw_reply;
+
+	cout << endl << "Continue? [y -> continue, r -> resign, d -> offer draw] ";
+	cin >> user_input;
+
+	if((int) user_input == 114 || (int) user_input == 82) // r
+	{	
+		if(turn == 1)
+			cout << "White resigned -> Black wins";
+		else
+			cout << "Black resigned -> White wins";
+		exit(0);
+	}
+
+	else if((int) user_input == 68 || (int) user_input == 100) // d
+	{
+		cout << "Offered draw... do you accept? [y -> yes, n -> no] ";
+		cin >> draw_reply;
+		if((int) draw_reply == 89 || (int) draw_reply == 121) // y
+		{
+			cout << "Game drawn by agreement";
+			exit(0);
+		}
+		else
+		{
+			cout << "Draw rejected. Game continues..." << endl;
+		}
+	}
+}

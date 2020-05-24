@@ -118,4 +118,6 @@ void playerTurn(int & turn);
 // Updates the board as needed
 void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid);
 
+void userEnded(int turn);
+
 #endif // CHESS_H
