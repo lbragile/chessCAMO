@@ -218,7 +218,7 @@ public:
  *****/
 
 // Board intialization
-void boardInit(vector<Piece> & board);
+void boardInit(Chess & chess);
 
 // Print the current board position
 void printBoard(const vector<Piece> & board);

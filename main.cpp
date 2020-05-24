@@ -11,8 +11,7 @@ int main()
 
 	// Create 8x8 default board
 	Chess chess;
-	vector<Piece> board = chess.getBoard();
-	boardInit(board);
+	boardInit(chess);
 
 	// while(!checkmate && !stalemate) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
 	// {

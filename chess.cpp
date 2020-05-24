@@ -15,8 +15,10 @@ Piece::Piece(int value, pieceType type, pieceColor color) : moved{false}, pinned
 }
 
 // Board intialization
-void boardInit(vector<Piece> & board)
+void boardInit(Chess & chess)
 {
+	vector<Piece> board = chess.getBoard();
+
 	Piece bRook(5, Rook, Black), bKnight(3, Knight, Black), bBishop(3, Bishop, Black),
 		  bQueen(9, Queen, Black), bKing(10, King, Black), bPawn(1, Pawn, Black);
 	Piece wRook(5, Rook, White), wKnight(3, Knight, White), wBishop(3, Bishop, White),
@@ -87,6 +89,8 @@ void boardInit(vector<Piece> & board)
 		}
 	}
 
+	chess.setBoard(board);
+	
 	cout << "\nWhite to move first (as always)! \n" << endl;
 	printBoard(board);
 }
@@ -131,91 +135,3 @@ void printBoard(const vector<Piece> & board)
 		count++;
 	}
 }
-
-// // Print whose turn it is after a move is played
-// void playerTurn(int & turn)
-// {
-// 	turn = turn == 1 ? -1 : 1; // switch turns
-// 	if(turn == 1)
-// 	{
-// 		cout << endl << "White's turn" << endl;
-// 	}
-// 	else
-// 	{
-// 		cout << endl << "Black's turn" << endl;
-// 	}
-// }
-
-// // Updates the board as needed
-// void updatedBoardStatus(const vector<Chess> & board, Chess piece, int & turn, bool valid)
-// {	
-// 	if(valid && !checkmate && !stalemate)
-// 	{
-// 		printBoard(board);
-// 		playerTurn(turn);
-// 	}
-// 	else if(!checkmate && !stalemate)
-// 	{
-// 		cout << endl << "Invalid move, try again!" << endl;
-// 	}
-
-// 	// checkmate or stalemate checking
-// 	if(checkmate)
-// 	{
-// 		cout << "Game Over!" << endl;
-// 		if(piece.getPieceColor() == 2)
-// 		{
-// 			cout << "Black won by checkmate" << endl;
-// 		}
-// 		else
-// 		{
-// 			cout << "White won by checkmate" << endl;
-// 		}
-// 		printBoard(board);
-// 	}
-// 	else if(stalemate)
-// 	{
-// 		cout << "The game has ended in a draw!" << endl;
-// 		if(piece.getPieceColor() == 2)
-// 		{
-// 			cout << "White cannot move" << endl;
-// 		}
-// 		else
-// 		{
-// 			cout << "Black cannot move" << endl;
-// 		}
-// 		printBoard(board);
-// 	}
-// }
-
-// void userEnded(int turn)
-// {
-// 	char user_input, draw_reply;
-
-// 	cout << endl << "Continue? [y -> continue, r -> resign, d -> offer draw] ";
-// 	cin >> user_input;
-
-// 	if((int) user_input == 114 || (int) user_input == 82) // r
-// 	{	
-// 		if(turn == 1)
-// 			cout << "White resigned -> Black wins";
-// 		else
-// 			cout << "Black resigned -> White wins";
-// 		exit(0);
-// 	}
-
-// 	else if((int) user_input == 68 || (int) user_input == 100) // d
-// 	{
-// 		cout << "Offered draw... do you accept? [y -> yes, n -> no] ";
-// 		cin >> draw_reply;
-// 		if((int) draw_reply == 89 || (int) draw_reply == 121) // y
-// 		{
-// 			cout << "Game drawn by agreement";
-// 			exit(0);
-// 		}
-// 		else
-// 		{
-// 			cout << "Draw rejected. Game continues..." << endl;
-// 		}
-// 	}
-// }
