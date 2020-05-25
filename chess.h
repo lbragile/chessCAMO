@@ -6,6 +6,7 @@
 #include <vector>
 #include <stack>
 #include <stdlib.h>     /* abs */
+#include <fstream>
 
 using namespace std;
 

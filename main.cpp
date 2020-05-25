@@ -13,16 +13,30 @@ int main()
 	boardInit(chess);
 	vector<Piece*> board = chess.getBoard();
 
-	while(true) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
-	{
-		// userEnded(turn);
+	// userEnded(turn);
 
-		cout << endl << "Enter a source AND destination square in [0, 63]: ";
-		cin >> src >> dest;
-		chess.makeMove(src, dest);
+	
+	// insert value to the end
+	ifstream myfile ("test_cases/pawnPromotion.txt"); //opening the file.
+    if (myfile.is_open()) //if the file is open
+    {
+        while (! myfile.eof()) //while the end of file is NOT reached
+        {	
+        	cout << endl << "Enter a source AND destination square in [0, 63]: ";
+            myfile >> src >> dest;
+            cout << src << " " << dest << endl;
+            chess.makeMove(src, dest);
+        }
+        myfile.close(); //closing the file
+    }
+    else
+    {
+		cout << "Unable to open file"; //if the file is not open output
+    	exit(1);
+    }
+	
 
-		// updatedBoardStatus(board, board[src], turn, valid);
-	}
+	// updatedBoardStatus(board, board[src], turn, valid);
 	
 	return 0;
 }
@@ -33,3 +47,5 @@ int main()
 	3. Double Checks
 	4. stalemate
 */
+
+		
