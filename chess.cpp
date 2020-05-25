@@ -37,23 +37,68 @@ Chess::~Chess()
 	}
 }
 
-bool Piece::isLegalMove(int dest, const Chess & chess)
+bool Chess::isPathFree(int src, int dest)
+{
+    int src_row = src / 8, src_col = src % 8;
+    int dest_row = dest / 8, dest_col = dest % 8;
+
+    // make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
+    if(src > dest)
+    {
+        std::swap(src, dest);
+    }
+
+    if(src_row == dest_row) // row path
+    {
+        return !isSameColor(src, dest);
+    }
+    else if(src_col == dest_col) // column path
+    {
+        return pathIterator(src, dest, 8) && true;
+    }
+    else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
+    {
+        return !isSameColor(src, dest);
+    }
+    else
+    {
+    	return false;
+    }
+}
+
+bool Chess::pathIterator(int src, int dest, int increment)
+{
+	for(src+=increment; src<dest; src+=increment)
+    {
+    	cout << &board[src] << endl;
+        // if(!(board[src]->isEmpty()))
+        //     return false;
+    }
+    return true;
+}
+
+bool Chess::isSameColor(int src, int dest)
+{
+	printBoard(board);
+	return board[src]->getPieceColor() != board[dest]->getPieceColor();
+}
+
+bool Piece::isLegalMove(int dest)
 {
 	if(this->isEmpty())
 	{
 		return false;
-	}
-		
+	}	
 	else
 	{
-		return this->isLegalMove(dest, chess);
+		return this->isLegalMove(dest);
 	}
 		
 }
 
-bool Pawn::isLegalMove(int dest, const Chess & chess)
+bool Pawn::isLegalMove(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
+	vector<Piece*> board = getBoard();
 
 	bool legal = false;
 	int src = this->getPieceSquare();
@@ -74,51 +119,47 @@ bool Pawn::isLegalMove(int dest, const Chess & chess)
             legal = ((dest-src == 8 || dest-src == 16) && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
     }
         	
-    return legal;
-    // return legal && freePath(src, dest, board);
+    return legal && isPathFree(src, dest);
 }
 
-bool Rook::isLegalMove(int dest, const Chess & chess)
+bool Rook::isLegalMove(int dest)
 {
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	return (src_row == dest_row || src_col == dest_col);
-	// return (src_row == dest_row || src_col == dest_col) && freePath(src, dest, board);
+	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest);
 }
 
-bool Knight::isLegalMove(int dest, const Chess & chess)
+bool Knight::isLegalMove(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
-
-	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && board[dest]->getPieceColor() != board[src]->getPieceColor();;
-}
-
-bool Bishop::isLegalMove(int dest, const Chess & chess)
-{
-	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col;
-	// return (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && freePath(src, dest, board);
-}
-
-bool Queen::isLegalMove(int dest, const Chess & chess)
-{
-	vector<Piece*> board = chess.getBoard();
+	vector<Piece*> board = getBoard();
 
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return ((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col);
-	// return  (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col)) && freePath(src, dest, board);
+	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !isSameColor(src, dest);
 }
 
-bool King::isLegalMove(int dest, const Chess & chess)
+bool Bishop::isLegalMove(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
+	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest);
+}
+
+bool Queen::isLegalMove(int dest)
+{
+	vector<Piece*> board = getBoard();
+
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
+	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest);
+}
+
+bool King::isLegalMove(int dest)
+{
+	vector<Piece*> board = getBoard();
 
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;

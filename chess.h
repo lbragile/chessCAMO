@@ -57,17 +57,15 @@ public:
 	PlayerTurn getTurn() const {return turn;}
 	void setTurn(PlayerTurn turn) {this->turn = turn;} // useful when moving a piece
 
-	// if move is valid, make the move
-	// On return, the piece's square value is updated
 	void makeMove(int dest, vector<Piece> & board, int & turn, bool & valid);
 
-	// Determines if the path from 'src' to 'dest' contains any pieces (Return 0) or not (Return 1)
-	// Also makes sure that piece on 'dest' is not the same color as 'src'
-	bool isPathFree(int src, int dest, const vector<Piece> & board);
+	bool isPathFree(int src, int dest);
 
 	void isCheckmate(Piece king, Piece piece, vector<Piece> board);
 
 	bool isStalemate(int turn, const vector<Piece> & board);
+
+	bool isSameColor(int src, int dest);
 
 private:
 	vector<Piece*> board; // overall board state
@@ -84,10 +82,10 @@ private:
 	int pieceIterator(int src, int dest, Piece king, Piece piece, vector<Piece> board, int increment);
 
 	// for isPathFree
-	void pathIterator(int src, int dest, const vector<Piece> & board, int increment, bool & empty);
+	bool pathIterator(int src, int dest, int increment);
 };
 
-class Piece
+class Piece : public Chess
 {
 public:
 	virtual ~Piece(); // destructor
@@ -136,7 +134,7 @@ public:
 	bool isPieceWhite() {return this->getPieceColor() == White;}
 	bool isPieceBlack() {return this->getPieceColor() == Black;}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 
 private:
 	int square; // position of the piece on the board [0, 63]
@@ -160,7 +158,7 @@ public:
 	// constructor with piece initialization
 	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	void promotePawn();
 	bool isFirstMove();
 };	
@@ -178,7 +176,7 @@ public:
 	// constructor with piece initialization
 	Knight(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	bool isPinned();
 
 };
@@ -196,7 +194,7 @@ public:
 	// constructor with piece initialization
 	Bishop(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	bool isPinned();
 };
 
@@ -213,7 +211,7 @@ public:
 	// constructor with piece initialization
 	Rook(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	bool isFirstMove();
 	bool isPinned();
 };
@@ -231,7 +229,7 @@ public:
 	// constructor with piece initialization
 	Queen(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	bool isPinned();
 };
 
@@ -248,7 +246,7 @@ public:
 	// constructor with piece initialization
 	King(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest, const Chess & chess);
+	virtual bool isLegalMove(int dest);
 	bool isFirstMove();
 	bool canCastle();
 	bool isChecked();
