@@ -57,15 +57,11 @@ public:
 	PlayerTurn getTurn() const {return turn;}
 	void setTurn(PlayerTurn turn) {this->turn = turn;} // useful when moving a piece
 
-	void makeMove(int dest, vector<Piece> & board, int & turn, bool & valid);
-
-	bool isPathFree(int src, int dest);
+	void makeMove(int src, int dest);
 
 	void isCheckmate(Piece king, Piece piece, vector<Piece> board);
 
 	bool isStalemate(int turn, const vector<Piece> & board);
-
-	bool isSameColor(int src, int dest);
 
 private:
 	vector<Piece*> board; // overall board state
@@ -76,13 +72,10 @@ private:
 	PlayerTurn turn;
 
 	// Decide if it is an attacking move or regular move
-	vector<Piece*> makeMoveForType(int src, int dest, vector<Piece> board);
+	void makeMoveForType(int src, int dest);
 
 	// for isCheckmate
 	int pieceIterator(int src, int dest, Piece king, Piece piece, vector<Piece> board, int increment);
-
-	// for isPathFree
-	bool pathIterator(int src, int dest, int increment);
 };
 
 class Piece : public Chess
@@ -133,7 +126,10 @@ public:
 
 	bool isPieceWhite() {return this->getPieceColor() == White;}
 	bool isPieceBlack() {return this->getPieceColor() == Black;}
+	bool isSameColor(int src, int dest);
 
+	bool isPathFree(int src, int dest);
+	
 	virtual bool isLegalMove(int dest);
 
 private:
@@ -143,6 +139,9 @@ private:
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 	bool pinned;
+
+	// for isPathFree
+	bool pathIterator(int src, int dest, int increment);
 };
 
 class Pawn : public Piece
@@ -270,7 +269,7 @@ public:
 
 
 /*****
-	GLOBAL FUNCTIONS
+	GLOBAL FUNCTIONS / OBJECTS
  *****/
 
 // Board intialization
@@ -287,5 +286,7 @@ void updatedBoardStatus(const vector<Piece> & board, Piece piece, int & turn, bo
 
 // resign or draw
 void userEnded(int turn);
+
+extern Chess chess; // global object
 
 #endif // CHESS_H

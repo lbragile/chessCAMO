@@ -6,27 +6,23 @@ int main()
 {
 	// bool valid = false;
 
-	// // 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
-	// int src, dest, turn = 1;
+	// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
+	int src, dest;
 
 	// Create 8x8 default board
-	Chess chess;
 	boardInit(chess);
-
 	vector<Piece*> board = chess.getBoard();
-	// cout << board[8].getPieceType();
-	cout << board[1]->isLegalMove(16);
 
-	// while(!checkmate && !stalemate) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
-	// {
-	// 	// userEnded(turn);
+	while(true) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
+	{
+		// userEnded(turn);
 
-	// 	cout << endl << "Enter a source AND destination square in [0, 63]: ";
-	// 	cin >> src >> dest;
-	// 	board[src].makeMove(dest, board, turn, valid);
+		cout << endl << "Enter a source AND destination square in [0, 63]: ";
+		cin >> src >> dest;
+		chess.makeMove(src, dest);
 
-	// 	updatedBoardStatus(board, board[src], turn, valid);
-	// }
+		// updatedBoardStatus(board, board[src], turn, valid);
+	}
 	
 	return 0;
 }
