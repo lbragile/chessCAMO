@@ -11,8 +11,7 @@
 using namespace std;
 
 enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY}; // caps to avoid class name conflict
-enum pieceColor {Black, Neutral, White};
-enum PlayerTurn{WhiteTurn, BlackTurn};
+enum pieceColor {BLACK, NEUTRAL, WHITE};
 // enum pieceDirection {Row, Col, Diag_L, Diag_R};
 
 // forward declaration
@@ -32,7 +31,7 @@ public:
 	Chess & operator =(const Chess & object) = default; // copy assignment
 
 	// default constructor 
-	Chess() : checkmate{false}, stalemate{false}, check{false}, turn{WhiteTurn} {}
+	Chess() : checkmate{false}, stalemate{false}, check{false}, turn{WHITE} {}
 
 	// Mutator and accessor functions for determining/setting the board's current state
 	vector<Piece*> getBoard() const {return board;}
@@ -55,8 +54,8 @@ public:
 	void setStalemate() {this->stalemate = !stalemate;}
 
 	// Mutator and accessor functions for determining/setting the player's turn
-	PlayerTurn getTurn() const {return turn;}
-	void setTurn(PlayerTurn turn) {this->turn = turn;} // useful when moving a piece
+	pieceColor getTurn() const {return turn;}
+	void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
 
 	void makeMove(int src, int dest);
 
@@ -70,7 +69,7 @@ private:
 	bool checkmate;
 	bool stalemate;
 	bool check;
-	PlayerTurn turn;
+	pieceColor turn;
 
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
@@ -87,7 +86,7 @@ public:
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
 	// constructor with piece initialization
-	Piece() : square{0}, value{0}, type{EMPTY}, color{Neutral}, moved{false}, pinned{false} {}
+	Piece() : square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false}, pinned{false} {}
 
 	// constructor with piece initialization
 	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}, pinned{false}
@@ -125,13 +124,14 @@ public:
 	bool isQueen() {return this->getPieceType() == QUEEN;}
 	bool isKing() {return this->getPieceType() == KING;}
 
-	bool isPieceWhite() {return this->getPieceColor() == White;}
-	bool isPieceBlack() {return this->getPieceColor() == Black;}
+	bool isPieceWhite() {return this->getPieceColor() == WHITE;}
+	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
 	bool isSameColor(int src, int dest);
 
 	bool isPathFree(int src, int dest);
 	
 	virtual bool isLegalMove(int dest);
+	virtual bool canCastle(int dest);
 
 private:
 	int square; // position of the piece on the board [0, 63]
@@ -248,7 +248,7 @@ public:
 
 	virtual bool isLegalMove(int dest);
 	bool isFirstMove();
-	bool canCastle();
+	bool canCastle(int dest);
 	bool isChecked();
 	bool isDoubleChecked();
 	int numKingMoves();

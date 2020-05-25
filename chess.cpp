@@ -38,60 +38,90 @@ Chess::~Chess()
 	}
 }
 
+bool King::canCastle(int dest)
+{
+	/* TODO
+	    check for castling through a check
+	*/
+	vector<Piece*> board = chess.getBoard();
+    return !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
+}
+
+bool Piece::canCastle(int dest)
+{
+	/* TODO
+	    check for castling through a check
+	*/
+	vector<Piece*> board = chess.getBoard();
+	if(this->isKing() && board[dest]->isRook() && this->getPieceSquare()/8 == dest/8)
+    	return this->canCastle(dest);
+    else // not king -> cannot castle
+    	return false;
+}
+
 void Chess::makeMove(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
-	PlayerTurn turn = chess.getTurn();
-    if(0 <= dest && dest <= 63 && dest != src && turn == WhiteTurn && board[src]->isLegalMove(dest))
+	pieceColor current_turn = chess.getTurn();
+    if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
         // // pawn promotion
         // if(this->isPawn() && (dest/8 == 0 || dest/8 == 7))
         //     this->promotePawn();
 
         makeMoveForType(src, dest);
-        chess.setTurn(turn == 2 ? BlackTurn : WhiteTurn);
-  		printBoard(chess.getBoard());
-    }
+    	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+		printBoard(chess.getBoard());
+		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
+		else{cout << "\nBlack's move" << endl;}
+  	}
+    else
+    {
+		cout << "Invalid move! Try again..." << endl;
+	}
 }
 
 void Chess::makeMoveForType(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
-	// if(isCastled(src, dest, board))
-	// {
-	//     // note that the pieces are moved
-	//     board[src]->setPieceMovement();
-	//     board[dest]->setPieceMovement();
 
-	//     if(abs(src - dest) == 3) // king side castle
-	//     {
- //            // king move
- //            board[src]->setPieceSquare(src + 2);
- //            board[src + 2]->setPieceSquare(src);
- //            std::swap(board[src], board[src + 2]);
+	// castling move
+	if(board[src]->canCastle(dest))
+	{
+	    // note that the pieces are moved
+	    board[src]->setPieceMoveInfo();
+	    board[dest]->setPieceMoveInfo();
 
- //            // rook move
- //            board[dest]->setPieceSquare(dest - 2);
- //            board[dest - 2]->setPieceSquare(dest);
- //            std::swap(board[dest - 2], board[dest]);
-	//     }
+	    if(abs(src - dest) == 3) // king side castle
+	    {
+            // king move
+            board[src]->setPieceSquare(src + 2);
+            board[src + 2]->setPieceSquare(src);
+            std::swap(board[src], board[src + 2]);
 
-	//     else // abs(src-dest) == 4 -> queen side castle
-	//     {
- //            // king move
- //            board[src]->setPieceSquare(src - 2);
- //            board[src - 2]->setPieceSquare(src);
- //            std::swap(board[src], board[src - 2]);
+            // rook move
+            board[dest]->setPieceSquare(dest - 2);
+            board[dest - 2]->setPieceSquare(dest);
+            std::swap(board[dest - 2], board[dest]);
+	    }
 
- //            // rook move
- //            board[dest]->setPieceSquare(dest + 3);
- //            board[dest + 3]->setPieceSquare(dest);
- //            std::swap(board[dest + 3], board[dest]);
-	//     }
-	// }
+	    else // abs(src-dest) == 4 -> queen side castle
+	    {
+            // king move
+            board[src]->setPieceSquare(src - 2);
+            board[src - 2]->setPieceSquare(src);
+            std::swap(board[src], board[src - 2]);
 
-	// else
-	// {
+            // rook move
+            board[dest]->setPieceSquare(dest + 3);
+            board[dest + 3]->setPieceSquare(dest);
+            std::swap(board[dest + 3], board[dest]);
+	    }
+	}
+
+	// non-castling move
+	else
+	{
 	    // note that the piece moved
 	    board[src]->setPieceMoveInfo();
 
@@ -115,11 +145,12 @@ void Chess::makeMoveForType(int src, int dest)
             // src
             board[src]->setPieceType(EMPTY);
             board[src]->setPieceValue(0);
-            board[src]->setPieceColor(Neutral);
+            board[src]->setPieceColor(NEUTRAL);
             board[src]->setPieceSquare(src);
 	    }
-	// }
-	   chess.setBoard(board);
+	}
+
+	chess.setBoard(board);
 }
 
 bool Piece::isPathFree(int src, int dest)
@@ -135,15 +166,15 @@ bool Piece::isPathFree(int src, int dest)
 
     if(src_row == dest_row) // row path
     {
-        return pathIterator(src, dest, 1) && !isSameColor(src, dest);
+        return pathIterator(src, dest, 1);
     }
     else if(src_col == dest_col) // column path
     {
-        return pathIterator(src, dest, 8) && !isSameColor(src, dest);
+        return pathIterator(src, dest, 8);
     }
     else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
     {
-        return pathIterator(src, dest, abs(src - dest) % 7 == 0 ? 7 : 9) && !isSameColor(src, dest);
+        return pathIterator(src, dest, abs(src - dest) % 7 == 0 ? 7 : 9);
     }
     else
     {
@@ -210,7 +241,7 @@ bool Rook::isLegalMove(int dest)
 {
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest);
+	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool Knight::isLegalMove(int dest)
@@ -228,7 +259,7 @@ bool Bishop::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest);
+	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool Queen::isLegalMove(int dest)
@@ -238,7 +269,7 @@ bool Queen::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest);
+	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool King::isLegalMove(int dest)
@@ -248,7 +279,7 @@ bool King::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest);
-	return (src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1;
+	return ((src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1 && !isSameColor(src, dest)) || ((diff == 3 || diff == 4) && this->canCastle(dest) && isSameColor(src, dest));
 }
 
 // Board intialization
@@ -264,58 +295,58 @@ void boardInit(Chess & chess)
 		{
 			if(i == 0 || i == 7) // rook
 			{
-				board.push_back(new Rook(i, 5, ROOK, Black));
+				board.push_back(new Rook(i, 5, ROOK, BLACK));
 			}
 			else if(i == 1 || i == 6) // knight
 			{
-				board.push_back(new Knight(i, 3, KNIGHT, Black)); 
+				board.push_back(new Knight(i, 3, KNIGHT, BLACK)); 
 			}
 			else if(i == 2 || i == 5) // bishop
 			{
-				board.push_back(new Bishop(i, 3, BISHOP, Black)); 
+				board.push_back(new Bishop(i, 3, BISHOP, BLACK)); 
 			}
 			else if(i == 3) // queen
 			{
-				board.push_back(new Queen(i, 9, QUEEN, Black));
+				board.push_back(new Queen(i, 9, QUEEN, BLACK));
 			}
 			else if(i == 4) // king
 			{
-				board.push_back(new King(i, 10, KING, Black));
+				board.push_back(new King(i, 10, KING, BLACK));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(i, 1, PAWN, Black));
+				board.push_back(new Pawn(i, 1, PAWN, BLACK));
 			}
 		}
 		else if(board_size/4 <= i && i < board_size*3/4) // blank squares
 		{	
-			board.push_back(new Empty(i, 0, EMPTY, Neutral));
+			board.push_back(new Empty(i, 0, EMPTY, NEUTRAL));
 		}
 		else // white
 		{
 			if(i == 56 || i == 63) // rook
 			{
-				board.push_back(new Rook(i, 5, ROOK, White));
+				board.push_back(new Rook(i, 5, ROOK, WHITE));
 			}
 			else if(i == 57 || i == 62) // knight
 			{
-				board.push_back(new Knight(i, 3, KNIGHT, White)); 
+				board.push_back(new Knight(i, 3, KNIGHT, WHITE)); 
 			}
 			else if(i == 58 || i == 61) // bishop
 			{
-				board.push_back(new Bishop(i, 3, BISHOP, White));
+				board.push_back(new Bishop(i, 3, BISHOP, WHITE));
 			}
 			else if(i == 59) // queen
 			{
-				board.push_back(new Queen(i, 9, QUEEN, White));
+				board.push_back(new Queen(i, 9, QUEEN, WHITE));
 			}
 			else if(i == 60) // king
 			{
-				board.push_back(new King(i, 10, KING, White));
+				board.push_back(new King(i, 10, KING, WHITE));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(i, 1, PAWN, White));
+				board.push_back(new Pawn(i, 1, PAWN, WHITE));
 			}
 		}
 	}
