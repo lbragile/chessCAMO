@@ -1,47 +1,130 @@
 #include "chess.h"
 
-// bool Piece::isValidMove(int dest, vector<Piece> board)
-// {
-// 	if(this->isPawn())
-// 		return this->Pawn::isLegalMove(dest, board);
-// 	// else if(this->isKnight())
-// 	// 	return this->Knight::isLegalMove(dest, board);
-// 	// else if(this->isBishop())
-// 	// 	return this->Bishop::isLegalMove(dest, board);
-// 	// else if(this->isRook())
-// 	// 	return this->Rook::isLegalMove(dest, board);
-// 	// else if(this->isQueen())
-// 	// 	return this->Queen::isLegalMove(dest, board);
-// 	// else if(this->isKing())
-// 	// 	return this->King::isLegalMove(dest, board);
-// 	else // empty
-// 		return false;
-// }
+Piece::~Piece() {}
+Pawn::~Pawn() {}
+Knight::~Knight() {}
+Bishop::~Bishop() {}
+Rook::~Rook() {}
+Queen::~Queen() {}
+King::~King() {}
+Empty::~Empty() {}
 
-// bool Pawn::isLegalMove(int dest, vector<Piece> board)
-// {
-// 	bool legal = false;
-// 	int src = this->getPieceSquare();
+// // copy assignment
+// Chess & Chess::operator =(const Chess & object){}
+// // copy assignment
+// Piece & Piece::operator =(const Piece & object){}
+// // copy assignment
+// Pawn & Pawn::operator =(const Pawn & object){}
+// // copy assignment
+// Knight & Knight::operator =(const Knight & object){}
+// // copy assignment
+// Bishop & Bishop::operator =(const Bishop & object){}
+// // copy assignment
+// Rook & Rook::operator =(const Rook & object){}
+// // copy assignment
+// Queen & Queen::operator =(const Queen & object){}
+// // copy assignment
+// King & King::operator =(const King & object){}
+// // copy assignment
+// Empty & Empty::operator =(const Empty & object){}
 
-// 	// on attack, it can move sideways & first move can be 2 squares forward
-//     if(this->getPieceMoveInfo())
-//     {
-//         if(this->isPieceWhite()) // goes up
-//             legal = (src-dest == 8 && board[dest].isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest].isEmpty());
-//         else // black, goes down
-//             legal = (dest-src == 8 && board[dest].isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest].isEmpty());
-//     }
-//     else
-//     {
-//         if(this->isPieceWhite()) // goes up
-//             legal = ((src-dest == 8 || src-dest == 16) && board[dest].isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest].isEmpty());
-//         else // black, goes down
-//             legal = ((dest-src == 8 || dest-src == 16) && board[dest].isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest].isEmpty());
-//     }
 
-//     return legal;
-//     // return legal && freePath(src, dest, board);
-// }
+Chess::~Chess()
+{
+	while(!board.empty())
+	{
+		board.pop_back(); // destroy the piece
+	}
+}
+
+bool Piece::isLegalMove(int dest, const Chess & chess)
+{
+	if(this->isEmpty())
+	{
+		return false;
+	}
+		
+	else
+	{
+		return this->isLegalMove(dest, chess);
+	}
+		
+}
+
+bool Pawn::isLegalMove(int dest, const Chess & chess)
+{
+	vector<Piece*> board = chess.getBoard();
+
+	bool legal = false;
+	int src = this->getPieceSquare();
+
+	// on attack, it can move sideways & first move can be 2 squares forward
+    if(this->getPieceMoveInfo())
+    {
+        if(this->isPieceWhite()) // goes up
+            legal = (src-dest == 8 && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest]->isEmpty());
+        else // black, goes down
+            legal = (dest-src == 8 && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
+    }
+    else
+    {
+        if(this->isPieceWhite()) // goes up
+            legal = ((src-dest == 8 || src-dest == 16) && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest]->isEmpty());
+        else // black, goes down
+            legal = ((dest-src == 8 || dest-src == 16) && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
+    }
+        	
+    return legal;
+    // return legal && freePath(src, dest, board);
+}
+
+bool Rook::isLegalMove(int dest, const Chess & chess)
+{
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	return (src_row == dest_row || src_col == dest_col);
+	// return (src_row == dest_row || src_col == dest_col) && freePath(src, dest, board);
+}
+
+bool Knight::isLegalMove(int dest, const Chess & chess)
+{
+	vector<Piece*> board = chess.getBoard();
+
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
+	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && board[dest]->getPieceColor() != board[src]->getPieceColor();;
+}
+
+bool Bishop::isLegalMove(int dest, const Chess & chess)
+{
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
+	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col;
+	// return (diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col)) && freePath(src, dest, board);
+}
+
+bool Queen::isLegalMove(int dest, const Chess & chess)
+{
+	vector<Piece*> board = chess.getBoard();
+
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
+	return ((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col);
+	// return  (((diff % 7 == 0 || diff % 9 == 0) && (abs(src_row-dest_row) == abs(src_col-dest_col))) || (src_row == dest_row || src_col == dest_col)) && freePath(src, dest, board);
+}
+
+bool King::isLegalMove(int dest, const Chess & chess)
+{
+	vector<Piece*> board = chess.getBoard();
+
+	int src = this->getPieceSquare();
+	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
+	int diff = abs(src - dest);
+	return (src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1;
+}
 
 // Board intialization
 void boardInit(Chess & chess)
@@ -56,58 +139,58 @@ void boardInit(Chess & chess)
 		{
 			if(i == 0 || i == 7) // rook
 			{
-				board.push_back(new Rook(5, ROOK, Black));
+				board.push_back(new Rook(i, 5, ROOK, Black));
 			}
 			else if(i == 1 || i == 6) // knight
 			{
-				board.push_back(new Knight(3, KNIGHT, Black)); 
+				board.push_back(new Knight(i, 3, KNIGHT, Black)); 
 			}
 			else if(i == 2 || i == 5) // bishop
 			{
-				board.push_back(new Bishop(3, BISHOP, Black)); 
+				board.push_back(new Bishop(i, 3, BISHOP, Black)); 
 			}
 			else if(i == 3) // queen
 			{
-				board.push_back(new Queen(9, QUEEN, Black));
+				board.push_back(new Queen(i, 9, QUEEN, Black));
 			}
 			else if(i == 4) // king
 			{
-				board.push_back(new King(10, KING, Black));
+				board.push_back(new King(i, 10, KING, Black));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(1, PAWN, Black));
+				board.push_back(new Pawn(i, 1, PAWN, Black));
 			}
 		}
 		else if(board_size/4 <= i && i < board_size*3/4) // blank squares
 		{	
-			board.push_back(new Empty(0, EMPTY, Neutral));
+			board.push_back(new Empty(i, 0, EMPTY, Neutral));
 		}
 		else // white
 		{
 			if(i == 56 || i == 63) // rook
 			{
-				board.push_back(new Rook(5, ROOK, White));
+				board.push_back(new Rook(i, 5, ROOK, White));
 			}
 			else if(i == 57 || i == 62) // knight
 			{
-				board.push_back(new Knight(3, KNIGHT, White)); 
+				board.push_back(new Knight(i, 3, KNIGHT, White)); 
 			}
 			else if(i == 58 || i == 61) // bishop
 			{
-				board.push_back(new Bishop(3, BISHOP, White));
+				board.push_back(new Bishop(i, 3, BISHOP, White));
 			}
 			else if(i == 59) // queen
 			{
-				board.push_back(new Queen(9, QUEEN, White));
+				board.push_back(new Queen(i, 9, QUEEN, White));
 			}
 			else if(i == 60) // king
 			{
-				board.push_back(new King(10, KING, White));
+				board.push_back(new King(i, 10, KING, White));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(1, PAWN, White));
+				board.push_back(new Pawn(i, 1, PAWN, White));
 			}
 		}
 	}

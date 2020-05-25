@@ -13,9 +13,9 @@ int main()
 	Chess chess;
 	boardInit(chess);
 
-	// vector<Piece> board = chess.getBoard();
-	// // cout << board[8].getPieceType();
-	// cout << board[8].isLegalMove(15, board);
+	vector<Piece*> board = chess.getBoard();
+	// cout << board[8].getPieceType();
+	cout << board[0]->isLegalMove(23, chess);
 
 	// while(!checkmate && !stalemate) // change to while game is not over! -> need checkmate, resign, draw/stalemate options for this
 	// {

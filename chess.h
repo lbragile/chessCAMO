@@ -26,15 +26,9 @@ class King;
 class Chess
 {
 public:
-	/*
-		big-five, data members are not pointers so can use default!
-	*/
-	
-	~Chess() = default; // destructor
+	~Chess(); // destructor
 	Chess(const Chess & object) = default; // copy constructor
-	Chess(Chess && object) = default; // move constructor
 	Chess & operator =(const Chess & object) = default; // copy assignment
-	Chess & operator =(Chess && object) = default; // move assignment
 
 	// default constructor 
 	Chess() : checkmate{false}, stalemate{false}, check{false}, turn{WhiteTurn} {}
@@ -84,7 +78,7 @@ private:
 	PlayerTurn turn;
 
 	// Decide if it is an attacking move or regular move
-	vector<Piece> makeMoveForType(int src, int dest, vector<Piece> board);
+	vector<Piece*> makeMoveForType(int src, int dest, vector<Piece> board);
 
 	// for isCheckmate
 	int pieceIterator(int src, int dest, Piece king, Piece piece, vector<Piece> board, int increment);
@@ -96,21 +90,20 @@ private:
 class Piece
 {
 public:
-	/*
-		big-five, data members are not pointers so can use default!
-	*/
-	virtual ~Piece() = default; // destructor
+	virtual ~Piece(); // destructor
 	Piece(const Piece & object) = default; // copy constructor
-	Piece(Piece && object) = default; // move constructor
 	Piece & operator =(const Piece & object) = default; // copy assignment
-	Piece & operator =(Piece && object) = default; // move assignment
 
 	// constructor with piece initialization
-	Piece() : value{0}, type{EMPTY}, color{Neutral}, moved{false}, pinned{false} {}
+	Piece() : square{0}, value{0}, type{EMPTY}, color{Neutral}, moved{false}, pinned{false} {}
 
 	// constructor with piece initialization
-	Piece(int value, pieceType type, pieceColor color) : moved{false}, pinned{false}
-	{this->value = value; this->type = type; this->color = color;}
+	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}, pinned{false}
+	{this->square = square; this->value = value; this->type = type; this->color = color;}
+
+	// Mutator and accessor functions for determining/setting the piece value of an object
+	int getPieceSquare() const {return square;}
+	void setPieceSquare(int square) {this->square = square;}
 
 	// Mutator and accessor functions for determining/setting the piece type of an object
 	pieceType getPieceType() const {return type;}
@@ -143,11 +136,10 @@ public:
 	bool isPieceWhite() {return this->getPieceColor() == White;}
 	bool isPieceBlack() {return this->getPieceColor() == Black;}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int dest, vector<Piece> board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 
 private:
+	int square; // position of the piece on the board [0, 63]
 	int value; // pawn - 1, knight - 3, bishop - 3, rook - 5, queen - 9, king - infinity (use 10), empty - 0
 	pieceType type;
 	pieceColor color;
@@ -158,15 +150,17 @@ private:
 class Pawn : public Piece
 {
 public:
+	virtual ~Pawn(); // destructor
+	Pawn(const Pawn & object) = default; // copy constructor
+	Pawn & operator =(const Pawn & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Pawn() : Piece() {}
 
 	// constructor with piece initialization
-	Pawn(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isLegalMove(int dest, vector<Piece> board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	void promotePawn();
 	bool isFirstMove();
 };	
@@ -174,15 +168,17 @@ public:
 class Knight : public Piece
 {
 public:
+	virtual ~Knight(); // destructor
+	Knight(const Knight & object) = default; // copy constructor
+	Knight & operator =(const Knight & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Knight() : Piece() {}
 
 	// constructor with piece initialization
-	Knight(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Knight(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Piece> & board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	bool isPinned();
 
 };
@@ -190,30 +186,34 @@ public:
 class Bishop : public Piece
 {
 public:
+	virtual ~Bishop(); // destructor
+	Bishop(const Bishop & object) = default; // copy constructor
+	Bishop & operator =(const Bishop & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Bishop() : Piece() {}
 
 	// constructor with piece initialization
-	Bishop(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Bishop(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Piece> & board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	bool isPinned();
 };
 
 class Rook : public Piece
 {
 public:
+	virtual ~Rook(); // destructor
+	Rook(const Rook & object) = default; // copy constructor
+	Rook & operator =(const Rook & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Rook() : Piece() {}
 
 	// constructor with piece initialization
-	Rook(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Rook(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Piece> & board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	bool isFirstMove();
 	bool isPinned();
 };
@@ -221,30 +221,34 @@ public:
 class Queen : public Piece
 {
 public:
+	virtual ~Queen(); // destructor
+	Queen(const Queen & object) = default; // copy constructor
+	Queen & operator =(const Queen & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Queen() : Piece() {}
 
 	// constructor with piece initialization
-	Queen(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Queen(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Piece> & board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	bool isPinned();
 };
 
 class King : public Piece
 {
 public:
+	virtual ~King(); // destructor
+	King(const King & object) = default; // copy constructor
+	King & operator =(const King & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	King() : Piece() {}
 
 	// constructor with piece initialization
-	King(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	King(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	// Checks if a given move is valid according to objects type and 'src' & 'dest' square coordinates
-	// Return 'true' if move is valid, 'false' otherwise
-	bool isValidMove(int src, int dest, const vector<Piece> & board);
+	virtual bool isLegalMove(int dest, const Chess & chess);
 	bool isFirstMove();
 	bool canCastle();
 	bool isChecked();
@@ -255,11 +259,15 @@ public:
 class Empty : public Piece
 {
 public:
+	virtual ~Empty(); // destructor
+	Empty(const Empty & object) = default; // copy constructor
+	Empty & operator =(const Empty & object) = default; // copy assignment
+
 	// constructor with piece initialization
 	Empty() : Piece() {}
 
 	// constructor with piece initialization
-	Empty(int value, pieceType type, pieceColor color) : Piece(value, type, color) {}
+	Empty(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 };
 
 
