@@ -65,9 +65,9 @@ void Chess::makeMove(int src, int dest)
 	pieceColor current_turn = chess.getTurn();
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
-        // // pawn promotion
-        // if(this->isPawn() && (dest/8 == 0 || dest/8 == 7))
-        //     this->promotePawn();
+        // pawn promotion
+        if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
+            board[src]->promotePawn(src, dest);
 
         makeMoveForType(src, dest);
     	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
@@ -79,6 +79,53 @@ void Chess::makeMove(int src, int dest)
     {
 		cout << "Invalid move! Try again..." << endl;
 	}
+}
+
+void Piece::promotePawn(int src, int dest)
+{
+	if(this->isPawn())
+	{
+		this->promotePawn(src, dest);
+	}
+	else
+	{
+		return; // do nothing
+	}
+}
+
+void Pawn::promotePawn(int src, int dest)
+{
+	vector<Piece*> board = chess.getBoard();
+	char piece;
+    while(true)
+    {
+        cout << "Which Piece: Q/q | R/r | B/b | N/n?";
+        cin >> piece;
+        if(piece == 'Q' || piece == 'q')
+        {
+            board[src] = chess.getTurn() == 2 ? new Queen(dest, 9, QUEEN, WHITE) : new Queen(dest, 9, QUEEN, BLACK);
+            break;
+        }
+        if(piece == 'R' || piece == 'r')
+        {
+            board[src] = chess.getTurn() == 2 ? new Rook(dest, 5, ROOK, WHITE) : new Rook(dest, 5, ROOK, BLACK);
+            break;
+        }
+        if(piece == 'B' || piece == 'b')
+        {
+            board[src] = chess.getTurn() == 2 ? new Bishop(dest, 3, BISHOP, WHITE) : new Bishop(dest, 3, BISHOP, BLACK);
+            break;
+        }
+        if(piece == 'N' || piece == 'n')
+        {
+            board[src] = chess.getTurn() == 2 ? new Knight(dest, 3, KNIGHT, WHITE) : new Knight(dest, 3, KNIGHT, BLACK);
+            break;
+        }
+
+        cout << "Please make sure to pick correct value!" << endl;
+    }
+
+    chess.setBoard(board);
 }
 
 void Chess::makeMoveForType(int src, int dest)
@@ -137,15 +184,11 @@ void Chess::makeMoveForType(int src, int dest)
 	    else
 	    {
             // dest
-            board[dest]->setPieceType(board[src]->getPieceType());
-            board[dest]->setPieceValue(board[src]->getPieceValue());
-            board[dest]->setPieceColor(board[src]->getPieceColor());
+            board[dest] = board[src];
             board[dest]->setPieceSquare(dest);
 
             // src
-            board[src]->setPieceType(EMPTY);
-            board[src]->setPieceValue(0);
-            board[src]->setPieceColor(NEUTRAL);
+            board[src] = new Empty(src, 0, EMPTY, NEUTRAL);
             board[src]->setPieceSquare(src);
 	    }
 	}

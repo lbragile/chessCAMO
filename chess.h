@@ -132,6 +132,7 @@ public:
 	
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
+	virtual void promotePawn(int src, int dest);
 
 private:
 	int square; // position of the piece on the board [0, 63]
@@ -159,7 +160,7 @@ public:
 	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	void promotePawn();
+	void promotePawn(int src, int dest);
 	bool isFirstMove();
 };	
 
