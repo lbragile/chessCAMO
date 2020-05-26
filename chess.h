@@ -130,7 +130,8 @@ public:
 	
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
-	virtual void promotePawn(int src, int dest);
+	virtual void promotePawn(int dest);
+	bool causeCheck(int dest);
 	// virtual bool isChecked(int src, int dest);
 
 private:
@@ -159,7 +160,7 @@ public:
 	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	virtual void promotePawn(int src, int dest);
+	virtual void promotePawn(int dest);
 	bool isFirstMove();
 };	
 

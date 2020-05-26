@@ -47,88 +47,101 @@ bool King::canCastle(int dest)
     return !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
 }
 
-// bool Piece::isChecked(int src, int dest)
+bool Piece::causeCheck(int dest)
+{
+	// causes a check if not a king (cannot check opponent with your king)
+	if(this->isKing() || !chess.getCheckStack().empty())
+	{
+		return false;
+	}
+
+	stack<Piece*> CheckStack = chess.getCheckStack();
+    vector<Piece*> board = chess.getBoard();
+
+    int king_pos;
+    for(auto elem : board)
+    {
+    	if(elem->isKing() && !Piece::isSameColor(elem->getPieceSquare(), dest))
+    	{
+    		king_pos = elem->getPieceSquare();
+    		break;
+    	}
+    }
+
+    if(Piece::isPathFree(dest, king_pos))
+    {
+    	cout << "Check!" << endl;
+        CheckStack.push(board[king_pos]);
+        CheckStack.push(board[dest]);
+        chess.setCheckStack(CheckStack);
+        chess.setCheck(true);
+    }
+
+    return chess.getCheck();
+}
+
+
+// // Avoid going into check
+// // if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
+// if(board[dest]->isKing())
 // {
-// 	if(this->isKing())
-// 		return this->isChecked(src, dest);
-// 	else
-// 		return false;
+//     for(auto elem : board)
+//     {
+//         if(!elem->isEmpty() && !this->isSameColor(this->getPieceSquare(), dest) && elem->isLegalMove(dest))
+//         {
+//             chess.setCheck(true);
+//         }
+//     }
 // }
 
-// bool King::isChecked(int src, int dest)
+// if(CheckStack.empty())
 // {
-//     int king_pos;
-//     Piece *king, *piece;
+//     for(auto elem : board)
+//     {
+//         if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
+//         {
+//             king_pos = elem->getPieceSquare();
+//             break;
+//         }
+//     }
 
-//     stack<Piece*> CheckStack = chess.getCheckStack();
-//     vector<Piece*> previous_board = chess.getBoard();
-//     vector<Piece*> board;
+//     // if opponent move caused you to be in check
+//     if(board[dest]->isLegalMove(king_pos))
+//     {
+//         cout << "Check!" << endl;
+//         CheckStack.push(board[king_pos]);
+//         CheckStack.push(board[dest]);
 
-//     makeMove(src, dest); // make the move without affecting the main board!
-//     board = chess.getBoard();
+//         // board[king_pos].isCheckmate(board[king_pos], board[dest], board);
+//     }
 
-//     // Avoid going into check
-//     // if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
+//     chess.setCheck(false);
+// }
+
+// else // checkStack is not empty (a player must be in check!)
+// {
+//     piece = CheckStack.top();
+//     CheckStack.pop();
+//     king = CheckStack.top();
+//     CheckStack.pop();
+
+//     // the player's king made the move to try to get out of check
 //     if(board[dest]->isKing())
 //     {
-//         for(auto elem : board)
-//         {
-//             if(!elem->isEmpty() && !this->isSameColor(this->getPieceSquare(), dest) && elem->isLegalMove(dest))
-//             {
-//                 chess.setCheck(true);
-//             }
-//         }
+//         king->setPieceSquare(dest);
 //     }
+    
+//     chess.setCheck(piece->isLegalMove(king->getPieceSquare()));
 
-//     if(CheckStack.empty())
+//     // push back on stack if move was valid, since the king is still not safe
+//     if(chess.getCheck())
 //     {
-//         for(auto elem : board)
-//         {
-//             if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
-//             {
-//                 king_pos = elem->getPieceSquare();
-//                 break;
-//             }
-//         }
-
-//         // if opponent move caused you to be in check
-//         if(board[dest]->isLegalMove(king_pos))
-//         {
-//             cout << "Check!" << endl;
-//             CheckStack.push(board[king_pos]);
-//             CheckStack.push(board[dest]);
-
-//             // board[king_pos].isCheckmate(board[king_pos], board[dest], board);
-//         }
-
-//         chess.setCheck(false);
+//         CheckStack.push(king);
+//         CheckStack.push(piece);
 //     }
-
-//     else // checkStack is not empty (a player must be in check!)
-//     {
-//         piece = CheckStack.top();
-//         CheckStack.pop();
-//         king = CheckStack.top();
-//         CheckStack.pop();
-
-//         // the player's king made the move to try to get out of check
-//         if(board[dest]->isKing())
-//         {
-//             king->setPieceSquare(dest);
-//         }
-        
-//         chess.setCheck(piece->isLegalMove(king->getPieceSquare()));
-
-//         // push back on stack if move was valid, since the king is still not safe
-//         if(chess.getCheck())
-//         {
-//             CheckStack.push(king);
-//             CheckStack.push(piece);
-//         }
-//     }
-
-// 	return chess.getCheck();
 // }
+
+// return chess.getCheck();
 
 bool Piece::canCastle(int dest)
 {
@@ -150,10 +163,12 @@ void Chess::makeMove(int src, int dest)
     {
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
-            board[src]->promotePawn(src, dest);
+            board[src]->promotePawn(dest);
 
         makeMoveForType(src, dest);
     	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+    	board[src]->causeCheck(dest); // did the move cause a check?
+
 		printBoard(chess.getBoard());
 		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
 		else{cout << "\nBlack's move" << endl;}
@@ -164,11 +179,11 @@ void Chess::makeMove(int src, int dest)
 	}
 }
 
-void Piece::promotePawn(int src, int dest)
+void Piece::promotePawn(int dest)
 {
 	if(this->isPawn())
 	{
-		this->promotePawn(src, dest);
+		this->promotePawn(dest);
 	}
 	else
 	{
@@ -176,10 +191,11 @@ void Piece::promotePawn(int src, int dest)
 	}
 }
 
-void Pawn::promotePawn(int src, int dest)
+void Pawn::promotePawn(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
 	char piece;
+	int src = this->getPieceSquare();
     while(true)
     {
         cout << "Which Piece: Q/q | R/r | B/b | N/n?";
