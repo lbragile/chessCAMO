@@ -17,7 +17,7 @@ int main()
 
 	
 	// insert value to the end
-	ifstream myfile ("test_cases/pawnPromotion.txt"); //opening the file.
+	ifstream myfile ("test_cases/castleAfterKingMoved.txt"); //opening the file.
     if (myfile.is_open()) //if the file is open
     {
         while (! myfile.eof()) //while the end of file is NOT reached
@@ -45,7 +45,7 @@ int main()
 	1. avoid castling through check
 	2. En-passent
 	3. Double Checks
-	4. stalemate
+	4. check, checkmate, stalemate
 */
 
 		
