@@ -43,24 +43,22 @@ public:
 
 	// Mutator and accessor functions for determining/setting the board's checking state 
 	bool getCheck() const {return check;}
-	void setCheck() {this->check = !check;}
+	void setCheck(bool check) {this->check = check;}
 
 	// Mutator and accessor functions for determining/setting the board's checkmate state
 	bool getCheckmate() const {return checkmate;}
-	void setCheckmate() {this->checkmate = !checkmate;}
+	void setCheckmate(bool checkmate) {this->checkmate = checkmate;}
 
 	// Mutator and accessor functions for determining/setting the board's stalemate state
 	bool getStalemate() const {return stalemate;}
-	void setStalemate() {this->stalemate = !stalemate;}
+	void setStalemate(bool stalemate) {this->stalemate = stalemate;}
 
 	// Mutator and accessor functions for determining/setting the player's turn
 	pieceColor getTurn() const {return turn;}
 	void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
 
 	void makeMove(int src, int dest);
-
 	void isCheckmate(Piece king, Piece piece, vector<Piece> board);
-
 	bool isStalemate(int turn, const vector<Piece> & board);
 
 private:
@@ -133,6 +131,7 @@ public:
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int src, int dest);
+	// virtual bool isChecked(int src, int dest);
 
 private:
 	int square; // position of the piece on the board [0, 63]
@@ -160,7 +159,7 @@ public:
 	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	void promotePawn(int src, int dest);
+	virtual void promotePawn(int src, int dest);
 	bool isFirstMove();
 };	
 
@@ -249,8 +248,8 @@ public:
 
 	virtual bool isLegalMove(int dest);
 	bool isFirstMove();
-	bool canCastle(int dest);
-	bool isChecked();
+	virtual bool canCastle(int dest);
+	// virtual bool isChecked(int src, int dest);
 	bool isDoubleChecked();
 	int numKingMoves();
 };

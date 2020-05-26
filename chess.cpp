@@ -47,6 +47,89 @@ bool King::canCastle(int dest)
     return !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
 }
 
+// bool Piece::isChecked(int src, int dest)
+// {
+// 	if(this->isKing())
+// 		return this->isChecked(src, dest);
+// 	else
+// 		return false;
+// }
+
+// bool King::isChecked(int src, int dest)
+// {
+//     int king_pos;
+//     Piece *king, *piece;
+
+//     stack<Piece*> CheckStack = chess.getCheckStack();
+//     vector<Piece*> previous_board = chess.getBoard();
+//     vector<Piece*> board;
+
+//     makeMove(src, dest); // make the move without affecting the main board!
+//     board = chess.getBoard();
+
+//     // Avoid going into check
+//     // if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
+//     if(board[dest]->isKing())
+//     {
+//         for(auto elem : board)
+//         {
+//             if(!elem->isEmpty() && !this->isSameColor(this->getPieceSquare(), dest) && elem->isLegalMove(dest))
+//             {
+//                 chess.setCheck(true);
+//             }
+//         }
+//     }
+
+//     if(CheckStack.empty())
+//     {
+//         for(auto elem : board)
+//         {
+//             if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
+//             {
+//                 king_pos = elem->getPieceSquare();
+//                 break;
+//             }
+//         }
+
+//         // if opponent move caused you to be in check
+//         if(board[dest]->isLegalMove(king_pos))
+//         {
+//             cout << "Check!" << endl;
+//             CheckStack.push(board[king_pos]);
+//             CheckStack.push(board[dest]);
+
+//             // board[king_pos].isCheckmate(board[king_pos], board[dest], board);
+//         }
+
+//         chess.setCheck(false);
+//     }
+
+//     else // checkStack is not empty (a player must be in check!)
+//     {
+//         piece = CheckStack.top();
+//         CheckStack.pop();
+//         king = CheckStack.top();
+//         CheckStack.pop();
+
+//         // the player's king made the move to try to get out of check
+//         if(board[dest]->isKing())
+//         {
+//             king->setPieceSquare(dest);
+//         }
+        
+//         chess.setCheck(piece->isLegalMove(king->getPieceSquare()));
+
+//         // push back on stack if move was valid, since the king is still not safe
+//         if(chess.getCheck())
+//         {
+//             CheckStack.push(king);
+//             CheckStack.push(piece);
+//         }
+//     }
+
+// 	return chess.getCheck();
+// }
+
 bool Piece::canCastle(int dest)
 {
 	/* TODO

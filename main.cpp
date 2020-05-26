@@ -17,7 +17,7 @@ int main()
 
 	
 	// insert value to the end
-	ifstream myfile ("test_cases/castleAfterKingMoved.txt"); //opening the file.
+	ifstream myfile ("test_cases/queenCheckPieceDefends.txt"); //opening the file.
     if (myfile.is_open()) //if the file is open
     {
         while (! myfile.eof()) //while the end of file is NOT reached
