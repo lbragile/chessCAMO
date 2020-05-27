@@ -125,42 +125,19 @@ void Chess::isCheckmate()
 
 bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
 {
-    int increment, counter=0, original_dest = dest;
+    int increment, original_dest = dest;
 
-    if(src > dest)
-    {
-    	std::swap(src, dest);
-    }
-
-    if(src/8 == dest/8) // row path
-    {
-        increment = 1;
-    }
-    else if(src%8 == dest%8) // column path
-    {
-        increment = 8;
-    }
-    else if(abs(src/8 - dest/8) == abs(src%8 - dest%8)) // diagonal path
-    {
-        increment = abs(src - dest) % 7 == 0 ? 7 : 9;
-    }
-
+    increment = incrementChoice(src, dest);
     for(auto current_piece : board)
     {
         if(current_piece->isSameColor(current_piece->getPieceSquare(), original_dest) && current_piece->getPieceSquare() != original_dest)
         {
             for(int i = src+increment; i<=dest; i+=increment)
-            {
-                if(current_piece->isLegalMove(i))
-                {
-                    counter++;
-                    break;
-                }
-            }
+                if(current_piece->isLegalMove(i)){return false;}
         }
     }
 
-    return counter == 0 ? true : false; // no legal moves found ? true : false
+    return true; // no legal moves found ? true : false
 }
 
 // // Avoid going into check
@@ -331,36 +308,40 @@ void Chess::makeMoveForType(int src, int dest)
 	chess.setBoard(board);
 }
 
-bool Piece::isPathFree(int src, int dest)
+bool Chess::isPathFree(int src, int dest)
 {
-    int src_row = src / 8, src_col = src % 8;
-    int dest_row = dest / 8, dest_col = dest % 8;
+    int increment = incrementChoice(src, dest);
 
+    return increment > 0 ? pathIterator(src, dest, increment) : false;
+}
+
+int Chess::incrementChoice(int & src, int & dest)
+{
     // make sure 'src' is always lower so can simply analyze one way (same whichever way you choose)
-    if(src > dest)
+	if(src > dest)
     {
-        std::swap(src, dest);
+    	std::swap(src, dest);
     }
 
-    if(src_row == dest_row) // row path
+    if(src/8 == dest/8) // row path
     {
-        return pathIterator(src, dest, 1);
+        return 1;
     }
-    else if(src_col == dest_col) // column path
+    else if(src%8 == dest%8) // column path
     {
-        return pathIterator(src, dest, 8);
+        return 8;
     }
-    else if(abs(src_row - dest_row) == abs(src_col - dest_col)) // diagonal path
+    else if(abs(src/8 - dest/8) == abs(src%8 - dest%8)) // diagonal path
     {
-        return pathIterator(src, dest, abs(src - dest) % 7 == 0 ? 7 : 9);
+        return abs(src - dest) % 7 == 0 ? 7 : 9;
     }
     else
     {
-    	return false;
+    	return 0;
     }
 }
 
-bool Piece::pathIterator(int src, int dest, int increment)
+bool Chess::pathIterator(int src, int dest, int increment)
 {
 	vector<Piece*> board = chess.getBoard();
 	for(int i = src+increment; i<dest; i+=increment)

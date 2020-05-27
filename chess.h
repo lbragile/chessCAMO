@@ -61,6 +61,8 @@ public:
 	void isCheckmate();
 	bool isStalemate(int turn, const vector<Piece> & board);
 
+	bool isPathFree(int src, int dest);
+	
 private:
 	vector<Piece*> board; // overall board state
 	stack<Piece*> checkStack; // needed to determine if a given player's king is in check
@@ -74,6 +76,11 @@ private:
 
 	// for isCheckmate
 	bool pieceIterator(int src, int dest, const vector<Piece*> & board);
+	
+	// for isPathFree
+	bool pathIterator(int src, int dest, int increment);
+
+	int incrementChoice(int & src, int & dest);
 };
 
 class Piece : public Chess
@@ -125,8 +132,6 @@ public:
 	bool isPieceWhite() {return this->getPieceColor() == WHITE;}
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
 	bool isSameColor(int src, int dest);
-
-	bool isPathFree(int src, int dest);
 	
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
@@ -141,9 +146,6 @@ private:
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 	bool pinned;
-
-	// for isPathFree
-	bool pathIterator(int src, int dest, int increment);
 };
 
 class Pawn : public Piece
