@@ -1,19 +1,82 @@
 #include "chess.h"
 #include <windows.h>
-// #define BOARD_SIZE 64
+#include <string>
+
+#define GREEN 10
+#define RED 12
+#define YELLOW 14
+#define DEFAULT 15
 
 Chess chess; // global object call
 bool valid_test = true; // global variable call
 
+string boardFenConverter(const vector<Piece*> & board, int white_turns, int black_turns)
+{
+	char temp[15];
+	string fen;
+
+	bool w_castle_k = false, w_castle_q = false, b_castle_k = false, b_castle_q = false;
+	int elem_count = 0, empty_count = 0;
+
+	for(auto elem : board)
+	{
+		if(elem->isPawn()){elem->isPieceWhite() ? fen.append("P") : fen.append("p");}
+		if(elem->isKnight()){elem->isPieceWhite() ? fen.append("N") : fen.append("n");}
+		if(elem->isBishop()){elem->isPieceWhite() ? fen.append("B") : fen.append("b");}
+		if(elem->isRook()){elem->isPieceWhite() ? fen.append("R") : fen.append("r");}
+		if(elem->isQueen()){elem->isPieceWhite() ? fen.append("Q") : fen.append("q");}
+		if(elem->isKing()){elem->isPieceWhite() ? fen.append("K") : fen.append("k");}
+		if(elem->isEmpty()){empty_count++;}
+
+		// castling
+		if(!board[4]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_q = true;}
+		if(!board[7]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_k = true;}
+		if(!board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_q = true;}
+		if(!board[63]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_k = true;}
+
+		sprintf(temp, "%i/", empty_count);
+		if(elem_count % 8 == 7 && elem_count != 63)
+		{
+			if(empty_count > 0)
+			{
+				fen.append(temp);
+				empty_count=0;
+			} 
+			else
+			{
+				fen.append("/");
+			}
+		}
+		elem_count++;
+	}
+	fen.append(chess.getTurn() == 2 ? " w " : " b ");
+
+	if(w_castle_k){fen.append("K");}
+	if(w_castle_q){fen.append("Q");}
+	if(b_castle_k){fen.append("k");}
+	if(b_castle_q){fen.append("q");}
+
+	// move count
+	fen.append(" - ");
+	sprintf(temp, "%i ", white_turns);
+	fen.append(temp);
+	sprintf(temp, "%i", black_turns);
+	fen.append(temp);
+
+	cout << fen << endl;
+	exit(1);
+	return fen;
+}
+
 int main()
 {
 	char filename[1000];
-	int file_num = 1, num_failed = 0;
+	int file_num = 1, num_failed = 0, white_turns = 0, black_turns = 0;
 	vector<string> failed_tests;
 	vector<int> test_case_num;
 
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 15);
+	SetConsoleTextAttribute(hConsole, DEFAULT);
 	
 	WIN32_FIND_DATA FindFileData;
 	string absolute_path = "C:/Users/lbrag/Desktop/c++/personal/test_cases/*.txt";
@@ -23,9 +86,9 @@ int main()
 	{
 		do
 		{
-			SetConsoleTextAttribute(hConsole, 14);
+			SetConsoleTextAttribute(hConsole, YELLOW);
 			printf("\n\n===================== TEST CASE %i ==================== \n\n", file_num);
-			SetConsoleTextAttribute(hConsole, 15);
+			SetConsoleTextAttribute(hConsole, DEFAULT);
 
 			Chess reset;
 			chess = reset;
@@ -50,6 +113,8 @@ int main()
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
 		            chess.makeMove(src, dest);
+		            chess.getTurn() == 2 ? white_turns++ : black_turns++;
+					boardFenConverter(chess.getBoard(), white_turns, black_turns);
 		        }
 		        myfile.close(); //closing the file
 		    }
@@ -72,27 +137,27 @@ int main()
 	FindClose(hFind);
 
 	cout << endl << endl << endl;
-	SetConsoleTextAttribute(hConsole, 14);
+	SetConsoleTextAttribute(hConsole, YELLOW);
 	cout <<"Test Case Summary" << endl;
-	SetConsoleTextAttribute(hConsole, 10);
+	SetConsoleTextAttribute(hConsole, GREEN);
 	cout << "Passed: " << file_num-num_failed << "/" << file_num;
-	SetConsoleTextAttribute(hConsole, 15);
+	SetConsoleTextAttribute(hConsole, DEFAULT);
 	cout << " | ";
-	SetConsoleTextAttribute(hConsole, 12);
+	SetConsoleTextAttribute(hConsole, RED);
 	cout << "Failed: " << num_failed << "/" << file_num << endl;
 	cout << endl << endl;
 
 	if(!failed_tests.empty())
 	{
 		cout << "Failed Cases:" << endl;
-		SetConsoleTextAttribute(hConsole, 15);
+		SetConsoleTextAttribute(hConsole, DEFAULT);
 		vector<string>::iterator itr;
 		for(itr = failed_tests.begin(); itr != failed_tests.end(); itr++)
 		{
 			cout << *itr;
-			SetConsoleTextAttribute(hConsole, 14);
+			SetConsoleTextAttribute(hConsole, YELLOW);
 			cout << " (Test Case " << test_case_num[itr - failed_tests.begin()] << ")" << endl;
-			SetConsoleTextAttribute(hConsole, 15);
+			SetConsoleTextAttribute(hConsole, DEFAULT);
 		}
 	}
 	

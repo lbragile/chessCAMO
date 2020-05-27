@@ -537,10 +537,17 @@ void boardInit(Chess & chess)
 void printBoard(const vector<Piece*> & board)
 {
 	char piece_char;
+	char ranks[8] = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'};
 	
 	int count = 0;
 	for(auto elem : board)
 	{
+		if(count % 8 == 0)
+		{
+			cout << "  ---------------------------------" << endl;
+			cout << ranks[count/8] << " | ";
+		}
+
 		switch(elem->getPieceType())
 		{
 			case ROOK:
@@ -562,14 +569,20 @@ void printBoard(const vector<Piece*> & board)
 				piece_char = elem->isPieceWhite() ? 'P' : 'p';
 				break;
 			default:
-				piece_char = '.';
+				piece_char = ' ';
 		}
 
 		cout << std::left << std::setw(2) << piece_char;
+		cout << "| ";
 
 		// go to next row if reached last column
 		if(count % 8 == 7)
 			cout << endl;
+		if(count == 63)
+		{
+			cout << "  ---------------------------------" << endl;
+			cout << "    1   2   3   4   5   6   7   8" << endl;
+		}
 		count++;
 	}
 }
