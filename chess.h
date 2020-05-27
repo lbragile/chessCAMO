@@ -76,11 +76,12 @@ private:
 
 	// for isCheckmate
 	bool pieceIterator(int src, int dest, const vector<Piece*> & board);
-	
+
 	// for isPathFree
 	bool pathIterator(int src, int dest, int increment);
 
 	int incrementChoice(int & src, int & dest);
+	void printCheckmateMessage();
 };
 
 class Piece : public Chess

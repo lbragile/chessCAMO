@@ -95,9 +95,7 @@ void Chess::isCheckmate()
 	// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
 	else if(CheckStack.top()->getPieceColor() == getTurn()) 
 	{
-		cout << "checkmate1" << endl;
-		printBoard(board);
-		exit(0);
+		printCheckmateMessage();
 	}
 
 	else if(CheckStack.top()->getPieceColor() != getTurn())
@@ -110,9 +108,7 @@ void Chess::isCheckmate()
 		// checkmate
 		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare(), board))
 		{
-			cout << "checkmate2" << endl;
-			printBoard(board);
-			exit(0);
+			printCheckmateMessage();
 		}
 		else
 		{
@@ -120,6 +116,22 @@ void Chess::isCheckmate()
 			CheckStack.push(piece);
 			chess.setCheckStack(CheckStack);
 		}
+	}
+}
+
+void Chess::printCheckmateMessage()
+{
+	if(chess.getTurn() == 2)
+	{
+		printBoard(board);
+		cout << "White lost due to Checkmate! -> Black Wins" << endl;
+		exit(0);
+	}
+	else
+	{
+		printBoard(board);
+		cout << "Black lost due to Checkmate! -> White Wins" << endl;
+		exit(0);
 	}
 }
 
@@ -133,7 +145,9 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
         if(current_piece->isSameColor(current_piece->getPieceSquare(), original_dest) && current_piece->getPieceSquare() != original_dest)
         {
             for(int i = src+increment; i<=dest; i+=increment)
+            {
                 if(current_piece->isLegalMove(i)){return false;}
+            }
         }
     }
 
@@ -173,13 +187,17 @@ void Chess::makeMove(int src, int dest)
     {
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
+        {
             board[src]->promotePawn(dest);
+        }
 
         makeMoveForType(src, dest);
-    	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+        board = chess.getBoard();
+		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
-    		chess.isCheckmate();
+    		chess.isCheckmate(); // check for checkmates
     	}
 
 		printBoard(chess.getBoard());
