@@ -58,7 +58,7 @@ public:
 	void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
 
 	void makeMove(int src, int dest);
-	void isCheckmate(Piece king, Piece piece, vector<Piece> board);
+	void isCheckmate();
 	bool isStalemate(int turn, const vector<Piece> & board);
 
 private:
@@ -73,7 +73,7 @@ private:
 	void makeMoveForType(int src, int dest);
 
 	// for isCheckmate
-	int pieceIterator(int src, int dest, Piece king, Piece piece, vector<Piece> board, int increment);
+	bool pieceIterator(int src, int dest, const vector<Piece*> & board);
 };
 
 class Piece : public Chess
