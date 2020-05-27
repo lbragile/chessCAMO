@@ -161,7 +161,7 @@ bool King::movedIntoCheck(int dest)
 	{
 	    for(auto elem : board)
 	    {
-	        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && isPathFree(elem->getPieceSquare(), dest))
+	        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && elem->isLegalMove(dest) && isPathFree(elem->getPieceSquare(), dest))
 	        {
 	            return true;
 	        }
