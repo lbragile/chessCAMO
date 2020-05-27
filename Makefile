@@ -17,10 +17,10 @@ all_test: $(FILE).o $(TEST).o test
 $(FILE).o: $(FILE).cpp $(FILE).h
 	$(CC) $(CFLAGS) $(FILE).cpp
 
-$(TEST).o: $(TEST).cpp
+$(TEST).o: $(TEST).cpp $(FILE).h
 	$(CC) $(CFLAGS) $(TEST).cpp
 
-$(MAIN).o: $(MAIN).cpp
+$(MAIN).o: $(MAIN).cpp $(FILE).h
 	$(CC) $(CFLAGS) $(MAIN).cpp
 
 test:

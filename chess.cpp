@@ -114,12 +114,14 @@ void Chess::isCheckmate()
 			CheckStack.push(piece);
 			chess.setCheckStack(CheckStack);
 		}
+
+		// add a feature for if king can move out of the way!
 	}
 }
 
 void Chess::handleCheckmate()
 {
-	printBoard(board);
+	// printBoard(board);
 	if(chess.getTurn() == 2)
 		cout << "White lost due to Checkmate! -> Black Wins" << endl;
 	else
@@ -265,8 +267,8 @@ void Chess::makeMoveForType(int src, int dest)
 	if(board[src]->canCastle(dest) && (abs(src - dest) == 3 || abs(src - dest) == 4))
 	{
 	    // note that the pieces are moved
-	    board[src]->setPieceMoveInfo();
-	    board[dest]->setPieceMoveInfo();
+	    board[src]->setPieceMoveInfo(true);
+	    board[dest]->setPieceMoveInfo(true);
 
 	    if(abs(src - dest) == 3) // king side castle
 	    {
@@ -299,7 +301,7 @@ void Chess::makeMoveForType(int src, int dest)
 	else
 	{
 	    // note that the piece moved
-	    board[src]->setPieceMoveInfo();
+	    board[src]->setPieceMoveInfo(true);
 
 	    // Regular Move
 	    if(board[dest]->isEmpty())

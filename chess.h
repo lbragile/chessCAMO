@@ -116,7 +116,7 @@ public:
 
 	// Mutator and accessor functions for determining/setting the moving state of an object
 	bool getPieceMoveInfo() const {return moved;}
-	void setPieceMoveInfo() {this->moved = !moved;}
+	void setPieceMoveInfo(bool moved) {this->moved = moved;}
 
 	// Mutator and accessor functions for determining/setting if an object is pinned to king
 	bool getPiecePinInfo() const {return pinned;}

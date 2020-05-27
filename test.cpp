@@ -29,7 +29,7 @@ int main()
 
 			Chess reset;
 			chess = reset;
-			valid_test = true;
+
 			// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
 			int src, dest;
 
@@ -64,7 +64,7 @@ int main()
 		    if(!valid_test)
 		    {
 		    	failed_tests.push_back(filename);
-		    	test_case_num.push_back(file_num);
+		    	test_case_num.push_back(file_num-1);
 				num_failed++;
 		    }
 		} while (FindNextFile(hFind, &FindFileData));

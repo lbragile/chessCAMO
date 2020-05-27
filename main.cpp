@@ -1,6 +1,4 @@
 #include "chess.h"
-#include <windows.h>
-// #define BOARD_SIZE 64
 
 Chess chess; // global object call
 bool valid_test = true; // global variable call
@@ -23,7 +21,7 @@ int main()
         cout << src << " " << dest << endl;
         chess.makeMove(src, dest);
     }
-    
+
 	return 0;
 }
 
