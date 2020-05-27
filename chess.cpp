@@ -1,7 +1,5 @@
 #include "chess.h"
 
-Chess chess; // global object call
-
 Piece::~Piece() {}
 Pawn::~Pawn() {}
 Knight::~Knight() {}
@@ -95,7 +93,7 @@ void Chess::isCheckmate()
 	// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
 	else if(CheckStack.top()->getPieceColor() == getTurn()) 
 	{
-		printCheckmateMessage();
+		handleCheckmate();
 	}
 
 	else if(CheckStack.top()->getPieceColor() != getTurn())
@@ -108,7 +106,7 @@ void Chess::isCheckmate()
 		// checkmate
 		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare(), board))
 		{
-			printCheckmateMessage();
+			handleCheckmate();
 		}
 		else
 		{
@@ -119,20 +117,14 @@ void Chess::isCheckmate()
 	}
 }
 
-void Chess::printCheckmateMessage()
+void Chess::handleCheckmate()
 {
+	printBoard(board);
 	if(chess.getTurn() == 2)
-	{
-		printBoard(board);
 		cout << "White lost due to Checkmate! -> Black Wins" << endl;
-		exit(0);
-	}
 	else
-	{
-		printBoard(board);
 		cout << "Black lost due to Checkmate! -> White Wins" << endl;
-		exit(0);
-	}
+	setCheckmate(true);
 }
 
 bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
@@ -208,10 +200,12 @@ void Chess::makeMove(int src, int dest)
 		printBoard(chess.getBoard());
 		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
 		else{cout << "\nBlack's move" << endl;}
+		valid_test = true; // for test case analysis purposes!
   	}
     else
     {
 		cout << "Invalid move! Try again..." << endl;
+		valid_test = false; // for test case analysis purposes!
 	}
 }
 

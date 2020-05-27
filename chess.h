@@ -81,7 +81,7 @@ private:
 	bool pathIterator(int src, int dest, int increment);
 
 	int incrementChoice(int & src, int & dest);
-	void printCheckmateMessage();
+	void handleCheckmate();
 };
 
 class Piece : public Chess
@@ -295,5 +295,6 @@ void updatedBoardStatus(const vector<Piece> & board, Piece piece, int & turn, bo
 void userEnded(int turn);
 
 extern Chess chess; // global object
+extern bool valid_test; // gloabl variable
 
 #endif // CHESS_H
