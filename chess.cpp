@@ -154,18 +154,23 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
     return true; // no legal moves found ? true : false
 }
 
-// // Avoid going into check
-// // if the king was moved, go through all of opponents pieces and make sure they don't have a free path to the king
-// if(board[dest]->isKing())
-// {
-//     for(auto elem : board)
-//     {
-//         if(!elem->isEmpty() && !this->isSameColor(this->getPieceSquare(), dest) && elem->isLegalMove(dest))
-//         {
-//             chess.setCheck(true);
-//         }
-//     }
-// }
+bool King::movedIntoCheck(int dest)
+{
+	vector<Piece*> board = chess.getBoard();
+	if(this->isKing())
+	{
+	    for(auto elem : board)
+	    {
+	        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && isPathFree(elem->getPieceSquare(), dest))
+	        {
+	            return true;
+	        }
+	    }
+	}
+
+	return false;
+}
+
 
 bool Piece::canCastle(int dest)
 {
@@ -263,7 +268,7 @@ void Chess::makeMoveForType(int src, int dest)
 	vector<Piece*> board = chess.getBoard();
 
 	// castling move
-	if(board[src]->canCastle(dest))
+	if(board[src]->canCastle(dest) && (abs(src - dest) == 3 || abs(src - dest) == 4))
 	{
 	    // note that the pieces are moved
 	    board[src]->setPieceMoveInfo();
@@ -454,9 +459,8 @@ bool King::isLegalMove(int dest)
 	vector<Piece*> board = chess.getBoard();
 
 	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest);
-	return ((src_row == dest_row || src_col == dest_col || diff % 7 == 0 || diff % 9 == 0) && diff == 1 && !isSameColor(src, dest)) || ((diff == 3 || diff == 4) && this->canCastle(dest) && isSameColor(src, dest));
+	return (((diff == 1 || diff == 7 || diff == 8 || diff == 9) && !isSameColor(src, dest)) || ((diff == 3 || diff == 4) && this->canCastle(dest) && isSameColor(src, dest))) && !this->movedIntoCheck(dest);
 }
 
 // Board intialization

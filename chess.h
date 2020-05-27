@@ -256,6 +256,8 @@ public:
 	// virtual bool isChecked(int src, int dest);
 	bool isDoubleChecked();
 	int numKingMoves();
+
+	bool movedIntoCheck(int dest);
 };
 
 class Empty : public Piece
