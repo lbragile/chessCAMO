@@ -137,6 +137,7 @@ public:
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
+	virtual bool movedIntoCheck(int dest);
 	bool causeCheck(int dest);
 	// virtual bool isChecked(int src, int dest);
 
@@ -257,7 +258,7 @@ public:
 	bool isDoubleChecked();
 	int numKingMoves();
 
-	bool movedIntoCheck(int dest);
+	virtual bool movedIntoCheck(int dest);
 };
 
 class Empty : public Piece

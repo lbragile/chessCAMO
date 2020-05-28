@@ -142,7 +142,7 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
     // can king move out of check?
     for(auto move : king_moves)
     {
-    	if(board[original_dest]->isLegalMove(original_dest + move))
+    	if(original_dest+move >= 0 && original_dest + move <=63 && board[original_dest]->isLegalMove(original_dest + move) && !board[original_dest]->movedIntoCheck(original_dest + move))
     	{
     		return false;
     	}
@@ -151,19 +151,28 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
     return true; // no legal moves found ? true : false
 }
 
+bool Piece::movedIntoCheck(int dest)
+{
+	if(this->isKing())
+	{
+		return this->movedIntoCheck(dest);
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool King::movedIntoCheck(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
-	if(this->isKing())
-	{
-	    for(auto elem : board)
-	    {
-	        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && elem->isLegalMove(dest) && isPathFree(elem->getPieceSquare(), dest))
-	        {
-	            return true;
-	        }
-	    }
-	}
+    for(auto elem : board)
+    {
+        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && elem->isLegalMove(dest) && isPathFree(elem->getPieceSquare(), dest))
+        {
+            return true;
+        }
+    }
 
 	return false;
 }
@@ -183,12 +192,8 @@ bool Piece::canCastle(int dest)
 
 void Chess::makeMove(int src, int dest)
 {
-	bool skip_print = false;
-	vector<Piece*> board = chess.getBoard(), previous_board;
-	stack<Piece*> CheckStack = chess.getCheckStack();
+	vector<Piece*> board = chess.getBoard();
 	pieceColor current_turn = chess.getTurn();
-	Piece *king, *piece;
-
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
         // pawn promotion
@@ -197,57 +202,31 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
-        // if in check and after the move you are still in check, reset the board to previous move
-        // if in check and after the move you are not in check, turn off check and adjust turn
-        if(chess.getCheck())
-        {
-        	previous_board = chess.getBoard();
-        	makeMoveForType(src, dest);
-
-        	piece = CheckStack.top();
-			CheckStack.pop();
-			king = CheckStack.top();
-			CheckStack.pop();
-
-        	if(piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
-        	{
-        		chess.setBoard(previous_board);
-        		skip_print = true;
-
-        		// reset the stack
-        		CheckStack.push(king);
-				CheckStack.push(piece);
-				chess.setCheckStack(CheckStack);
-        	}
-        	else
-        	{
-        		chess.setCheck(false);
-				chess.setTurn(current_turn == 2 ? BLACK : WHITE);
-        	}		
-        }
-        else
-        {
-        	makeMoveForType(src, dest);
-        	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
-        }
-
+        makeMoveForType(src, dest);
         board = chess.getBoard();
-		
+		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
     		chess.isCheckmate(); // check for checkmates
     	}
+
+		printBoard(chess.getBoard());
+		if(!chess.getCheckmate())
+		{
+			if(chess.getTurn() == 2)
+			{
+				cout << "\nWhite's move" << endl;
+			}
+			else
+			{
+				cout << "\nBlack's move" << endl;
+			}
+		}
   	}
-    
-    if(skip_print)
+    else
     {
 		cout << "Invalid move! Try again..." << endl;
-	}
-	else
-	{
-		printBoard(chess.getBoard());
-		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
-		else{cout << "\nBlack's move" << endl;}
 	}
 }
 
