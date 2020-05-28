@@ -1,3 +1,4 @@
+r1bqkbnr/pppppppp/n7/7Q/4P3/2NP4/PPPB1PPP/1K2RBNR b kq
 52 36
 1 16
 51 43
@@ -16,4 +17,5 @@
 59 60
 1 16
 58 49
+58 51
 58 57

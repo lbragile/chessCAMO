@@ -8,9 +8,8 @@
 #define DEFAULT 15
 
 Chess chess; // global object call
-bool valid_test = true; // global variable call
 
-string boardFenConverter(const vector<Piece*> & board, int white_turns, int black_turns)
+string boardFenConverter(const vector<Piece*> & board)
 {
 	char temp[15];
 	string fen;
@@ -32,10 +31,10 @@ string boardFenConverter(const vector<Piece*> & board, int white_turns, int blac
 		if(empty_count == 8 || (elem_count % 8 == 7 && empty_count != 0)){sprintf(temp, "%i", empty_count); fen.append(temp); empty_count = 0;}
 
 		// castling
-		if(!board[4]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_q = true;}
-		if(!board[7]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_k = true;}
-		if(!board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_q = true;}
-		if(!board[63]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_k = true;}
+		if(!board[4]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_q = true;}else{b_castle_q = false;}
+		if(!board[7]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_k = true;}else{b_castle_k = false;}
+		if(!board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_q = true;}else{w_castle_q = false;}
+		if(!board[63]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_k = true;}else{w_castle_k = false;}
 
 		if(elem_count % 8 == 7 && elem_count != 63){fen.append("/");}
 		elem_count++;
@@ -47,24 +46,16 @@ string boardFenConverter(const vector<Piece*> & board, int white_turns, int blac
 	if(b_castle_k){fen.append("k");}
 	if(b_castle_q){fen.append("q");}
 
-	// move count
-	fen.append(" - ");
-	sprintf(temp, "%i ", white_turns);
-	fen.append(temp);
-	sprintf(temp, "%i", black_turns);
-	fen.append(temp);
-
-	cout << fen << endl;
-	exit(1);
 	return fen;
 }
 
 int main()
 {
 	char filename[1000];
-	int file_num = 1, num_failed = 0, white_turns = 0, black_turns = 0;
-	vector<string> failed_tests;
+	int file_num = 0, num_failed = 0, src, dest;
+	vector<string> failed_tests, fen_obtained, fen_expected;
 	vector<int> test_case_num;
+	string fen_expected_input;
 
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, DEFAULT);
@@ -84,12 +75,8 @@ int main()
 			Chess reset;
 			chess = reset;
 
-			// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
-			int src, dest;
-
 			// Create 8x8 default board
 			boardInit(chess);
-			vector<Piece*> board = chess.getBoard();
 
 			// userEnded(turn);
 
@@ -98,14 +85,14 @@ int main()
 			ifstream myfile(filename); //opening the file.
 		    if(myfile.is_open()) //if the file is open
 		    {
+		    	getline(myfile, fen_expected_input);
+		    	fen_expected.push_back(fen_expected_input);
 		        while(!myfile.eof() && !chess.getCheckmate()) //while the end of file is NOT reached or game is not finished
 		        {	
 		        	cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
 		            chess.makeMove(src, dest);
-		            chess.getTurn() == 2 ? white_turns++ : black_turns++;
-					boardFenConverter(chess.getBoard(), white_turns, black_turns);
 		        }
 		        myfile.close(); //closing the file
 		    }
@@ -116,13 +103,16 @@ int main()
 		    }
 			
 			// updatedBoardStatus(board, board[src], turn, valid);
-		    file_num++;
-		    if(!valid_test)
+		    fen_obtained.push_back(boardFenConverter(chess.getBoard()));
+
+		    if(fen_obtained[file_num] != fen_expected[file_num]) // FEN value are not equal
 		    {
 		    	failed_tests.push_back(filename);
-		    	test_case_num.push_back(file_num-1);
+		    	test_case_num.push_back(file_num);
 				num_failed++;
 		    }
+
+		   	file_num++;
 		} while (FindNextFile(hFind, &FindFileData));
 	} 
 	FindClose(hFind);
@@ -150,6 +140,14 @@ int main()
 			cout << " (Test Case " << test_case_num[itr - failed_tests.begin()] << ")" << endl;
 			SetConsoleTextAttribute(hConsole, DEFAULT);
 		}
+	}
+
+	while(!fen_obtained.empty())
+	{
+		cout << fen_expected.back() << endl;
+		cout << fen_obtained.back() << endl;
+		fen_expected.pop_back();
+		fen_obtained.pop_back();
 	}
 	
 	return 0;

@@ -202,12 +202,10 @@ void Chess::makeMove(int src, int dest)
 		printBoard(chess.getBoard());
 		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
 		else{cout << "\nBlack's move" << endl;}
-		valid_test = true; // for test case analysis purposes!
   	}
     else
     {
 		cout << "Invalid move! Try again..." << endl;
-		valid_test = false; // for test case analysis purposes!
 	}
 }
 
