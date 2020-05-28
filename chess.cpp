@@ -66,7 +66,7 @@ bool Piece::causeCheck(int dest)
     	}
     }
 
-    if(isPathFree(dest, king_pos))
+    if(isPathFree(dest, king_pos) && board[dest]->isLegalMove(king_pos))
     {
     	cout << "Check!" << endl;
         CheckStack.push(board[king_pos]);
