@@ -540,9 +540,14 @@ void printBoard(const vector<Piece*> & board)
 	int count = 0;
 	for(auto elem : board)
 	{
-		if(count % 8 == 0)
+		if(count == 0)
 		{
-			cout << "  ---------------------------------" << endl;
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
+			cout << ranks[count/8] << " | ";
+		}
+		else if(count % 8 == 0 && count > 0)
+		{
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
 			cout << ranks[count/8] << " | ";
 		}
 
@@ -578,7 +583,7 @@ void printBoard(const vector<Piece*> & board)
 			cout << endl;
 		if(count == 63)
 		{
-			cout << "  ---------------------------------" << endl;
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
 			cout << "    1   2   3   4   5   6   7   8" << endl;
 		}
 		count++;
