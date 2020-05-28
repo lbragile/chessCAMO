@@ -133,21 +133,22 @@ int main()
 		cout << "Failed Cases:" << endl;
 		SetConsoleTextAttribute(hConsole, DEFAULT);
 		vector<string>::iterator itr;
+		int test_case;
 		for(itr = failed_tests.begin(); itr != failed_tests.end(); itr++)
 		{
+			test_case = test_case_num[itr - failed_tests.begin()];
 			cout << *itr;
 			SetConsoleTextAttribute(hConsole, YELLOW);
-			cout << " (Test Case " << test_case_num[itr - failed_tests.begin()] << ")" << endl;
+			cout << " (Test Case " << test_case << ")" << endl;
+			SetConsoleTextAttribute(hConsole, GREEN);
+			cout << "Expected FEN: ";
 			SetConsoleTextAttribute(hConsole, DEFAULT);
+			cout << fen_expected[test_case] << endl;
+			SetConsoleTextAttribute(hConsole, RED);
+			cout << "Obtained FEN: ";
+			SetConsoleTextAttribute(hConsole, DEFAULT);
+			cout << fen_obtained[test_case] << endl << endl << endl;
 		}
-	}
-
-	while(!fen_obtained.empty())
-	{
-		cout << fen_expected.back() << endl;
-		cout << fen_obtained.back() << endl;
-		fen_expected.pop_back();
-		fen_obtained.pop_back();
 	}
 	
 	return 0;
