@@ -14,7 +14,6 @@ string boardFenConverter(const vector<Piece*> & board)
 	char temp[15];
 	string fen;
 
-	bool w_castle_k = false, w_castle_q = false, b_castle_k = false, b_castle_q = false;
 	int elem_count = 0, empty_count = 0;
 
 	for(auto elem : board)
@@ -30,21 +29,16 @@ string boardFenConverter(const vector<Piece*> & board)
 
 		if(empty_count == 8 || (elem_count % 8 == 7 && empty_count != 0)){sprintf(temp, "%i", empty_count); fen.append(temp); empty_count = 0;}
 
-		// castling
-		if(!board[4]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_q = true;}else{b_castle_q = false;}
-		if(!board[7]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_k = true;}else{b_castle_k = false;}
-		if(!board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_q = true;}else{w_castle_q = false;}
-		if(!board[63]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_k = true;}else{w_castle_k = false;}
-
 		if(elem_count % 8 == 7 && elem_count != 63){fen.append("/");}
 		elem_count++;
 	}
 	fen.append(chess.getTurn() == 2 ? " w " : " b ");
 
-	if(w_castle_k){fen.append("K");}
-	if(w_castle_q){fen.append("Q");}
-	if(b_castle_k){fen.append("k");}
-	if(b_castle_q){fen.append("q");}
+	// castling
+	if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(60, 63) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo()){fen.append("K");}
+	if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, 60) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){fen.append("Q");}
+	if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(4, 7) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo()){fen.append("k");}
+	if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, 4) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo()){fen.append("q");}
 
 	return fen;
 }
@@ -139,7 +133,7 @@ int main()
 			test_case = test_case_num[itr - failed_tests.begin()];
 			cout << *itr;
 			SetConsoleTextAttribute(hConsole, YELLOW);
-			cout << " (Test Case " << test_case << ")" << endl;
+			cout << " (Test Case " << test_case+1 << ")" << endl;
 			SetConsoleTextAttribute(hConsole, GREEN);
 			cout << "Expected FEN: ";
 			SetConsoleTextAttribute(hConsole, DEFAULT);
