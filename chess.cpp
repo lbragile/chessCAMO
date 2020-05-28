@@ -123,7 +123,7 @@ void Chess::handleCheckmate()
 
 bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
 {
-    int increment, original_dest = dest; // original_dest is the king
+    int increment, original_dest = dest, original_src = src; // original_dest is the king
     int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     // can a piece defend the king from check?
@@ -134,7 +134,7 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
         {
             for(int i = src+increment; i<=dest; i+=increment)
             {
-                if(current_piece->isLegalMove(i)){return false;}
+                if(current_piece->isLegalMove(i) || current_piece->isLegalMove(original_src)){return false;}
             }
         }
     }
@@ -192,8 +192,11 @@ bool Piece::canCastle(int dest)
 
 void Chess::makeMove(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard();
+	vector<Piece*> board = chess.getBoard(), previous_board;
+	stack<Piece*> CheckStack = chess.getCheckStack();
 	pieceColor current_turn = chess.getTurn();
+	Piece *king, *piece;
+
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
         // pawn promotion
@@ -202,7 +205,32 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
+        previous_board = chess.getBoard();
         makeMoveForType(src, dest);
+
+        if(!CheckStack.empty())
+        {
+        	piece = CheckStack.top();
+			CheckStack.pop();
+			king = CheckStack.top();
+			CheckStack.pop();
+			chess.setCheckStack(CheckStack);
+
+			if(piece->isLegalMove(king->getPieceSquare()) && piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
+			{
+				chess.setBoard(previous_board);
+				cout << "You are in check! Try again..." << endl;
+				CheckStack.push(king);
+				CheckStack.push(piece);
+				chess.setCheckStack(CheckStack);
+				return;
+			}
+			else
+			{
+				chess.setCheck(false);
+			}
+        }
+
         board = chess.getBoard();
 		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
 

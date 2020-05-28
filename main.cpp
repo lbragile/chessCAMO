@@ -18,7 +18,6 @@ int main()
     {	
     	cout << endl << "Enter a source AND destination square in [0, 63]: ";
         cin >> src >> dest;
-        cout << src << " " << dest << endl;
         chess.makeMove(src, dest);
     }
 
