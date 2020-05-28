@@ -20,13 +20,16 @@ string boardFenConverter(const vector<Piece*> & board, int white_turns, int blac
 
 	for(auto elem : board)
 	{
-		if(elem->isPawn()){elem->isPieceWhite() ? fen.append("P") : fen.append("p");}
-		if(elem->isKnight()){elem->isPieceWhite() ? fen.append("N") : fen.append("n");}
-		if(elem->isBishop()){elem->isPieceWhite() ? fen.append("B") : fen.append("b");}
-		if(elem->isRook()){elem->isPieceWhite() ? fen.append("R") : fen.append("r");}
-		if(elem->isQueen()){elem->isPieceWhite() ? fen.append("Q") : fen.append("q");}
-		if(elem->isKing()){elem->isPieceWhite() ? fen.append("K") : fen.append("k");}
-		if(elem->isEmpty()){empty_count++;}
+		sprintf(temp, "%i", empty_count);
+		if(elem->isPawn()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("P") : fen.append("p"); empty_count=0;}
+		else if(elem->isKnight()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("N") : fen.append("n"); empty_count=0;}
+		else if(elem->isBishop()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("B") : fen.append("b"); empty_count=0;}
+		else if(elem->isRook()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("R") : fen.append("r"); empty_count=0;}
+		else if(elem->isQueen()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("Q") : fen.append("q"); empty_count=0;}
+		else if(elem->isKing()){if(empty_count > 0){fen.append(temp);} elem->isPieceWhite() ? fen.append("K") : fen.append("k"); empty_count=0;}
+		else{empty_count++;} // elem->isEmpty()
+
+		if(empty_count == 8 || (elem_count % 8 == 7 && empty_count != 0)){sprintf(temp, "%i", empty_count); fen.append(temp); empty_count = 0;}
 
 		// castling
 		if(!board[4]->getPieceMoveInfo() && !board[0]->getPieceMoveInfo()){b_castle_q = true;}
@@ -34,19 +37,7 @@ string boardFenConverter(const vector<Piece*> & board, int white_turns, int blac
 		if(!board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_q = true;}
 		if(!board[63]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){w_castle_k = true;}
 
-		sprintf(temp, "%i/", empty_count);
-		if(elem_count % 8 == 7 && elem_count != 63)
-		{
-			if(empty_count > 0)
-			{
-				fen.append(temp);
-				empty_count=0;
-			} 
-			else
-			{
-				fen.append("/");
-			}
-		}
+		if(elem_count % 8 == 7 && elem_count != 63){fen.append("/");}
 		elem_count++;
 	}
 	fen.append(chess.getTurn() == 2 ? " w " : " b ");
