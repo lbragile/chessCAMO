@@ -84,19 +84,13 @@ void Chess::isCheckmate()
 	vector<Piece*> board = chess.getBoard();
 	Piece *king, *piece;
 
-	// no check was delivered
-	if(CheckStack.empty())
-	{
-	    return; // do nothing (cannot be checkmate without a check)
-	}
-
 	// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
-	else if(CheckStack.top()->getPieceColor() == getTurn()) 
+	if(CheckStack.top()->getPieceColor() == getTurn()) 
 	{
 		handleCheckmate();
 	}
 
-	else if(CheckStack.top()->getPieceColor() != getTurn())
+	else // CheckStack.top()->getPieceColor() != getTurn()
 	{
 		piece = CheckStack.top();
 		CheckStack.pop();
@@ -114,8 +108,6 @@ void Chess::isCheckmate()
 			CheckStack.push(piece);
 			chess.setCheckStack(CheckStack);
 		}
-
-		// add a feature for if king can move out of the way!
 	}
 }
 
@@ -131,8 +123,10 @@ void Chess::handleCheckmate()
 
 bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
 {
-    int increment, original_dest = dest;
+    int increment, original_dest = dest; // original_dest is the king
+    int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
+    // can a piece defend the king from check?
     increment = incrementChoice(src, dest);
     for(auto current_piece : board)
     {
@@ -145,6 +139,15 @@ bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
         }
     }
 
+    // can king move out of check?
+    for(auto move : king_moves)
+    {
+    	if(board[original_dest]->isLegalMove(original_dest + move))
+    	{
+    		return false;
+    	}
+    }
+    	
     return true; // no legal moves found ? true : false
 }
 
@@ -180,8 +183,12 @@ bool Piece::canCastle(int dest)
 
 void Chess::makeMove(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard();
+	bool skip_print = false;
+	vector<Piece*> board = chess.getBoard(), previous_board;
+	stack<Piece*> CheckStack = chess.getCheckStack();
 	pieceColor current_turn = chess.getTurn();
+	Piece *king, *piece;
+
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
         // pawn promotion
@@ -190,22 +197,57 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
-        makeMoveForType(src, dest);
-        board = chess.getBoard();
-		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+        // if in check and after the move you are still in check, reset the board to previous move
+        // if in check and after the move you are not in check, turn off check and adjust turn
+        if(chess.getCheck())
+        {
+        	previous_board = chess.getBoard();
+        	makeMoveForType(src, dest);
 
+        	piece = CheckStack.top();
+			CheckStack.pop();
+			king = CheckStack.top();
+			CheckStack.pop();
+
+        	if(piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
+        	{
+        		chess.setBoard(previous_board);
+        		skip_print = true;
+
+        		// reset the stack
+        		CheckStack.push(king);
+				CheckStack.push(piece);
+				chess.setCheckStack(CheckStack);
+        	}
+        	else
+        	{
+        		chess.setCheck(false);
+				chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+        	}		
+        }
+        else
+        {
+        	makeMoveForType(src, dest);
+        	chess.setTurn(current_turn == 2 ? BLACK : WHITE);
+        }
+
+        board = chess.getBoard();
+		
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
     		chess.isCheckmate(); // check for checkmates
     	}
-
+  	}
+    
+    if(skip_print)
+    {
+		cout << "Invalid move! Try again..." << endl;
+	}
+	else
+	{
 		printBoard(chess.getBoard());
 		if(chess.getTurn() == 2){cout << "\nWhite's move" << endl;}
 		else{cout << "\nBlack's move" << endl;}
-  	}
-    else
-    {
-		cout << "Invalid move! Try again..." << endl;
 	}
 }
 

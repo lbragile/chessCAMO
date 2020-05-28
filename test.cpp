@@ -63,7 +63,7 @@ int main()
 		do
 		{
 			SetConsoleTextAttribute(hConsole, YELLOW);
-			printf("\n\n===================== TEST CASE %i ==================== \n\n", file_num);
+			printf("\n\n===================== TEST CASE %i ==================== \n\n", file_num+1);
 			SetConsoleTextAttribute(hConsole, DEFAULT);
 
 			Chess reset;
