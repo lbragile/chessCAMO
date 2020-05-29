@@ -19,11 +19,10 @@ Chess::~Chess()
 
 bool King::canCastle(int dest)
 {
-	/* TODO
-	    check for castling through a check
-	*/
 	vector<Piece*> board = chess.getBoard();
-    return !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
+	stack<Piece*> stack = chess.getCheckStack();
+
+    return stack.empty() && !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
 }
 
 bool Piece::causeCheck(int dest)
