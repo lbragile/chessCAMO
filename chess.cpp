@@ -72,7 +72,6 @@ bool Piece::causeCheck(int dest)
 
     if(isPathFree(dest, king_pos) && board[dest]->isLegalMove(king_pos))
     {
-    	cout << "Check!" << endl;
         CheckStack.push(board[king_pos]);
         CheckStack.push(board[dest]);
         chess.setCheckStack(CheckStack);
@@ -111,6 +110,7 @@ void Chess::isCheckmate()
 			CheckStack.push(king);
 			CheckStack.push(piece);
 			chess.setCheckStack(CheckStack);
+    		cout << "Check!" << endl; // was not checkmate so can state that it is check
 		}
 	}
 }

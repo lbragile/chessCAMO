@@ -12,7 +12,6 @@ using namespace std;
 
 enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY}; // caps to avoid class name conflict
 enum pieceColor {BLACK, NEUTRAL, WHITE};
-// enum pieceDirection {Row, Col, Diag_L, Diag_R};
 
 // forward declaration
 class Piece; 
@@ -93,7 +92,7 @@ public:
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
 	// constructor with piece initialization
-	Piece() : square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
+	Piece() : Chess(), square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
 
 	// constructor with piece initialization
 	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}
@@ -161,7 +160,6 @@ public:
 
 	virtual bool isLegalMove(int dest);
 	virtual void promotePawn(int dest);
-	bool isFirstMove();
 };	
 
 class Knight : public Piece
@@ -178,8 +176,6 @@ public:
 	Knight(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	bool isPinned();
-
 };
 
 class Bishop : public Piece
@@ -196,7 +192,6 @@ public:
 	Bishop(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	bool isPinned();
 };
 
 class Rook : public Piece
@@ -213,8 +208,6 @@ public:
 	Rook(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	bool isFirstMove();
-	bool isPinned();
 };
 
 class Queen : public Piece
@@ -231,7 +224,6 @@ public:
 	Queen(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	bool isPinned();
 };
 
 class King : public Piece
@@ -248,7 +240,6 @@ public:
 	King(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
 	virtual bool isLegalMove(int dest);
-	bool isFirstMove();
 	virtual bool canCastle(int dest);
 	// virtual bool isChecked(int src, int dest);
 	bool isDoubleChecked();
