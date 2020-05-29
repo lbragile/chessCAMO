@@ -177,10 +177,10 @@ bool Piece::canCastle(int dest)
 
 void Chess::makeMove(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard(), previous_board = chess.getBoard();
+	vector<Piece*> board = chess.getBoard();
 	stack<Piece*> CheckStack = chess.getCheckStack();
 	pieceColor current_turn = chess.getTurn();
-	Piece *king, *piece;
+	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
@@ -190,6 +190,7 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
+		before_undo_piece = board[dest];
         makeMoveForType(src, dest);
 
         if(!CheckStack.empty())
@@ -201,7 +202,10 @@ void Chess::makeMove(int src, int dest)
 
 			if(piece->isLegalMove(king->getPieceSquare()) && piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
 			{
-				chess.setBoard(previous_board);
+				makeMoveForType(dest, src); // undo the move
+				board = chess.getBoard();
+				board[dest] = before_undo_piece;
+				chess.setBoard(board);
 				cout << "You are in check! Try again..." << endl;
 				return;
 			}
@@ -213,7 +217,6 @@ void Chess::makeMove(int src, int dest)
         }
 
         board = chess.getBoard();
-
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
     		chess.isCheckmate(); // check for checkmates
