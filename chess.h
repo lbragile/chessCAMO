@@ -75,7 +75,7 @@ private:
 	void makeMoveForType(int src, int dest);
 
 	// for isCheckmate
-	bool pieceIterator(int src, int dest, const vector<Piece*> & board);
+	bool pieceIterator(int src, int dest);
 
 	// for isPathFree
 	bool pathIterator(int src, int dest, int increment);

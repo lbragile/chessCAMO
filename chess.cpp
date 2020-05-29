@@ -9,25 +9,6 @@ Queen::~Queen() {}
 King::~King() {}
 Empty::~Empty() {}
 
-// // copy assignment
-// Chess & Chess::operator =(const Chess & object){}
-// // copy assignment
-// Piece & Piece::operator =(const Piece & object){}
-// // copy assignment
-// Pawn & Pawn::operator =(const Pawn & object){}
-// // copy assignment
-// Knight & Knight::operator =(const Knight & object){}
-// // copy assignment
-// Bishop & Bishop::operator =(const Bishop & object){}
-// // copy assignment
-// Rook & Rook::operator =(const Rook & object){}
-// // copy assignment
-// Queen & Queen::operator =(const Queen & object){}
-// // copy assignment
-// King & King::operator =(const King & object){}
-// // copy assignment
-// Empty & Empty::operator =(const Empty & object){}
-
 Chess::~Chess()
 {
 	while(!board.empty())
@@ -81,16 +62,16 @@ bool Piece::causeCheck(int dest)
 void Chess::isCheckmate()
 {
 	stack<Piece*> CheckStack = chess.getCheckStack();
-	vector<Piece*> board = chess.getBoard();
 	Piece *king, *piece;
+	pieceColor current_turn = chess.getTurn() == 2 ? BLACK : WHITE;
 
 	// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
-	if(CheckStack.top()->getPieceColor() == getTurn()) 
+	if(CheckStack.top()->getPieceColor() == current_turn) 
 	{
 		handleCheckmate();
 	}
 
-	else // CheckStack.top()->getPieceColor() != getTurn()
+	else // CheckStack.top()->getPieceColor() != current_turn
 	{
 		piece = CheckStack.top();
 		CheckStack.pop();
@@ -98,7 +79,7 @@ void Chess::isCheckmate()
 		CheckStack.pop();
 
 		// checkmate
-		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare(), board))
+		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare()))
 		{
 			handleCheckmate();
 		}
@@ -121,20 +102,24 @@ void Chess::handleCheckmate()
 	setCheckmate(true);
 }
 
-bool Chess::pieceIterator(int src, int dest, const vector<Piece*> & board)
+bool Chess::pieceIterator(int src, int dest)
 {
-    int increment, original_dest = dest, original_src = src; // original_dest is the king
+	// vector<Piece*> board = 
+    int increment, original_dest = dest; // original_dest is the king
     int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     // can a piece defend the king from check?
     increment = incrementChoice(src, dest);
-    for(auto current_piece : board)
+    for(auto current_piece : chess.getBoard())
     {
         if(current_piece->isSameColor(current_piece->getPieceSquare(), original_dest) && current_piece->getPieceSquare() != original_dest)
         {
             for(int i = src+increment; i<=dest; i+=increment)
-            {
-                if(current_piece->isLegalMove(i) || current_piece->isLegalMove(original_src)){return false;}
+            {	
+                if(current_piece->isLegalMove(i))
+                {
+                	return false;
+                }
             }
         }
     }
@@ -192,7 +177,7 @@ bool Piece::canCastle(int dest)
 
 void Chess::makeMove(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard(), previous_board;
+	vector<Piece*> board = chess.getBoard(), previous_board = chess.getBoard();
 	stack<Piece*> CheckStack = chess.getCheckStack();
 	pieceColor current_turn = chess.getTurn();
 	Piece *king, *piece;
@@ -205,7 +190,6 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
-        previous_board = chess.getBoard();
         makeMoveForType(src, dest);
 
         if(!CheckStack.empty())
@@ -214,30 +198,28 @@ void Chess::makeMove(int src, int dest)
 			CheckStack.pop();
 			king = CheckStack.top();
 			CheckStack.pop();
-			chess.setCheckStack(CheckStack);
 
 			if(piece->isLegalMove(king->getPieceSquare()) && piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
 			{
 				chess.setBoard(previous_board);
 				cout << "You are in check! Try again..." << endl;
-				CheckStack.push(king);
-				CheckStack.push(piece);
-				chess.setCheckStack(CheckStack);
 				return;
 			}
 			else
 			{
+				chess.setCheckStack(CheckStack);
 				chess.setCheck(false);
 			}
         }
 
         board = chess.getBoard();
-		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
 
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
     		chess.isCheckmate(); // check for checkmates
     	}
+
+		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
 
 		printBoard(chess.getBoard());
 		if(!chess.getCheckmate())

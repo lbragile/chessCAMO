@@ -121,6 +121,7 @@ int main()
 	SetConsoleTextAttribute(hConsole, RED);
 	cout << "Failed: " << num_failed << "/" << file_num << endl;
 	cout << endl << endl;
+	SetConsoleTextAttribute(hConsole, DEFAULT);
 
 	if(!failed_tests.empty())
 	{
