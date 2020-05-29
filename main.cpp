@@ -25,14 +25,11 @@ int main()
 }
 
 /* TODO: 
-	1. Avoid castling:
-		- into check (king is in check after castling)
-		- through check
-	2. En-passant
-	3. Double Checks, stalemate, knight check
-	4. Pinned Piece
-	5. Three move repetition (draw) & 50 move rule
-	6. Draw offer / Resign
+	1. En-passant
+	2. Double Checks, stalemate, knight check
+	3. Pinned Piece
+	4. Three move repetition (draw) & 50 move rule
+	5. Draw offer / Resign
 */
 
 		

@@ -19,10 +19,34 @@ Chess::~Chess()
 
 bool King::canCastle(int dest)
 {
+	int increment, src = this->getPieceSquare();
+
 	vector<Piece*> board = chess.getBoard();
 	stack<Piece*> stack = chess.getCheckStack();
 
-    return stack.empty() && !this->getPieceMoveInfo() && !board[dest]->getPieceMoveInfo() && this->isPathFree(this->getPieceSquare(), dest);
+	if(this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess.getCheck())
+	{
+		return false;
+	}
+	else
+	{
+		increment = incrementChoice(src, dest);
+	    for(auto elem : board)
+	    {
+	        if(!elem->isEmpty() && !elem->isSameColor(elem->getPieceSquare(), this->getPieceSquare()))
+	        {
+	            for(int i = src+increment; i<=dest; i+=increment)
+	            {	
+	                if(elem->isLegalMove(i))
+	                {
+	                	return false;
+		            }
+	            }
+	        }
+	    }
+
+    	return this->isPathFree(src, dest);
+	}
 }
 
 bool Piece::causeCheck(int dest)

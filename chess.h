@@ -71,6 +71,7 @@ private:
 	bool check;
 	pieceColor turn;
 
+protected:
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
 
@@ -92,10 +93,10 @@ public:
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
 	// constructor with piece initialization
-	Piece() : square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false}, pinned{false} {}
+	Piece() : square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
 
 	// constructor with piece initialization
-	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}, pinned{false}
+	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}
 	{this->square = square; this->value = value; this->type = type; this->color = color;}
 
 	// Mutator and accessor functions for determining/setting the piece value of an object
@@ -117,10 +118,6 @@ public:
 	// Mutator and accessor functions for determining/setting the moving state of an object
 	bool getPieceMoveInfo() const {return moved;}
 	void setPieceMoveInfo(bool moved) {this->moved = moved;}
-
-	// Mutator and accessor functions for determining/setting if an object is pinned to king
-	bool getPiecePinInfo() const {return pinned;}
-	void setPiecePinInfo() {this->pinned = !pinned;}
 
 	bool isEmpty() {return this->getPieceType() == EMPTY;}
 	bool isPawn() {return this->getPieceType() == PAWN;}
@@ -147,7 +144,6 @@ private:
 	pieceType type;
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
-	bool pinned;
 };
 
 class Pawn : public Piece
