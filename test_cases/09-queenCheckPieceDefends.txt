@@ -1,10 +1,13 @@
-rnbqkbnr/ppppp3/5pp1/8/4P3/8/PPPP1PPP/RNB1KBNR w KQkq
+rnbqkbnr/ppppp3/6p1/5P2/8/8/PPPP1PPP/RNB1KBNR b KQkq
 52 36
-13 21
+13 29
 59 31
 8 16
 4 13
+15 23
+29 36
 14 22
 31 22
 4 13
 15 22
+36 29

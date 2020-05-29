@@ -205,6 +205,7 @@ void Chess::makeMove(int src, int dest)
 				makeMoveForType(dest, src); // undo the move
 				board = chess.getBoard();
 				board[dest] = before_undo_piece;
+				board[dest]->setPieceMoveInfo(before_undo_piece->getPieceMoveInfo());
 				chess.setBoard(board);
 				cout << "You are in check! Try again..." << endl;
 				return;
