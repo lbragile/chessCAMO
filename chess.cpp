@@ -181,6 +181,7 @@ void Chess::makeMove(int src, int dest)
 	stack<Piece*> CheckStack = chess.getCheckStack();
 	pieceColor current_turn = chess.getTurn();
 	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
+	bool before_undo_moveInfo;
 
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
     {
@@ -191,6 +192,8 @@ void Chess::makeMove(int src, int dest)
         }
 
 		before_undo_piece = board[dest];
+		before_undo_moveInfo = board[src]->getPieceMoveInfo();
+
         makeMoveForType(src, dest);
 
         if(!CheckStack.empty())
@@ -205,7 +208,7 @@ void Chess::makeMove(int src, int dest)
 				makeMoveForType(dest, src); // undo the move
 				board = chess.getBoard();
 				board[dest] = before_undo_piece;
-				board[dest]->setPieceMoveInfo(before_undo_piece->getPieceMoveInfo());
+				board[src]->setPieceMoveInfo(before_undo_moveInfo);
 				chess.setBoard(board);
 				cout << "You are in check! Try again..." << endl;
 				return;
