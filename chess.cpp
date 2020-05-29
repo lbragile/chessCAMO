@@ -96,9 +96,9 @@ void Chess::handleCheckmate()
 {
 	// printBoard(board);
 	if(chess.getTurn() == 2)
-		cout << "White lost due to Checkmate! -> Black Wins" << endl;
+		cout << "White won by Checkmate!" << endl;
 	else
-		cout << "Black lost due to Checkmate! -> White Wins" << endl;
+		cout << "Black won by Checkmate!" << endl;
 	setCheckmate(true);
 }
 
@@ -227,10 +227,10 @@ void Chess::makeMove(int src, int dest)
     	}
 
 		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
-
 		printBoard(chess.getBoard());
 		if(!chess.getCheckmate())
 		{
+			cout << "___________________________________________________" << endl;
 			if(chess.getTurn() == 2)
 			{
 				cout << "\nWhite's move" << endl;
