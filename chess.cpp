@@ -125,6 +125,42 @@ void Chess::handleCheckmate()
 	setCheckmate(true);
 }
 
+void Piece::enPassantHandling(int src, int dest)
+{
+	if(this->isPawn())
+	{
+		this->enPassantHandling(src, dest);
+	}
+	else
+	{
+		return;
+	}
+}
+
+void Pawn::enPassantHandling(int src, int dest)
+{
+	vector<Piece*> board = chess.getBoard();
+	if(abs(src-dest) == 16 && board[dest-1]->isPawn() && !isSameColor(dest-1, dest))
+	{
+		board[dest-1]->setEnPassant(true);
+	}
+	else if(abs(src-dest) == 16 && board[dest+1]->isPawn() && !isSameColor(dest+1, dest))
+	{
+		board[dest+1]->setEnPassant(true);
+	}
+	else
+	{
+		// if move was made after en-passant was set, cancel en-passant abilities of all pieces
+		for(auto elem : board)
+		{
+			if(elem->isPawn())
+			{
+				elem->setEnPassant(false);
+			}
+		}
+	}
+}
+
 bool Chess::pieceIterator(int src, int dest)
 {
 	// vector<Piece*> board = 
@@ -244,6 +280,8 @@ void Chess::makeMove(int src, int dest)
         }
 
         board = chess.getBoard();
+        board[dest]->enPassantHandling(src, dest);
+
     	if(board[src]->causeCheck(dest)) // did the move cause a check?
     	{
     		chess.isCheckmate(); // check for checkmates
@@ -356,12 +394,29 @@ void Chess::makeMoveForType(int src, int dest)
 	    }
 	}
 
-	// non-castling move
+	// en-passant move
+	else if(board[src]->isPawn() && board[src]->getEnPassant() && src % 8 != dest % 8)
+	{
+		board[src]->setPieceSquare(dest);
+        board[dest]->setPieceSquare(src);
+        std::swap(board[src], board[dest]);
+
+        // delete the pawn that caused en-passant (make it empty square)
+		if(abs(src-dest) == 7)
+		{
+			board[src+1] = new Empty(src+1, 0, EMPTY, NEUTRAL);
+		}
+		else if(abs(src-dest) == 9)
+		{
+			board[src-1] = new Empty(src-1, 0, EMPTY, NEUTRAL);
+		}
+	}
+
+	// regular or attacking
 	else
 	{
 	    // note that the piece moved
 	    board[src]->setPieceMoveInfo(true);
-
 	    // Regular Move
 	    if(board[dest]->isEmpty())
 	    {
@@ -459,11 +514,11 @@ bool Pawn::isLegalMove(int dest)
     if(this->getPieceMoveInfo())
     {
         if(this->isPieceWhite()) // goes up
-            legal = (src-dest == 8 && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest]->isEmpty());
+            legal = (src-dest == 8 && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && (!board[dest]->isEmpty() || getEnPassant()));
         else // black, goes down
-            legal = (dest-src == 8 && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
+            legal = (dest-src == 8 && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && (!board[dest]->isEmpty() || getEnPassant()));
     }
-    else
+    else // cannot en-passant if you have not moved yet
     {
         if(this->isPieceWhite()) // goes up
             legal = ((src-dest == 8 || src-dest == 16) && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && !board[dest]->isEmpty());

@@ -56,6 +56,10 @@ public:
 	pieceColor getTurn() const {return turn;}
 	void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
 
+	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
+	virtual bool getEnPassant() const {return this->getEnPassant();}
+	virtual void setEnPassant(bool en_passant) {}
+
 	void makeMove(int src, int dest);
 	void isCheckmate();
 	bool isStalemate(int turn, const vector<Piece> & board);
@@ -135,6 +139,8 @@ public:
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
 	bool causeCheck(int dest);
+	virtual void enPassantHandling(int src, int dest);
+
 	// virtual bool isChecked(int src, int dest);
 
 private:
@@ -153,13 +159,22 @@ public:
 	Pawn & operator =(const Pawn & object) = default; // copy assignment
 
 	// constructor with piece initialization
-	Pawn() : Piece() {}
+	Pawn() : Piece(), en_passant{false} {}
 
 	// constructor with piece initialization
-	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color), en_passant{false} {}
+
+	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
+	virtual bool getEnPassant() const {return en_passant;}
+	virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
+
+	virtual void enPassantHandling(int src, int dest);
 
 	virtual bool isLegalMove(int dest);
 	virtual void promotePawn(int dest);
+
+private:
+	bool en_passant;
 };	
 
 class Knight : public Piece
