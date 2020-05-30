@@ -1,4 +1,4 @@
-rn1qkbnr/1pp1ppp1/p2p3p/7Q/4P3/2NP4/bPPB1PPP/2KR1BNR b kq
+rn1qkbnr/1pp2pp1/p2p3p/4p2Q/4P3/2NP4/bPPB1PPP/2K1RBNR b kq
 52 36
 11 19
 59 31
@@ -10,3 +10,6 @@ rn1qkbnr/1pp1ppp1/p2p3p/7Q/4P3/2NP4/bPPB1PPP/2KR1BNR b kq
 58 51
 8 16
 60 56
+12 28
+58 57
+59 60

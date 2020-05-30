@@ -19,7 +19,9 @@ Chess::~Chess()
 
 bool King::canCastle(int dest)
 {
-	int increment, src = this->getPieceSquare();
+	int src = this->getPieceSquare();
+	bool going_left = src > dest ? true : false;
+	int increment = going_left ? -1 : 1;
 
 	vector<Piece*> board = chess.getBoard();
 	stack<Piece*> stack = chess.getCheckStack();
@@ -30,12 +32,12 @@ bool King::canCastle(int dest)
 	}
 	else
 	{
-		increment = incrementChoice(src, dest);
 	    for(auto elem : board)
 	    {
 	        if(!elem->isEmpty() && !elem->isSameColor(elem->getPieceSquare(), this->getPieceSquare()))
 	        {
-	            for(int i = src+increment; i<=dest; i+=increment)
+	        	// king only moves 2 squares regardless of castle direction
+	            for(int i = src+increment; i != src+(2*increment); i += increment) 
 	            {	
 	                if(elem->isLegalMove(i))
 	                {
