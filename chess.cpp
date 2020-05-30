@@ -170,19 +170,32 @@ bool Chess::pieceIterator(int src, int dest)
     int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     // can a piece defend the king from check?
-    increment = incrementChoice(src, dest);
-    for(auto current_piece : chess.getBoard())
+    if(!board[src]->isKnight())
     {
-        if(current_piece->isSameColor(current_piece->getPieceSquare(), original_dest) && current_piece->getPieceSquare() != original_dest)
-        {
-            for(int i = src+increment; i<=dest; i+=increment)
-            {	
-                if(current_piece->isLegalMove(i))
-                {
-                	return false;
-                }
-            }
-        }
+    	increment = incrementChoice(src, dest); // passed by reference
+	    for(auto elem : chess.getBoard())
+	    {
+	        if(elem->isSameColor(elem->getPieceSquare(), original_dest) && elem->getPieceSquare() != original_dest)
+	        {
+	            for(int i = src+increment; i<=dest; i+=increment)
+	            {	
+	                if(elem->isLegalMove(i))
+	                {
+	                	return false;
+	                }
+	            }
+	        }
+	    }
+    }
+    else // for a Knight check, to defend the king a piece must take the knight
+    {
+    	for(auto elem : chess.getBoard())
+	    {
+	        if(elem->isSameColor(elem->getPieceSquare(), dest) && elem->getPieceSquare() != dest && elem->isLegalMove(src))
+	        {
+	            return false;
+	        }
+	    }
     }
 
     // can king move out of check?
@@ -445,9 +458,19 @@ void Chess::makeMoveForType(int src, int dest)
 
 bool Chess::isPathFree(int src, int dest)
 {
-    int increment = incrementChoice(src, dest);
+	int increment;
+	vector<Piece*> board = chess.getBoard();
 
-    return increment > 0 ? pathIterator(src, dest, increment) : false;
+	if(board[src]->isKnight())
+	{
+		return true;
+	}
+	else
+	{
+		increment = incrementChoice(src, dest);
+    	return increment > 0 ? pathIterator(src, dest, increment) : false;
+	}
+    
 }
 
 int Chess::incrementChoice(int & src, int & dest)

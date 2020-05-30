@@ -1,6 +1,0 @@
-rnbqkbnr/1ppppppp/5N2/p7/8/8/PPPPPPPP/R1BQKBNR b KQkq
-57 42
-8 16
-42 36
-16 24
-36 21
