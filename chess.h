@@ -84,7 +84,7 @@ protected:
 	// for isPathFree
 	bool pathIterator(int src, int dest, int increment);
 
-	int numPiecesInPath(int src, int dest);
+	int squareOfPieceInPath(int src, int dest);
 
 	int incrementChoice(int & src, int & dest);
 	void handleCheckmate();

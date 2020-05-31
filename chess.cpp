@@ -210,7 +210,7 @@ bool Chess::pieceIterator(int src, int dest)
     return true; // no legal moves found ? true : false
 }
 
-int Chess::numPiecesInPath(int src, int dest)
+int Chess::squareOfPieceInPath(int src, int dest)
 {
 	int increment;
 	vector<Piece*> board = chess.getBoard();
@@ -247,7 +247,8 @@ bool Piece::isPinned(int dest)
 
 	for(auto elem : board)
 	{
-		if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen()) && numPiecesInPath(elem->getPieceSquare(), king_pos) == src)
+		if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
+		 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src && elem->getPieceSquare() != dest)
 		{	
 			return true;
 		}
@@ -300,7 +301,7 @@ void Chess::makeMove(int src, int dest)
 	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 	bool before_undo_moveInfo;
 
-    if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn)
+    if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn && !board[src]->isPinned(dest))
     {
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
@@ -596,14 +597,14 @@ bool Pawn::isLegalMove(int dest)
             legal = ((dest-src == 8 || dest-src == 16) && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
     }
 
-    return legal && isPathFree(src, dest) && !isSameColor(src, dest) && !this->isPinned(dest);
+    return legal && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool Rook::isLegalMove(int dest)
 {
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest) && !isSameColor(src, dest) && !this->isPinned(dest);
+	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool Knight::isLegalMove(int dest)
@@ -613,7 +614,7 @@ bool Knight::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !isSameColor(src, dest) && !this->isPinned(dest);
+	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !isSameColor(src, dest);
 }
 
 bool Bishop::isLegalMove(int dest)
@@ -621,7 +622,7 @@ bool Bishop::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest) && !isSameColor(src, dest) && !this->isPinned(dest);
+	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool Queen::isLegalMove(int dest)
@@ -631,7 +632,7 @@ bool Queen::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = abs(src - dest), diff_row = abs(src_row - dest_row), diff_col = abs(src_col - dest_col);
-	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest) && !isSameColor(src, dest) && !this->isPinned(dest);
+	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest) && !isSameColor(src, dest);
 }
 
 bool King::isLegalMove(int dest)
