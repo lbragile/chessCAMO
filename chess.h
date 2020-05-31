@@ -84,6 +84,8 @@ protected:
 	// for isPathFree
 	bool pathIterator(int src, int dest, int increment);
 
+	int numPiecesInPath(int src, int dest);
+
 	int incrementChoice(int & src, int & dest);
 	void handleCheckmate();
 };
@@ -140,6 +142,7 @@ public:
 	virtual bool movedIntoCheck(int dest);
 	bool causeCheck(int dest);
 	virtual void enPassantHandling(int src, int dest);
+	bool isPinned(int dest);
 
 	// virtual bool isChecked(int src, int dest);
 
