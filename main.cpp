@@ -18,12 +18,12 @@ int main()
         cin >> src >> dest;
         chess.makeMove(src, dest);
     }
-    
+
 	return 0;
 }
 
 /* TODO: 
-	1. Double Checks, stalemate
+	1. Double Checks
 	2. Three move repetition (draw) & 50 move rule
 	3. Draw offer / Resign
 

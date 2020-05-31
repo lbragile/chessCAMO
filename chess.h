@@ -30,7 +30,7 @@ public:
 	Chess & operator =(const Chess & object) = default; // copy assignment
 
 	// default constructor 
-	Chess() : checkmate{false}, stalemate{false}, check{false}, turn{WHITE} {}
+	Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
 
 	// Mutator and accessor functions for determining/setting the board's current state
 	vector<Piece*> getBoard() const {return board;}
@@ -43,6 +43,8 @@ public:
 	// Mutator and accessor functions for determining/setting the board's checking state 
 	bool getCheck() const {return check;}
 	void setCheck(bool check) {this->check = check;}
+	bool getDoubleCheck() const {return double_check;}
+	void setDoubleCheck(bool double_check) {this->double_check = double_check;}
 
 	// Mutator and accessor functions for determining/setting the board's checkmate state
 	bool getCheckmate() const {return checkmate;}
@@ -61,9 +63,8 @@ public:
 	virtual void setEnPassant(bool en_passant) {}
 
 	void makeMove(int src, int dest);
-	void isCheckmate();
+	void isCheckmate(string checkType);
 	bool isStalemate();
-
 	bool isPathFree(int src, int dest);
 	
 private:
@@ -72,13 +73,15 @@ private:
 	bool checkmate;
 	bool stalemate;
 	bool check;
+	bool double_check;
 	pieceColor turn;
 
 protected:
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
 
-	bool pieceIterator(int src, int dest); // for isCheckmate
+	bool pieceIterator(int src, int dest); // for isCheckmate (single)
+	bool pieceIterator(int dest); // for isCheckmate (double) - only king movement matters
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int & src, int & dest);
@@ -137,8 +140,10 @@ public:
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
-	bool causeCheck(int dest);
 	virtual void enPassantHandling(int src, int dest);
+
+	bool causeCheck(int dest);
+	bool causeDoubleCheck(int dest);
 	bool isPinned(int dest);
 
 private:

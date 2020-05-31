@@ -43,38 +43,63 @@ bool Chess::isStalemate()
 	return counter == 0;
 }
 
-void Chess::isCheckmate()
+void Chess::isCheckmate(string checkType)
 {
 	stack<Piece*> CheckStack = chess.getCheckStack();
 	Piece *king, *piece;
 	pieceColor current_turn = chess.getTurn() == 2 ? BLACK : WHITE;
 
-	// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
-	if(CheckStack.top()->getPieceColor() == current_turn) 
+	if(checkType == "double") // this type of check requires the king to move
 	{
-		handleCheckmate();
-	}
-
-	else // CheckStack.top()->getPieceColor() != current_turn
-	{
-		piece = CheckStack.top();
-		CheckStack.pop();
+		// will not be set, so next time this will be identical
 		king = CheckStack.top();
-		CheckStack.pop();
 
-		// checkmate
-		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare()))
+		// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
+		// checkmate due to a double check
+		if(pieceIterator(king->getPieceSquare()) || king->getPieceColor() != current_turn)
 		{
 			handleCheckmate();
 		}
 		else
 		{
-			CheckStack.push(king);
-			CheckStack.push(piece);
-			chess.setCheckStack(CheckStack);
+    		cout << "Double Check!" << endl; // was not checkmate so can state that it is check
+		}
+	}	
+
+	else if(checkType == "single") // CheckStack.top()->getPieceColor() != current_turn
+	{
+		// will not be set, so next time this will be identical
+		piece = CheckStack.top();
+		CheckStack.pop();
+		king = CheckStack.top();
+
+		// checkmate due to a single piece
+		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare()) || piece->getPieceColor() == current_turn)
+		{
+			handleCheckmate();
+		}
+		else
+		{
     		cout << "Check!" << endl; // was not checkmate so can state that it is check
 		}
 	}
+}
+
+bool Chess::pieceIterator(int dest)
+{
+	int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
+
+	// can king move out of check?
+    for(auto move : king_moves)
+    {
+    	if(dest+move >= 0 && dest + move <=63 && board[dest]->isLegalMove(dest + move) && !board[dest]->movedIntoCheck(dest + move))
+    	{
+    		return false;
+    	}
+    }
+    	
+    return true; // no legal moves found ? true : false
+
 }
 
 void Chess::makeMove(int src, int dest)
@@ -84,9 +109,15 @@ void Chess::makeMove(int src, int dest)
 	pieceColor current_turn = chess.getTurn();
 	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 	bool before_undo_moveInfo;
- 
-    if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn && !board[src]->isPinned(dest))
+ 	
+ 	// when in double check you must move the king
+    if(chess.getDoubleCheck() && !board[src]->isKing())
     {
+    	cout << "You are in DOUBLE check -> you must move the king! Try again..." << endl;
+    }
+    else if(0 <= src && src <= 63 && 0 <= dest && dest <= 63 && dest != src &&
+       board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn && !board[src]->isPinned(dest))
+    {	
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
         {
@@ -125,12 +156,20 @@ void Chess::makeMove(int src, int dest)
         board = chess.getBoard();
         board[dest]->enPassantHandling(src, dest);
 
-    	if(board[src]->causeCheck(dest)) // did the move cause a check?
+        // did the move cause a check?
+    	if(board[src]->causeCheck(dest) && !board[src]->causeDoubleCheck(dest)) 
     	{
-    		chess.isCheckmate(); // check for checkmates
+    		chess.isCheckmate("single"); // check for checkmates
     	}
 
-    	if(chess.isStalemate()) // check for stalemate
+    	// did the move cause a double check?
+    	if(!board[src]->causeCheck(dest) && board[src]->causeDoubleCheck(dest)) 
+    	{
+    		chess.isCheckmate("double"); // check for checkmates
+    	}
+
+    	// check for stalemate
+    	if(chess.isStalemate()) 
 		{
 			chess.handleStalemate();
 		}
@@ -397,6 +436,53 @@ bool Chess::pathIterator(int src, int dest, int increment)
 /*****
 	PIECE CLASS - MEMBER FUNCTIONS
  *****/
+bool Piece::causeDoubleCheck(int dest)
+{
+	int king_pos, checking_piece_counter = 0;
+	vector<Piece*> board = chess.getBoard();
+	stack<Piece*> CheckStack = chess.getCheckStack();
+
+	// causes a check if not a king (cannot check opponent with your king)
+	if(this->isKing())
+	{
+		return false;
+	}
+	else
+	{
+		// find the king
+	    for(auto elem : board)
+	    {
+	    	if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
+	    	{
+	    		king_pos = elem->getPieceSquare();
+	    		break;
+	    	}
+	    }
+
+		CheckStack.push(board[king_pos]); // make the king last in the stack
+
+	    // how many pieces are checking the king
+	    for(auto elem : board)
+	    {
+	    	if(!elem->isEmpty() && !isSameColor(elem->getPieceSquare(), king_pos) && elem->isLegalMove(king_pos) && isPathFree(elem->getPieceSquare(), king_pos) && !elem->isPinned(king_pos))
+	    	{
+	    		checking_piece_counter++;
+	    	}
+	    }
+	}
+
+	if(checking_piece_counter == 2)
+	{
+		chess.setCheckStack(CheckStack);
+        chess.setDoubleCheck(true);
+		return true;
+	}
+	else
+	{
+        chess.setDoubleCheck(false);
+		return false;
+	}
+}
 
 bool Piece::causeCheck(int dest)
 {
