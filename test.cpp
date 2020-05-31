@@ -81,7 +81,7 @@ int main()
 		    {
 		    	getline(myfile, fen_expected_input);
 		    	fen_expected.push_back(fen_expected_input);
-		        while(!myfile.eof() && !chess.getCheckmate()) //while the end of file is NOT reached or game is not finished
+		        while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) //while the end of file is NOT reached or game is not finished
 		        {	
 		        	cout << endl << "Enter a source AND destination square in [0, 63]: ";
 		            myfile >> src >> dest;

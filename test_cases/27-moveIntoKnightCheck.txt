@@ -1,0 +1,8 @@
+rnbqkbnr/pppp2p1/4p1pp/8/8/8/PPPPPPPP/RNBQKB1R w KQkq
+62 45
+12 20
+45 28
+15 23
+28 22
+4 12
+13 22

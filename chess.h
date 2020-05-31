@@ -62,7 +62,7 @@ public:
 
 	void makeMove(int src, int dest);
 	void isCheckmate();
-	bool isStalemate(int turn, const vector<Piece> & board);
+	bool isStalemate();
 
 	bool isPathFree(int src, int dest);
 	
@@ -88,6 +88,7 @@ protected:
 
 	int incrementChoice(int & src, int & dest);
 	void handleCheckmate();
+	void handleStalemate();
 };
 
 class Piece : public Chess

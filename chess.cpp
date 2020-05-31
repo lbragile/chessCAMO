@@ -51,6 +51,47 @@ bool King::canCastle(int dest)
 	}
 }
 
+bool Chess::isStalemate()
+{
+	vector<Piece*> board = chess.getBoard();
+	int possible_moves[22] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 21, 27, 28, 35, 36, 42, 45, 49, 54, 56, 63};
+	int counter = 0, move_up, move_down;
+
+	pieceColor current_turn = chess.getTurn() == WHITE ? BLACK : WHITE;
+
+	for(auto elem : board)
+	{
+		if(elem->getPieceColor() == current_turn)
+		{
+			for(int move : possible_moves)
+			{
+				move_up = elem->getPieceSquare() + move;
+				move_down = elem->getPieceSquare() - move;
+				if(!elem->isEmpty() && ((move_up <= 63 && elem->isLegalMove(move_up) && !elem->isPinned(move_up)) || (move_down >= 0 && elem->isLegalMove(move_down) && !elem->isPinned(move_down))))
+				{
+					counter++;
+				}
+			}
+		}
+	}
+
+	return counter == 0;
+}
+
+void Chess::handleStalemate()
+{
+	if(chess.getTurn() != WHITE)
+	{
+		cout << "White cannot move. Game ended in a Draw!" << endl;
+	}
+	else
+	{
+		cout << "Black cannot move. Game ended in a Draw!" << endl;
+	}
+
+	setStalemate(true);
+}
+
 bool Piece::causeCheck(int dest)
 {
 	// causes a check if not a king (cannot check opponent with your king)
@@ -272,11 +313,19 @@ bool Piece::movedIntoCheck(int dest)
 bool King::movedIntoCheck(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
+
     for(auto elem : board)
     {
-        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()) && elem->isLegalMove(dest) && isPathFree(elem->getPieceSquare(), dest))
+        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()))
         {
-            return true;
+        	// break up into the different cases (for readibility)
+			// pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
+        	if(elem->isLegalMove(dest))
+            	return true;
+            else if( elem->isPawn() && elem->isPieceWhite() && (elem->getPieceSquare()-dest == 9 || elem->getPieceSquare()-dest == 7) )
+            	return true;
+            else if( elem->isPawn() && elem->isPieceBlack() && (dest-elem->getPieceSquare() == 9 || dest-elem->getPieceSquare() == 7) )
+            	return true;
         }
     }
 
@@ -300,7 +349,7 @@ void Chess::makeMove(int src, int dest)
 	pieceColor current_turn = chess.getTurn();
 	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 	bool before_undo_moveInfo;
-
+ 
     if(0 <= dest && dest <= 63 && dest != src && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn && !board[src]->isPinned(dest))
     {
         // pawn promotion
@@ -345,6 +394,11 @@ void Chess::makeMove(int src, int dest)
     	{
     		chess.isCheckmate(); // check for checkmates
     	}
+
+    	if(chess.isStalemate()) // check for stalemate
+		{
+			chess.handleStalemate();
+		}
 
 		chess.setTurn(current_turn == 2 ? BLACK : WHITE);
 		printBoard(chess.getBoard());

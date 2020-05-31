@@ -1,7 +1,6 @@
 #include "chess.h"
 
 Chess chess; // global object call
-bool valid_test = true; // global variable call
 
 int main()
 {
@@ -14,7 +13,7 @@ int main()
 
 	// userEnded(turn);
 
-    while(!chess.getCheckmate()) //while the end of file is NOT reached or game is not finished
+    while(!chess.getCheckmate() && !chess.getStalemate())
     {	
     	cout << endl << "Enter a source AND destination square in [0, 63]: ";
         cin >> src >> dest;
@@ -25,11 +24,12 @@ int main()
 }
 
 /* TODO: 
-	1. En-passant
-	2. Double Checks, stalemate, knight check
-	3. Pinned Piece
-	4. Three move repetition (draw) & 50 move rule
-	5. Draw offer / Resign
+	1. Double Checks, stalemate
+	2. Three move repetition (draw) & 50 move rule
+	3. Draw offer / Resign
+
+	4. GUI
+	5. Input as PGN rather than two ints (template)
 */
 
 		
