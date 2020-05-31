@@ -2,12 +2,12 @@
 #include <windows.h>
 #include <string>
 
+Chess chess; // global object call
+
 #define GREEN 10
 #define RED 12
 #define YELLOW 14
 #define DEFAULT 15
-
-Chess chess; // global object call
 
 string boardFenConverter(const vector<Piece*> & board)
 {

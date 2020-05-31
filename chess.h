@@ -78,15 +78,11 @@ protected:
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
 
-	// for isCheckmate
-	bool pieceIterator(int src, int dest);
-
-	// for isPathFree
-	bool pathIterator(int src, int dest, int increment);
-
+	bool pieceIterator(int src, int dest); // for isCheckmate
+	bool pathIterator(int src, int dest, int increment); // for isPathFree
 	int squareOfPieceInPath(int src, int dest);
-
 	int incrementChoice(int & src, int & dest);
+
 	void handleCheckmate();
 	void handleStalemate();
 };
@@ -94,7 +90,7 @@ protected:
 class Piece : public Chess
 {
 public:
-	virtual ~Piece(); // destructor
+	~Piece() = default; // destructor
 	Piece(const Piece & object) = default; // copy constructor
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
@@ -145,8 +141,6 @@ public:
 	virtual void enPassantHandling(int src, int dest);
 	bool isPinned(int dest);
 
-	// virtual bool isChecked(int src, int dest);
-
 private:
 	int square; // position of the piece on the board [0, 63]
 	int value; // pawn - 1, knight - 3, bishop - 3, rook - 5, queen - 9, king - infinity (use 10), empty - 0
@@ -158,7 +152,7 @@ private:
 class Pawn : public Piece
 {
 public:
-	virtual ~Pawn(); // destructor
+	~Pawn() = default; // destructor
 	Pawn(const Pawn & object) = default; // copy constructor
 	Pawn & operator =(const Pawn & object) = default; // copy assignment
 
@@ -172,9 +166,8 @@ public:
 	virtual bool getEnPassant() const {return en_passant;}
 	virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
 
-	virtual void enPassantHandling(int src, int dest);
-
 	virtual bool isLegalMove(int dest);
+	virtual void enPassantHandling(int src, int dest);
 	virtual void promotePawn(int dest);
 
 private:
@@ -184,7 +177,7 @@ private:
 class Knight : public Piece
 {
 public:
-	virtual ~Knight(); // destructor
+	~Knight() = default; // destructor
 	Knight(const Knight & object) = default; // copy constructor
 	Knight & operator =(const Knight & object) = default; // copy assignment
 
@@ -200,7 +193,7 @@ public:
 class Bishop : public Piece
 {
 public:
-	virtual ~Bishop(); // destructor
+	~Bishop() = default; // destructor
 	Bishop(const Bishop & object) = default; // copy constructor
 	Bishop & operator =(const Bishop & object) = default; // copy assignment
 
@@ -216,7 +209,7 @@ public:
 class Rook : public Piece
 {
 public:
-	virtual ~Rook(); // destructor
+	~Rook() = default; // destructor
 	Rook(const Rook & object) = default; // copy constructor
 	Rook & operator =(const Rook & object) = default; // copy assignment
 
@@ -232,7 +225,7 @@ public:
 class Queen : public Piece
 {
 public:
-	virtual ~Queen(); // destructor
+	~Queen() = default; // destructor
 	Queen(const Queen & object) = default; // copy constructor
 	Queen & operator =(const Queen & object) = default; // copy assignment
 
@@ -248,7 +241,7 @@ public:
 class King : public Piece
 {
 public:
-	virtual ~King(); // destructor
+	~King() = default; // destructor
 	King(const King & object) = default; // copy constructor
 	King & operator =(const King & object) = default; // copy assignment
 
@@ -258,19 +251,18 @@ public:
 	// constructor with piece initialization
 	King(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest);
-	virtual bool canCastle(int dest);
-	// virtual bool isChecked(int src, int dest);
 	bool isDoubleChecked();
 	int numKingMoves();
 
+	virtual bool isLegalMove(int dest);
+	virtual bool canCastle(int dest);
 	virtual bool movedIntoCheck(int dest);
 };
 
 class Empty : public Piece
 {
 public:
-	virtual ~Empty(); // destructor
+	~Empty() = default; // destructor
 	Empty(const Empty & object) = default; // copy constructor
 	Empty & operator =(const Empty & object) = default; // copy assignment
 

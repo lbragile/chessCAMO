@@ -9,7 +9,6 @@ int main()
 
 	// Create 8x8 default board
 	boardInit(chess);
-	vector<Piece*> board = chess.getBoard();
 
 	// userEnded(turn);
 
@@ -19,7 +18,7 @@ int main()
         cin >> src >> dest;
         chess.makeMove(src, dest);
     }
-
+    
 	return 0;
 }
 
