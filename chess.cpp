@@ -359,13 +359,13 @@ void Chess::handleStalemate()
 	if(chess.getTurn() != WHITE)
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\n      White cannot move. Game ended in a Draw!\n" << endl;
+		cout << "\nWhite has no moves -> Game is Drawn!\n" << endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
 	}
 	else
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\n      Black cannot move. Game ended in a Draw!\n" << endl;
+		cout << "\nBlack has no moves -> Game is Drawn!\n" << endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
 	}
 
@@ -943,6 +943,7 @@ void boardInit(Chess & chess)
 
 	printBoard(board);
 
+	cout << "___________________________________________________" << endl;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
 	cout << "\n            White's move" << endl;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
