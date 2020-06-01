@@ -49,11 +49,13 @@ void Chess::isCheckmate(string checkType)
 	Piece *king, *piece;
 	pieceColor current_turn = chess.getTurn() == 2 ? BLACK : WHITE;
 
+	// will not be set, so next time this will be identical
+	piece = CheckStack.top();
+	CheckStack.pop();
+	king = CheckStack.top();
+
 	if(checkType == "double") // this type of check requires the king to move
 	{
-		// will not be set, so next time this will be identical
-		king = CheckStack.top();
-
 		// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
 		// checkmate due to a double check
 		if(pieceIterator(king->getPieceSquare()) || king->getPieceColor() != current_turn)
@@ -68,11 +70,7 @@ void Chess::isCheckmate(string checkType)
 
 	else if(checkType == "single") // CheckStack.top()->getPieceColor() != current_turn
 	{
-		// will not be set, so next time this will be identical
-		piece = CheckStack.top();
-		CheckStack.pop();
-		king = CheckStack.top();
-
+		
 		// checkmate due to a single piece
 		if(pieceIterator(piece->getPieceSquare(), king->getPieceSquare()) || piece->getPieceColor() == current_turn)
 		{
@@ -110,12 +108,7 @@ void Chess::makeMove(int src, int dest)
 	Piece *king, *piece, *before_undo_piece; // "before_undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 	bool before_undo_moveInfo;
  	
- 	// when in double check you must move the king
-    if(chess.getDoubleCheck() && !board[src]->isKing())
-    {
-    	cout << "You are in DOUBLE check -> you must move the king! Try again..." << endl;
-    }
-    else if(0 <= src && src <= 63 && 0 <= dest && dest <= 63 && dest != src &&
+    if(0 <= src && src <= 63 && 0 <= dest && dest <= 63 && dest != src &&
        board[src]->isLegalMove(dest) && board[src]->getPieceColor() == current_turn && !board[src]->isPinned(dest))
     {	
         // pawn promotion
@@ -129,14 +122,38 @@ void Chess::makeMove(int src, int dest)
 
         makeMoveForType(src, dest);
 
-        if(!CheckStack.empty())
+        // when in double check you must move the king
+	    if(chess.getDoubleCheck())
+	    {      
+    		king = CheckStack.top();
+			CheckStack.pop();
+
+			for(auto elem : chess.getBoard())
+			{					
+				if(!elem->isEmpty() && isPathFree(elem->getPieceSquare(), king->getPieceSquare()) && elem->isLegalMove(king->getPieceSquare()))
+				{
+					makeMoveForType(dest, src); // undo the move
+					board = chess.getBoard();
+					board[dest] = before_undo_piece;
+					board[src]->setPieceMoveInfo(before_undo_moveInfo);
+					chess.setBoard(board);
+					cout << "Your king is still being attacked (DOUBLE Check)! Try again..." << endl;
+					return;
+				}
+			}
+
+			chess.setCheckStack(CheckStack);
+			chess.setDoubleCheck(false);
+	    }
+
+	    else if(chess.getCheck())
         {
         	piece = CheckStack.top();
 			CheckStack.pop();
 			king = CheckStack.top();
 			CheckStack.pop();
 
-			if(piece->isLegalMove(king->getPieceSquare()) && piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()))
+			if( piece->isLegalMove(king->getPieceSquare()) && piece->isPathFree(piece->getPieceSquare(), king->getPieceSquare()) )
 			{
 				makeMoveForType(dest, src); // undo the move
 				board = chess.getBoard();
@@ -328,7 +345,7 @@ void Chess::handleStalemate()
 
 bool Chess::pieceIterator(int src, int dest)
 {
-	// vector<Piece*> board = 
+	vector<Piece*> board = chess.getBoard();
     int increment, original_dest = dest; // original_dest is the king
     int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
@@ -477,11 +494,8 @@ bool Piece::causeDoubleCheck(int dest)
         chess.setDoubleCheck(true);
 		return true;
 	}
-	else
-	{
-        chess.setDoubleCheck(false);
-		return false;
-	}
+
+	return chess.getDoubleCheck();
 }
 
 bool Piece::causeCheck(int dest)
@@ -533,21 +547,24 @@ bool Piece::isPinned(int dest)
 	int king_pos, src = this->getPieceSquare();
 	vector<Piece*> board = chess.getBoard();
 
-	for(auto elem : board)
+	if(!this->isKing())
 	{
-		if(isSameColor(elem->getPieceSquare(), src) && elem->isKing())
+		for(auto elem : board)
 		{
-			king_pos = elem->getPieceSquare();
-			break;
+			if(isSameColor(elem->getPieceSquare(), src) && elem->isKing())
+			{
+				king_pos = elem->getPieceSquare();
+				break;
+			}
 		}
-	}
 
-	for(auto elem : board)
-	{
-		if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
-		 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src && elem->getPieceSquare() != dest)
-		{	
-			return true;
+		for(auto elem : board)
+		{
+			if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
+			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src && elem->getPieceSquare() != dest)
+			{	
+				return true;
+			}
 		}
 	}
 
