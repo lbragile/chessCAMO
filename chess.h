@@ -7,6 +7,16 @@
 #include <stack>
 #include <stdlib.h>     /* abs */
 #include <fstream>
+#include <windows.h>
+#include <string>
+
+// some colors for console text
+#define GREEN 10
+#define CYAN 11
+#define RED 12
+#define PINK 13
+#define YELLOW 14
+#define DEFAULT 15
 
 using namespace std;
 

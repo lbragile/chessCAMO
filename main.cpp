@@ -14,7 +14,9 @@ int main()
 
     while(!chess.getCheckmate() && !chess.getStalemate())
     {	
-    	cout << endl << "Enter a source AND destination square in [0, 63]: ";
+    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PINK);
+		cout << "\nEnter a source AND destination square in [0, 63]: ";
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
         cin >> src >> dest;
         chess.makeMove(src, dest);
     }

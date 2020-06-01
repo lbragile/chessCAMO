@@ -1,13 +1,6 @@
 #include "chess.h"
-#include <windows.h>
-#include <string>
 
 Chess chess; // global object call
-
-#define GREEN 10
-#define RED 12
-#define YELLOW 14
-#define DEFAULT 15
 
 string boardFenConverter(const vector<Piece*> & board)
 {
@@ -55,8 +48,8 @@ int main()
 	SetConsoleTextAttribute(hConsole, DEFAULT);
 	
 	WIN32_FIND_DATA FindFileData;
-	string absolute_path = "C:/Users/lbrag/Desktop/c++/personal/test_cases/*.txt";
-	HANDLE hFind = FindFirstFile(absolute_path.c_str(), &FindFileData);
+	string path = "test_cases/*.txt";
+	HANDLE hFind = FindFirstFile(path.c_str(), &FindFileData);
 	if(hFind == INVALID_HANDLE_VALUE){cout << "No files found" << endl;	exit(0);}
 	else
 	{
@@ -83,7 +76,10 @@ int main()
 		    	fen_expected.push_back(fen_expected_input);
 		        while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) //while the end of file is NOT reached or game is not finished
 		        {	
-		        	cout << endl << "Enter a source AND destination square in [0, 63]: ";
+		        	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PINK);
+					cout << "\nEnter a source AND destination square in [0, 63]: ";
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+					
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
 		            chess.makeMove(src, dest);
