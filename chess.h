@@ -6,6 +6,7 @@
 #include <vector>
 #include <stack>
 #include <stdlib.h>     /* abs */
+#include <algorithm>    /* min, max */
 #include <fstream>
 #include <windows.h>
 #include <string>
@@ -95,9 +96,9 @@ protected:
 	bool pieceIterator(int src, int dest); // for isCheckmate (single)
 	bool pieceIterator(int dest); // for isCheckmate (double) - only king movement matters
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
-	bool destInPath(int src, int dest, int pinning_piece_square);
+	bool destInPath(int src, int dest, int pin);
 	int squareOfPieceInPath(int src, int dest);
-	int incrementChoice(int & src, int & dest);
+	int incrementChoice(int src, int dest);
 
 	void handleCheckmate();
 	void handleStalemate();
