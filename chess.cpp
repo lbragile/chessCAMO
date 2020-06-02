@@ -479,6 +479,15 @@ bool Chess::pathIterator(int src, int dest, int increment)
     return true;
 }
 
+bool Chess::destInPath(int src, int dest, int pinning_piece_square)
+{
+	int original_src = src;
+	int increment_dest = incrementChoice(src, dest); // passed by reference
+	int increment_pin = incrementChoice(original_src, pinning_piece_square);
+
+	return !(increment_dest != 0 && increment_pin != 0 && increment_dest == increment_pin && src + increment_pin <= dest);
+}
+
 /*****
 	PIECE CLASS - MEMBER FUNCTIONS
  *****/
@@ -590,9 +599,9 @@ bool Piece::isPinned(int dest)
 		for(auto elem : board)
 		{
 			if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
-			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src && elem->getPieceSquare() != dest)
+			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src)
 			{	
-				return true;
+				return destInPath(src, dest, elem->getPieceSquare());
 			}
 		}
 	}

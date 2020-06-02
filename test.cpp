@@ -48,7 +48,7 @@ int main()
 	SetConsoleTextAttribute(hConsole, DEFAULT);
 	
 	WIN32_FIND_DATA FindFileData;
-	string path = "test_cases/*.txt";
+	string path = "test_cases/*.txt"; //../unit_cases/*.txt (for single tests) or test_cases/*.txt (for all test cases made)
 	HANDLE hFind = FindFirstFile(path.c_str(), &FindFileData);
 	if(hFind == INVALID_HANDLE_VALUE){cout << "No files found" << endl;	exit(0);}
 	else

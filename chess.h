@@ -93,6 +93,7 @@ protected:
 	bool pieceIterator(int src, int dest); // for isCheckmate (single)
 	bool pieceIterator(int dest); // for isCheckmate (double) - only king movement matters
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
+	bool destInPath(int src, int dest, int pinning_piece_square);
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int & src, int & dest);
 
