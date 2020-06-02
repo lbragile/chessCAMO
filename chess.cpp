@@ -143,7 +143,7 @@ void Chess::makeMove(int src, int dest)
 					chess.setBoard(board);
 
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-					cout << "Your king is still being attacked (DOUBLE Check)! Try again..." << endl;
+					cout << "You are in double check! Try again..." << endl;
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
 					return;
 				}
@@ -706,13 +706,10 @@ bool King::movedIntoCheck(int dest)
     {
         if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()))
         {
-        	// break up into the different cases (for readibility)
 			// pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        	if(!elem->isPawn() && elem->isLegalMove(dest))
-            	return true;
-            else if( elem->isPawn() && elem->isPieceWhite() && (elem->getPieceSquare()-dest == 9 || elem->getPieceSquare()-dest == 7) )
-            	return true;
-            else if( elem->isPawn() && elem->isPieceBlack() && (dest-elem->getPieceSquare() == 9 || dest-elem->getPieceSquare() == 7) )
+        	if( (!elem->isPawn() && elem->isLegalMove(dest)) ||
+        		(elem->isPawn() && elem->isPieceWhite() && (elem->getPieceSquare()-dest == 9 || elem->getPieceSquare()-dest == 7)) ||
+        		(elem->isPawn() && elem->isPieceBlack() && (dest-elem->getPieceSquare() == 9 || dest-elem->getPieceSquare() == 7)) )
             	return true;
         }
     }
