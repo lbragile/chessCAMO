@@ -708,7 +708,7 @@ bool King::movedIntoCheck(int dest)
         {
         	// break up into the different cases (for readibility)
 			// pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        	if(elem->isLegalMove(dest))
+        	if(!elem->isPawn() && elem->isLegalMove(dest))
             	return true;
             else if( elem->isPawn() && elem->isPieceWhite() && (elem->getPieceSquare()-dest == 9 || elem->getPieceSquare()-dest == 7) )
             	return true;
