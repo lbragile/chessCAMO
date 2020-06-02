@@ -72,7 +72,9 @@ public:
 	virtual bool getEnPassant() const {return this->getEnPassant();}
 	virtual void setEnPassant(bool en_passant) {}
 
-	void makeMove(int src, int dest);
+	void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
+	void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs
+
 	void isCheckmate(string checkType);
 	bool isStalemate();
 	bool isPathFree(int src, int dest);

@@ -5,7 +5,7 @@ Chess chess; // global object call
 int main()
 {
 	// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
-	int src, dest;
+	string src, dest;
 
 	// Create 8x8 default board
 	boardInit(chess);

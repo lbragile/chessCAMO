@@ -104,6 +104,37 @@ bool Chess::pieceIterator(int dest)
 
 }
 
+void Chess::makeMove(string src, string dest)
+{
+	int src_int, dest_int;
+
+	// src
+	if(islower(src[0])) // letter
+	{
+		// 				file					rank
+		src_int = (int(src[0]) - 97) + (8 - (int(src[1]) - 48))*8;
+	}
+	else // number
+	{
+		// 				file					rank
+		src_int = (int(src[0]) - 65) + (8 - (int(src[1]) - 48))*8;
+	}
+
+	// dest
+	if(islower(dest[0])) // letter
+	{
+		// 				file					rank
+		dest_int = (int(dest[0]) - 97) + (8 - (int(dest[1]) - 48))*8;
+	}
+	else // number
+	{
+		// 				file					rank
+		dest_int = (int(dest[0]) - 65) + (8 - (int(dest[1]) - 48))*8;
+	}
+
+	makeMove(src_int, dest_int); // call the coordinate version
+}
+
 void Chess::makeMove(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -959,7 +990,7 @@ void boardInit(Chess & chess)
 void printBoard(const vector<Piece*> & board)
 {
 	char piece_char;
-	char ranks[8] = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'};
+	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
 	
 	int count = 0;
 	for(auto elem : board)
@@ -1020,7 +1051,7 @@ void printBoard(const vector<Piece*> & board)
 		if(count == 63)
 		{
 			cout << "  +---+---+---+---+---+---+---+---+" << endl;
-			cout << "    1   2   3   4   5   6   7   8" << endl;
+			cout << "    A   B   C   D   E   F   G   H" << endl;
 		}
 		count++;
 	}

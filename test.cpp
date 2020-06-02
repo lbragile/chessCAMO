@@ -39,7 +39,8 @@ string boardFenConverter(const vector<Piece*> & board)
 int main()
 {
 	char filename[1000];
-	int file_num = 0, num_failed = 0, src, dest;
+	int file_num = 0, num_failed = 0;
+	int src, dest;
 	vector<string> failed_tests, fen_obtained, fen_expected;
 	vector<int> test_case_num;
 	string fen_expected_input;
