@@ -89,19 +89,20 @@ private:
 	bool double_check;
 	pieceColor turn;
 
-protected:
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
+	void handleCheckmate();
+	void handleStalemate();
 
-	bool pieceIterator(int src, int dest); // for isCheckmate (single)
-	bool pieceIterator(int dest); // for isCheckmate (double) - only king movement matters
+	bool singleCheckPieceIterator(int src, int dest); // for isCheckmate (single)
+	bool doubleCheckPieceIterator(int dest); // for isCheckmate (double) - only king movement matters
+
+protected:
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
 	bool destInPath(int src, int dest, int pin);
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int src, int dest);
 
-	void handleCheckmate();
-	void handleStalemate();
 };
 
 class Piece : public Chess
@@ -150,7 +151,7 @@ public:
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
 	bool isSameColor(int dest);
 	
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
@@ -185,7 +186,7 @@ public:
 	virtual bool getEnPassant() const {return en_passant;}
 	virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 	virtual void enPassantHandling(int src, int dest);
 	virtual void promotePawn(int dest);
 
@@ -206,7 +207,7 @@ public:
 	// constructor with piece initialization
 	Knight(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 };
 
 class Bishop : public Piece
@@ -222,7 +223,7 @@ public:
 	// constructor with piece initialization
 	Bishop(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 };
 
 class Rook : public Piece
@@ -238,7 +239,7 @@ public:
 	// constructor with piece initialization
 	Rook(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 };
 
 class Queen : public Piece
@@ -254,7 +255,7 @@ public:
 	// constructor with piece initialization
 	Queen(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 };
 
 class King : public Piece
@@ -273,7 +274,7 @@ public:
 	bool isDoubleChecked();
 	int numKingMoves();
 
-	virtual bool isLegalMove(int dest);
+	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual bool movedIntoCheck(int dest);
 };
