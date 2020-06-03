@@ -90,11 +90,11 @@ private:
 
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
-	bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo);
 	void handleChangeTurn();
 	void handleCheckmate();
 	void handleStalemate();
 
+	bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
 	bool singleCheckPieceIterator(int src, int dest); // for isCheckmate (single)
 	bool doubleCheckPieceIterator(int dest); // for isCheckmate (double) - only king movement matters
 

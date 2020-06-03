@@ -157,7 +157,7 @@ void Chess::handleChangeTurn()
 	}
 }
 
-bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo)
+bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type)
 {
 	if(piece->isPathFree(king->getPieceSquare()) && piece->isPossibleMove(king->getPieceSquare()))
 	{
@@ -168,8 +168,12 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 		this->setBoard(board);
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-		cout << "You are in double check! Try again..." << endl;
+		if(check_type.compare("double") == 0)
+			cout << "You are in double check! Try again..." << endl;
+		else if(check_type.compare("single") == 0)
+			cout << "You are in check! Try again..." << endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+
 		return true;
 	}
 	else
@@ -177,6 +181,7 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 		return false;
 	}
 }
+
 void Chess::makeMove(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -206,7 +211,7 @@ void Chess::makeMove(int src, int dest)
 
 			for(auto elem : chess.getBoard()) // must always update the board as it is possible an undo happened
 			{					
-				if(this->undoMove(src, dest, king, elem, undo_piece, undo_moveInfo))
+				if(this->undoMove(src, dest, king, elem, undo_piece, undo_moveInfo, "double"))
 					return;
 			}
 
@@ -221,7 +226,7 @@ void Chess::makeMove(int src, int dest)
 			king = CheckStack.top();
 			CheckStack.pop();
 
-			if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo))
+			if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo, "single"))
 				return;
 
 			this->setCheckStack(CheckStack);
