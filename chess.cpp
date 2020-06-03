@@ -209,7 +209,7 @@ void Chess::makeMove(int src, int dest)
         }
 
         board = chess.getBoard();
-        board[dest]->enPassantHandling(src, dest);
+        board[dest]->enPassantHandling(src); // en-passant checking/updating
 
         // did the move cause a check?
     	if(board[src]->causeCheck(dest) && !board[src]->causeDoubleCheck(dest)) 
@@ -557,16 +557,16 @@ bool Piece::causeDoubleCheck(int dest)
 
 bool Piece::causeCheck(int dest)
 {
+	stack<Piece*> CheckStack = chess.getCheckStack();
+    vector<Piece*> board = chess.getBoard();
+    int king_pos;
+
 	// causes a check if not a king (cannot check opponent with your king)
 	if(this->isKing() || !chess.getCheckStack().empty())
 	{
 		return false;
 	}
 
-	stack<Piece*> CheckStack = chess.getCheckStack();
-    vector<Piece*> board = chess.getBoard();
-
-    int king_pos;
     for(auto elem : board)
     {
     	if(elem->isKing() && !elem->isSameColor(dest))
@@ -587,16 +587,10 @@ bool Piece::causeCheck(int dest)
     return chess.getCheck();
 }
 
-void Piece::enPassantHandling(int src, int dest)
+void Piece::enPassantHandling(int src)
 {
 	if(this->isPawn())
-	{
-		this->enPassantHandling(src, dest);
-	}
-	else
-	{
-		return;
-	}
+		this->enPassantHandling(src);
 }
 
 bool Piece::isPinned(int dest)
@@ -630,35 +624,18 @@ bool Piece::isPinned(int dest)
 
 bool Piece::movedIntoCheck(int dest)
 {
-	if(this->isKing())
-	{
-		return this->movedIntoCheck(dest);
-	}
-	else
-	{
-		return false;
-	}
+	return this->isKing() ? this->movedIntoCheck(dest) : false;
 }
 
 bool Piece::canCastle(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
-	if(this->isKing() && board[dest]->isRook() && this->getPieceSquare()/8 == dest/8)
-    	return this->canCastle(dest);
-    else // not king -> cannot castle
-    	return false;
+	return this->isKing() ? this->canCastle(dest) : false;
 }
 
 void Piece::promotePawn(int dest)
 {
 	if(this->isPawn())
-	{
 		this->promotePawn(dest);
-	}
-	else
-	{
-		return; // do nothing
-	}
 }
 
 bool Piece::isSameColor(int dest)
@@ -671,14 +648,7 @@ bool Piece::isSameColor(int dest)
 
 bool Piece::isPossibleMove(int dest)
 {
-	if(this->isEmpty())
-	{
-		return false;
-	}	
-	else
-	{
-		return this->isPossibleMove(dest);
-	}	
+	return !this->isEmpty() ? this->isPossibleMove(dest) : false;
 }
 
 /*****
@@ -693,7 +663,7 @@ bool King::canCastle(int dest)
 	vector<Piece*> board = chess.getBoard();
 	stack<Piece*> stack = chess.getCheckStack();
 
-	if(this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess.getCheck())
+	if(this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess.getCheck() || !board[dest]->isRook() || this->getPieceSquare()/8 != dest/8)
 	{
 		return false;
 	}
@@ -750,11 +720,14 @@ bool King::isPossibleMove(int dest)
 	PAWN CLASS - MEMBER FUNCTIONS
  *****/
 
-void Pawn::enPassantHandling(int src, int dest)
+void Pawn::enPassantHandling(int src)
 {
 	vector<Piece*> board = chess.getBoard();
+	int dest = this->getPieceSquare();
+	
 	if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest))
 	{
+		cout << "here" << endl;
 		board[dest-1]->setEnPassant(true);
 	}
 	else if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest))

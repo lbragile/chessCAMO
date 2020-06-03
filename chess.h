@@ -155,13 +155,13 @@ public:
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
-	virtual void enPassantHandling(int src, int dest);
+	virtual void enPassantHandling(int src);
 
 	bool causeCheck(int dest);
 	bool causeDoubleCheck(int dest);
 	bool isPinned(int dest);
 	bool isPathFree(int dest);
-	
+
 private:
 	int square; // position of the piece on the board [0, 63]
 	int value; // pawn - 1, knight - 3, bishop - 3, rook - 5, queen - 9, king - infinity (use 10), empty - 0
@@ -188,7 +188,7 @@ public:
 	virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
 
 	virtual bool isPossibleMove(int dest);
-	virtual void enPassantHandling(int src, int dest);
+	virtual void enPassantHandling(int src);
 	virtual void promotePawn(int dest);
 
 private:
