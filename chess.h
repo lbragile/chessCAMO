@@ -90,7 +90,8 @@ private:
 
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
-	// void undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, bool & stop);
+	bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo);
+	void handleChangeTurn();
 	void handleCheckmate();
 	void handleStalemate();
 

@@ -135,6 +135,48 @@ void Chess::makeMove(string src, string dest)
 	this->makeMove(src_int, dest_int); // call the coordinate version
 }
 
+void Chess::handleChangeTurn()
+{
+	chess.setTurn(chess.getTurn() == 2 ? BLACK : WHITE);
+	printBoard(chess.getBoard());
+	if(!chess.getCheckmate())
+	{
+		cout << "___________________________________________________" << endl;
+		if(chess.getTurn() == 2)
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
+			cout << "\n            White's move" << endl;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		}
+		else
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
+			cout << "\n            Black's move" << endl;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		}
+	}
+}
+
+bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo)
+{
+	if(piece->isPathFree(king->getPieceSquare()) && piece->isPossibleMove(king->getPieceSquare()))
+	{
+		makeMoveForType(dest, src); // undo the move
+		board = this->getBoard();
+		board[dest] = undo_piece;
+		board[src]->setPieceMoveInfo(undo_moveInfo);
+		this->setBoard(board);
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
+		cout << "You are in double check! Try again..." << endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 void Chess::makeMove(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -157,96 +199,57 @@ void Chess::makeMove(int src, int dest)
         this->makeMoveForType(src, dest);
 
         // when in double check you must move the king
-	    if(chess.getDoubleCheck())
+	    if(this->getDoubleCheck())
 	    {      
     		king = CheckStack.top();
 			CheckStack.pop();
 
-			for(auto elem : chess.getBoard())
+			for(auto elem : chess.getBoard()) // must always update the board as it is possible an undo happened
 			{					
-				if(elem->isPathFree(king->getPieceSquare()) && elem->isPossibleMove(king->getPieceSquare()))
-				{
-					makeMoveForType(dest, src); // undo the move
-					board = chess.getBoard();
-					board[dest] = undo_piece;
-					board[src]->setPieceMoveInfo(undo_moveInfo);
-					chess.setBoard(board);
-
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-					cout << "You are in double check! Try again..." << endl;
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+				if(this->undoMove(src, dest, king, elem, undo_piece, undo_moveInfo))
 					return;
-				}
 			}
 
-			chess.setCheckStack(CheckStack);
-			chess.setDoubleCheck(false);
+			this->setCheckStack(CheckStack);
+			this->setDoubleCheck(false);
 	    }
 
-	    else if(chess.getCheck())
+	    else if(this->getCheck())
         {
         	piece = CheckStack.top();
 			CheckStack.pop();
 			king = CheckStack.top();
 			CheckStack.pop();
 
-			if(piece->isPossibleMove(king->getPieceSquare()) && piece->isPathFree(king->getPieceSquare()))
-			{
-				makeMoveForType(dest, src); // undo the move
-				board = chess.getBoard();
-				board[dest] = undo_piece;
-				board[src]->setPieceMoveInfo(undo_moveInfo);
-				chess.setBoard(board);
-
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-				cout << "You are in check! Try again..." << endl;
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+			if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo))
 				return;
-			}
 
-			chess.setCheckStack(CheckStack);
-			chess.setCheck(false);
+			this->setCheckStack(CheckStack);
+			this->setCheck(false);
         }
 
-        board = chess.getBoard();
+        board = this->getBoard();
         board[dest]->enPassantHandling(src); // en-passant checking/updating
 
         // did the move cause a check?
     	if(board[src]->causeCheck(dest) && !board[src]->causeDoubleCheck(dest)) 
     	{
-    		chess.isCheckmate("single"); // check for checkmates
+    		this->isCheckmate("single"); // check for checkmates
     	}
 
     	// did the move cause a double check?
     	if(!board[src]->causeCheck(dest) && board[src]->causeDoubleCheck(dest)) 
     	{
-    		chess.isCheckmate("double"); // check for checkmates
+    		this->isCheckmate("double"); // check for checkmates
     	}
 
     	// check for stalemate
-    	if(chess.isStalemate()) 
+    	if(this->isStalemate()) 
 		{
-			chess.handleStalemate();
+			this->handleStalemate();
 		}
 
-		chess.setTurn(chess.getTurn() == 2 ? BLACK : WHITE);
-		printBoard(chess.getBoard());
-		if(!chess.getCheckmate())
-		{
-			cout << "___________________________________________________" << endl;
-			if(chess.getTurn() == 2)
-			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-				cout << "\n            White's move" << endl;
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-			}
-			else
-			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-				cout << "\n            Black's move" << endl;
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-			}
-		}
+		this->handleChangeTurn();
   	}
     else
     {
@@ -724,7 +727,7 @@ void Pawn::enPassantHandling(int src)
 {
 	vector<Piece*> board = chess.getBoard();
 	int dest = this->getPieceSquare();
-	
+
 	if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest))
 	{
 		cout << "here" << endl;
