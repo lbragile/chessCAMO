@@ -78,7 +78,6 @@ public:
 
 	void isCheckmate(string checkType);
 	bool isStalemate();
-	bool isPathFree(int src, int dest);
 	
 private:
 	vector<Piece*> board; // overall board state
@@ -91,6 +90,7 @@ private:
 
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
+	// void undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, bool & stop);
 	void handleCheckmate();
 	void handleStalemate();
 
@@ -160,7 +160,8 @@ public:
 	bool causeCheck(int dest);
 	bool causeDoubleCheck(int dest);
 	bool isPinned(int dest);
-
+	bool isPathFree(int dest);
+	
 private:
 	int square; // position of the piece on the board [0, 63]
 	int value; // pawn - 1, knight - 3, bishop - 3, rook - 5, queen - 9, king - infinity (use 10), empty - 0
