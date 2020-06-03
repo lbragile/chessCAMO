@@ -415,7 +415,7 @@ bool Chess::pieceIterator(int src, int dest)
     	increment = incrementChoice(src, dest); // passed by reference
 	    for(auto elem : chess.getBoard())
 	    {
-	        if(elem->isSameColor(elem->getPieceSquare(), dest) && elem->getPieceSquare() != dest)
+	        if(elem->isSameColor(dest) && elem->getPieceSquare() != dest)
 	        {
 	            for(int i = std::min(src, dest)+increment; i <= std::max(src, dest); i += increment)
 	            {	
@@ -431,7 +431,7 @@ bool Chess::pieceIterator(int src, int dest)
     {
     	for(auto elem : chess.getBoard())
 	    {
-	        if(elem->isSameColor(elem->getPieceSquare(), dest) && elem->getPieceSquare() != dest && elem->isLegalMove(src))
+	        if(elem->isSameColor(dest) && elem->getPieceSquare() != dest && elem->isLegalMove(src))
 	        {
 	            return false;
 	        }
@@ -531,7 +531,7 @@ bool Piece::causeDoubleCheck(int dest)
 		// find the king
 	    for(auto elem : board)
 	    {
-	    	if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
+	    	if(elem->isKing() && !elem->isSameColor(dest))
 	    	{
 	    		king_pos = elem->getPieceSquare();
 	    		break;
@@ -543,7 +543,7 @@ bool Piece::causeDoubleCheck(int dest)
 	    // how many pieces are checking the king
 	    for(auto elem : board)
 	    {
-	    	if(!elem->isEmpty() && !isSameColor(elem->getPieceSquare(), king_pos) && elem->isLegalMove(king_pos) && isPathFree(elem->getPieceSquare(), king_pos) && !elem->isPinned(king_pos))
+	    	if(!elem->isEmpty() && !elem->isSameColor(king_pos) && elem->isLegalMove(king_pos) && isPathFree(elem->getPieceSquare(), king_pos) && !elem->isPinned(king_pos))
 	    	{
 	    		checking_piece_counter++;
 	    	}
@@ -574,7 +574,7 @@ bool Piece::causeCheck(int dest)
     int king_pos;
     for(auto elem : board)
     {
-    	if(elem->isKing() && !isSameColor(elem->getPieceSquare(), dest))
+    	if(elem->isKing() && !elem->isSameColor(dest))
     	{
     		king_pos = elem->getPieceSquare();
     		break;
@@ -613,7 +613,7 @@ bool Piece::isPinned(int dest)
 	{
 		for(auto elem : board)
 		{
-			if(isSameColor(elem->getPieceSquare(), src) && elem->isKing())
+			if(elem->isSameColor(src) && elem->isKing())
 			{
 				king_pos = elem->getPieceSquare();
 				break;
@@ -622,7 +622,7 @@ bool Piece::isPinned(int dest)
 
 		for(auto elem : board)
 		{
-			if(!isSameColor(elem->getPieceSquare(), king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
+			if(!elem->isSameColor(king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
 			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src)
 			{	
 				return destInPath(src, dest, elem->getPieceSquare());
@@ -666,10 +666,10 @@ void Piece::promotePawn(int dest)
 	}
 }
 
-bool Piece::isSameColor(int src, int dest)
+bool Piece::isSameColor(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
-	return board[src]->getPieceColor() == board[dest]->getPieceColor();
+	return board[this->getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
 }
 
 bool Piece::isLegalMove(int dest)
@@ -704,7 +704,7 @@ bool King::canCastle(int dest)
 	{
 	    for(auto elem : board)
 	    {
-	        if(!elem->isEmpty() && !elem->isSameColor(elem->getPieceSquare(), this->getPieceSquare()))
+	        if(!elem->isEmpty() && !elem->isSameColor(this->getPieceSquare()))
 	        {
 	        	// king only moves 2 squares regardless of castle direction
 	            for(int i = src+increment; i != src+(2*increment); i += increment) 
@@ -727,7 +727,7 @@ bool King::movedIntoCheck(int dest)
 
     for(auto elem : board)
     {
-        if(elem->getPieceColor() != NEUTRAL && !isSameColor(this->getPieceSquare(), elem->getPieceSquare()))
+        if(elem->getPieceColor() != NEUTRAL && !this->isSameColor(elem->getPieceSquare()))
         {
 			// pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
         	if( (!elem->isPawn() && elem->isLegalMove(dest)) ||
@@ -746,7 +746,7 @@ bool King::isLegalMove(int dest)
 
 	int src = this->getPieceSquare();
 	int diff = std::abs(src - dest);
-	return (((diff == 1 || diff == 7 || diff == 8 || diff == 9) && !isSameColor(src, dest)) || ((diff == 3 || diff == 4) && this->canCastle(dest) && isSameColor(src, dest))) && !this->movedIntoCheck(dest);
+	return (((diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest)) || ((diff == 3 || diff == 4) && this->canCastle(dest) && this->isSameColor(dest))) && !this->movedIntoCheck(dest);
 }
 
 /*****
@@ -756,11 +756,11 @@ bool King::isLegalMove(int dest)
 void Pawn::enPassantHandling(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
-	if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !isSameColor(dest-1, dest))
+	if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest))
 	{
 		board[dest-1]->setEnPassant(true);
 	}
-	else if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !isSameColor(dest+1, dest))
+	else if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest))
 	{
 		board[dest+1]->setEnPassant(true);
 	}
@@ -840,7 +840,7 @@ bool Pawn::isLegalMove(int dest)
             legal = ((dest-src == 8 || dest-src == 16) && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
     }
 
-    return legal && isPathFree(src, dest) && !isSameColor(src, dest);
+    return legal && isPathFree(src, dest) && !this->isSameColor(dest);
 }
 
 /*****
@@ -849,12 +849,10 @@ bool Pawn::isLegalMove(int dest)
 
 bool Knight::isLegalMove(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
-
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = std::abs(src - dest), diff_row = std::abs(src_row - dest_row), diff_col = std::abs(src_col - dest_col);
-	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !isSameColor(src, dest);
+	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !this->isSameColor(dest);
 }
 
 /*****
@@ -866,7 +864,7 @@ bool Bishop::isLegalMove(int dest)
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = std::abs(src - dest), diff_row = std::abs(src_row - dest_row), diff_col = std::abs(src_col - dest_col);
-	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest) && !isSameColor(src, dest);
+	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && isPathFree(src, dest) && !this->isSameColor(dest);
 }
 
 /*****
@@ -877,7 +875,7 @@ bool Rook::isLegalMove(int dest)
 {
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest) && !isSameColor(src, dest);
+	return (src_row == dest_row || src_col == dest_col) && isPathFree(src, dest) && !this->isSameColor(dest);
 }
 
 /*****
@@ -886,12 +884,10 @@ bool Rook::isLegalMove(int dest)
 
 bool Queen::isLegalMove(int dest)
 {
-	vector<Piece*> board = chess.getBoard();
-
 	int src = this->getPieceSquare();
 	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
 	int diff = std::abs(src - dest), diff_row = std::abs(src_row - dest_row), diff_col = std::abs(src_col - dest_col);
-	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest) && !isSameColor(src, dest);
+	return (((diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col) || (src_row == dest_row || src_col == dest_col)) && isPathFree(src, dest) && !this->isSameColor(dest);
 }
 
 

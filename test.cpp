@@ -28,10 +28,10 @@ string boardFenConverter(const vector<Piece*> & board)
 	fen.append(chess.getTurn() == 2 ? " w " : " b ");
 
 	// castling
-	if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(60, 63) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo()){fen.append("K");}
-	if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, 60) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){fen.append("Q");}
-	if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(4, 7) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo()){fen.append("k");}
-	if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, 4) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo()){fen.append("q");}
+	if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo()){fen.append("K");}
+	if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo()){fen.append("Q");}
+	if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo()){fen.append("k");}
+	if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo()){fen.append("q");}
 
 	return fen;
 }

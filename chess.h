@@ -148,7 +148,7 @@ public:
 
 	bool isPieceWhite() {return this->getPieceColor() == WHITE;}
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
-	bool isSameColor(int src, int dest);
+	bool isSameColor(int dest);
 	
 	virtual bool isLegalMove(int dest);
 	virtual bool canCastle(int dest);
