@@ -1,11 +1,13 @@
 #include "chess.h"
 
+using namespace std;
+
 Chess chess; // global object call
 
 int main()
 {
 	// 'src' -> start square index, 'dest' -> end square index, 'turn' -> 1 (white) or -1 (black)
-	string src, dest;
+	int src, dest;
 
 	// Create 8x8 default board
 	boardInit(chess);
@@ -14,10 +16,9 @@ int main()
 
     while(!chess.getCheckmate() && !chess.getStalemate())
     {	
-    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PINK);
-		cout << "\nEnter a source AND destination square in [0, 63]: ";
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+    	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
         cin >> src >> dest;
+        std::system("cls"); // clear the screen
         chess.makeMove(src, dest);
     }
 

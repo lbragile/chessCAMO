@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <vector>
 #include <stack>
-#include <stdlib.h>     /* abs */
+#include <stdlib.h>     /* abs, system */
 #include <algorithm>    /* min, max */
 #include <fstream>
 #include <windows.h>
@@ -78,6 +78,7 @@ public:
 
 	void isCheckmate(string checkType);
 	bool isStalemate();
+	void printMessage(string text, int color);
 	
 private:
 	vector<Piece*> board; // overall board state
@@ -103,7 +104,6 @@ protected:
 	bool destInPath(int src, int dest, int pin);
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int src, int dest);
-
 };
 
 class Piece : public Chess

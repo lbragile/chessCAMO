@@ -49,41 +49,30 @@ void Chess::isCheckmate(string checkType)
 	Piece *king, *piece;
 	pieceColor current_turn = chess.getTurn() == 2 ? BLACK : WHITE;
 
-	// will not be set, so next time this will be identical
-	piece = CheckStack.top();
-	CheckStack.pop();
-	king = CheckStack.top();
-
 	if(checkType == "double") // this type of check requires the king to move
 	{
+		king = CheckStack.top();
+
 		// checkmate -> checkStack is not empty (a player must be in check!) AND player turn is the player not in check (has pieces not king)
 		// checkmate due to a double check
 		if(doubleCheckPieceIterator(king->getPieceSquare()) || king->getPieceColor() != current_turn)
-		{
 			handleCheckmate();
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-    		cout << "\n            Double Check!\n" << endl; // was not checkmate so can state that it is check
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
+		else // was not checkmate so can state that it is double check
+			this->printMessage("\n            Double Check!\n\n", CYAN); 
 	}	
 
 	else if(checkType == "single") // CheckStack.top()->getPieceColor() != current_turn
 	{
-		
+		// will not be set, so next time this will be identical
+		piece = CheckStack.top();
+		CheckStack.pop();
+		king = CheckStack.top();
+
 		// checkmate due to a single piece
 		if(singleCheckPieceIterator(piece->getPieceSquare(), king->getPieceSquare()) || piece->getPieceColor() == current_turn)
-		{
 			handleCheckmate();
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-    		cout << "\n                Check!\n" << endl; // was not checkmate so can state that it is check
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
+		else // was not checkmate so can state that it is check
+    		this->printMessage("\n                Check!\n\n", CYAN); 
 	}
 }
 
@@ -143,17 +132,9 @@ void Chess::handleChangeTurn()
 	{
 		cout << "___________________________________________________" << endl;
 		if(chess.getTurn() == 2)
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-			cout << "\n            White's move" << endl;
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
+    		this->printMessage("\n            White's move\n", CYAN);
 		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-			cout << "\n            Black's move" << endl;
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
+    		this->printMessage("\n            Black's move\n", CYAN);
 	}
 }
 
@@ -167,12 +148,10 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 		board[src]->setPieceMoveInfo(undo_moveInfo);
 		this->setBoard(board);
 
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
 		if(check_type.compare("double") == 0)
-			cout << "You are in double check! Try again..." << endl;
+    		this->printMessage("You are in double check! Try again...\n", YELLOW);
 		else if(check_type.compare("single") == 0)
-			cout << "You are in check! Try again..." << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+    		this->printMessage("You are in check! Try again...\n", YELLOW);
 
 		return true;
 	}
@@ -258,11 +237,15 @@ void Chess::makeMove(int src, int dest)
   	}
     else
     {
-    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-		cout << "Invalid move! Try again..." << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		
+    	this->printMessage("Invalid move! Try again...\n", YELLOW);
 	}
+}
+
+void Chess::printMessage(string text, int color)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	cout << text;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
 }
 
 bool Piece::isPathFree(int dest)
@@ -368,42 +351,21 @@ void Chess::makeMoveForType(int src, int dest)
 	    }
 	}
 
-	chess.setBoard(board);
+	this->setBoard(board);
 }
 
 void Chess::handleCheckmate()
 {
-	if(chess.getTurn() == 2)
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\n      White won by Checkmate!\n" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-	}
-	else
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\n      Black won by Checkmate!\n" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-	}
-	setCheckmate(true);
+	string message = this->getTurn() == WHITE ? "\n      White won by Checkmate!\n\n" : "\n      Black won by Checkmate!\n\n";
+	this->printMessage(message, CYAN);
+	this->setCheckmate(true);
 }
 
 void Chess::handleStalemate()
 {
-	if(chess.getTurn() != WHITE)
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\nWhite has no moves -> Game is Drawn!\n" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-	}
-	else
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-		cout << "\nBlack has no moves -> Game is Drawn!\n" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-	}
-
-	setStalemate(true);
+	string message = this->getTurn() != WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
+	this->printMessage(message, CYAN);
+	this->setStalemate(true);
 }
 
 bool Chess::singleCheckPieceIterator(int src, int dest)
@@ -735,7 +697,6 @@ void Pawn::enPassantHandling(int src)
 
 	if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest))
 	{
-		cout << "here" << endl;
 		board[dest-1]->setEnPassant(true);
 	}
 	else if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest))
@@ -787,9 +748,7 @@ void Pawn::promotePawn(int dest)
             break;
         }
 
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-        cout << "Please make sure to pick correct value!" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+        Chess::printMessage("Please make sure to pick correct value!\n", YELLOW);
     }
 
     chess.setBoard(board);
@@ -947,9 +906,7 @@ void boardInit(Chess & chess)
 	printBoard(board);
 
 	cout << "___________________________________________________" << endl;
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
-	cout << "\n            White's move" << endl;
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+	chess.printMessage("\n            White's move\n", CYAN);
 }
 
 // Print the current board position
