@@ -77,9 +77,7 @@ int main()
 		    	fen_expected.push_back(fen_expected_input);
 		        while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) //while the end of file is NOT reached or game is not finished
 		        {	
-		        	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PINK);
-					cout << "\nEnter a source AND destination square in [0, 63]: ";
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		        	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
 					
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
@@ -108,38 +106,36 @@ int main()
 	} 
 	FindClose(hFind);
 
-	cout << endl << endl << endl;
-	SetConsoleTextAttribute(hConsole, YELLOW);
-	cout <<"Test Case Summary" << endl;
-	SetConsoleTextAttribute(hConsole, GREEN);
-	cout << "Passed: " << file_num-num_failed << "/" << file_num;
-	SetConsoleTextAttribute(hConsole, DEFAULT);
+	char text[50];
+	chess.printMessage("\n\n\nTest Case Summary\n", YELLOW);
+
+	sprintf(text,"Passed: %i/%i", file_num-num_failed, file_num);
+	chess.printMessage(text, GREEN);
+
 	cout << " | ";
-	SetConsoleTextAttribute(hConsole, RED);
-	cout << "Failed: " << num_failed << "/" << file_num << endl;
-	cout << endl << endl;
-	SetConsoleTextAttribute(hConsole, DEFAULT);
+
+	sprintf(text,"Failed: %i/%i\n\n", num_failed, file_num);
+	chess.printMessage(text, RED);
 
 	if(!failed_tests.empty())
 	{
-		cout << "Failed Cases:" << endl;
-		SetConsoleTextAttribute(hConsole, DEFAULT);
+		chess.printMessage("Failed Cases:\n", YELLOW);
+
 		vector<string>::iterator itr;
 		int test_case;
 		for(itr = failed_tests.begin(); itr != failed_tests.end(); itr++)
 		{
 			test_case = test_case_num[itr - failed_tests.begin()];
 			cout << *itr;
-			SetConsoleTextAttribute(hConsole, YELLOW);
-			cout << " (Test Case " << test_case+1 << ")" << endl;
-			SetConsoleTextAttribute(hConsole, GREEN);
-			cout << "Expected FEN: ";
-			SetConsoleTextAttribute(hConsole, DEFAULT);
-			cout << fen_expected[test_case] << endl;
-			SetConsoleTextAttribute(hConsole, RED);
-			cout << "Obtained FEN: ";
-			SetConsoleTextAttribute(hConsole, DEFAULT);
-			cout << fen_obtained[test_case] << endl << endl << endl;
+
+			sprintf(text, " (Test Case %i)\n", test_case+1);
+			chess.printMessage(text, YELLOW);
+
+			sprintf(text, "Expected FEN: %s\n", fen_expected[test_case].c_str());
+			chess.printMessage(text, GREEN);
+
+			sprintf(text, "Obtained FEN: %s\n", fen_obtained[test_case].c_str());
+			chess.printMessage(text, RED);
 		}
 	}
 	

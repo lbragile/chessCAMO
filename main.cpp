@@ -26,12 +26,11 @@ int main()
 }
 
 /* TODO: 
-	1. Double Checks
-	2. Three move repetition (draw) & 50 move rule
-	3. Draw offer / Resign
+	1. Three move repetition (draw) & 50 move rule
+	2. Draw offer / Resign
 
-	4. GUI
-	5. Input as PGN rather than two ints (template)
+	3. GUI
+	4. Input as PGN rather than two ints (template)
 */
 
 		

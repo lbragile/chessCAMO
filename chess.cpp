@@ -268,6 +268,13 @@ bool Piece::isPathFree(int dest)
 	CHESS CLASS - HELPER FUNCTIONS
  *****/
 
+void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
+{
+	board[src]->setPieceSquare(dest);
+    board[dest]->setPieceSquare(src);
+    std::swap(board[src], board[dest]);
+}
+
 void Chess::makeMoveForType(int src, int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -281,37 +288,21 @@ void Chess::makeMoveForType(int src, int dest)
 
 	    if(std::abs(src - dest) == 3) // king side castle
 	    {
-            // king move
-            board[src]->setPieceSquare(src + 2);
-            board[src + 2]->setPieceSquare(src);
-            std::swap(board[src], board[src + 2]);
-
-            // rook move
-            board[dest]->setPieceSquare(dest - 2);
-            board[dest - 2]->setPieceSquare(dest);
-            std::swap(board[dest - 2], board[dest]);
+            this->pieceSwap(src, src + 2, board); // king move
+            this->pieceSwap(dest, dest - 2, board); // rook move
 	    }
 
 	    else // std::abs(src-dest) == 4 -> queen side castle
 	    {
-            // king move
-            board[src]->setPieceSquare(src - 2);
-            board[src - 2]->setPieceSquare(src);
-            std::swap(board[src], board[src - 2]);
-
-            // rook move
-            board[dest]->setPieceSquare(dest + 3);
-            board[dest + 3]->setPieceSquare(dest);
-            std::swap(board[dest + 3], board[dest]);
+            this->pieceSwap(src, src - 2, board); // king move
+            this->pieceSwap(dest, dest + 3, board); // rook move
 	    }
 	}
 
 	// en-passant move
 	else if(board[src]->isPawn() && board[src]->getEnPassant() && src % 8 != dest % 8)
 	{
-		board[src]->setPieceSquare(dest);
-        board[dest]->setPieceSquare(src);
-        std::swap(board[src], board[dest]);
+		this->pieceSwap(src, dest, board);
 
         // delete the pawn that caused en-passant (make it empty square)
 		if(std::abs(src-dest) == 7)
@@ -333,9 +324,7 @@ void Chess::makeMoveForType(int src, int dest)
 	    // Regular Move
 	    if(board[dest]->isEmpty())
 	    {
-            board[src]->setPieceSquare(dest);
-            board[dest]->setPieceSquare(src);
-            std::swap(board[src], board[dest]);
+			this->pieceSwap(src, dest, board);
 	    }
 
 	    // Attacking Move

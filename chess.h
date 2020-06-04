@@ -91,6 +91,7 @@ private:
 
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
+	void pieceSwap(int src, int dest, vector<Piece*> & board);
 	void handleChangeTurn();
 	void handleCheckmate();
 	void handleStalemate();
