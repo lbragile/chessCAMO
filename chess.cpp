@@ -122,8 +122,8 @@ void Chess::makeMove(string src, string dest)
 void Chess::handleChangeTurn()
 {
 	this->setTurn(this->switchTurn());
-	printBoard(this->getBoard());
-	if(!chess.getCheckmate())
+	this->printBoard(this->getBoard());
+	if(!this->getCheckmate())
 	{
 		cout << "___________________________________________________" << endl;
 		if(this->getTurn() == WHITE)
@@ -158,8 +158,8 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 
 void Chess::makeMove(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard();
-	stack<Piece*> CheckStack = chess.getCheckStack();
+	vector<Piece*> board = this->getBoard();
+	stack<Piece*> CheckStack = this->getCheckStack();
 	Piece *king, *piece, *undo_piece; // "undo_piece" needed for attacking moves that are illegal (to restore the piece that goes missing)
 	bool undo_moveInfo;
  	
@@ -284,9 +284,22 @@ bool Chess::sameDiag(int src, int dest)
 	return std::abs(src/8 - dest/8) == std::abs(src%8 - dest%8); 
 }
 
+int Chess::findKingPos(int dest, const vector<Piece*> & board, bool enemy)
+{
+	for(auto elem : board)
+    {
+    	if(enemy && elem->isKing() && !elem->isSameColor(dest))
+    		return elem->getPieceSquare();
+    	else if(!enemy && elem->isKing() && elem->isSameColor(dest))
+    		return elem->getPieceSquare();
+    } 
+
+    return -1; // king was not found
+}
+
 void Chess::makeMoveForType(int src, int dest)
 {
-	vector<Piece*> board = chess.getBoard();
+	vector<Piece*> board = this->getBoard();
 
 	// castling move
 	if(board[src]->canCastle(dest) && (std::abs(src - dest) == 3 || std::abs(src - dest) == 4))
@@ -368,15 +381,15 @@ void Chess::handleStalemate()
 
 bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
 {
-	vector<Piece*> board = chess.getBoard();
+	vector<Piece*> board = this->getBoard();
     int increment, src = piece->getPieceSquare(), dest = king->getPieceSquare();
     int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     // can a piece defend the king from check?
     if(!board[src]->isKnight())
     {
-    	increment = incrementChoice(src, dest); // passed by reference
-	    for(auto elem : chess.getBoard())
+    	increment = incrementChoice(src, dest);
+	    for(auto elem : board)
 	    {
 	        if(elem->isSameColor(dest) && elem->getPieceSquare() != dest)
 	        {
@@ -392,7 +405,7 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     }
     else // for a Knight check, to defend the king a piece must take the knight
     {
-    	for(auto elem : chess.getBoard())
+    	for(auto elem : board)
 	    {
 	        if(elem->isSameColor(dest) && elem->getPieceSquare() != dest && elem->isPossibleMove(src))
 	        {
@@ -505,7 +518,7 @@ bool Piece::causeDoubleCheck(int dest)
 	}
 	else
 	{
-		king_pos = Chess::findKingPos(dest, board);
+		king_pos = Chess::findKingPos(dest, board, true); // opposite color king position
 
 		CheckStack.push(board[king_pos]); // make the king last in the stack
 
@@ -529,19 +542,6 @@ bool Piece::causeDoubleCheck(int dest)
 	return chess.getDoubleCheck();
 }
 
-int Chess::findKingPos(int dest, const vector<Piece*> board)
-{
-	for(auto elem : board)
-    {
-    	if(elem->isKing() && !elem->isSameColor(dest))
-    	{
-    		return elem->getPieceSquare();
-    	}
-    } 
-
-    return -1; // king was not found
-}
-
 bool Piece::causeCheck(int dest)
 {
 	stack<Piece*> CheckStack = chess.getCheckStack();
@@ -554,7 +554,7 @@ bool Piece::causeCheck(int dest)
 	}
 	else
 	{
-		int king_pos = Chess::findKingPos(dest, board);
+		int king_pos = Chess::findKingPos(dest, board, true); // opposite color king position
 
 	    if(board[dest]->isPathFree(king_pos) && board[dest]->isPossibleMove(king_pos))
 	    {
@@ -570,8 +570,7 @@ bool Piece::causeCheck(int dest)
 
 void Piece::enPassantHandling(int src)
 {
-	if(this->isPawn())
-		this->enPassantHandling(src);
+	if(this->isPawn()) {this->enPassantHandling(src);}
 }
 
 bool Piece::isPinned(int dest)
@@ -581,14 +580,7 @@ bool Piece::isPinned(int dest)
 
 	if(!this->isKing())
 	{
-		for(auto elem : board)
-		{
-			if(elem->isSameColor(src) && elem->isKing())
-			{
-				king_pos = elem->getPieceSquare();
-				break;
-			}
-		}
+		king_pos = Chess::findKingPos(src, board, false); // same color king position
 
 		for(auto elem : board)
 		{
@@ -615,8 +607,7 @@ bool Piece::canCastle(int dest)
 
 void Piece::promotePawn(int dest)
 {
-	if(this->isPawn())
-		this->promotePawn(dest);
+	if(this->isPawn()) {this->promotePawn(dest);}
 }
 
 bool Piece::isSameColor(int dest)
@@ -793,9 +784,8 @@ bool Pawn::isPossibleMove(int dest)
 bool Knight::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	int diff = std::abs(src - dest), diff_row = std::abs(src_row - dest_row), diff_col = std::abs(src_col - dest_col);
-	return diff_row <= 2 && diff_col <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !this->isSameColor(dest);
+	int diff = std::abs(src - dest);
+	return std::abs(src/8 - dest/8) <= 2 && std::abs(src%8 - dest%8) <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !this->isSameColor(dest);
 }
 
 /*****
@@ -837,10 +827,9 @@ bool Queen::isPossibleMove(int dest)
  *****/
 
 // Board intialization
-void boardInit(Chess & chess)
+void Chess::boardInit(int board_size)
 {
-	int board_size = 64;
-	vector<Piece*> board;
+	vector<Piece*> board = this->getBoard();
 
 	// initialize the board
 	for(int i = 0; i < board_size; i++)
@@ -905,16 +894,15 @@ void boardInit(Chess & chess)
 		}
 	}
 
-	chess.setBoard(board);
+	this->setBoard(board);
 
-	printBoard(board);
-
+	this->printBoard(board);
 	cout << "___________________________________________________" << endl;
-	chess.printMessage("\n            White's move\n", CYAN);
+	this->printMessage("\n            White's move\n", CYAN);
 }
 
 // Print the current board position
-void printBoard(const vector<Piece*> & board)
+void Chess::printBoard(const vector<Piece*> & board)
 {
 	char piece_char;
 	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};

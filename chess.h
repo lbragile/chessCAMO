@@ -76,6 +76,10 @@ public:
 	virtual bool getEnPassant() const {return this->getEnPassant();}
 	virtual void setEnPassant(bool en_passant) {}
 
+	void boardInit(int board_size = 64); // Board intialization
+	void printBoard(const vector<Piece*> & board); // Print the current board position
+	void userEnded(int turn); /* TODO */ // resign or draw
+
 	void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
 	void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs
 
@@ -110,7 +114,7 @@ protected:
 	bool destInPath(int src, int dest, int pin);
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int src, int dest);
-	int findKingPos(int dest, const vector<Piece*> board);
+	int findKingPos(int dest, const vector<Piece*> & board, bool enemy);
 	bool sameCol(int src, int dest);
 	bool sameRow(int src, int dest);
 	bool sameDiag(int src, int dest);
@@ -306,15 +310,6 @@ public:
 /*****
 	GLOBAL FUNCTIONS / OBJECTS
  *****/
-
-// Board intialization
-void boardInit(Chess & chess);
-
-// Print the current board position
-void printBoard(const vector<Piece*> & board);
-
-// resign or draw
-void userEnded(int turn); /* TODO */
 
 extern Chess chess; // global object
 

@@ -63,11 +63,12 @@ int main()
 			sprintf(text, "\n\n===================== TEST CASE %i ====================\n\n", file_num+1);
 			chess.printMessage(text, YELLOW);
 
+			// make sure the board is empty prior to adding pieces AND all game ending conditions are reset
 			Chess reset;
 			chess = reset;
 
 			// Create 8x8 default board
-			boardInit(chess);
+			chess.boardInit();
 
 			// userEnded(turn);
 

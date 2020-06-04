@@ -10,7 +10,7 @@ int main()
 	int src, dest;
 
 	// Create 8x8 default board
-	boardInit(chess);
+	chess.boardInit();
 
 	// userEnded(turn);
 
