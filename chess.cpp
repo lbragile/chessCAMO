@@ -57,7 +57,7 @@ void Chess::isCheckmate(string checkType)
 		if(doubleCheckPieceIterator(king) || king->getPieceColor() != this->switchTurn())
 			handleCheckmate();
 		else // was not checkmate so can state that it is double check
-			this->printMessage("\n            Double Check!\n\n", CYAN); 
+			Chess::printMessage("\n            Double Check!\n\n", CYAN); 
 	}	
 
 	else if(checkType == "single") // CheckStack.top()->getPieceColor() != this->switchTurn()
@@ -71,7 +71,7 @@ void Chess::isCheckmate(string checkType)
 		if(singleCheckPieceIterator(piece, king) || piece->getPieceColor() == this->switchTurn())
 			handleCheckmate();
 		else // was not checkmate so can state that it is check
-    		this->printMessage("\n                Check!\n\n", CYAN); 
+    		Chess::printMessage("\n                Check!\n\n", CYAN); 
 	}
 }
 
@@ -122,14 +122,14 @@ void Chess::makeMove(string src, string dest)
 void Chess::handleChangeTurn()
 {
 	this->setTurn(this->switchTurn());
-	this->printBoard(this->getBoard());
+	Chess::printBoard(this->getBoard());
 	if(!this->getCheckmate())
 	{
 		cout << "___________________________________________________" << endl;
 		if(this->getTurn() == WHITE)
-    		this->printMessage("\n            White's move\n", CYAN);
+    		Chess::printMessage("\n            White's move\n", CYAN);
 		else
-    		this->printMessage("\n            Black's move\n", CYAN);
+    		Chess::printMessage("\n            Black's move\n", CYAN);
 	}
 }
 
@@ -144,9 +144,9 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 		this->setBoard(board);
 
 		if(check_type.compare("double") == 0)
-    		this->printMessage("You are in double check! Try again...\n", YELLOW);
+    		Chess::printMessage("You are in double check! Try again...\n", YELLOW);
 		else if(check_type.compare("single") == 0)
-    		this->printMessage("You are in check! Try again...\n", YELLOW);
+    		Chess::printMessage("You are in check! Try again...\n", YELLOW);
 
 		return true;
 	}
@@ -231,7 +231,7 @@ void Chess::makeMove(int src, int dest)
   	}
     else
     {
-    	this->printMessage("Invalid move! Try again...\n", YELLOW);
+    	Chess::printMessage("Invalid move! Try again...\n", YELLOW);
 	}
 }
 
@@ -256,6 +256,206 @@ bool Piece::isPathFree(int dest)
     	return increment > 0 ? pathIterator(this->getPieceSquare(), dest, increment) : false;
 	}
     
+}
+
+// Board intialization
+void Chess::boardInit(int board_size)
+{
+	vector<Piece*> board = this->getBoard();
+
+	// initialize the board
+	for(int i = 0; i < board_size; i++)
+	{
+		if(i < board_size/4) // black
+		{
+			if(i == 0 || i == 7) // rook
+			{
+				board.push_back(new Rook(i, ROOK, BLACK));
+			}
+			else if(i == 1 || i == 6) // knight
+			{
+				board.push_back(new Knight(i, KNIGHT, BLACK)); 
+			}
+			else if(i == 2 || i == 5) // bishop
+			{
+				board.push_back(new Bishop(i, BISHOP, BLACK)); 
+			}
+			else if(i == 3) // queen
+			{
+				board.push_back(new Queen(i, QUEEN, BLACK));
+			}
+			else if(i == 4) // king
+			{
+				board.push_back(new King(i, KING, BLACK));
+			}
+			else // pawn
+			{
+				board.push_back(new Pawn(i, PAWN, BLACK));
+			}
+		}
+		else if(board_size/4 <= i && i < board_size*3/4) // blank squares
+		{	
+			board.push_back(new Empty(i, EMPTY, NEUTRAL));
+		}
+		else // white
+		{
+			if(i == 56 || i == 63) // rook
+			{
+				board.push_back(new Rook(i, ROOK, WHITE));
+			}
+			else if(i == 57 || i == 62) // knight
+			{
+				board.push_back(new Knight(i, KNIGHT, WHITE)); 
+			}
+			else if(i == 58 || i == 61) // bishop
+			{
+				board.push_back(new Bishop(i, BISHOP, WHITE));
+			}
+			else if(i == 59) // queen
+			{
+				board.push_back(new Queen(i, QUEEN, WHITE));
+			}
+			else if(i == 60) // king
+			{
+				board.push_back(new King(i, KING, WHITE));
+			}
+			else // pawn
+			{
+				board.push_back(new Pawn(i, PAWN, WHITE));
+			}
+		}
+	}
+
+	this->setBoard(board);
+
+	Chess::printBoard(board);
+	cout << "___________________________________________________" << endl;
+	Chess::printMessage("\n            White's move\n", CYAN);
+}
+
+// Print the current board position
+void Chess::printBoard(const vector<Piece*> & board)
+{
+	char piece_char;
+	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
+	
+	int count = 0;
+	for(auto elem : board)
+	{
+		if(count == 0)
+		{
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
+			cout << ranks[count/8] << " | ";
+		}
+		else if(count % 8 == 0 && count > 0)
+		{
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
+			cout << ranks[count/8] << " | ";
+		}
+
+		switch(elem->getPieceType())
+		{
+			case ROOK:
+				piece_char = elem->isPieceWhite() ? 'R' : 'r';
+				break;
+			case KNIGHT:
+				piece_char = elem->isPieceWhite() ? 'N' : 'n';
+				break;
+			case BISHOP:
+				piece_char = elem->isPieceWhite() ? 'B' : 'b';
+				break;
+			case KING:
+				piece_char = elem->isPieceWhite() ? 'K' : 'k';
+				break;
+			case QUEEN:
+				piece_char = elem->isPieceWhite() ? 'Q' : 'q';
+				break;
+			case PAWN:
+				piece_char = elem->isPieceWhite() ? 'P' : 'p';
+				break;
+			default:
+				piece_char = ' ';
+		}
+
+		if(!islower(piece_char)) // WHITE
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
+			cout << std::left << std::setw(2) << piece_char;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		}
+		else // BLACK
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
+			cout << std::left << std::setw(2) << piece_char;
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+		}
+		
+		cout << "| ";
+
+		// go to next row if reached last column
+		if(count % 8 == 7)
+			cout << endl;
+		if(count == 63)
+		{
+			cout << "  +---+---+---+---+---+---+---+---+" << endl;
+			cout << "    A   B   C   D   E   F   G   H" << endl;
+		}
+		count++;
+	}
+}
+
+void Chess::DrawOrResign()
+{
+    char user_input, draw_reply;
+    string message;
+
+    Chess::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
+    cin.get(user_input);
+    cin.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
+
+    // error check
+    while(user_input != 'y' && user_input != 'r' && user_input != 'd')
+    {
+	    Chess::printMessage("\nPick one of the choices... try again! ", YELLOW);
+    	cin.get(user_input); // get new input
+    	cin.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
+    }
+
+    if((int) user_input == 114 || (int) user_input == 82) // r
+    {
+        message = this->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" : "\nBlack resigned -> White wins\n";
+        Chess::printMessage(message, CYAN);
+        exit(0);
+    }
+    else if((int) user_input == 68 || (int) user_input == 100) // d
+    {
+        Chess::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
+        cin.get(draw_reply);
+    	cin.ignore(100, '\n'); // ignore rest of the previous input
+
+        // error check
+        while(draw_reply != 'y' && draw_reply != 'n')
+	    {
+	    	Chess::printMessage("\nPick one of the choices... try again! ", YELLOW);
+    		cin.get(draw_reply); // get new input
+    		cin.ignore(100, '\n'); // ignore rest of the previous input
+	    }
+
+        if((int) draw_reply == 89 || (int) draw_reply == 121) // y
+        {
+        	Chess::printMessage("\nGame drawn by agreement\n", CYAN);
+            exit(0);
+        }
+        else if((int) draw_reply == 78 || (int) draw_reply == 110) // n
+        {
+        	Chess::printMessage("\nDraw rejected. Game continues...\n", CYAN);
+        	return;
+        }
+    }
+    else // y
+    {
+    	return ; // do nothing
+    }
 }
 
 /*****
@@ -368,14 +568,14 @@ void Chess::makeMoveForType(int src, int dest)
 void Chess::handleCheckmate()
 {
 	string message = this->getTurn() == WHITE ? "\n      White won by Checkmate!\n\n" : "\n      Black won by Checkmate!\n\n";
-	this->printMessage(message, CYAN);
+	Chess::printMessage(message, CYAN);
 	this->setCheckmate(true);
 }
 
 void Chess::handleStalemate()
 {
 	string message = this->getTurn() != WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
-	this->printMessage(message, CYAN);
+	Chess::printMessage(message, CYAN);
 	this->setStalemate(true);
 }
 
@@ -819,155 +1019,4 @@ bool Queen::isPossibleMove(int dest)
 	int diff = std::abs(src - dest);
 	return ( ((diff % 7 == 0 || diff % 9 == 0) && Chess::sameDiag(src, dest)) || (Chess::sameRow(src, dest) || Chess::sameCol(src, dest)) )
 		      && this->isPathFree(dest) && !this->isSameColor(dest);
-}
-
-
-/*****
-	GLOBAL FUNCTIONS
- *****/
-
-// Board intialization
-void Chess::boardInit(int board_size)
-{
-	vector<Piece*> board = this->getBoard();
-
-	// initialize the board
-	for(int i = 0; i < board_size; i++)
-	{
-		if(i < board_size/4) // black
-		{
-			if(i == 0 || i == 7) // rook
-			{
-				board.push_back(new Rook(i, ROOK, BLACK));
-			}
-			else if(i == 1 || i == 6) // knight
-			{
-				board.push_back(new Knight(i, KNIGHT, BLACK)); 
-			}
-			else if(i == 2 || i == 5) // bishop
-			{
-				board.push_back(new Bishop(i, BISHOP, BLACK)); 
-			}
-			else if(i == 3) // queen
-			{
-				board.push_back(new Queen(i, QUEEN, BLACK));
-			}
-			else if(i == 4) // king
-			{
-				board.push_back(new King(i, KING, BLACK));
-			}
-			else // pawn
-			{
-				board.push_back(new Pawn(i, PAWN, BLACK));
-			}
-		}
-		else if(board_size/4 <= i && i < board_size*3/4) // blank squares
-		{	
-			board.push_back(new Empty(i, EMPTY, NEUTRAL));
-		}
-		else // white
-		{
-			if(i == 56 || i == 63) // rook
-			{
-				board.push_back(new Rook(i, ROOK, WHITE));
-			}
-			else if(i == 57 || i == 62) // knight
-			{
-				board.push_back(new Knight(i, KNIGHT, WHITE)); 
-			}
-			else if(i == 58 || i == 61) // bishop
-			{
-				board.push_back(new Bishop(i, BISHOP, WHITE));
-			}
-			else if(i == 59) // queen
-			{
-				board.push_back(new Queen(i, QUEEN, WHITE));
-			}
-			else if(i == 60) // king
-			{
-				board.push_back(new King(i, KING, WHITE));
-			}
-			else // pawn
-			{
-				board.push_back(new Pawn(i, PAWN, WHITE));
-			}
-		}
-	}
-
-	this->setBoard(board);
-
-	this->printBoard(board);
-	cout << "___________________________________________________" << endl;
-	this->printMessage("\n            White's move\n", CYAN);
-}
-
-// Print the current board position
-void Chess::printBoard(const vector<Piece*> & board)
-{
-	char piece_char;
-	char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
-	
-	int count = 0;
-	for(auto elem : board)
-	{
-		if(count == 0)
-		{
-			cout << "  +---+---+---+---+---+---+---+---+" << endl;
-			cout << ranks[count/8] << " | ";
-		}
-		else if(count % 8 == 0 && count > 0)
-		{
-			cout << "  +---+---+---+---+---+---+---+---+" << endl;
-			cout << ranks[count/8] << " | ";
-		}
-
-		switch(elem->getPieceType())
-		{
-			case ROOK:
-				piece_char = elem->isPieceWhite() ? 'R' : 'r';
-				break;
-			case KNIGHT:
-				piece_char = elem->isPieceWhite() ? 'N' : 'n';
-				break;
-			case BISHOP:
-				piece_char = elem->isPieceWhite() ? 'B' : 'b';
-				break;
-			case KING:
-				piece_char = elem->isPieceWhite() ? 'K' : 'k';
-				break;
-			case QUEEN:
-				piece_char = elem->isPieceWhite() ? 'Q' : 'q';
-				break;
-			case PAWN:
-				piece_char = elem->isPieceWhite() ? 'P' : 'p';
-				break;
-			default:
-				piece_char = ' ';
-		}
-
-		if(!islower(piece_char)) // WHITE
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
-			cout << std::left << std::setw(2) << piece_char;
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
-		else // BLACK
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
-			cout << std::left << std::setw(2) << piece_char;
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-		}
-		
-		cout << "| ";
-
-		// go to next row if reached last column
-		if(count % 8 == 7)
-			cout << endl;
-		if(count == 63)
-		{
-			cout << "  +---+---+---+---+---+---+---+---+" << endl;
-			cout << "    A   B   C   D   E   F   G   H" << endl;
-		}
-		count++;
-	}
 }

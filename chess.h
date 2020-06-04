@@ -78,7 +78,7 @@ public:
 
 	void boardInit(int board_size = 64); // Board intialization
 	void printBoard(const vector<Piece*> & board); // Print the current board position
-	void userEnded(int turn); /* TODO */ // resign or draw
+	void DrawOrResign(); /* TODO */ // resign or draw
 
 	void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
 	void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs

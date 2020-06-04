@@ -70,8 +70,6 @@ int main()
 			// Create 8x8 default board
 			chess.boardInit();
 
-			// userEnded(turn);
-
 			// insert value to the end
 			sprintf(filename,"test_cases/%s", FindFileData.cFileName);
 			ifstream myfile(filename); //opening the file.
@@ -82,7 +80,6 @@ int main()
 		        while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) //while the end of file is NOT reached or game is not finished
 		        {	
 		        	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
-					
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
 		            chess.makeMove(src, dest);

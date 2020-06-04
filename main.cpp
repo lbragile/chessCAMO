@@ -16,6 +16,7 @@ int main()
 
     while(!chess.getCheckmate() && !chess.getStalemate())
     {	
+    	chess.DrawOrResign();
     	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
         cin >> src >> dest;
         std::system("cls"); // clear the screen
