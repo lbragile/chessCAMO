@@ -1,3 +1,12 @@
+/*****************************************************/  
+/*       Title:           chess.h                    */
+/*       Author:          Lior Bragilevsky           */
+/*       Related Files:   chess.cpp					 */
+/*       Project:         ChessCAMO					 */
+/*       Version:         1.0						 */
+/*       Last Revision:   June 4th, 2020             */
+/*****************************************************/
+
 #ifndef CHESS_H
 #define CHESS_H
 
@@ -21,17 +30,11 @@
 
 using namespace std;
 
-enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY}; // caps to avoid class name conflict
+enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY};
 enum pieceColor {BLACK, NEUTRAL, WHITE};
 
 // forward declaration
 class Piece; 
-class Pawn;
-class Knight;
-class Bishop;
-class Rook;
-class Queen;
-class King; 
 
 class Chess
 {
@@ -97,14 +100,20 @@ private:
 	void handleStalemate();
 
 	bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
-	bool singleCheckPieceIterator(int src, int dest); // for isCheckmate (single)
-	bool doubleCheckPieceIterator(int dest); // for isCheckmate (double) - only king movement matters
+	bool singleCheckPieceIterator(Piece* piece, Piece* king); // for isCheckmate (single)
+	bool doubleCheckPieceIterator(Piece* king); // for isCheckmate (double) - only king movement matters
+
+	pieceColor switchTurn();
 
 protected:
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
 	bool destInPath(int src, int dest, int pin);
 	int squareOfPieceInPath(int src, int dest);
 	int incrementChoice(int src, int dest);
+	int findKingPos(int dest, const vector<Piece*> board);
+	bool sameCol(int src, int dest);
+	bool sameRow(int src, int dest);
+	bool sameDiag(int src, int dest);
 };
 
 class Piece : public Chess
@@ -152,6 +161,8 @@ public:
 	bool isPieceWhite() {return this->getPieceColor() == WHITE;}
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
 	bool isSameColor(int dest);
+
+	bool isLegalMove(int dest);
 	
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
