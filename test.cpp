@@ -38,27 +38,30 @@ string boardFenConverter(const vector<Piece*> & board)
 
 int main()
 {
-	char filename[1000];
-	int file_num = 0, num_failed = 0;
 	int src, dest;
+	string path = "test_cases/*.txt"; //../unit_cases/*.txt (for single tests) or test_cases/*.txt (for all test cases made)
+
+	char filename[1000], text[75];
+	int file_num = 0, num_failed = 0;
+
 	vector<string> failed_tests, fen_obtained, fen_expected;
 	vector<int> test_case_num;
+
 	string fen_expected_input;
 
-	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, DEFAULT);
 	
 	WIN32_FIND_DATA FindFileData;
-	string path = "test_cases/*.txt"; //../unit_cases/*.txt (for single tests) or test_cases/*.txt (for all test cases made)
 	HANDLE hFind = FindFirstFile(path.c_str(), &FindFileData);
+
 	if(hFind == INVALID_HANDLE_VALUE){cout << "No files found" << endl;	exit(0);}
 	else
 	{
 		do
 		{
-			SetConsoleTextAttribute(hConsole, YELLOW);
-			printf("\n\n===================== TEST CASE %i ==================== \n\n", file_num+1);
-			SetConsoleTextAttribute(hConsole, DEFAULT);
+			sprintf(text, "\n\n===================== TEST CASE %i ==================== \n\n", file_num+1);
+			chess.printMessage(filename, YELLOW);
 
 			Chess reset;
 			chess = reset;
@@ -106,7 +109,6 @@ int main()
 	} 
 	FindClose(hFind);
 
-	char text[50];
 	chess.printMessage("\n\n\nTest Case Summary\n", YELLOW);
 
 	sprintf(text,"Passed: %i/%i", file_num-num_failed, file_num);
@@ -140,13 +142,4 @@ int main()
 	}
 	
 	return 0;
-}
-
-/* TODO: 
-	1. avoid castling through check
-	2. En-passent
-	3. Double Checks
-	4. check, checkmate, stalemate
-*/
-
-		
+}		
