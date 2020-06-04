@@ -41,7 +41,7 @@ int main()
 	int src, dest;
 	string path = "test_cases/*.txt"; //../unit_cases/*.txt (for single tests) or test_cases/*.txt (for all test cases made)
 
-	char filename[1000], text[75];
+	char filename[1000], text[100];
 	int file_num = 0, num_failed = 0;
 
 	vector<string> failed_tests, fen_obtained, fen_expected;
@@ -60,8 +60,8 @@ int main()
 	{
 		do
 		{
-			sprintf(text, "\n\n===================== TEST CASE %i ==================== \n\n", file_num+1);
-			chess.printMessage(filename, YELLOW);
+			sprintf(text, "\n\n===================== TEST CASE %i ====================\n\n", file_num+1);
+			chess.printMessage(text, YELLOW);
 
 			Chess reset;
 			chess = reset;
