@@ -124,11 +124,11 @@ public:
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
 	// constructor with piece initialization
-	Piece() : Chess(), square{0}, value{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
+	Piece() : Chess(), square{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
 
 	// constructor with piece initialization
-	Piece(int square, int value, pieceType type, pieceColor color) : moved{false}
-	{this->square = square; this->value = value; this->type = type; this->color = color;}
+	Piece(int square, pieceType type, pieceColor color) : moved{false}
+	{this->square = square; this->type = type; this->color = color;}
 
 	// Mutator and accessor functions for determining/setting the piece value of an object
 	int getPieceSquare() const {return square;}
@@ -141,10 +141,6 @@ public:
 	// Mutator and accessor functions for determining/setting the piece color of an object
 	pieceColor getPieceColor() const {return color;}
 	void setPieceColor(pieceColor color) {this->color = color;}
-
-	// Mutator and accessor functions for determining/setting the piece value of an object
-	int getPieceValue() const {return value;}
-	void setPieceValue(int value) {this->value = value;}
 
 	// Mutator and accessor functions for determining/setting the moving state of an object
 	bool getPieceMoveInfo() const {return moved;}
@@ -177,7 +173,6 @@ public:
 
 private:
 	int square; // position of the piece on the board [0, 63]
-	int value; // pawn - 1, knight - 3, bishop - 3, rook - 5, queen - 9, king - infinity (use 10), empty - 0
 	pieceType type;
 	pieceColor color;
 	bool moved; // has the piece been moved yet (important for pawns and castling)
@@ -194,7 +189,7 @@ public:
 	Pawn() : Piece(), en_passant{false} {}
 
 	// constructor with piece initialization
-	Pawn(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color), en_passant{false} {}
+	Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {}
 
 	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
 	virtual bool getEnPassant() const {return en_passant;}
@@ -219,7 +214,7 @@ public:
 	Knight() : Piece() {}
 
 	// constructor with piece initialization
-	Knight(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -235,7 +230,7 @@ public:
 	Bishop() : Piece() {}
 
 	// constructor with piece initialization
-	Bishop(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -251,7 +246,7 @@ public:
 	Rook() : Piece() {}
 
 	// constructor with piece initialization
-	Rook(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -267,7 +262,7 @@ public:
 	Queen() : Piece() {}
 
 	// constructor with piece initialization
-	Queen(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -283,7 +278,7 @@ public:
 	King() : Piece() {}
 
 	// constructor with piece initialization
-	King(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	bool isDoubleChecked();
 	int numKingMoves();
@@ -304,7 +299,7 @@ public:
 	Empty() : Piece() {}
 
 	// constructor with piece initialization
-	Empty(int square, int value, pieceType type, pieceColor color) : Piece(square, value, type, color) {}
+	Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 };
 
 
@@ -318,14 +313,8 @@ void boardInit(Chess & chess);
 // Print the current board position
 void printBoard(const vector<Piece*> & board);
 
-// Change player's turn and print whose turn it is after a move is played
-void playerTurn(int & turn);
-
-// Updates the board as needed
-void updatedBoardStatus(const vector<Piece> & board, Piece piece, int & turn, bool valid);
-
 // resign or draw
-void userEnded(int turn);
+void userEnded(int turn); /* TODO */
 
 extern Chess chess; // global object
 

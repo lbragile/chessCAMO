@@ -316,11 +316,11 @@ void Chess::makeMoveForType(int src, int dest)
         // delete the pawn that caused en-passant (make it empty square)
 		if(std::abs(src-dest) == 7)
 		{
-			board[src+1] = new Empty(src+1, 0, EMPTY, NEUTRAL);
+			board[src+1] = new Empty(src+1, EMPTY, NEUTRAL);
 		}
 		else if(std::abs(src-dest) == 9)
 		{
-			board[src-1] = new Empty(src-1, 0, EMPTY, NEUTRAL);
+			board[src-1] = new Empty(src-1, EMPTY, NEUTRAL);
 		}
 	}
 
@@ -344,7 +344,7 @@ void Chess::makeMoveForType(int src, int dest)
             board[dest]->setPieceSquare(dest);
 
             // src
-            board[src] = new Empty(src, 0, EMPTY, NEUTRAL);
+            board[src] = new Empty(src, EMPTY, NEUTRAL);
             board[src]->setPieceSquare(src);
 	    }
 	}
@@ -735,22 +735,22 @@ void Pawn::promotePawn(int dest)
         cin >> piece;
         if(piece == 'Q' || piece == 'q')
         {
-            board[src] = chess.getTurn() == WHITE ? new Queen(dest, 9, QUEEN, WHITE) : new Queen(dest, 9, QUEEN, BLACK);
+            board[src] = chess.getTurn() == WHITE ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
         if(piece == 'R' || piece == 'r')
         {
-            board[src] = chess.getTurn() == WHITE ? new Rook(dest, 5, ROOK, WHITE) : new Rook(dest, 5, ROOK, BLACK);
+            board[src] = chess.getTurn() == WHITE ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
         if(piece == 'B' || piece == 'b')
         {
-            board[src] = chess.getTurn() == WHITE ? new Bishop(dest, 3, BISHOP, WHITE) : new Bishop(dest, 3, BISHOP, BLACK);
+            board[src] = chess.getTurn() == WHITE ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
         if(piece == 'N' || piece == 'n')
         {
-            board[src] = chess.getTurn() == WHITE ? new Knight(dest, 3, KNIGHT, WHITE) : new Knight(dest, 3, KNIGHT, BLACK);
+            board[src] = chess.getTurn() == WHITE ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
             break;
         }
 
@@ -805,9 +805,8 @@ bool Knight::isPossibleMove(int dest)
 bool Bishop::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	int diff = std::abs(src - dest), diff_row = std::abs(src_row - dest_row), diff_col = std::abs(src_col - dest_col);
-	return (diff % 7 == 0 || diff % 9 == 0) && diff_row == diff_col && this->isPathFree(dest) && !this->isSameColor(dest);
+	int diff = std::abs(src - dest);
+	return (diff % 7 == 0 || diff % 9 == 0) && Chess::sameDiag(src, dest) && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
 /*****
@@ -817,8 +816,7 @@ bool Bishop::isPossibleMove(int dest)
 bool Rook::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
-	int src_row = src/8, src_col = src%8, dest_row = dest/8, dest_col = dest%8;
-	return (src_row == dest_row || src_col == dest_col) && this->isPathFree(dest) && !this->isSameColor(dest);
+	return (Chess::sameRow(src, dest) || Chess::sameCol(src, dest)) && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
 /*****
@@ -851,58 +849,58 @@ void boardInit(Chess & chess)
 		{
 			if(i == 0 || i == 7) // rook
 			{
-				board.push_back(new Rook(i, 5, ROOK, BLACK));
+				board.push_back(new Rook(i, ROOK, BLACK));
 			}
 			else if(i == 1 || i == 6) // knight
 			{
-				board.push_back(new Knight(i, 3, KNIGHT, BLACK)); 
+				board.push_back(new Knight(i, KNIGHT, BLACK)); 
 			}
 			else if(i == 2 || i == 5) // bishop
 			{
-				board.push_back(new Bishop(i, 3, BISHOP, BLACK)); 
+				board.push_back(new Bishop(i, BISHOP, BLACK)); 
 			}
 			else if(i == 3) // queen
 			{
-				board.push_back(new Queen(i, 9, QUEEN, BLACK));
+				board.push_back(new Queen(i, QUEEN, BLACK));
 			}
 			else if(i == 4) // king
 			{
-				board.push_back(new King(i, 10, KING, BLACK));
+				board.push_back(new King(i, KING, BLACK));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(i, 1, PAWN, BLACK));
+				board.push_back(new Pawn(i, PAWN, BLACK));
 			}
 		}
 		else if(board_size/4 <= i && i < board_size*3/4) // blank squares
 		{	
-			board.push_back(new Empty(i, 0, EMPTY, NEUTRAL));
+			board.push_back(new Empty(i, EMPTY, NEUTRAL));
 		}
 		else // white
 		{
 			if(i == 56 || i == 63) // rook
 			{
-				board.push_back(new Rook(i, 5, ROOK, WHITE));
+				board.push_back(new Rook(i, ROOK, WHITE));
 			}
 			else if(i == 57 || i == 62) // knight
 			{
-				board.push_back(new Knight(i, 3, KNIGHT, WHITE)); 
+				board.push_back(new Knight(i, KNIGHT, WHITE)); 
 			}
 			else if(i == 58 || i == 61) // bishop
 			{
-				board.push_back(new Bishop(i, 3, BISHOP, WHITE));
+				board.push_back(new Bishop(i, BISHOP, WHITE));
 			}
 			else if(i == 59) // queen
 			{
-				board.push_back(new Queen(i, 9, QUEEN, WHITE));
+				board.push_back(new Queen(i, QUEEN, WHITE));
 			}
 			else if(i == 60) // king
 			{
-				board.push_back(new King(i, 10, KING, WHITE));
+				board.push_back(new King(i, KING, WHITE));
 			}
 			else // pawn
 			{
-				board.push_back(new Pawn(i, 1, PAWN, WHITE));
+				board.push_back(new Pawn(i, PAWN, WHITE));
 			}
 		}
 	}
