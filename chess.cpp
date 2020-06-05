@@ -36,7 +36,6 @@ bool Chess::isStalemate()
 	vector<Piece*> board = this->getBoard();
 	int possible_moves[22] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 21, 27, 28, 35, 36, 42, 45, 49, 54, 56, 63};
 	
-	int counter = 0;
 	for(auto elem : board)
 	{
 		if(elem->getPieceColor() == this->switchTurn())
@@ -45,17 +44,13 @@ bool Chess::isStalemate()
 			{
 				if(elem->isLegalMove(elem->getPieceSquare() + move) || elem->isLegalMove(elem->getPieceSquare() - move))
 				{
-					counter++;
-					break;
+					return false; // at least one piece could move on the board
 				}
 			}
 		}
-
-		if(counter > 0)
-			break;
 	}
 
-	return counter == 0;
+	return true; // no piece on the board has a legal move
 }
 
 pieceColor Chess::switchTurn()
