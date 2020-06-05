@@ -76,16 +76,11 @@ public:
 	virtual bool getEnPassant() const {return this->getEnPassant();}
 	virtual void setEnPassant(bool en_passant) {}
 
-	void boardInit(int board_size = 64); // Board intialization
-	void printBoard(const vector<Piece*> & board); // Print the current board position
-	void DrawOrResign(); /* TODO */ // resign or draw
-
 	void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
 	void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs
 
 	void isCheckmate(string checkType);
 	bool isStalemate();
-	void printMessage(string text, int color);
 	
 private:
 	vector<Piece*> board; // overall board state
@@ -108,16 +103,6 @@ private:
 	bool doubleCheckPieceIterator(Piece* king); // for isCheckmate (double) - only king movement matters
 
 	pieceColor switchTurn();
-
-protected:
-	bool pathIterator(int src, int dest, int increment); // for isPathFree
-	bool destInPath(int src, int dest, int pin);
-	int squareOfPieceInPath(int src, int dest);
-	int incrementChoice(int src, int dest);
-	int findKingPos(int dest, const vector<Piece*> & board, bool enemy);
-	bool sameCol(int src, int dest);
-	bool sameRow(int src, int dest);
-	bool sameDiag(int src, int dest);
 };
 
 class Piece : public Chess
@@ -163,17 +148,16 @@ public:
 	bool isSameColor(int dest);
 
 	bool isLegalMove(int dest);
+	bool causeCheck(int dest);
+	bool causeDoubleCheck(int dest);
+	bool isPinned(int dest);
+	bool isPathFree(int dest);
 	
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
 	virtual void enPassantHandling(int src);
-
-	bool causeCheck(int dest);
-	bool causeDoubleCheck(int dest);
-	bool isPinned(int dest);
-	bool isPathFree(int dest);
 
 private:
 	int square; // position of the piece on the board [0, 63]
@@ -284,9 +268,6 @@ public:
 	// constructor with piece initialization
 	King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-	bool isDoubleChecked();
-	int numKingMoves();
-
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual bool movedIntoCheck(int dest);
@@ -306,10 +287,16 @@ public:
 	Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 };
 
-
 /*****
 	GLOBAL FUNCTIONS / OBJECTS
  *****/
+namespace chessCAMO
+{
+	void boardInit(int board_size = 64); // Board intialization
+	void printBoard(const vector<Piece*> & board); // Print the current board position
+	void drawOrResign(); /* TODO */ // resign or draw
+	void printMessage(string text, int color);
+}
 
 extern Chess chess; // global object
 

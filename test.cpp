@@ -1,5 +1,9 @@
 #include "chess.h"
 
+// included in 'chess.h' but good to re-state
+using namespace std;
+using namespace chessCAMO; 
+
 Chess chess; // global object call
 
 string boardFenConverter(const vector<Piece*> & board)
@@ -61,14 +65,14 @@ int main()
 		do
 		{
 			sprintf(text, "\n\n===================== TEST CASE %i ====================\n\n", file_num+1);
-			chess.printMessage(text, YELLOW);
+			chessCAMO::printMessage(text, YELLOW);
 
 			// make sure the board is empty prior to adding pieces AND all game ending conditions are reset
 			Chess reset;
 			chess = reset;
 
 			// Create 8x8 default board
-			chess.boardInit();
+			boardInit();
 
 			// insert value to the end
 			sprintf(filename,"test_cases/%s", FindFileData.cFileName);
@@ -79,7 +83,7 @@ int main()
 		    	fen_expected.push_back(fen_expected_input);
 		        while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) //while the end of file is NOT reached or game is not finished
 		        {	
-		        	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+		        	chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
 		            myfile >> src >> dest;
 		            cout << src << " " << dest << endl;
 		            chess.makeMove(src, dest);
@@ -107,19 +111,19 @@ int main()
 	} 
 	FindClose(hFind);
 
-	chess.printMessage("\n\n\nTest Case Summary\n", YELLOW);
+	chessCAMO::printMessage("\n\n\nTest Case Summary\n", YELLOW);
 
 	sprintf(text,"Passed: %i/%i", file_num-num_failed, file_num);
-	chess.printMessage(text, GREEN);
+	chessCAMO::printMessage(text, GREEN);
 
 	cout << " | ";
 
 	sprintf(text,"Failed: %i/%i\n\n", num_failed, file_num);
-	chess.printMessage(text, RED);
+	chessCAMO::printMessage(text, RED);
 
 	if(!failed_tests.empty())
 	{
-		chess.printMessage("Failed Cases:\n", YELLOW);
+		chessCAMO::printMessage("Failed Cases:\n", YELLOW);
 
 		vector<string>::iterator itr;
 		int test_case;
@@ -129,13 +133,13 @@ int main()
 			cout << *itr;
 
 			sprintf(text, " (Test Case %i)\n", test_case+1);
-			chess.printMessage(text, YELLOW);
+			chessCAMO::printMessage(text, YELLOW);
 
 			sprintf(text, "Expected FEN: %s\n", fen_expected[test_case].c_str());
-			chess.printMessage(text, GREEN);
+			chessCAMO::printMessage(text, GREEN);
 
 			sprintf(text, "Obtained FEN: %s\n", fen_obtained[test_case].c_str());
-			chess.printMessage(text, RED);
+			chessCAMO::printMessage(text, RED);
 		}
 	}
 	

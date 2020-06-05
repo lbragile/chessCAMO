@@ -1,6 +1,8 @@
 #include "chess.h"
 
+// included in 'chess.h' but good to re-state
 using namespace std;
+using namespace chessCAMO; 
 
 Chess chess; // global object call
 
@@ -10,17 +12,28 @@ int main()
 	int src, dest;
 
 	// Create 8x8 default board
-	chess.boardInit();
+	chessCAMO::boardInit();
 
 	// userEnded(turn);
 
     while(!chess.getCheckmate() && !chess.getStalemate())
     {	
-    	chess.DrawOrResign();
-    	chess.printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+    	chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
         cin >> src >> dest;
+
+        // input error checking
+        while(cin.fail())
+        {
+	        chessCAMO::printMessage("\nInput type is invalid... try again!\n", YELLOW);
+	        cin.clear();
+	        cin.ignore(100,'\n');
+    		chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+	        cin >> src >> dest;
+	    }
+
         std::system("cls"); // clear the screen
         chess.makeMove(src, dest);
+		chessCAMO::drawOrResign();
     }
 
 	return 0;
@@ -28,10 +41,8 @@ int main()
 
 /* TODO: 
 	1. Three move repetition (draw) & 50 move rule
-	2. Draw offer / Resign
-
+	2. Input as PGN rather than two ints (template)
 	3. GUI
-	4. Input as PGN rather than two ints (template)
 */
 
 		
