@@ -37,12 +37,4 @@ int main()
     }
 
 	return 0;
-}
-
-/* TODO: 
-	1. Three move repetition (draw) & 50 move rule
-	2. Input as PGN rather than two ints (template)
-	3. GUI
-*/
-
-		
+}		

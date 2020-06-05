@@ -1,11 +1,11 @@
-/*****************************************************/  
-/*       Title:           chess.h                    */
-/*       Author:          Lior Bragilevsky           */
-/*       Related Files:   chess.cpp					 */
-/*       Project:         chessCAMO 				 */
-/*       Version:         1.0						 */
-/*       Last Revision:   June 5th, 2020             */
-/*****************************************************/
+/****************************************************************************************************/  
+/*									Title:           chess.h										*/
+/*									Author:          Lior Bragilevsky								*/
+/*									Related Files:   chess.cpp										*/
+/*									Project:         chessCAMO										*/
+/*									Version:         1.0											*/
+/*									Last Revision:   June 5th, 2020									*/
+/****************************************************************************************************/ 
 
 /*
 This implementation file is meant to be used as a test case checker to improve efficiency in debugging.
@@ -23,9 +23,9 @@ To include an additional test case:
 	   6 characters. E.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1, becomes
 	   rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq;
 	3) On the next line, the user enters the corresponding source ('src') and destination ('dest') 
-	   coordinates for a given move. E.g. 52 36 corresponds to moving from square 52 to 36;
+	   coordinates for a given move. E.g. 52 36 (note the space) means moving from square 52 to 36;
 	4) Rinse and repeat step 3) until the position provided in step 1) is met.
-	   Make sure to not end on a blank line to avoid unneccessary warnings from the algorithm;
+	   Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;
 	5) Name the file a meaningful name according to what is being tested. 
 	   E.g. to check if a given piece (Queen) delivers a checkmate -> "queenCheckmate.txt";
 	6) Place test case files in a folder named "./test_cases/" (used by the algorithm).
@@ -55,7 +55,7 @@ string boardFenConverter(const vector<Piece*> & board);
 // Pre-condition:  'fen'         - FEN string is made (can be empty)
 //                 'empty_count' - Number of empty squares found in the current row
 //                 'next_char'   - Character to append to the FEN, must be one of P, N, B, Q, K (upper case)
-//				   'isWhite'     - true if the passed piece is white, false otherwise (to determine case of piece in FEN)
+//				   'isWhite'     - true if the passed piece is white, false otherwise (piece case in FEN)
 // Post-condition: Appends 'next_char' to 'fen' and returns updated variables by reference 
 void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
    
@@ -97,7 +97,7 @@ int main()
 			chess = reset;
 
 			// Create 8x8 default board
-			boardInit();
+			chessCAMO::boardInit();
 
 			// form the path to the current test case and open the file
 			sprintf(filename,"test_cases/%s", FindFileData.cFileName);

@@ -1,24 +1,65 @@
-/*****************************************************/  
-/*       Title:           chess.h                    */
-/*       Author:          Lior Bragilevsky           */
-/*       Related Files:   chess.cpp					 */
-/*       Project:         ChessCAMO					 */
-/*       Version:         1.0						 */
-/*       Last Revision:   June 5th, 2020             */
-/*****************************************************/
+/****************************************************************************************************/  
+/*									Title:           chess.h										*/
+/*									Author:          Lior Bragilevsky								*/
+/*									Related Files:   chess.cpp										*/
+/*									Project:         chessCAMO										*/
+/*									Version:         1.0											*/
+/*									Last Revision:   June 5th, 2020									*/
+/****************************************************************************************************/
 
-#ifndef CHESS_H
+/*
+Project Description:
+chessCAMO is a newly proposed chess variant that stands for "Calculations Always Make Opportunities"
+and was inspired by the very popular chess variant "Crazyhouse" (https://en.wikipedia.org/wiki/Crazyhouse).
+The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a 
+move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of 
+camouflaging each piece that is currently on the board. The piece reservoir is limited in size and 
+cannot be re-stocked with pieces. Once a player decides to use a piece from the reservoir to replace
+one of his existing pieces on the board, their turn is over. An obvious rule is that player cannot use
+the reservoir while in check as they must make a move to avoid check. Additionally, just like in the 
+Crazyhouse variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from 
+the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
+
+To Do:
+	Regular Chess:
+		1) Three move repetition (draw) & 50 move rule
+		2) Board representation undo
+		3) Input as PGN rather than two ints (template) - semi working
+		4) GUI
+
+	ChessCAMO:
+		1) Make piece reservoir (stack)
+		2) Allow players to replace existing pieces with reservoir pieces
+		3) Implement abovementioned check and pawn promotion rules
+		4) Make test cases to confirm that overall functionality still works
+
+Why?
+	I decided to create this project due to my growing interest in software development. Coming from an
+	Engineering background with Deep Learning research experience (Recent Master of Applied Science
+	graduate), I realized that writing and developing code (both front and back end) were highly
+	appealing to me. Thus, I spent a lot of time building upon my existing coding knowledge through	online
+	material and knew that it is time to test my knowledge on a challenging project. Additionally, I played
+	chess (not very seriously) consistently since the age of about 4-5, so one can say that it is a very
+	big part of my life. As a result, this project allowed me to gain valuable experience and knowledge
+	while working on a topic that I am passionate about and have expertise in. 
+	Any constructive criticism regarding this project is welcomed and appreciated, as ultimately I love
+	learning new things and getting better!       
+*/
+
+#ifndef CHESS_H // header guard to prevent multiple includes of the classes (results in compilation error)
 #define CHESS_H
 
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <stack>
+#include <string>
 #include <stdlib.h>     /* abs, system */
 #include <algorithm>    /* min, max */
 #include <fstream>
-#include <windows.h>
-#include <string>
+#include <windows.h> // for console text colors
+
+using namespace std;
 
 // some colors for console text
 #define GREEN 10
@@ -28,10 +69,8 @@
 #define YELLOW 14
 #define DEFAULT 15
 
-using namespace std;
-
 enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY};
-enum pieceColor {BLACK, NEUTRAL, WHITE};
+enum pieceColor {BLACK, NEUTRAL, WHITE}; // neutral corresponds to an empty square
 
 // forward declaration
 class Piece; 
