@@ -2,7 +2,7 @@
 /*       Title:           chess.h                    */
 /*       Author:          Lior Bragilevsky           */
 /*       Related Files:   chess.cpp					 */
-/*       Project:         ChessCAMO					 */
+/*       Project:         chessCAMO 				 */
 /*       Version:         1.0						 */
 /*       Last Revision:   June 5th, 2020             */
 /*****************************************************/
