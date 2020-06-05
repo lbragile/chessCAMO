@@ -997,7 +997,9 @@ namespace chessCAMO
 	    // error check
 	    while((int) user_input != 89 && (int) user_input != 121 && (int) user_input != 114 && (int) user_input != 82 && (int) user_input != 68 && (int) user_input != 100)
 	    {
-		    chessCAMO::printMessage("\nPick one of the choices... try again! ", YELLOW);
+		    chessCAMO::printMessage("Pick one of the choices... try again!", YELLOW);
+	    	chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
+
 	    	cin >> user_input; // get new input
 	    	cin.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
 	    }
@@ -1017,7 +1019,8 @@ namespace chessCAMO
 	        // error check
 	        while((int) draw_reply != 89 && (int) draw_reply != 121 && (int) draw_reply != 78 && (int) draw_reply != 110)
 		    {
-		    	chessCAMO::printMessage("\nPick one of the choices... try again! ", YELLOW);
+		    	chessCAMO::printMessage("Pick one of the choices... try again! ", YELLOW);
+	        	chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
 	    		cin >> draw_reply; // get new input
 	    		cin.ignore(100, '\n'); // ignore rest of the previous input
 		    }
