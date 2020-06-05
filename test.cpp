@@ -96,7 +96,6 @@ int main()
 		    	exit(1);
 		    }
 			
-			// updatedBoardStatus(board, board[src], turn, valid);
 		    fen_obtained.push_back(boardFenConverter(chess.getBoard()));
 
 		    if(fen_obtained[file_num] != fen_expected[file_num]) // FEN value are not equal

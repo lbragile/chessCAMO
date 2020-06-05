@@ -294,7 +294,7 @@ namespace chessCAMO
 {
 	void boardInit(int board_size = 64); // Board intialization
 	void printBoard(const vector<Piece*> & board); // Print the current board position
-	void drawOrResign(); /* TODO */ // resign or draw
+	void drawOrResign(); // resign or draw
 	void printMessage(string text, int color);
 }
 
