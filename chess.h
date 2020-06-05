@@ -4,7 +4,7 @@
 /*       Related Files:   chess.cpp					 */
 /*       Project:         ChessCAMO					 */
 /*       Version:         1.0						 */
-/*       Last Revision:   June 4th, 2020             */
+/*       Last Revision:   June 5th, 2020             */
 /*****************************************************/
 
 #ifndef CHESS_H
