@@ -292,7 +292,7 @@ public:
 	bool isPathFree(int dest);
 	bool isLegalMove(int dest);
 
-	// check determination functions - see if game ended or can continue
+	// check determination functions - see if game ended or can continue (calls checkmate/stalemate)
 	bool causeCheck(int dest);
 	bool causeDoubleCheck(int dest);
 	
