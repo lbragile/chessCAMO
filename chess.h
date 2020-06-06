@@ -503,6 +503,6 @@ namespace chessCAMO
 	void printMessage(string text, int color);
 }
 
-extern Chess chess; // global object (used to avoid passing it into most member functions)
+extern Chess chess; // global object (used to avoid passing it into many member functions)
 
 #endif // CHESS_H

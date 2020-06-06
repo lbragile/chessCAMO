@@ -124,6 +124,7 @@ void Chess::makeMove(int src, int dest)
 					return;
 			}
 
+			// if here, did not return so set the appropriate member variables
 			this->setCheckStack(CheckStack);
 			this->setDoubleCheck(false);
 	    }
@@ -138,6 +139,7 @@ void Chess::makeMove(int src, int dest)
 			if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo, "single"))
 				return;
 
+			// if here, did not return so set the appropriate member variables
 			this->setCheckStack(CheckStack);
 			this->setCheck(false);
         }
