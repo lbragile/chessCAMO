@@ -25,7 +25,7 @@ To Do:
 		1) Three move repetition (draw) & 50 move rule
 		2) Board representation undo
 		3) Input as PGN rather than two ints (template) - semi working
-		4) GUI
+		4) Graphical User Interface (GUI)
 
 	ChessCAMO:
 		1) Make piece reservoir (stack)
