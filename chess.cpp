@@ -18,15 +18,55 @@ using namespace chessCAMO;
 /*************************************************************************************/
 namespace
 {
-	bool pathIterator(int src, int dest, int increment); // for isPathFree
-	bool destInPath(int src, int dest, int pin);
+	// Description:    	Determines if a destination square is in the pinning path
+	//					as sometimes you can simply move the pinned piece closer to the 
+	//					pinning piece.
+	// Pre-condition:  	'src'		- source square of pinned piece
+	//					'dest'		- destination square of pinned piece
+	//					'pin'		- source square of pinning piece	
+	// Post-condition:	Allows the move (returns false) if piece can move closer to pinning
+	//					piece, else move is invalid (returns true)
+	bool destNotInPinPath(int src, int dest, int pin);
+
+	// Description:    	Determines if the source and destination squares are in the same column
+	// Pre-condition:  	'src'		- source square of piece
+	//					'dest'		- destination square of piece	
+	// Post-condition:	Returns true if the source and destination are in the same column,
+	//					else retuns false.
 	bool sameCol(int src, int dest);
+
+	// similar to sameCol(.), just for rows
 	bool sameRow(int src, int dest);
+
+	// similar to sameCol(.), just for diagonals
 	bool sameDiag(int src, int dest);
 
+	// Description:    	Used to determine the coordinate of a pinned piece.
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- source square of pinning piece
+	//					'dest'		- destination square of pinning piece
+	// Post-condition:	If only 1 piece is in the path from 'src' to 'dest', return its coordinates
+	//					else, return -1 to indicate that there is either no piece or multiple
+	//					pieces in the path.
 	int squareOfPieceInPath(int src, int dest);
+
+	// Description:    	Used to determine the increment to use when moving a piece from 'src' to 'dest'.
+	// Pre-condition:  	'src'		- source square of piece
+	//					'dest'		- destination square of piece
+	// Post-condition:	Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
+	//					8 if moving in same column, 9 if moving in diagonal to the left. If move does 
+	//					not correspond to one of the pieces, returns 0.
 	int incrementChoice(int src, int dest);
-	int findKingPos(int dest, const vector<Piece*> & board, bool enemy);	
+
+	// Description:    	Used to determine the coordinate of a pinned piece.
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- source square of pinning piece
+	//					'board'		- initialize board representing the current position
+	//					'enemy'		- true if king color differs from piece color, else false
+	// Post-condition:	Returns the coordinate position of the king, based on the current board
+	//					representation and color determined by 'enemy'. If king is not found
+	//					returns -1.
+	int findKingPos(int src, const vector<Piece*> & board, bool enemy);	
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
@@ -482,6 +522,57 @@ bool Piece::isSameColor(int dest)
 	return board[this->getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
 }
 
+bool Piece::isPinned(int dest)
+{
+	int king_pos, src = this->getPieceSquare();
+	vector<Piece*> board = chess.getBoard();
+
+	if(!this->isKing())
+	{
+		king_pos = findKingPos(src, board, false); // same color king position
+
+		for(auto elem : board)
+		{
+			if(!elem->isSameColor(king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
+			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src)
+			{	
+				return destNotInPinPath(src, dest, elem->getPieceSquare());
+			}
+		}
+	}
+
+	return false;
+}
+
+bool Piece::isPathFree(int dest)
+{
+	int increment, src = this->getPieceSquare();
+	vector<Piece*> board = chess.getBoard();
+
+	if(this->isKnight())
+	{
+		return true;
+	}
+	else
+	{
+		increment = incrementChoice(src, dest);
+		if(increment > 0)
+		{
+			for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i+=increment)
+		    {
+		        if(!board[i]->isEmpty())
+		            return false;
+		    }
+
+		    return true;
+		}
+		else
+		{
+			return false;
+		}
+	} 
+}
+
 bool Piece::isLegalMove(int dest)
 {
 	int src = this->getPieceSquare();
@@ -557,43 +648,6 @@ bool Piece::causeDoubleCheck(int dest)
 	}	
 
 	return chess.getDoubleCheck();
-}
-
-bool Piece::isPinned(int dest)
-{
-	int king_pos, src = this->getPieceSquare();
-	vector<Piece*> board = chess.getBoard();
-
-	if(!this->isKing())
-	{
-		king_pos = findKingPos(src, board, false); // same color king position
-
-		for(auto elem : board)
-		{
-			if(!elem->isSameColor(king_pos) && (elem->isBishop() || elem->isRook() || elem->isQueen())
-			 	&& squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src)
-			{	
-				return destInPath(src, dest, elem->getPieceSquare());
-			}
-		}
-	}
-
-	return false;
-}
-
-bool Piece::isPathFree(int dest)
-{
-	int increment;
-
-	if(this->isKnight())
-	{
-		return true;
-	}
-	else
-	{
-		increment = incrementChoice(this->getPieceSquare(), dest);
-    	return increment > 0 ? pathIterator(this->getPieceSquare(), dest, increment) : false;
-	} 
 }
 
 bool Piece::isPossibleMove(int dest)
@@ -819,19 +873,15 @@ bool King::movedIntoCheck(int dest)
 /*************************************************************************************/
 namespace
 {
-	bool pathIterator(int src, int dest, int increment)
-	{
-		vector<Piece*> board = chess.getBoard();
-
-		for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i+=increment)
-	    {
-	        if(!board[i]->isEmpty())
-	            return false;
-	    }
-	    return true;
-	}
-
-	bool destInPath(int src, int dest, int pin)
+	// Description:    	Determines if a destination square is in the pinning path
+	//					as sometimes you can simply move the pinned piece closer to the 
+	//					pinning piece.
+	// Pre-condition:  	'src'		- source square of pinned piece
+	//					'dest'		- destination square of pinned piece
+	//					'pin'		- source square of pinning piece	
+	// Post-condition:	Allows the move (returns false) if piece can move closer to pinning
+	//					piece, else move is invalid (returns true)
+	bool destNotInPinPath(int src, int dest, int pin)
 	{
 		int inc_dest = incrementChoice(src, dest);
 		int inc_pin = incrementChoice(src, pin);
@@ -839,21 +889,35 @@ namespace
 		return !(inc_dest != 0 && inc_pin != 0 && inc_dest == inc_pin && std::min(src, dest) + inc_pin <= std::max(src, dest));
 	}
 
+	// Description:    	Determines if the source and destination squares are in the same column
+	// Pre-condition:  	'src'		- source square of piece
+	//					'dest'		- destination square of piece	
+	// Post-condition:	Returns true if the source and destination are in the same column,
+	//					else retuns false.
 	bool sameCol(int src, int dest)
 	{
 		return src % 8 == dest % 8;
 	}
 
+	// similar to sameCol(.), just for rows
 	bool sameRow(int src, int dest)
 	{
 		return src / 8 == dest / 8;
 	}
 
+	// similar to sameCol(.), just for diagonals
 	bool sameDiag(int src, int dest)
 	{
 		return std::abs(src/8 - dest/8) == std::abs(src%8 - dest%8); 
 	}
 
+	// Description:    	Used to determine the coordinate of a pinned piece.
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- source square of pinning piece
+	//					'dest'		- destination square of pinning piece
+	// Post-condition:	If only 1 piece is in the path from 'src' to 'dest', return its coordinates
+	//					else, return -1 to indicate that there is either no piece or multiple
+	//					pieces in the path.
 	int squareOfPieceInPath(int src, int dest)
 	{
 		int increment;
@@ -875,6 +939,12 @@ namespace
 		return pieces_in_path.size() == 1 ? pieces_in_path[0] : -1;
 	}
 
+	// Description:    	Used to determine the increment to use when moving a piece from 'src' to 'dest'.
+	// Pre-condition:  	'src'		- source square of piece
+	//					'dest'		- destination square of piece
+	// Post-condition:	Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
+	//					8 if moving in same column, 9 if moving in diagonal to the left. If move does 
+	//					not correspond to one of the pieces, returns 0.
 	int incrementChoice(int src, int dest)
 	{
 	    if(sameRow(src, dest)) // row path
@@ -895,13 +965,21 @@ namespace
 	    }
 	}
 
-	int findKingPos(int dest, const vector<Piece*> & board, bool enemy)
+	// Description:    	Used to determine the coordinate of a pinned piece.
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- source square of pinning piece
+	//					'board'		- initialize board representing the current position
+	//					'enemy'		- true if king color differs from piece color, else false
+	// Post-condition:	Returns the coordinate position of the king, based on the current board
+	//					representation and color determined by 'enemy'. If king is not found
+	//					returns -1.
+	int findKingPos(int src, const vector<Piece*> & board, bool enemy)
 	{
 		for(auto elem : board)
 	    {
-	    	if(enemy && elem->isKing() && !elem->isSameColor(dest))
+	    	if(enemy && elem->isKing() && !elem->isSameColor(src))
 	    		return elem->getPieceSquare();
-	    	else if(!enemy && elem->isKing() && elem->isSameColor(dest))
+	    	else if(!enemy && elem->isKing() && elem->isSameColor(src))
 	    		return elem->getPieceSquare();
 	    } 
 

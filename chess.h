@@ -271,6 +271,7 @@ public:
 	void setPieceMoveInfo(bool moved) {this->moved = moved;}
 	/************************************* END *************************************/
 
+	/************************ TYPE DETERMINATION FUNCTIONS *************************/
 	bool isEmpty() {return this->getPieceType() == EMPTY;}
 	bool isPawn() {return this->getPieceType() == PAWN;}
 	bool isKnight() {return this->getPieceType() == KNIGHT;}
@@ -278,16 +279,20 @@ public:
 	bool isRook() {return this->getPieceType() == ROOK;}
 	bool isQueen() {return this->getPieceType() == QUEEN;}
 	bool isKing() {return this->getPieceType() == KING;}
+	/************************************* END *************************************/
 
+	/************************ COLOR DETERMINATION FUNCTIONS ************************/
 	bool isPieceWhite() {return this->getPieceColor() == WHITE;}
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
-	bool isSameColor(int dest);
+	/************************************* END *************************************/
 
-	bool isLegalMove(int dest);
-	bool causeCheck(int dest);
-	bool causeDoubleCheck(int dest);
+	bool isSameColor(int dest);
 	bool isPinned(int dest);
 	bool isPathFree(int dest);
+	bool isLegalMove(int dest);
+
+	bool causeCheck(int dest);
+	bool causeDoubleCheck(int dest);
 	
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
