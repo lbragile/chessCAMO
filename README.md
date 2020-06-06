@@ -6,7 +6,9 @@
 
 The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
 
-## Rules
+[![issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO/issues*)[![forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO*)[![stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO*)[![License](https://img.shields.io/github/license/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO/blob/master/LICENSE*)
+
+## Variant's Rules
 
 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
 2. Once a player decides to use a piece from the reservoir to replace one of his existing pieces on the board, their turn is over.
