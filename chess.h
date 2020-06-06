@@ -1,10 +1,10 @@
-/****************************************************************************************************/  
+/****************************************************************************************************/
 /*									Title:           chess.h										*/
 /*									Author:          Lior Bragilevsky								*/
 /*									Related Files:   chess.cpp										*/
 /*									Project:         chessCAMO										*/
 /*									Version:         1.0											*/
-/*									Last Revision:   June 5th, 2020									*/
+/*									Last Revision:   June 6th, 2020									*/
 /****************************************************************************************************/
 
 /*
@@ -81,73 +81,156 @@ class Piece;
 class Chess
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Chess(); // destructor
 	Chess(const Chess & object) = default; // copy constructor
 	Chess & operator =(const Chess & object) = default; // copy assignment
+	/************************************* END *************************************/
 
-	// default constructor with default piece initialization
-	Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
+	// default constructor with default board parameter initialization
+	Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {} // intentionally blank
 
-	// Mutator and accessor functions for determining/setting the board's current state
+	/************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
+	// Current board representation/state
 	vector<Piece*> getBoard() const {return board;}
 	void setBoard(const vector<Piece*> & board) {this->board = board;}
 
-	// Mutator and accessor functions for determining/setting the board's checking piece/king
+	// Checking pieces and checked king
 	stack<Piece*> getCheckStack() const {return checkStack;}
 	void setCheckStack(const stack<Piece*> & checkStack) {this->checkStack = checkStack;}
 
-	// Mutator and accessor functions for determining/setting the board's checking state 
+	// Checking state (single check)
 	bool getCheck() const {return check;}
 	void setCheck(bool check) {this->check = check;}
+
+	// Checking state (double check)
 	bool getDoubleCheck() const {return double_check;}
 	void setDoubleCheck(bool double_check) {this->double_check = double_check;}
 
-	// Mutator and accessor functions for determining/setting the board's checkmate state
+	// Checkmate state
 	bool getCheckmate() const {return checkmate;}
 	void setCheckmate(bool checkmate) {this->checkmate = checkmate;}
 
-	// Mutator and accessor functions for determining/setting the board's stalemate state
+	// Stalemate state
 	bool getStalemate() const {return stalemate;}
 	void setStalemate(bool stalemate) {this->stalemate = stalemate;}
 
-	// Mutator and accessor functions for determining/setting the player's turn
+	// Player's turn information
 	pieceColor getTurn() const {return turn;}
 	void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
 
-	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
+	// En-passant ability information 
 	virtual bool getEnPassant() const {return this->getEnPassant();}
-	virtual void setEnPassant(bool en_passant) {}
+	virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
+	/************************************* END *************************************/
 
+	// Description:    	Moves a piece on the board from 'src' to 'dest' if conditions
+	//					for a legal move are met
+	// Pre-condition:  	'chess'		- object is created
+	//					'src' 		- source square (piece's current location)
+	//					'dest'		- destination square (piece's ending location)
+	// Post-condition: 	The pieces at 'src' and 'dest' positions are swapped.
+	//					If needed (attacking, castling, etc.) an empty square is made.
+	//					The board's state is updated to indicate that the move occured.
+	//					On failure, an error message is printed and user is asked to retry.
 	void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
+
+	// same as above, but converts the string into it's coordinate (integer) and called above function.
 	void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs
 
-	void isCheckmate(string checkType);
+	// Description:    	Decide if a move caused a checkmate
+	// Pre-condition:  	'chess'		- object is created
+	//					'check_type'	- string representing the checking type ("single" or "double")		
+	// Post-condition:	If board's state is in checkmate, calls handleCheckmate() to print messages
+	// 					to console indicating the winner. Else, game continues as usual.
+	void isCheckmate(string check_type);
+
+	// Description:    	Decide if a move caused a stalemate
+	// Pre-condition:  	'chess'		- object is created		
+	// Post-condition:	If board's state is in stalemate, calls handleStalemate() to print messages
+	// 					to console indicating that game is drawn. Else, game continues as usual.
 	bool isStalemate();
 	
 private:
-	vector<Piece*> board; // overall board state
-	stack<Piece*> checkStack; // needed to determine if a given player's king is in check
-	bool checkmate;
-	bool stalemate;
-	bool check;
-	bool double_check;
-	pieceColor turn;
+	vector<Piece*> board; 		// Chess board representation with the pieces in correct spots
+	stack<Piece*> checkStack; 	// Stores the pieces involved in a checking scenario
+	bool checkmate;				/* \  								*/
+	bool stalemate;				/*  Store relevant information for  */
+	bool check;					/*  game continuation decisions	  	*/
+	bool double_check;			/* /  								*/
+	pieceColor turn;			// Either WHITE or BLACK, note NEUTRAL is ignored here 
 
 /*************************************************************************************/
 /*								PIECE CLASS - HELPER FUNCTIONS						 */
 /*************************************************************************************/
-	// Decide if it is an attacking move or regular move
+	// Description:    	A move can be one of: attack, castle, en-passant, regular
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- valid input source square
+	//					'dest'		- valid input destination square (move is legal)		
+	// Post-condition:	Swaps the pieces on the board according to 'src' and 'dest' and proper
+	//					chess rules, using pieceSwap(.). If a new empty square must be created,
+	// 					this is handled. Returns board representation with the made move.
 	void makeMoveForType(int src, int dest);
+
+	// Description:    	Used in makeMoveForType(.) to swap pieces on the board
+	// Pre-condition:  	'chess'		- object is created
+	//					'src'		- valid input source square
+	//					'dest'		- valid input destination square (move is legal)
+	//					'board'		- valid board representation		
+	// Post-condition:	Swaps the pieces on the board according to 'src' and 'dest'.
 	void pieceSwap(int src, int dest, vector<Piece*> & board);
+
+	// Description:    	Indicates who will move next via a message to console
+	// Pre-condition:  	'chess'		- object is created	
+	// Post-condition:	Player turn is switched, board is printed, and message is displayed
+	//					if game is not over to indicate whose turn it is.
 	void handleChangeTurn();
+
+	// Description:    	Indicates which player won by checkmate via a message to console
+	// Pre-condition:  	'chess'		- object is created
+	//					A move was made (cannot checkmate in less than 2 moves in theory)	
+	// Post-condition:	global object's checkmate state is set to true (to end the algorithm)
 	void handleCheckmate();
+
+	// Description:    	Indicates the game is drawn via a message to console
+	// Pre-condition:  	'chess'		- object is created
+	//					A move was made
+	// Post-condition:	global object's stalemate state is set to true (to end the algorithm)
 	void handleStalemate();
 
+	// Description:    	After a move is made, can undo it if move was invalid and return to
+	//					previous board state
+	// Pre-condition:  	'chess'			- object is created
+	//					'src' 			- source square of piece prior to current board state
+	//					'dest' 			- destination square of piece prior to current board state
+	//					'king'			- king that is being attacked currently
+	//					'piece'			- piece that is attacking the king currently
+	//					'undo_piece' 	- if move fails, this is the piece that was moved previously
+	//					'undo_moveInfo'	- if move fails, this is the piece's move information
+	//					'check_type'	- "single" or "double" check
+	// Post-condition:	If after move, the 'king' is still in check (single or double) or the move was
+	//					invalid, output warning message and undo the move. Else, continue the game
+	//					without undoing the move.
 	bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
-	bool singleCheckPieceIterator(Piece* piece, Piece* king); // for isCheckmate (single)
-	bool doubleCheckPieceIterator(Piece* king); // for isCheckmate (double) - only king movement matters
+	
+	// Description:    	If in a single check, see if piece can defend the king, capture attacking piece,
+	//					or move the king out of check. Used in isCheckmate("single")
+	// Pre-condition:  	'chess'			- object is created
+	//					'king'			- king that is being attacked currently
+	//					'piece'			- piece that is attacking the king currently
+	// Post-condition:	If no legal moves found return true (checkmate), else return false and make the move
+	bool singleCheckPieceIterator(Piece* piece, Piece* king); 
+	
+	// Description:    	If in a double check, see if the king can move out of check as this is the only
+	//					valid move option. Used in isCheckmate("double")
+	// Pre-condition:  	'chess'			- object is created
+	//					'king'			- king that is being attacked currently
+	// Post-condition:	If no legal moves found return true (checkmate), else return false and make the move
+	bool doubleCheckPieceIterator(Piece* king);
 
+	// Description:    	Decides whose turn it is currently and updates the private member variable accordingly
+	// Pre-condition:  	'chess'			- object is created
+	// Post-condition:	'chess.turn' is set to the correct player
 	pieceColor switchTurn();
 };
 
@@ -157,33 +240,36 @@ private:
 class Piece : public Chess
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Piece() = default; // destructor
 	Piece(const Piece & object) = default; // copy constructor
 	Piece & operator =(const Piece & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Piece() : Chess(), square{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
+	Piece() : Chess(), square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {} // intentionally blank
 
 	// constructor with valid piece information initialization
 	Piece(int square, pieceType type, pieceColor color) : moved{false}
 	{this->square = square; this->type = type; this->color = color;}
 
-	// Mutator and accessor functions for determining/setting the piece value of an object
+	/************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
+	// Piece square information
 	int getPieceSquare() const {return square;}
 	void setPieceSquare(int square) {this->square = square;}
 
-	// Mutator and accessor functions for determining/setting the piece type of an object
+	// Piece type information
 	pieceType getPieceType() const {return type;}
 	void setPieceType(pieceType type) {this->type = type;}
 
-	// Mutator and accessor functions for determining/setting the piece color of an object
+	// Piece color information
 	pieceColor getPieceColor() const {return color;}
 	void setPieceColor(pieceColor color) {this->color = color;}
 
-	// Mutator and accessor functions for determining/setting the moving state of an object
+	// Piece moving state information(useful for pawns, rooks, kings)
 	bool getPieceMoveInfo() const {return moved;}
 	void setPieceMoveInfo(bool moved) {this->moved = moved;}
+	/************************************* END *************************************/
 
 	bool isEmpty() {return this->getPieceType() == EMPTY;}
 	bool isPawn() {return this->getPieceType() == PAWN;}
@@ -210,10 +296,10 @@ public:
 	virtual void enPassantHandling(int src);
 
 private:
-	int square; // position of the piece on the board [0, 63]
-	pieceType type;
-	pieceColor color;
-	bool moved; // has the piece been moved yet (important for pawns and castling)
+	int square; 		// position of the piece on the board [0, 63] -> [top left, bottom right]
+	bool moved; 		// has the piece been moved yet?
+	pieceType type;		// Pawn, Knight, Bishop, Rook, Queen, King, or Empty
+	pieceColor color;	// Black, Neutral, or White
 };
 
 /*************************************************************************************/
@@ -222,27 +308,30 @@ private:
 class Pawn : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Pawn() = default; // destructor
 	Pawn(const Pawn & object) = default; // copy constructor
 	Pawn & operator =(const Pawn & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Pawn() : Piece(), en_passant{false} {}
+	Pawn() : Piece(), en_passant{false} {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {}
+	Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {} // intentionally blank
 
-	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
+	/************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
+	// En-passant ability information 
 	virtual bool getEnPassant() const {return en_passant;}
 	virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
+	/************************************* END *************************************/
 
 	virtual bool isPossibleMove(int dest);
 	virtual void enPassantHandling(int src);
 	virtual void promotePawn(int dest);
 
 private:
-	bool en_passant;
+	bool en_passant;	// Can this pawn en-passant it's rival currently?
 };	
 
 /*************************************************************************************/
@@ -251,16 +340,17 @@ private:
 class Knight : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Knight() = default; // destructor
 	Knight(const Knight & object) = default; // copy constructor
 	Knight & operator =(const Knight & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Knight() : Piece() {}
+	Knight() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -271,16 +361,17 @@ public:
 class Bishop : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Bishop() = default; // destructor
 	Bishop(const Bishop & object) = default; // copy constructor
 	Bishop & operator =(const Bishop & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Bishop() : Piece() {}
+	Bishop() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -291,16 +382,17 @@ public:
 class Rook : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Rook() = default; // destructor
 	Rook(const Rook & object) = default; // copy constructor
 	Rook & operator =(const Rook & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Rook() : Piece() {}
+	Rook() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -311,16 +403,17 @@ public:
 class Queen : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Queen() = default; // destructor
 	Queen(const Queen & object) = default; // copy constructor
 	Queen & operator =(const Queen & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Queen() : Piece() {}
+	Queen() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
 	virtual bool isPossibleMove(int dest);
 };
@@ -331,16 +424,17 @@ public:
 class King : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~King() = default; // destructor
 	King(const King & object) = default; // copy constructor
 	King & operator =(const King & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	King() : Piece() {}
+	King() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
@@ -353,16 +447,17 @@ public:
 class Empty : public Piece
 {
 public:
-	/************************************* Big Three ********************************/
+	/*********************************** BIG THREE *********************************/
 	~Empty() = default; // destructor
 	Empty(const Empty & object) = default; // copy constructor
 	Empty & operator =(const Empty & object) = default; // copy assignment
+	/************************************* END *************************************/
 
 	// default constructor with default piece initialization
-	Empty() : Piece() {}
+	Empty() : Piece() {} // intentionally blank
 
 	// constructor with valid piece information initialization
-	Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
+	Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 };
 
 /*************************************************************************************/

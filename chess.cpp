@@ -1,3 +1,12 @@
+/********************************************************************************************/  
+/*							Title:           chess.cpp										*/
+/*							Author:          Lior Bragilevsky								*/
+/*							Related Files:   chess.h										*/
+/*							Project:         chessCAMO										*/
+/*							Version:         1.0											*/
+/*							Last Revision:   June 6th, 2020									*/
+/********************************************************************************************/ 
+
 #include "chess.h"
 
 // included in 'chess.h' but good to re-state
@@ -23,6 +32,7 @@ namespace
 /*************************************************************************************/
 /*								CHESS CLASS - MEMBER FUNCTIONS						 */
 /*************************************************************************************/
+// Destructor
 Chess::~Chess()
 {
 	vector<Piece*> board = this->getBoard();
@@ -32,6 +42,15 @@ Chess::~Chess()
 	}
 }
 
+// Description:    	Moves a piece on the board from 'src' to 'dest' if conditions
+//					for a legal move are met
+// Pre-condition:  	'chess'		- object is created
+//					'src' 		- source square (piece's current location)
+//					'dest'		- destination square (piece's ending location)
+// Post-condition: 	The pieces at 'src' and 'dest' positions are swapped.
+//					If needed (attacking, castling, etc.) an empty square is made.
+//					The board's state is updated to indicate that the move occured.
+//					On failure, an error message is printed and user is asked to retry.
 void Chess::makeMove(int src, int dest)
 {
 	vector<Piece*> board = this->getBoard();
@@ -112,6 +131,7 @@ void Chess::makeMove(int src, int dest)
 	}
 }
 
+// same as above, but converts the string into it's coordinate (integer) and called above function.
 void Chess::makeMove(string src, string dest)
 {
 	int src_int, dest_int;
@@ -139,12 +159,17 @@ void Chess::makeMove(string src, string dest)
 	this->makeMove(src_int, dest_int); // call the coordinate version
 }
 
-void Chess::isCheckmate(string checkType)
+// Description:    	Decide if a move caused a checkmate
+// Pre-condition:  	'chess'		- object is created
+//					'check_type'	- string representing the checking type ("single" or "double")		
+// Post-condition:	If board's state is in checkmate, calls handleCheckmate() to print messages
+// 					to console indicating the winner. Else, game continues as usual.
+void Chess::isCheckmate(string check_type)
 {
 	stack<Piece*> CheckStack = this->getCheckStack();
 	Piece *king, *piece;
 
-	if(checkType == "double") // this type of check requires the king to move
+	if(check_type == "double") // this type of check requires the king to move
 	{
 		king = CheckStack.top();
 
@@ -155,7 +180,7 @@ void Chess::isCheckmate(string checkType)
 			chessCAMO::printMessage("\n            Double Check!\n\n", CYAN); 
 	}	
 
-	else if(checkType == "single") // CheckStack.top()->getPieceColor() != this->switchTurn()
+	else if(check_type == "single") // CheckStack.top()->getPieceColor() != this->switchTurn()
 	{
 		// will not be set, so next time this will be identical
 		piece = CheckStack.top();
@@ -170,6 +195,10 @@ void Chess::isCheckmate(string checkType)
 	}
 }
 
+// Description:    	Decide if a move caused a stalemate
+// Pre-condition:  	'chess'		- object is created		
+// Post-condition:	If board's state is in stalemate, calls handleStalemate() to print messages
+// 					to console indicating that game is drawn. Else, game continues as usual.
 bool Chess::isStalemate()
 {
 	vector<Piece*> board = this->getBoard();
@@ -195,6 +224,14 @@ bool Chess::isStalemate()
 /*************************************************************************************/
 /*								CHESS CLASS - HELPER FUNCTIONS						 */
 /*************************************************************************************/
+
+// Description:    	A move can be one of: attack, castle, en-passant, regular
+// Pre-condition:  	'chess'		- object is created
+//					'src'		- valid input source square
+//					'dest'		- valid input destination square (move is legal)		
+// Post-condition:	Swaps the pieces on the board according to 'src' and 'dest' and proper
+//					chess rules, using pieceSwap(.). If a new empty square must be created,
+// 					this is handled. Returns board representation with the made move.
 void Chess::makeMoveForType(int src, int dest)
 {
 	vector<Piece*> board = this->getBoard();
@@ -263,6 +300,12 @@ void Chess::makeMoveForType(int src, int dest)
 	this->setBoard(board);
 }
 
+// Description:    	Used in makeMoveForType(.) to swap pieces on the board
+// Pre-condition:  	'chess'		- object is created
+//					'src'		- valid input source square
+//					'dest'		- valid input destination square (move is legal)
+//					'board'		- valid board representation		
+// Post-condition:	Swaps the pieces on the board according to 'src' and 'dest'.
 void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
 {
 	board[src]->setPieceSquare(dest);
@@ -270,11 +313,15 @@ void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
     std::swap(board[src], board[dest]);
 }
 
+// Description:    	Indicates who will move next via a message to console
+// Pre-condition:  	'chess'		- object is created	
+// Post-condition:	Player turn is switched, board is printed, and message is displayed
+//					if game is not over to indicate whose turn it is.
 void Chess::handleChangeTurn()
 {
 	this->setTurn(this->switchTurn());
 	chessCAMO::printBoard(this->getBoard());
-	if(!this->getCheckmate())
+	if(!this->getCheckmate() && !this->getStalemate())
 	{
 		cout << "___________________________________________________" << endl;
 		if(this->getTurn() == WHITE)
@@ -284,6 +331,10 @@ void Chess::handleChangeTurn()
 	}
 }
 
+// Description:    	Indicates which player won by checkmate via a message to console
+// Pre-condition:  	'chess'		- object is created
+//					A move was made (cannot checkmate in less than 2 moves in theory)	
+// Post-condition:	global object's checkmate state is set to true (to end the algorithm)
 void Chess::handleCheckmate()
 {
 	string message = this->getTurn() == WHITE ? "\n      White won by Checkmate!\n\n" : "\n      Black won by Checkmate!\n\n";
@@ -291,6 +342,10 @@ void Chess::handleCheckmate()
 	this->setCheckmate(true);
 }
 
+// Description:    	Indicates the game is drawn via a message to console
+// Pre-condition:  	'chess'		- object is created
+//					A move was made
+// Post-condition:	global object's stalemate state is set to true (to end the algorithm)
 void Chess::handleStalemate()
 {
 	string message = this->getTurn() != WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
@@ -298,6 +353,19 @@ void Chess::handleStalemate()
 	this->setStalemate(true);
 }
 
+// Description:    	After a move is made, can undo it if move was invalid and return to
+//					previous board state
+// Pre-condition:  	'chess'			- object is created
+//					'src' 			- source square of piece prior to current board state
+//					'dest' 			- destination square of piece prior to current board state
+//					'king'			- king that is being attacked currently
+//					'piece'			- piece that is attacking the king currently
+//					'undo_piece' 	- if move fails, this is the piece that was moved previously
+//					'undo_moveInfo'	- if move fails, this is the piece's move information
+//					'check_type'	- "single" or "double" check
+// Post-condition:	If after move, the 'king' is still in check (single or double) or the move was
+//					invalid, output warning message and undo the move. Else, continue the game
+//					without undoing the move.
 bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type)
 {
 	vector<Piece*> board = this->getBoard();
@@ -329,11 +397,16 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 	}
 }
 
+// Description:    	If in a single check, see if piece can defend the king, capture attacking piece,
+//					or move the king out of check - used in isCheckmate("single")
+// Pre-condition:  	'chess'			- object is created
+//					'king'			- king that is being attacked currently
+//					'piece'			- piece that is attacking the king currently
+// Post-condition:	If no legal moves found return true (checkmate), else return false and make the move
 bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
 {
 	vector<Piece*> board = this->getBoard();
     int increment, src = piece->getPieceSquare(), dest = king->getPieceSquare();
-    int king_moves[8] = {-9, -8, -7, -1, 1, 7, 8, 9};
 
     // can a piece defend the king from check?
     if(!board[src]->isKnight())
@@ -365,17 +438,14 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     }
 
     // can king move out of check?
-    for(auto move : king_moves)
-    {
-    	if(dest + move >= 0 && dest + move <=63 && board[dest]->isPossibleMove(dest + move) && !board[dest]->movedIntoCheck(dest + move))
-    	{
-    		return false;
-    	}
-    }
-    	
-    return true; // no legal moves found ? true : false
+    return this->doubleCheckPieceIterator(king);
 }
 
+// Description:    	If in a double check, see if the king can move out of check as this is the only
+//					valid move option. Used in isCheckmate("double")
+// Pre-condition:  	'chess'			- object is created
+//					'king'			- king that is being attacked currently
+// Post-condition:	If no legal moves found return true (checkmate), else return false and make the move
 bool Chess::doubleCheckPieceIterator(Piece* king)
 {
 	int dest = king->getPieceSquare();
@@ -393,6 +463,9 @@ bool Chess::doubleCheckPieceIterator(Piece* king)
     return true; // no legal moves found ? true : false
 }
 
+// Description:    	Decides whose turn it is currently and updates the private member variable accordingly
+// Pre-condition:  	'chess'			- object is created
+// Post-condition:	'chess.turn' is set to the correct player
 pieceColor Chess::switchTurn()
 {
 	return this->getTurn() == WHITE ? BLACK : WHITE;

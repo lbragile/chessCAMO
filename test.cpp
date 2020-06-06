@@ -1,10 +1,10 @@
 /****************************************************************************************************/  
-/*									Title:           chess.h										*/
+/*									Title:           test.cpp										*/
 /*									Author:          Lior Bragilevsky								*/
-/*									Related Files:   chess.cpp										*/
+/*									Related Files:   chess.h										*/
 /*									Project:         chessCAMO										*/
 /*									Version:         1.0											*/
-/*									Last Revision:   June 5th, 2020									*/
+/*									Last Revision:   June 6th, 2020									*/
 /****************************************************************************************************/ 
 
 /*
@@ -15,6 +15,8 @@ FEN string value to the one obtained by making the corresponding moves. If these
 identical then the algorithm increments the number of test cases passed, otherwise it increments the
 number of test cases failed. These results are summarized at the end, when all the files are read and
 processed, and if a "Failed Test Case" Summary is provided for each test case that failed.
+
+Simply run "mingw32-make all_test && test" on a Windows machine to start the test checking script.
 
 To include an additional test case:
 	1) A user can set-up a position in common chess sites like lichess (https://lichess.org/editor)
@@ -31,8 +33,11 @@ To include an additional test case:
 	6) Place test case files in a folder named "./test_cases/" (used by the algorithm).
 
 Note:
-	There is no draw or resign functionality here since this is meant for quick testing.
-	Additionally, if an invalid move is made, the board is printed to allow debugging of the board state.       
+	- There is no draw or resign functionality here since this is meant for quick testing.
+	- If an invalid move is made, the board is printed to allow debugging of the board state.
+	- Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter
+	  'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to 
+	  appropriate piece color based on player's current move, regardless of the input's case.        
 */
 
 #include "chess.h"
