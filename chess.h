@@ -286,19 +286,23 @@ public:
 	bool isPieceBlack() {return this->getPieceColor() == BLACK;}
 	/************************************* END *************************************/
 
+	// legal move determination functions
 	bool isSameColor(int dest);
 	bool isPinned(int dest);
 	bool isPathFree(int dest);
 	bool isLegalMove(int dest);
 
+	// check determination functions - see if game ended or can continue
 	bool causeCheck(int dest);
 	bool causeDoubleCheck(int dest);
 	
+	/****************************** VIRTUAL FUNCTIONS ******************************/
 	virtual bool isPossibleMove(int dest);
 	virtual bool canCastle(int dest);
 	virtual void promotePawn(int dest);
 	virtual bool movedIntoCheck(int dest);
 	virtual void enPassantHandling(int src);
+	/************************************* END *************************************/
 
 private:
 	int square; 		// position of the piece on the board [0, 63] -> [top left, bottom right]

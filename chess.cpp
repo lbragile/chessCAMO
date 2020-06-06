@@ -106,6 +106,7 @@ void Chess::makeMove(int src, int dest)
             board[src]->promotePawn(dest);
         }
 
+        // store piece and it's information in case move fails (to restore board representation)
 		undo_piece = board[dest];
 		undo_moveInfo = board[src]->getPieceMoveInfo();
 
