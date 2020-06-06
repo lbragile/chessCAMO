@@ -22,10 +22,10 @@ the reservoir must be placed on the board first and is only allowed to be promot
 
 To Do:
 	Regular Chess:
-		1) Three move repetition (draw) & 50 move rule
-		2) Board representation undo
-		3) Input as PGN rather than two ints (template) - semi working
-		4) Graphical User Interface (GUI)
+		1) Three move repetition (draw) & 50 move rule.
+		2) Board representation undo (use queue?).
+		3) Input as PGN rather than two integers (template) - working currently but not really a template.
+		4) GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
 
 	ChessCAMO:
 		1) Make piece reservoir (stack)
@@ -75,14 +75,18 @@ enum pieceColor {BLACK, NEUTRAL, WHITE}; // neutral corresponds to an empty squa
 // forward declaration
 class Piece; 
 
+/*************************************************************************************/
+/*								CHESS CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Chess
 {
 public:
+	/************************************* Big Three ********************************/
 	~Chess(); // destructor
 	Chess(const Chess & object) = default; // copy constructor
 	Chess & operator =(const Chess & object) = default; // copy assignment
 
-	// default constructor 
+	// default constructor with default piece initialization
 	Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
 
 	// Mutator and accessor functions for determining/setting the board's current state
@@ -130,6 +134,9 @@ private:
 	bool double_check;
 	pieceColor turn;
 
+/*************************************************************************************/
+/*								PIECE CLASS - HELPER FUNCTIONS						 */
+/*************************************************************************************/
 	// Decide if it is an attacking move or regular move
 	void makeMoveForType(int src, int dest);
 	void pieceSwap(int src, int dest, vector<Piece*> & board);
@@ -144,17 +151,21 @@ private:
 	pieceColor switchTurn();
 };
 
+/*************************************************************************************/
+/*								PIECE CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Piece : public Chess
 {
 public:
+	/************************************* Big Three ********************************/
 	~Piece() = default; // destructor
 	Piece(const Piece & object) = default; // copy constructor
 	Piece & operator =(const Piece & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Piece() : Chess(), square{0}, type{EMPTY}, color{NEUTRAL}, moved{false} {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Piece(int square, pieceType type, pieceColor color) : moved{false}
 	{this->square = square; this->type = type; this->color = color;}
 
@@ -205,17 +216,21 @@ private:
 	bool moved; // has the piece been moved yet (important for pawns and castling)
 };
 
+/*************************************************************************************/
+/*								PAWN CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Pawn : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Pawn() = default; // destructor
 	Pawn(const Pawn & object) = default; // copy constructor
 	Pawn & operator =(const Pawn & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Pawn() : Piece(), en_passant{false} {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {}
 
 	// Mutator and accessor functions for determining/setting a pawn's en-passant abilities 
@@ -230,81 +245,101 @@ private:
 	bool en_passant;
 };	
 
+/*************************************************************************************/
+/*								KNIGHT CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Knight : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Knight() = default; // destructor
 	Knight(const Knight & object) = default; // copy constructor
 	Knight & operator =(const Knight & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Knight() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
 
+/*************************************************************************************/
+/*								BISHOP CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Bishop : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Bishop() = default; // destructor
 	Bishop(const Bishop & object) = default; // copy constructor
 	Bishop & operator =(const Bishop & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Bishop() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
 
+/*************************************************************************************/
+/*								ROOK CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Rook : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Rook() = default; // destructor
 	Rook(const Rook & object) = default; // copy constructor
 	Rook & operator =(const Rook & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Rook() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
 
+/*************************************************************************************/
+/*								QUEEN CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Queen : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Queen() = default; // destructor
 	Queen(const Queen & object) = default; // copy constructor
 	Queen & operator =(const Queen & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Queen() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
 };
 
+/*************************************************************************************/
+/*								KING CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class King : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~King() = default; // destructor
 	King(const King & object) = default; // copy constructor
 	King & operator =(const King & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	King() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
 	virtual bool isPossibleMove(int dest);
@@ -312,31 +347,58 @@ public:
 	virtual bool movedIntoCheck(int dest);
 };
 
+/*************************************************************************************/
+/*								EMPTY CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 class Empty : public Piece
 {
 public:
+	/************************************* Big Three ********************************/
 	~Empty() = default; // destructor
 	Empty(const Empty & object) = default; // copy constructor
 	Empty & operator =(const Empty & object) = default; // copy assignment
 
-	// constructor with piece initialization
+	// default constructor with default piece initialization
 	Empty() : Piece() {}
 
-	// constructor with piece initialization
+	// constructor with valid piece information initialization
 	Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 };
 
-/*****
-	GLOBAL FUNCTIONS / OBJECTS
- *****/
+/*************************************************************************************/
+/*								GLOBAL FUNCTIONS / OBJECTS							 */
+/*************************************************************************************/
 namespace chessCAMO
 {
+	// Description:    	Places the pieces on the board at their correct starting positions
+	// Pre-condition:  	'chess'		 - global object is initialized
+	//				   	'board_size'  - 8x8 board has 64 index positions
+	// Post-condition: 	Instantiates new objects corresponding to the pieces, places them
+	//				   	in the corresponding index of the board vector and set the global
+	//				   	object's board variable  
 	void boardInit(int board_size = 64); // Board intialization
+
+	// Description:    	Iterates through the pieces on a current board representation to 
+	// 				   	produce the board on the console screen
+	// Pre-condition:  	'board'		 - a board is created and contains pieces
+	// Post-condition: 	Each piece of the current board representation is printed to the
+	//					screen using a corresponding letter inside a formatted board
 	void printBoard(const vector<Piece*> & board); // Print the current board position
+
+	// Description:    	At any moment, the players can either continue, draw, or resign
+	// Pre-condition:  	None
+	// Post-condition: 	Depending on the users choice, the program either continues
+	//					('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
 	void drawOrResign(); // resign or draw
+
+	// Description:    	Prints the given message ('text') with a given 'color' to console
+	// Pre-condition:  	'text'		- message is created
+	//					'color'		- one of the defined values at the top of the file
+	// Post-condition: 	The message is printed to the screen with color chosen and then
+	//					the color is changed back to default prior to return
 	void printMessage(string text, int color);
 }
 
-extern Chess chess; // global object
+extern Chess chess; // global object (used to avoid passing it into most member functions)
 
 #endif // CHESS_H

@@ -4,9 +4,9 @@
 using namespace std;
 using namespace chessCAMO; 
 
-/*****
-	LOCAL FUNCTIONS / OBJECTS
- *****/
+/*************************************************************************************/
+/*								LOCAL FUNCTIONS / OBJECTS							 */
+/*************************************************************************************/
 namespace
 {
 	bool pathIterator(int src, int dest, int increment); // for isPathFree
@@ -20,9 +20,9 @@ namespace
 	int findKingPos(int dest, const vector<Piece*> & board, bool enemy);	
 } // unnamed namespace (makes these functions local to this implementation file)
 
-/*****
-	CHESS CLASS - MEMBER FUNCTIONS
- *****/
+/*************************************************************************************/
+/*								CHESS CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 Chess::~Chess()
 {
 	vector<Piece*> board = this->getBoard();
@@ -192,10 +192,9 @@ bool Chess::isStalemate()
 	return true; // no piece on the board has a legal move
 }
 
-/*****
-	CHESS CLASS - HELPER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								CHESS CLASS - HELPER FUNCTIONS						 */
+/*************************************************************************************/
 void Chess::makeMoveForType(int src, int dest)
 {
 	vector<Piece*> board = this->getBoard();
@@ -399,9 +398,9 @@ pieceColor Chess::switchTurn()
 	return this->getTurn() == WHITE ? BLACK : WHITE;
 }
 
-/*****
-	PIECE CLASS - MEMBER FUNCTIONS
- *****/
+/*************************************************************************************/
+/*								PIECE CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Piece::isSameColor(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -550,9 +549,9 @@ void Piece::enPassantHandling(int src)
 }
 
 
-/*****
-	PAWN CLASS - MEMBER FUNCTIONS
- *****/
+/*************************************************************************************/
+/*								PAWN CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Pawn::isPossibleMove(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -637,10 +636,9 @@ void Pawn::promotePawn(int dest)
     chess.setBoard(board);
 }
 
-/*****
-	KNIGHT CLASS - MEMBER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								KNIGHT CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Knight::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
@@ -648,10 +646,9 @@ bool Knight::isPossibleMove(int dest)
 	return std::abs(src/8 - dest/8) <= 2 && std::abs(src%8 - dest%8) <= 2 && (diff == 6 || diff == 10 || diff == 15 || diff == 17) && !this->isSameColor(dest);
 }
 
-/*****
-	BISHOP CLASS - MEMBER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								BISHOP CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Bishop::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
@@ -659,20 +656,18 @@ bool Bishop::isPossibleMove(int dest)
 	return (diff % 7 == 0 || diff % 9 == 0) && sameDiag(src, dest) && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
-/*****
-	ROOK CLASS - MEMBER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								ROOK CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Rook::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
 	return (sameRow(src, dest) || sameCol(src, dest)) && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
-/*****
-	QUEEN CLASS - MEMBER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								QUEEN CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool Queen::isPossibleMove(int dest)
 {
 	int src = this->getPieceSquare();
@@ -681,10 +676,9 @@ bool Queen::isPossibleMove(int dest)
 		      && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
-/*****
-	KING CLASS - MEMBER FUNCTIONS
- *****/
-
+/*************************************************************************************/
+/*								KING CLASS - MEMBER FUNCTIONS						 */
+/*************************************************************************************/
 bool King::isPossibleMove(int dest)
 {
 	vector<Piece*> board = chess.getBoard();
@@ -747,6 +741,9 @@ bool King::movedIntoCheck(int dest)
 	return false;
 }
 
+/*************************************************************************************/
+/*								LOCAL FUNCTIONS / OBJECTS							 */
+/*************************************************************************************/
 namespace
 {
 	bool pathIterator(int src, int dest, int increment)
@@ -839,9 +836,17 @@ namespace
 	}
 } // unnamed namespace
 
+/*************************************************************************************/
+/*								GLOBAL FUNCTIONS / OBJECTS						 	 */
+/*************************************************************************************/
 namespace chessCAMO
 {
-	// Board intialization
+	// Description:    	Places the pieces on the board at their correct starting positions
+	// Pre-condition:  	'chess'		 - global object is initialized
+	//				   	'board_size'  - 8x8 board has 64 index positions
+	// Post-condition: 	Instantiates new objects corresponding to the pieces, places them
+	//				   	in the corresponding index of the board vector and set the global
+	//				   	object's board variable 
 	void boardInit(int board_size)
 	{
 		vector<Piece*> board = chess.getBoard();
@@ -849,74 +854,86 @@ namespace chessCAMO
 		// initialize the board
 		for(int i = 0; i < board_size; i++)
 		{
-			if(i < board_size/4) // black
+			/******************* BLACK *******************/
+			if(i < board_size/4) 			// first 2 rows
 			{
-				if(i == 0 || i == 7) // rook
+				if(i == 0 || i == 7) 		// rook
 				{
 					board.push_back(new Rook(i, ROOK, BLACK));
 				}
-				else if(i == 1 || i == 6) // knight
+				else if(i == 1 || i == 6) 	// knight
 				{
 					board.push_back(new Knight(i, KNIGHT, BLACK)); 
 				}
-				else if(i == 2 || i == 5) // bishop
+				else if(i == 2 || i == 5) 	// bishop
 				{
 					board.push_back(new Bishop(i, BISHOP, BLACK)); 
 				}
-				else if(i == 3) // queen
+				else if(i == 3) 			// queen
 				{
 					board.push_back(new Queen(i, QUEEN, BLACK));
 				}
-				else if(i == 4) // king
+				else if(i == 4) 			// king
 				{
 					board.push_back(new King(i, KING, BLACK));
 				}
-				else // pawn
+				else 						// pawn
 				{
 					board.push_back(new Pawn(i, PAWN, BLACK));
 				}
 			}
-			else if(board_size/4 <= i && i < board_size*3/4) // blank squares
+
+			/********** NEUTRAL (EMPTY SQUARES) **********/
+			else if(board_size/4 <= i && i < board_size*3/4) 
 			{	
-				board.push_back(new Empty(i, EMPTY, NEUTRAL));
+				board.push_back(new Empty(i, EMPTY, NEUTRAL)); // middle 4 rows
 			}
-			else // white
+
+			/***************** WHITE *******************/
+			else								// last 2 rows
 			{
-				if(i == 56 || i == 63) // rook
+				if(i == 56 || i == 63) 			// rook
 				{
 					board.push_back(new Rook(i, ROOK, WHITE));
 				}
-				else if(i == 57 || i == 62) // knight
+				else if(i == 57 || i == 62) 	// knight
 				{
 					board.push_back(new Knight(i, KNIGHT, WHITE)); 
 				}
-				else if(i == 58 || i == 61) // bishop
+				else if(i == 58 || i == 61) 	// bishop
 				{
 					board.push_back(new Bishop(i, BISHOP, WHITE));
 				}
-				else if(i == 59) // queen
+				else if(i == 59) 				// queen
 				{
 					board.push_back(new Queen(i, QUEEN, WHITE));
 				}
-				else if(i == 60) // king
+				else if(i == 60) 				// king
 				{
 					board.push_back(new King(i, KING, WHITE));
 				}
-				else // pawn
+				else 							// pawn
 				{
 					board.push_back(new Pawn(i, PAWN, WHITE));
 				}
 			}
 		}
 
+		// setting the global object's new board representation
 		chess.setBoard(board);
 
+		// printing the board and letting user know whose turn it is
+		// white always starts first in chess!
 		chessCAMO::printBoard(board);
 		cout << "___________________________________________________" << endl;
 		chessCAMO::printMessage("\n            White's move\n", CYAN);
 	}
 
-	// Print the current board position
+	// Description:    	Iterates through the pieces on a current board representation to 
+	// 				   	produce the board on the console screen
+	// Pre-condition:  	'board'		 - a board is created and contains pieces
+	// Post-condition: 	Each piece of the current board representation is printed to the
+	//					screen using a corresponding letter inside a formatted board
 	void printBoard(const vector<Piece*> & board)
 	{
 		char piece_char;
@@ -987,6 +1004,10 @@ namespace chessCAMO
 		}
 	}
 
+	// Description:    	At any moment, the players can either continue, draw, or resign
+	// Pre-condition:  	None
+	// Post-condition: 	Depending on the users choice, the program either continues
+	//					('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
 	void drawOrResign()
 	{
 	    char user_input, draw_reply;
@@ -1044,6 +1065,11 @@ namespace chessCAMO
 	    }
 	}
 
+	// Description:    	Prints the given message ('text') with a given 'color' to console
+	// Pre-condition:  	'text'		- message is created
+	//					'color'		- one of the defined values at the top of the file
+	// Post-condition: 	The message is printed to the screen with color chosen and then
+	//					the color is changed back to default prior to return
 	void printMessage(string text, int color)
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
