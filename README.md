@@ -6,7 +6,7 @@
 
 The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
 
-[![issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO/issues*)[![forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO*)[![stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO*)[![License](https://img.shields.io/github/license/lbragile/chessCAMO)](*https://github.com/lbragile/chessCAMO/blob/master/LICENSE*)
+[![issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
 
 ## Variant's Rules
 
