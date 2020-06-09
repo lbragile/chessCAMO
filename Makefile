@@ -6,30 +6,48 @@ CC = g++
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS  = -g -c -Wall
 ALL_FLAGS = -g -Wall
+GTEST_CFLAGS = -I ../googletest-master/googletest/include -L ../googletest-master/googletest/lib -fprofile-arcs -ftest-coverage
+LFLAGS = -lgtest -lgcov
 
-FILE = chess
-TEST = test
-MAIN = main
+all_main: chess.o main.o main.exe
+all_test: chess.o test.o test.exe
+all_unit: unit.o unit.exe gcov
 
-all_main: $(FILE).o $(MAIN).o main
-all_test: $(FILE).o $(TEST).o test
+chess.o: chess.cpp chess.h
+	$(CC) $(CFLAGS) chess.cpp
 
-$(FILE).o: $(FILE).cpp $(FILE).h
-	$(CC) $(CFLAGS) $(FILE).cpp
+test.o: test.cpp chess.h
+	$(CC) $(CFLAGS) test.cpp
 
-$(TEST).o: $(TEST).cpp $(FILE).h
-	$(CC) $(CFLAGS) $(TEST).cpp
+main.o: main.cpp chess.h
+	$(CC) $(CFLAGS) main.cpp
 
-$(MAIN).o: $(MAIN).cpp $(FILE).h
-	$(CC) $(CFLAGS) $(MAIN).cpp
+unit.o: unit.cpp chess.cpp
+	$(CC) $(CFLAGS) $(GTEST_CFLAGS) unit.cpp
 
-test:
-	$(CC) $(ALL_FLAGS) $(FILE).o $(TEST).o -o $(TEST)
+test.exe:
+	$(CC) $(ALL_FLAGS) chess.o test.o -o test
+	test
 
-main:
-	$(CC) $(ALL_FLAGS) $(FILE).o $(MAIN).o -o $(MAIN)
+main.exe:
+	$(CC) $(ALL_FLAGS) chess.o main.o -o main
+	main
+
+unit.exe:
+	$(CC) $(ALL_FLAGS) $(GTEST_CFLAGS) unit.o $(LFLAGS) -o unit
+	unit --gtest_color=yes
+
+gcov:
+	gcov unit.cpp >nul
+	gcovr -r . --html -o convergence.html
+
+	mkdir "gcov"
+	move /y *.gcov "gcov" >nul
+	move /y *.gcda "gcov" >nul
+	move /y *.gcno "gcov" >nul
 
 clean:
 	@echo "clean project"
-	-del *.o *.exe
+	-del *.o *.exe *.html
+	rmdir /S /Q "gcov"
 	@echo "clean completed"

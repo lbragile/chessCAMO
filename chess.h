@@ -82,7 +82,7 @@ class Chess
 {
 public:
     /*********************************** BIG THREE *********************************/
-    ~Chess(); // destructor
+    virtual ~Chess(); // destructor
     Chess(const Chess & object) = default; // copy constructor
     Chess & operator =(const Chess & object) = default; // copy assignment
     /************************************* END *************************************/

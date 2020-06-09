@@ -29,8 +29,6 @@ Note:
 using namespace std;
 using namespace chessCAMO; 
 
-Chess chess; // global object call
-
 int main()
 {
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location

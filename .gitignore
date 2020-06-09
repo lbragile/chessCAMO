@@ -3,3 +3,7 @@
 
 # Executables
 *.exe
+
+# Code convergence files
+gcov/*
+*.html

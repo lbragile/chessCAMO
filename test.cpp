@@ -46,8 +46,6 @@ Note:
 using namespace std;
 using namespace chessCAMO; 
 
-Chess chess; // global object call
-
 /****************************** Function Declarations ******************************/
 
 // Description:    Converts a given board position into a FEN

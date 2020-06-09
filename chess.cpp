@@ -13,6 +13,8 @@
 using namespace std;
 using namespace chessCAMO; 
 
+Chess chess; // global object call
+
 /*************************************************************************************/
 /*                              LOCAL FUNCTIONS / OBJECTS                            */
 /*************************************************************************************/
