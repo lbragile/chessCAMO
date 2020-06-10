@@ -5,16 +5,18 @@ CC = g++
 #  -g    adds debugging information to the executable file
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS  = -g -c -Wall
-ALL_FLAGS = -g -Wall
-GTEST_CFLAGS = -I ../googletest-master/googletest/include -L ../googletest-master/googletest/lib -fprofile-arcs -ftest-coverage
-LFLAGS = -lgtest -lgcov
+AFLAGS = -g -Wall
+GTEST_CFLAGS = -I ../googletest-master/googletest/include -L ../googletest-master/googletest/lib
+GCOV_CFLAGS = -fprofile-arcs -ftest-coverage
+GTEST_LFLAGS = -lgtest -lgtest_main
+GCOV_LFLAGS = -lgcov
 
 all_main: chess.o main.o main.exe
 all_test: chess.o test.o test.exe
-all_unit: unit.o unit.exe gcov
+all_unit: chess.o unit.o unit.exe
 
 chess.o: chess.cpp chess.h
-	$(CC) $(CFLAGS) chess.cpp
+	$(CC) $(CFLAGS) $(GCOV_CFLAGS) chess.cpp
 
 test.o: test.cpp chess.h
 	$(CC) $(CFLAGS) test.cpp
@@ -22,23 +24,20 @@ test.o: test.cpp chess.h
 main.o: main.cpp chess.h
 	$(CC) $(CFLAGS) main.cpp
 
-unit.o: unit.cpp chess.cpp
-	$(CC) $(CFLAGS) $(GTEST_CFLAGS) unit.cpp
+unit.o: unit.cpp chess.h
+	$(CC) $(CFLAGS) $(GTEST_CFLAGS) $(GCOV_CFLAGS) unit.cpp
 
 test.exe:
-	$(CC) $(ALL_FLAGS) chess.o test.o -o test
-	test
+	$(CC) $(AFLAGS) chess.o test.o -o test $(GCOV_LFLAGS)
 
 main.exe:
-	$(CC) $(ALL_FLAGS) chess.o main.o -o main
-	main
+	$(CC) $(AFLAGS) chess.o main.o -o main $(GCOV_LFLAGS)
 
 unit.exe:
-	$(CC) $(ALL_FLAGS) $(GTEST_CFLAGS) unit.o $(LFLAGS) -o unit
-	unit --gtest_color=yes
+	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)
 
 gcov:
-	gcov unit.cpp >nul
+	gcov chess.cpp >nul
 	gcovr -r . --html -o convergence.html
 
 	mkdir "gcov"
@@ -48,6 +47,7 @@ gcov:
 
 clean:
 	@echo "clean project"
-	-del *.o *.exe *.html
+	-del *.o *.exe 
+	-del *.gcno *.gcda *.html
 	rmdir /S /Q "gcov"
 	@echo "clean completed"

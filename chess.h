@@ -82,7 +82,7 @@ class Chess
 {
 public:
     /*********************************** BIG THREE *********************************/
-    virtual ~Chess(); // destructor
+    ~Chess(); // destructor
     Chess(const Chess & object) = default; // copy constructor
     Chess & operator =(const Chess & object) = default; // copy assignment
     /************************************* END *************************************/
@@ -118,10 +118,6 @@ public:
     // Player's turn information
     pieceColor getTurn() const {return turn;}
     void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
-
-    // En-passant ability information 
-    virtual bool getEnPassant() const {return this->getEnPassant();}
-    virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
     /************************************* END *************************************/
 
     // Description:     Moves a piece on the board from 'src' to 'dest' if conditions
@@ -237,17 +233,17 @@ private:
 /*************************************************************************************/
 /*                              PIECE CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
-class Piece : public Chess
+class Piece
 {
 public:
     /*********************************** BIG THREE *********************************/
-    ~Piece() = default; // destructor
+    virtual ~Piece() = default; // destructor
     Piece(const Piece & object) = default; // copy constructor
     Piece & operator =(const Piece & object) = default; // copy assignment
     /************************************* END *************************************/
 
     // default constructor with default piece initialization
-    Piece() : Chess(), square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {} // intentionally blank
+    Piece() : square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {} // intentionally blank
 
     // constructor with valid piece information initialization
     Piece(int square, pieceType type, pieceColor color) : moved{false}
@@ -269,6 +265,10 @@ public:
     // Piece moving state information(useful for pawns, rooks, kings)
     bool getPieceMoveInfo() const {return moved;}
     void setPieceMoveInfo(bool moved) {this->moved = moved;}
+
+    // En-passant ability information     
+    virtual bool getEnPassant() const {return this->getEnPassant();}
+    virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
     /************************************* END *************************************/
 
     /************************ TYPE DETERMINATION FUNCTIONS *************************/
@@ -286,23 +286,85 @@ public:
     bool isPieceBlack() {return this->getPieceColor() == BLACK;}
     /************************************* END *************************************/
 
-    // legal move determination functions
+    // Description:     Determines if 2 pieces have the same color
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if source piece color matches destination piece color,
+    //                  false otherwise
     bool isSameColor(int dest);
+
+    // Description:     Determines if a given piece is pinned to the king by opposing piece
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
+    //                  the path (pinning piece -> king from pinned piece side) to be free,
+    //                  false otherwise.
     bool isPinned(int dest);
+
+    // Description:     Determines if the path from the piece to its destination is empty
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if squares along the path (src, dest) are empty,
+    //                  false otherwise.
     bool isPathFree(int dest);
+
+    // Description:     Determines if a move is legal based on the rules of chess
+    //                  Note that a possible move, is not necessarily legal.
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if moving the piece to 'dest' is legal from any type 
+    //                  of move and piece, false otherwise.
     bool isLegalMove(int dest);
 
-    // check determination functions - see if game ended or can continue (calls checkmate/stalemate)
+    // Description:     Did the move cause a check?
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
+    //                  false otherwise.
     bool causeCheck(int dest);
+
+    // Description:     Did the move cause a double check?
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
+    //                  and an additional piece from the same side also has a legal move towards the 
+    //                  opposing king, false otherwise.
     bool causeDoubleCheck(int dest);
     
-    /****************************** VIRTUAL FUNCTIONS ******************************/
+    // Description:     Determine if the piece has a possible move towards the destination square
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
+    //                  the piece is capable of making the move.
+    //                  false otherwise.
     virtual bool isPossibleMove(int dest);
-    virtual bool canCastle(int dest);
+
+    // Description:     Decides if a pawn can be promoted and applied the promotion
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
     virtual void promotePawn(int dest);
-    virtual bool movedIntoCheck(int dest);
+
+    // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
+    //                  else all pawns have their en-passant abilities set to false.
     virtual void enPassantHandling(int src);
-    /************************************* END *************************************/
+
+    // Description:     Can the king castle? See: https://bit.ly/2XQEXFr
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  true if the piece is a king and the conditions for castling are met,
+    //                  false otherwise.                 
+    virtual bool canCastle(int dest);
+
+    // Description:     Did the king move into check?
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  returns true if a king moves into a square that another opposing piece
+    //                  also move into. false otherwise.
+    virtual bool movedIntoCheck(int dest);
 
 private:
     int square;         // position of the piece on the board [0, 63] -> [top left, bottom right]
@@ -335,6 +397,7 @@ public:
     virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
     /************************************* END *************************************/
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
     virtual void enPassantHandling(int src);
     virtual void promotePawn(int dest);
@@ -361,6 +424,7 @@ public:
     // constructor with valid piece information initialization
     Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
 };
 
@@ -382,6 +446,7 @@ public:
     // constructor with valid piece information initialization
     Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
 };
 
@@ -403,6 +468,7 @@ public:
     // constructor with valid piece information initialization
     Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
 };
 
@@ -424,6 +490,7 @@ public:
     // constructor with valid piece information initialization
     Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
 };
 
@@ -445,6 +512,7 @@ public:
     // constructor with valid piece information initialization
     King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
+    // virtual functions -> see Piece Class
     virtual bool isPossibleMove(int dest);
     virtual bool canCastle(int dest);
     virtual bool movedIntoCheck(int dest);

@@ -7,3 +7,6 @@
 # Code convergence files
 gcov/*
 *.html
+*.gcda
+*.gcno
+*.gcov

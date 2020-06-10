@@ -519,6 +519,11 @@ pieceColor Chess::switchTurn()
 /*************************************************************************************/
 /*                              PIECE CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+// Description:     Determines if 2 pieces have the same color
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if source piece color matches destination piece color,
+//                  false otherwise
 bool Piece::isSameColor(int dest)
 {
     vector<Piece*> board = chess.getBoard();
@@ -527,6 +532,12 @@ bool Piece::isSameColor(int dest)
     return board[this->getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
 }
 
+// Description:     Determines if a given piece is pinned to the king by opposing piece
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
+//                  the path (pinning piece -> king from pinned piece side) to be free,
+//                  false otherwise.
 bool Piece::isPinned(int dest)
 {
     int king_pos, src = this->getPieceSquare();
@@ -549,6 +560,11 @@ bool Piece::isPinned(int dest)
     return false;
 }
 
+// Description:     Determines if the path from the piece to its destination is empty
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if squares along the path (src, dest) are empty,
+//                  false otherwise.
 bool Piece::isPathFree(int dest)
 {
     int increment, src = this->getPieceSquare();
@@ -578,6 +594,12 @@ bool Piece::isPathFree(int dest)
     } 
 }
 
+// Description:     Determines if a move is legal based on the rules of chess
+//                  Note that a possible move, is not necessarily legal.
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if moving the piece to 'dest' is legal from any type 
+//                  of move and piece, false otherwise.
 bool Piece::isLegalMove(int dest)
 {
     int src = this->getPieceSquare();
@@ -592,6 +614,11 @@ bool Piece::isLegalMove(int dest)
         return false;
 }
 
+// Description:     Did the move cause a check?
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
+//                  false otherwise.
 bool Piece::causeCheck(int dest)
 {
     stack<Piece*> CheckStack = chess.getCheckStack();
@@ -618,6 +645,12 @@ bool Piece::causeCheck(int dest)
     return chess.getCheck();
 }
 
+// Description:     Did the move cause a double check?
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
+//                  and an additional piece from the same side also has a legal move towards the 
+//                  opposing king, false otherwise.
 bool Piece::causeDoubleCheck(int dest)
 {
     int king_pos, checking_piece_counter = 0;
@@ -655,35 +688,61 @@ bool Piece::causeDoubleCheck(int dest)
     return chess.getDoubleCheck();
 }
 
+// Description:     Determine if the piece has a possible move towards the destination square
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
+//                  the piece is capable of making the move.
+//                  false otherwise.
 bool Piece::isPossibleMove(int dest)
 {
     return !this->isEmpty() ? this->isPossibleMove(dest) : false;
 }
 
-bool Piece::canCastle(int dest)
-{
-    return this->isKing() ? this->canCastle(dest) : false;
-}
-
+// Description:     Decides if a pawn can be promoted and applied the promotion
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
 void Piece::promotePawn(int dest)
 {
     if(this->isPawn()) {this->promotePawn(dest);}
 }
 
-bool Piece::movedIntoCheck(int dest)
-{
-    return this->isKing() ? this->movedIntoCheck(dest) : false;
-}
-
+// Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
+//                  else all pawns have their en-passant abilities set to false.
 void Piece::enPassantHandling(int src)
 {
     if(this->isPawn()) {this->enPassantHandling(src);}
 }
 
+// Description:     Can the king castle? See: https://bit.ly/2XQEXFr
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if the piece is a king and the conditions for castling are met,
+//                  false otherwise.  
+bool Piece::canCastle(int dest)
+{
+    return this->isKing() ? this->canCastle(dest) : false;
+}
+
+// Description:     Did the king move into check?
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  returns true if a king moves into a square that another opposing piece
+//                  also move into. false otherwise.
+bool Piece::movedIntoCheck(int dest)
+{
+    return this->isKing() ? this->movedIntoCheck(dest) : false;
+}
 
 /*************************************************************************************/
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
+
+// Virtual Function -> See Piece::isPossibleMove(int dest)
 bool Pawn::isPossibleMove(int dest)
 {
     vector<Piece*> board = chess.getBoard();
@@ -695,9 +754,9 @@ bool Pawn::isPossibleMove(int dest)
     if(this->getPieceMoveInfo())
     {
         if(this->isPieceWhite()) // goes up
-            legal = (src-dest == 8 && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && (!board[dest]->isEmpty() || getEnPassant()));
+            legal = (src-dest == 8 && board[dest]->isEmpty()) || ((src-dest == 7 || src-dest == 9) && (!board[dest]->isEmpty() || board[src]->getEnPassant()));
         else // black, goes down
-            legal = (dest-src == 8 && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && (!board[dest]->isEmpty() || getEnPassant()));
+            legal = (dest-src == 8 && board[dest]->isEmpty()) || ((dest-src == 7 || dest-src == 9) && (!board[dest]->isEmpty() || board[src]->getEnPassant()));
     }
     else // cannot en-passant if you have not moved yet
     {
@@ -710,6 +769,7 @@ bool Pawn::isPossibleMove(int dest)
     return legal && this->isPathFree(dest) && !this->isSameColor(dest);
 }
 
+// Virtual Function -> See Piece::enPassantHandling(int dest)
 void Pawn::enPassantHandling(int src)
 {
     vector<Piece*> board = chess.getBoard();
@@ -820,6 +880,11 @@ bool King::isPossibleMove(int dest)
     return ( (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest) ) || ( (diff == 3 || diff == 4) && this->canCastle(dest) && this->isSameColor(dest) );
 }
 
+// Description:     Can the king castle? See: https://bit.ly/2XQEXFr
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  true if the piece is a king and the conditions for castling are met,
+//                  false otherwise.    
 bool King::canCastle(int dest)
 {
     int src = this->getPieceSquare();
@@ -853,6 +918,11 @@ bool King::canCastle(int dest)
     }
 }
 
+// Description:     Did the king move into check?
+// Pre-condition:   'chess'         - object is created
+//                  'dest'          - destination square is valid [0,63]
+// Post-condition:  returns true if a king moves into a square that another opposing piece
+//                  also move into. false otherwise.
 bool King::movedIntoCheck(int dest)
 {
     vector<Piece*> board = chess.getBoard();
