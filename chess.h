@@ -120,6 +120,14 @@ public:
     void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
     /************************************* END *************************************/
 
+    // Description:     Places the pieces on the board at their correct starting positions
+    // Pre-condition:   'chess'       - global object is initialized
+    //                  'board_size'  - 8x8 board has 64 index positions
+    // Post-condition:  Instantiates new objects corresponding to the pieces, places them
+    //                  in the corresponding index of the board vector and set the global
+    //                  object's board variable  
+    void boardInit(int board_size = 64); // Board intialization
+
     // Description:     Moves a piece on the board from 'src' to 'dest' if conditions
     //                  for a legal move are met
     // Pre-condition:   'chess'     - object is created
@@ -156,9 +164,9 @@ private:
     bool double_check;          /* /                                */
     pieceColor turn;            // Either WHITE or BLACK, note NEUTRAL is ignored here 
 
-/*************************************************************************************/
-/*                              PIECE CLASS - HELPER FUNCTIONS                       */
-/*************************************************************************************/
+	/*************************************************************************************/
+	/*                              PIECE CLASS - HELPER FUNCTIONS                       */
+	/*************************************************************************************/
     // Description:     A move can be one of: attack, castle, en-passant, regular
     // Pre-condition:   'chess'     - object is created
     //                  'src'       - valid input source square
@@ -291,7 +299,7 @@ public:
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if source piece color matches destination piece color,
     //                  false otherwise
-    bool isSameColor(int dest);
+    bool isSameColor(int dest, Chess *chess);
 
     // Description:     Determines if a given piece is pinned to the king by opposing piece
     // Pre-condition:   'chess'         - object is created
@@ -299,14 +307,14 @@ public:
     // Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
     //                  the path (pinning piece -> king from pinned piece side) to be free,
     //                  false otherwise.
-    bool isPinned(int dest);
+    bool isPinned(int dest, Chess *chess);
 
     // Description:     Determines if the path from the piece to its destination is empty
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if squares along the path (src, dest) are empty,
     //                  false otherwise.
-    bool isPathFree(int dest);
+    bool isPathFree(int dest, Chess *chess);
 
     // Description:     Determines if a move is legal based on the rules of chess
     //                  Note that a possible move, is not necessarily legal.
@@ -314,14 +322,14 @@ public:
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if moving the piece to 'dest' is legal from any type 
     //                  of move and piece, false otherwise.
-    bool isLegalMove(int dest);
+    bool isLegalMove(int dest, Chess *chess);
 
     // Description:     Did the move cause a check?
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
     //                  false otherwise.
-    bool causeCheck(int dest);
+    bool causeCheck(int dest, Chess *chess);
 
     // Description:     Did the move cause a double check?
     // Pre-condition:   'chess'         - object is created
@@ -329,7 +337,7 @@ public:
     // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
     //                  and an additional piece from the same side also has a legal move towards the 
     //                  opposing king, false otherwise.
-    bool causeDoubleCheck(int dest);
+    bool causeDoubleCheck(int dest, Chess *chess);
     
     // Description:     Determine if the piece has a possible move towards the destination square
     // Pre-condition:   'chess'         - object is created
@@ -337,34 +345,34 @@ public:
     // Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
     //                  the piece is capable of making the move.
     //                  false otherwise.
-    virtual bool isPossibleMove(int dest);
+    virtual bool isPossibleMove(int dest, Chess *chess);
 
     // Description:     Decides if a pawn can be promoted and applied the promotion
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-    virtual void promotePawn(int dest);
+    virtual void promotePawn(int dest, Chess *chess);
 
     // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
     //                  else all pawns have their en-passant abilities set to false.
-    virtual void enPassantHandling(int src);
+    virtual void enPassantHandling(int src, Chess *chess);
 
     // Description:     Can the king castle? See: https://bit.ly/2XQEXFr
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if the piece is a king and the conditions for castling are met,
     //                  false otherwise.                 
-    virtual bool canCastle(int dest);
+    virtual bool canCastle(int dest, Chess *chess);
 
     // Description:     Did the king move into check?
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  returns true if a king moves into a square that another opposing piece
     //                  also move into. false otherwise.
-    virtual bool movedIntoCheck(int dest);
+    virtual bool movedIntoCheck(int dest, Chess *chess);
 
 private:
     int square;         // position of the piece on the board [0, 63] -> [top left, bottom right]
@@ -393,14 +401,14 @@ public:
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     // En-passant ability information 
-    virtual bool getEnPassant() const {return en_passant;}
-    virtual void setEnPassant(bool en_passant) {this->en_passant = en_passant;}
+    bool getEnPassant() const override {return en_passant;}
+    void setEnPassant(bool en_passant) override {this->en_passant = en_passant;}
     /************************************* END *************************************/
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
-    virtual void enPassantHandling(int src);
-    virtual void promotePawn(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
+    void enPassantHandling(int src, Chess *chess) override;
+    void promotePawn(int dest, Chess *chess) override;
 
 private:
     bool en_passant;    // Can this pawn en-passant it's rival currently?
@@ -425,7 +433,7 @@ public:
     Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
 };
 
 /*************************************************************************************/
@@ -447,7 +455,7 @@ public:
     Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
 };
 
 /*************************************************************************************/
@@ -469,7 +477,7 @@ public:
     Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
 };
 
 /*************************************************************************************/
@@ -491,7 +499,7 @@ public:
     Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
 };
 
 /*************************************************************************************/
@@ -513,9 +521,9 @@ public:
     King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
 
     // virtual functions -> see Piece Class
-    virtual bool isPossibleMove(int dest);
-    virtual bool canCastle(int dest);
-    virtual bool movedIntoCheck(int dest);
+    bool isPossibleMove(int dest, Chess *chess) override;
+    bool canCastle(int dest, Chess *chess) override;
+    bool movedIntoCheck(int dest, Chess *chess) override;
 };
 
 /*************************************************************************************/
@@ -542,14 +550,6 @@ public:
 /*************************************************************************************/
 namespace chessCAMO
 {
-    // Description:     Places the pieces on the board at their correct starting positions
-    // Pre-condition:   'chess'      - global object is initialized
-    //                  'board_size'  - 8x8 board has 64 index positions
-    // Post-condition:  Instantiates new objects corresponding to the pieces, places them
-    //                  in the corresponding index of the board vector and set the global
-    //                  object's board variable  
-    void boardInit(int board_size = 64); // Board intialization
-
     // Description:     Iterates through the pieces on a current board representation to 
     //                  produce the board on the console screen
     // Pre-condition:   'board'      - a board is created and contains pieces
@@ -561,7 +561,7 @@ namespace chessCAMO
     // Pre-condition:   None
     // Post-condition:  Depending on the users choice, the program either continues
     //                  ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
-    void drawOrResign(); // resign or draw
+    void drawOrResign(Chess *chess); // resign or draw
 
     // Description:     Prints the given message ('text') with a given 'color' to console
     // Pre-condition:   'text'      - message is created
@@ -570,7 +570,5 @@ namespace chessCAMO
     //                  the color is changed back to default prior to return
     void printMessage(string text, int color);
 }
-
-extern Chess chess; // global object (used to avoid passing it into many member functions)
 
 #endif // CHESS_H

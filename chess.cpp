@@ -13,8 +13,6 @@
 using namespace std;
 using namespace chessCAMO; 
 
-Chess chess; // global object call
-
 /*************************************************************************************/
 /*                              LOCAL FUNCTIONS / OBJECTS                            */
 /*************************************************************************************/
@@ -50,7 +48,7 @@ namespace
     // Post-condition:  If only 1 piece is in the path from 'src' to 'dest', return its coordinates
     //                  else, return -1 to indicate that there is either no piece or multiple
     //                  pieces in the path.
-    int squareOfPieceInPath(int src, int dest);
+    int squareOfPieceInPath(int src, int dest, Chess * chess);
 
     // Description:     Used to determine the increment to use when moving a piece from 'src' to 'dest'.
     // Pre-condition:   'src'       - source square of piece
@@ -68,7 +66,7 @@ namespace
     // Post-condition:  Returns the coordinate position of the king, based on the current board
     //                  representation and color determined by 'enemy'. If king is not found
     //                  returns -1.
-    int findKingPos(int src, const vector<Piece*> & board, bool enemy); 
+    int findKingPos(int src, Chess * chess, bool enemy); 
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
@@ -82,6 +80,94 @@ Chess::~Chess()
     {
         board.pop_back();
     }
+}
+
+// Description:     Places the pieces on the board at their correct starting positions
+// Pre-condition:   'chess'      - global object is initialized
+//                  'board_size'  - 8x8 board has 64 index positions
+// Post-condition:  Instantiates new objects corresponding to the pieces, places them
+//                  in the corresponding index of the board vector and set the global
+//                  object's board variable 
+void Chess::boardInit(int board_size)
+{
+    vector<Piece*> board = this->getBoard();
+
+    // initialize the board
+    for(int i = 0; i < board_size; i++)
+    {
+        /******************* BLACK *******************/
+        if(i < board_size/4)            // first 2 rows
+        {
+            if(i == 0 || i == 7)        // rook
+            {
+                board.push_back(new Rook(i, ROOK, BLACK));
+            }
+            else if(i == 1 || i == 6)   // knight
+            {
+                board.push_back(new Knight(i, KNIGHT, BLACK)); 
+            }
+            else if(i == 2 || i == 5)   // bishop
+            {
+                board.push_back(new Bishop(i, BISHOP, BLACK)); 
+            }
+            else if(i == 3)             // queen
+            {
+                board.push_back(new Queen(i, QUEEN, BLACK));
+            }
+            else if(i == 4)             // king
+            {
+                board.push_back(new King(i, KING, BLACK));
+            }
+            else                        // pawn
+            {
+                board.push_back(new Pawn(i, PAWN, BLACK));
+            }
+        }
+
+        /********** NEUTRAL (EMPTY SQUARES) **********/
+        else if(board_size/4 <= i && i < board_size*3/4) 
+        {   
+            board.push_back(new Empty(i, EMPTY, NEUTRAL)); // middle 4 rows
+        }
+
+        /***************** WHITE *******************/
+        else                                // last 2 rows
+        {
+            if(i == 56 || i == 63)          // rook
+            {
+                board.push_back(new Rook(i, ROOK, WHITE));
+            }
+            else if(i == 57 || i == 62)     // knight
+            {
+                board.push_back(new Knight(i, KNIGHT, WHITE)); 
+            }
+            else if(i == 58 || i == 61)     // bishop
+            {
+                board.push_back(new Bishop(i, BISHOP, WHITE));
+            }
+            else if(i == 59)                // queen
+            {
+                board.push_back(new Queen(i, QUEEN, WHITE));
+            }
+            else if(i == 60)                // king
+            {
+                board.push_back(new King(i, KING, WHITE));
+            }
+            else                            // pawn
+            {
+                board.push_back(new Pawn(i, PAWN, WHITE));
+            }
+        }
+    }
+
+    // setting the global object's new board representation
+    this->setBoard(board);
+
+    // printing the board and letting user know whose turn it is
+    // white always starts first in chess!
+    chessCAMO::printBoard(board);
+    cout << "___________________________________________________" << endl;
+    chessCAMO::printMessage("\n            White's move\n", CYAN);
 }
 
 // Description:     Moves a piece on the board from 'src' to 'dest' if conditions
@@ -100,12 +186,12 @@ void Chess::makeMove(int src, int dest)
     Piece *king, *piece, *undo_piece; // "undo_piece" needed for attacking moves that
     bool undo_moveInfo;               //  are illegal (to restore the piece that goes missing)
     
-    if(0 <= src && src <= 63 && board[src]->isLegalMove(dest) && board[src]->getPieceColor() == this->getTurn())
+    if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == this->getTurn())
     {   
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
         {
-            board[src]->promotePawn(dest);
+            board[src]->promotePawn(dest, this);
         }
 
         // store piece and it's information in case move fails (to restore board representation from previous move)
@@ -151,16 +237,16 @@ void Chess::makeMove(int src, int dest)
         }
 
         board = this->getBoard();
-        board[dest]->enPassantHandling(src); // en-passant checking/updating
+        board[dest]->enPassantHandling(src, this); // en-passant checking/updating
 
         // did the move cause a check?
-        if(board[src]->causeCheck(dest) && !board[src]->causeDoubleCheck(dest)) 
+        if(board[src]->causeCheck(dest, this) && !board[src]->causeDoubleCheck(dest, this)) 
         {
             this->isCheckmate("single"); // check for checkmates
         }
 
         // did the move cause a double check?
-        if(!board[src]->causeCheck(dest) && board[src]->causeDoubleCheck(dest)) 
+        if(!board[src]->causeCheck(dest, this) && board[src]->causeDoubleCheck(dest, this)) 
         {
             this->isCheckmate("double"); // check for checkmates
         }
@@ -263,7 +349,8 @@ bool Chess::isStalemate()
         {
             for(int move : possible_moves)
             {
-                if(elem->isLegalMove(elem->getPieceSquare() + move) || elem->isLegalMove(elem->getPieceSquare() - move))
+                if( elem->isLegalMove(elem->getPieceSquare() + move, this) ||
+                    elem->isLegalMove(elem->getPieceSquare() - move, this) )
                 {
                     return false; // at least one piece could move on the board
                 }
@@ -289,7 +376,7 @@ void Chess::makeMoveForType(int src, int dest)
     vector<Piece*> board = this->getBoard();
 
     // castling move
-    if(board[src]->canCastle(dest) && (std::abs(src - dest) == 3 || std::abs(src - dest) == 4))
+    if(board[src]->canCastle(dest, this) && (std::abs(src - dest) == 3 || std::abs(src - dest) == 4))
     {
         // note that the pieces are moved
         board[src]->setPieceMoveInfo(true);
@@ -422,7 +509,7 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 {
     vector<Piece*> board = this->getBoard();
 
-    if(piece->isPossibleMove(king->getPieceSquare()) && piece->isPathFree(king->getPieceSquare()))
+    if(piece->isPossibleMove(king->getPieceSquare(), this) && piece->isPathFree(king->getPieceSquare(), this))
     {
         this->makeMoveForType(dest, src); // undo the move
 
@@ -469,11 +556,11 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
         increment = incrementChoice(src, dest);
         for(auto elem : board)
         {
-            if(elem->isSameColor(dest) && elem->getPieceSquare() != dest)
+            if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest)
             {
-                for(int i = std::min(src, dest)+increment; i <= std::max(src, dest); i += increment)
+                for(int pos = std::min(src, dest)+increment; pos <= std::max(src, dest); pos += increment)
                 {   
-                    if(elem->isPossibleMove(i))
+                    if(elem->isPossibleMove(pos, this))
                     {
                         return false;
                     }
@@ -485,7 +572,7 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     {
         for(auto elem : board)
         {
-            if(elem->isSameColor(dest) && elem->getPieceSquare() != dest && elem->isPossibleMove(src))
+            if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest && elem->isPossibleMove(src, this))
             {
                 return false;
             }
@@ -509,7 +596,7 @@ bool Chess::doubleCheckPieceIterator(Piece* king)
     // can king move out of check?
     for(auto move : king_moves)
     {
-        if(board[dest]->isLegalMove(dest + move) || board[dest]->isLegalMove(dest - move))
+        if(board[dest]->isLegalMove(dest + move, this) || board[dest]->isLegalMove(dest - move, this))
         {
             return false;
         }
@@ -534,9 +621,10 @@ pieceColor Chess::switchTurn()
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  true if source piece color matches destination piece color,
 //                  false otherwise
-bool Piece::isSameColor(int dest)
+bool Piece::isSameColor(int dest, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
+
+    vector<Piece*> board = chess->getBoard();
 
     // cannot use this->getPieceColor() here since the board might be updated
     return board[this->getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
@@ -548,20 +636,20 @@ bool Piece::isSameColor(int dest)
 // Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
 //                  the path (pinning piece -> king from pinned piece side) to be free,
 //                  false otherwise.
-bool Piece::isPinned(int dest)
+bool Piece::isPinned(int dest, Chess *chess)
 {
     int king_pos, src = this->getPieceSquare();
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
 
     if(!this->isKing())
     {
-        king_pos = findKingPos(src, board, false); // same color king position
+        king_pos = findKingPos(src, chess, false); // same color king position
 
         for(auto elem : board)
         {
-            if( !elem->isSameColor(king_pos) &&
+            if( !elem->isSameColor(king_pos, chess) &&
                 (elem->isBishop() || elem->isRook() || elem->isQueen()) &&
-                squareOfPieceInPath(elem->getPieceSquare(), king_pos) == src )
+                squareOfPieceInPath(elem->getPieceSquare(), king_pos, chess) == src )
             {   
                 return destNotInPinPath(src, dest, elem->getPieceSquare());
             }
@@ -576,10 +664,10 @@ bool Piece::isPinned(int dest)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  true if squares along the path (src, dest) are empty,
 //                  false otherwise.
-bool Piece::isPathFree(int dest)
+bool Piece::isPathFree(int dest, Chess *chess)
 {
     int increment, src = this->getPieceSquare();
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
 
     // knight can skip over pieces so it's path is always free
     if(this->isKnight())
@@ -613,15 +701,15 @@ bool Piece::isPathFree(int dest)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  true if moving the piece to 'dest' is legal from any type 
 //                  of move and piece, false otherwise.
-bool Piece::isLegalMove(int dest)
+bool Piece::isLegalMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     if(0 <= dest && dest <= 63 && src != dest)
     {
         if(!this->isKing())
-            return this->isPossibleMove(dest) && !this->isPinned(dest);
+            return this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess);
         else
-            return this->isPossibleMove(dest) && !this->movedIntoCheck(dest);
+            return this->isPossibleMove(dest, chess) && !this->movedIntoCheck(dest, chess);
     }
     else
         return false;
@@ -632,32 +720,32 @@ bool Piece::isLegalMove(int dest)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
 //                  false otherwise.
-bool Piece::causeCheck(int dest)
+bool Piece::causeCheck(int dest, Chess *chess)
 {
-    stack<Piece*> CheckStack = chess.getCheckStack();
-    vector<Piece*> board = chess.getBoard();
+    stack<Piece*> CheckStack = chess->getCheckStack();
+    vector<Piece*> board = chess->getBoard();
     
     // causes a check if not a king (cannot check opponent with your king)
-    if(this->isKing() || !chess.getCheckStack().empty())
+    if(this->isKing() || !chess->getCheckStack().empty())
     {
         return false;
     }
     else
     {
-        int king_pos = findKingPos(dest, board, true); // opposite color king position
+        int king_pos = findKingPos(dest, chess, true); // opposite color king position
 
-        if(board[dest]->isPathFree(king_pos) && board[dest]->isPossibleMove(king_pos))
+        if(board[dest]->isPathFree(king_pos, chess) && board[dest]->isPossibleMove(king_pos, chess))
         {
             // push the king and checking piece onto the stack and set the corresponding 
             // object variables (checkStack and setCheck)
             CheckStack.push(board[king_pos]);
             CheckStack.push(board[dest]);
-            chess.setCheckStack(CheckStack);
-            chess.setCheck(true);
+            chess->setCheckStack(CheckStack);
+            chess->setCheck(true);
         }
     } 
 
-    return chess.getCheck();
+    return chess->getCheck();
 }
 
 // Description:     Did the move cause a double check?
@@ -666,11 +754,11 @@ bool Piece::causeCheck(int dest)
 // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
 //                  and an additional piece from the same side also has a legal move towards the 
 //                  opposing king, false otherwise.
-bool Piece::causeDoubleCheck(int dest)
+bool Piece::causeDoubleCheck(int dest, Chess *chess)
 {
     int king_pos, checking_piece_counter = 0;
-    vector<Piece*> board = chess.getBoard();
-    stack<Piece*> CheckStack = chess.getCheckStack();
+    vector<Piece*> board = chess->getBoard();
+    stack<Piece*> CheckStack = chess->getCheckStack();
 
     // causes a check if not a king (cannot check opponent with your king)
     if(this->isKing())
@@ -679,14 +767,14 @@ bool Piece::causeDoubleCheck(int dest)
     }
     else
     {
-        king_pos = findKingPos(dest, board, true); // opposite color king position
+        king_pos = findKingPos(dest, chess, true); // opposite color king position
 
         CheckStack.push(board[king_pos]); // make the king last in the stack
 
         // how many pieces are checking the king
         for(auto elem : board)
         {
-            if(elem->isLegalMove(king_pos) && !elem->isSameColor(king_pos))
+            if(elem->isLegalMove(king_pos, chess) && !elem->isSameColor(king_pos, chess))
             {
                 checking_piece_counter++;
             }
@@ -695,13 +783,13 @@ bool Piece::causeDoubleCheck(int dest)
         // double check if 2 pieces are attacking the king
         if(checking_piece_counter == 2)
         {
-            chess.setCheckStack(CheckStack);
-            chess.setDoubleCheck(true);
+            chess->setCheckStack(CheckStack);
+            chess->setDoubleCheck(true);
             return true;
         }
     }   
 
-    return chess.getDoubleCheck();
+    return chess->getDoubleCheck();
 }
 
 // Description:     Determine if the piece has a possible move towards the destination square
@@ -710,18 +798,18 @@ bool Piece::causeDoubleCheck(int dest)
 // Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
 //                  the piece is capable of making the move.
 //                  false otherwise.
-bool Piece::isPossibleMove(int dest)
+bool Piece::isPossibleMove(int dest, Chess *chess)
 {
-    return !this->isEmpty() ? this->isPossibleMove(dest) : false;
+    return !this->isEmpty() ? this->isPossibleMove(dest, chess) : false;
 }
 
 // Description:     Decides if a pawn can be promoted and applied the promotion
 // Pre-condition:   'chess'         - object is created
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-void Piece::promotePawn(int dest)
+void Piece::promotePawn(int dest, Chess *chess)
 {
-    if(this->isPawn()) {this->promotePawn(dest);}
+    if(this->isPawn()) {this->promotePawn(dest, chess);}
 }
 
 // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
@@ -729,9 +817,9 @@ void Piece::promotePawn(int dest)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
 //                  else all pawns have their en-passant abilities set to false.
-void Piece::enPassantHandling(int src)
+void Piece::enPassantHandling(int src, Chess *chess)
 {
-    if(this->isPawn()) {this->enPassantHandling(src);}
+    if(this->isPawn()) {this->enPassantHandling(src, chess);}
 }
 
 // Description:     Can the king castle? See: https://bit.ly/2XQEXFr
@@ -739,9 +827,9 @@ void Piece::enPassantHandling(int src)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  true if the piece is a king and the conditions for castling are met,
 //                  false otherwise.  
-bool Piece::canCastle(int dest)
+bool Piece::canCastle(int dest, Chess *chess)
 {
-    return this->isKing() ? this->canCastle(dest) : false;
+    return this->isKing() ? this->canCastle(dest, chess) : false;
 }
 
 // Description:     Did the king move into check?
@@ -749,18 +837,18 @@ bool Piece::canCastle(int dest)
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  returns true if a king moves into a square that another opposing piece
 //                  also move into. false otherwise.
-bool Piece::movedIntoCheck(int dest)
+bool Piece::movedIntoCheck(int dest, Chess *chess)
 {
-    return this->isKing() ? this->movedIntoCheck(dest) : false;
+    return this->isKing() ? this->movedIntoCheck(dest, chess) : false;
 }
 
 /*************************************************************************************/
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
-bool Pawn::isPossibleMove(int dest)
+bool Pawn::isPossibleMove(int dest, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
 
     bool legal = false;
     int src = this->getPieceSquare();
@@ -788,13 +876,13 @@ bool Pawn::isPossibleMove(int dest)
                     ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
     }
 
-    return legal && this->isPathFree(dest) && !this->isSameColor(dest);
+    return legal && this->isPathFree(dest, chess) && !this->isSameColor(dest, chess);
 }
 
 // Virtual Function -> See Piece::enPassantHandling(int dest)
-void Pawn::enPassantHandling(int src)
+void Pawn::enPassantHandling(int src, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
     int dest = this->getPieceSquare();
 
     // First, cancel en-passant abilities of all pawns.
@@ -802,22 +890,24 @@ void Pawn::enPassantHandling(int src)
     for(auto elem : board) {elem->setEnPassant(false);}
 
     // pawn moves 2 squares and there is a pawn to its left
-    if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest))
+    if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest, chess))
     {
         board[dest-1]->setEnPassant(true);
     }
 
     // pawn moves 2 squares and there is a pawn to its right
-    if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest))
+    if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest, chess))
     {
         board[dest+1]->setEnPassant(true);
     }
 }
 
 // Virtual Function -> See Piece::promotePawn(int dest)
-void Pawn::promotePawn(int dest)
+void Pawn::promotePawn(int dest, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
+    bool white_turn = chess->getTurn() == WHITE;
+
     char piece;
     int src = this->getPieceSquare();
     while(true)
@@ -828,29 +918,29 @@ void Pawn::promotePawn(int dest)
         cin >> piece;
         if(piece == 'Q' || piece == 'q')
         {
-            board[src] = chess.getTurn() == WHITE ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
+            board[src] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
         if(piece == 'R' || piece == 'r')
         {
-            board[src] = chess.getTurn() == WHITE ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
+            board[src] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
         if(piece == 'B' || piece == 'b')
         {
-            board[src] = chess.getTurn() == WHITE ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
+            board[src] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
         if(piece == 'N' || piece == 'n')
         {
-            board[src] = chess.getTurn() == WHITE ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
+            board[src] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
             break;
         }
 
         chessCAMO::printMessage("Please make sure to pick correct value!\n", YELLOW);
     }
 
-    chess.setBoard(board);
+    chess->setBoard(board);
 }
 
 /*************************************************************************************/
@@ -858,13 +948,13 @@ void Pawn::promotePawn(int dest)
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces
-bool Knight::isPossibleMove(int dest)
+bool Knight::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
     return std::abs(src/8 - dest/8) <= 2 && std::abs(src%8 - dest%8) <= 2 &&
            (diff == 6 || diff == 10 || diff == 15 || diff == 17) &&
-           !this->isSameColor(dest);
+           !this->isSameColor(dest, chess);
 }
 
 /*************************************************************************************/
@@ -872,12 +962,12 @@ bool Knight::isPossibleMove(int dest)
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // moves diagonally any number of squares
-bool Bishop::isPossibleMove(int dest)
+bool Bishop::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
     return (diff % 7 == 0 || diff % 9 == 0) && sameDiag(src, dest) &&
-           this->isPathFree(dest) && !this->isSameColor(dest);
+           this->isPathFree(dest, chess) && !this->isSameColor(dest, chess);
 }
 
 /*************************************************************************************/
@@ -885,11 +975,11 @@ bool Bishop::isPossibleMove(int dest)
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // moves horizontally or vertically any number of squares
-bool Rook::isPossibleMove(int dest)
+bool Rook::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     return ( sameRow(src, dest) || sameCol(src, dest) ) &&
-           this->isPathFree(dest) && !this->isSameColor(dest);
+           this->isPathFree(dest, chess) && !this->isSameColor(dest, chess);
 }
 
 /*************************************************************************************/
@@ -897,13 +987,13 @@ bool Rook::isPossibleMove(int dest)
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // combines rook and bishop moves
-bool Queen::isPossibleMove(int dest)
+bool Queen::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
     return ( ((diff % 7 == 0 || diff % 9 == 0) && sameDiag(src, dest)) ||
              (sameRow(src, dest) || sameCol(src, dest)) ) &&
-             this->isPathFree(dest) && !this->isSameColor(dest);
+             this->isPathFree(dest, chess) && !this->isSameColor(dest, chess);
 }
 
 /*************************************************************************************/
@@ -911,27 +1001,25 @@ bool Queen::isPossibleMove(int dest)
 /*************************************************************************************/
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // combines rook and bishop moves but only 1 square
-bool King::isPossibleMove(int dest)
+bool King::isPossibleMove(int dest, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
-
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
-    return ( (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest) ) ||
-           ( (diff == 3 || diff == 4) && this->canCastle(dest) && this->isSameColor(dest) );
+    return ( (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest, chess) ) ||
+           ( (diff == 3 || diff == 4) && this->canCastle(dest, chess) && this->isSameColor(dest, chess) );
 }
 
 // Virtual Function -> See Piece::canCastle(int dest)
-bool King::canCastle(int dest)
+bool King::canCastle(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     int increment = src > dest ? -1 : 1;
 
-    vector<Piece*> board = chess.getBoard();
-    stack<Piece*> stack = chess.getCheckStack();
+    vector<Piece*> board = chess->getBoard();
+    stack<Piece*> stack = chess->getCheckStack();
 
     if( this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() ||
-        chess.getCheck() || !board[dest]->isRook() || !sameRow(src, dest) )
+        chess->getCheck() || !board[dest]->isRook() || !sameRow(src, dest) )
     {
         return false;
     }
@@ -939,12 +1027,12 @@ bool King::canCastle(int dest)
     {
         for(auto elem : board)
         {
-            if(!elem->isEmpty() && !elem->isSameColor(src))
+            if(!elem->isEmpty() && !elem->isSameColor(src, chess))
             {
                 // king only moves 2 squares regardless of castle direction
                 for(int square = src+increment; square != src+(2*increment); square += increment) 
                 {   
-                    if(elem->isPossibleMove(square))
+                    if(elem->isPossibleMove(square, chess))
                     {
                         return false;
                     }
@@ -952,20 +1040,20 @@ bool King::canCastle(int dest)
             }
         }
 
-        return this->isPathFree(dest);
+        return this->isPathFree(dest, chess);
     }
 }
 
 // Virtual Function -> See Piece::movedIntoCheck(int dest)
-bool King::movedIntoCheck(int dest)
+bool King::movedIntoCheck(int dest, Chess *chess)
 {
-    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> board = chess->getBoard();
 
     for(auto elem : board)
     {
         // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        if( !elem->isEmpty() && !this->isSameColor(elem->getPieceSquare()) &&
-            ( (!elem->isPawn() && elem->isPossibleMove(dest)) ||
+        if( !elem->isEmpty() && !this->isSameColor(elem->getPieceSquare(), chess) &&
+            ( (!elem->isPawn() && elem->isPossibleMove(dest, chess)) ||
               ( elem->isPawn() && elem->isPieceWhite() &&
                 (elem->getPieceSquare() - dest == 9 || elem->getPieceSquare() - dest == 7) ) ||
               ( elem->isPawn() && elem->isPieceBlack() &&
@@ -1029,10 +1117,10 @@ namespace
     // Post-condition:  If only 1 piece is in the path from 'src' to 'dest', return its coordinates
     //                  else, return -1 to indicate that there is either no piece or multiple
     //                  pieces in the path.
-    int squareOfPieceInPath(int src, int dest)
+    int squareOfPieceInPath(int src, int dest, Chess *chess)
     {
         int increment;
-        vector<Piece*> board = chess.getBoard();
+        vector<Piece*> board = chess->getBoard();
         vector<int> pieces_in_path;
 
         // determine the increment along the path from 'src' to 'dest'
@@ -1080,20 +1168,19 @@ namespace
     }
 
     // Description:     Used to determine the coordinate of a pinned piece.
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - source square of pinning piece
+    // Pre-condition:   'src'       - source square of pinning piece
     //                  'board'     - initialize board representing the current position
     //                  'enemy'     - true if king color differs from piece color, else false
     // Post-condition:  Returns the coordinate position of the king, based on the current board
     //                  representation and color determined by 'enemy'. If king is not found
     //                  returns -1.
-    int findKingPos(int src, const vector<Piece*> & board, bool enemy)
+    int findKingPos(int src, Chess * chess, bool enemy)
     {
-        for(auto elem : board)
+        for(auto elem : chess->getBoard())
         {
-            if(enemy && elem->isKing() && !elem->isSameColor(src))
+            if(enemy && elem->isKing() && !elem->isSameColor(src, chess))
                 return elem->getPieceSquare();
-            else if(!enemy && elem->isKing() && elem->isSameColor(src))
+            else if(!enemy && elem->isKing() && elem->isSameColor(src, chess))
                 return elem->getPieceSquare();
         } 
 
@@ -1106,94 +1193,6 @@ namespace
 /*************************************************************************************/
 namespace chessCAMO
 {
-    // Description:     Places the pieces on the board at their correct starting positions
-    // Pre-condition:   'chess'      - global object is initialized
-    //                  'board_size'  - 8x8 board has 64 index positions
-    // Post-condition:  Instantiates new objects corresponding to the pieces, places them
-    //                  in the corresponding index of the board vector and set the global
-    //                  object's board variable 
-    void boardInit(int board_size)
-    {
-        vector<Piece*> board = chess.getBoard();
-
-        // initialize the board
-        for(int i = 0; i < board_size; i++)
-        {
-            /******************* BLACK *******************/
-            if(i < board_size/4)            // first 2 rows
-            {
-                if(i == 0 || i == 7)        // rook
-                {
-                    board.push_back(new Rook(i, ROOK, BLACK));
-                }
-                else if(i == 1 || i == 6)   // knight
-                {
-                    board.push_back(new Knight(i, KNIGHT, BLACK)); 
-                }
-                else if(i == 2 || i == 5)   // bishop
-                {
-                    board.push_back(new Bishop(i, BISHOP, BLACK)); 
-                }
-                else if(i == 3)             // queen
-                {
-                    board.push_back(new Queen(i, QUEEN, BLACK));
-                }
-                else if(i == 4)             // king
-                {
-                    board.push_back(new King(i, KING, BLACK));
-                }
-                else                        // pawn
-                {
-                    board.push_back(new Pawn(i, PAWN, BLACK));
-                }
-            }
-
-            /********** NEUTRAL (EMPTY SQUARES) **********/
-            else if(board_size/4 <= i && i < board_size*3/4) 
-            {   
-                board.push_back(new Empty(i, EMPTY, NEUTRAL)); // middle 4 rows
-            }
-
-            /***************** WHITE *******************/
-            else                                // last 2 rows
-            {
-                if(i == 56 || i == 63)          // rook
-                {
-                    board.push_back(new Rook(i, ROOK, WHITE));
-                }
-                else if(i == 57 || i == 62)     // knight
-                {
-                    board.push_back(new Knight(i, KNIGHT, WHITE)); 
-                }
-                else if(i == 58 || i == 61)     // bishop
-                {
-                    board.push_back(new Bishop(i, BISHOP, WHITE));
-                }
-                else if(i == 59)                // queen
-                {
-                    board.push_back(new Queen(i, QUEEN, WHITE));
-                }
-                else if(i == 60)                // king
-                {
-                    board.push_back(new King(i, KING, WHITE));
-                }
-                else                            // pawn
-                {
-                    board.push_back(new Pawn(i, PAWN, WHITE));
-                }
-            }
-        }
-
-        // setting the global object's new board representation
-        chess.setBoard(board);
-
-        // printing the board and letting user know whose turn it is
-        // white always starts first in chess!
-        chessCAMO::printBoard(board);
-        cout << "___________________________________________________" << endl;
-        chessCAMO::printMessage("\n            White's move\n", CYAN);
-    }
-
     // Description:     Iterates through the pieces on a current board representation to 
     //                  produce the board on the console screen
     // Pre-condition:   'board'      - a board is created and contains pieces
@@ -1273,7 +1272,7 @@ namespace chessCAMO
     // Pre-condition:   None
     // Post-condition:  Depending on the users choice, the program either continues
     //                  ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
-    void drawOrResign()
+    void drawOrResign(Chess *chess)
     {
         char user_input, draw_reply;
         string message;
@@ -1296,8 +1295,8 @@ namespace chessCAMO
 
         if((int) user_input == 114 || (int) user_input == 82) // r
         {
-            message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
-                                               : "\nBlack resigned -> White wins\n";
+            message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
+                                                : "\nBlack resigned -> White wins\n";
             chessCAMO::printMessage(message, CYAN);
             exit(0);
         }

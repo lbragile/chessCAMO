@@ -52,7 +52,7 @@ using namespace chessCAMO;
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules  
-string boardFenConverter(const vector<Piece*> & board);
+string boardFenConverter(Chess * chess);
 
 // Description:    Decides what type of character to append to the formed FEN string
 // Pre-condition:  'fen'         - FEN string is made (can be empty)
@@ -95,12 +95,11 @@ int main()
             sprintf(text, "\n\n===================== TEST CASE %i ====================\n\n", file_num+1);
             chessCAMO::printMessage(text, YELLOW);
 
-            // make sure the board is empty prior to adding pieces AND all game ending conditions are reset
-            Chess reset;
-            chess = reset;
+            // create the object dynamically to control when it is destroyed
+            Chess *chess = new Chess;
 
             // Create 8x8 default board
-            chessCAMO::boardInit();
+            chess->boardInit();
 
             // form the path to the current test case and open the file
             sprintf(filename,"test_cases/%s", FindFileData.cFileName);
@@ -114,12 +113,12 @@ int main()
 
                 // read in the moves of the given test case file one line at a time
                 // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
-                while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate()) 
+                while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate()) 
                 {   
                     chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
                     myfile >> src >> dest;
                     cout << src << " " << dest << endl;
-                    chess.makeMove(src, dest);
+                    chess->makeMove(src, dest);
                 }
                 myfile.close(); //closing the file
             }
@@ -130,7 +129,7 @@ int main()
             }
             
             // convert the final board position from a given test case file into a FEN string 
-            fen_obtained.push_back(boardFenConverter(chess.getBoard()));
+            fen_obtained.push_back(boardFenConverter(chess));
 
             if(fen_obtained[file_num] != fen_expected[file_num]) // FEN value are not equal
             {
@@ -140,6 +139,9 @@ int main()
             }
 
             file_num++;
+
+            delete chess; // destroy the dynamic object to free its memory allocation
+
         } while(FindNextFile(hFind, &FindFileData));
     } 
     FindClose(hFind); // close the directory (end the test case looping)
@@ -188,12 +190,13 @@ int main()
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules    
-string boardFenConverter(const vector<Piece*> & board)
+string boardFenConverter(Chess * chess)
 {
     int elem_count = 0, empty_count = 0;
     string fen;
     char temp[15];
 
+    vector<Piece*> board = chess->getBoard();
     for(auto elem : board)
     {
         // piece square handling
@@ -227,19 +230,23 @@ string boardFenConverter(const vector<Piece*> & board)
     }
 
     // player turn handling
-    fen.append(chess.getTurn() == WHITE ? " w " : " b ");
+    fen.append(chess->getTurn() == WHITE ? " w " : " b ");
 
     // castle handling (for both sides)
     /***** White player *****/
-    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
+    if( board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, chess) &&
+        !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo() )
         fen.append("K");
-    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
+    if( board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, chess) &&
+        !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo() )
         fen.append("Q");
 
     /***** Black player *****/
-    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
+    if( board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, chess) &&
+        !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo() )
         fen.append("k");
-    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
+    if( board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, chess) && 
+        !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo() )
         fen.append("q");
 
     return fen;

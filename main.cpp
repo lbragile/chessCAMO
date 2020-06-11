@@ -35,12 +35,15 @@ int main()
     // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
     int src, dest;
 
+    // create the object dynamically to control when it is destroyed
+    Chess *chess = new Chess;
+
     // Create 8x8 default board
-    chessCAMO::boardInit();
+    chess->boardInit();
 
     // read in the moves provided by the players (one at a time)
     // while the game is NOT finished (checkmate, stalemate, draw, resign)
-    while(!chess.getCheckmate() && !chess.getStalemate())
+    while(!chess->getCheckmate() && !chess->getStalemate())
     {   
         chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
         cin >> src >> dest;
@@ -57,9 +60,14 @@ int main()
 
         // makes the corresponding move and updates the board state on the console after clearing it
         std::system("cls");
-        chess.makeMove(src, dest); 
-        chessCAMO::drawOrResign();
+        chess->makeMove(src, dest);
+
+        // prevent asking again after game is over
+        if(!chess->getCheckmate() && !chess->getStalemate())
+            chessCAMO::drawOrResign(chess);
     }
+
+    delete chess; // destroy the dynamic object to free its memory allocation
 
     return 0;
 }       
