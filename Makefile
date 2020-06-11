@@ -47,7 +47,7 @@ gcov:
 
 clean:
 	@echo "clean project"
-	-del *.o *.exe 
-	-del *.gcno *.gcda *.html
+	rm *.o *.exe 
+	rm *.gcno *.gcda *.html
 	rmdir /S /Q "gcov"
 	@echo "clean completed"

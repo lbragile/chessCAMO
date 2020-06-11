@@ -65,7 +65,7 @@ class ChessTest;
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules  
-string boardFenConverter(const MockChess & mock_chess);
+string boardFenConverter(MockChess * mock_chess);
 
 // Description:    Decides what type of character to append to the formed FEN string
 // Pre-condition:  'fen'         - FEN string is made (can be empty)
@@ -78,23 +78,23 @@ void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
 /*************************************************************************************/
 /*                              MOCK CLASS SETUP                                     */
 /*************************************************************************************/
-class MockChess : public Chess, public Piece
+class MockChess : public Chess
 {
 public:
 	MOCK_METHOD2(makeMove, void (int src, int dest));
-	MOCK_METHOD2(makeMove, void (string src, string dest));
+	// MOCK_METHOD2(makeMove, void (string src, string dest));
 	MOCK_METHOD1(isCheckmate, void (string check_type));
 	MOCK_METHOD0(isStalemate, bool ());
-	
-	MOCK_METHOD0(isPawn, bool ());
-	MOCK_METHOD0(isKnight, bool ());
-	MOCK_METHOD0(isBishop, bool ());
-	MOCK_METHOD0(isRook, bool ());
-	MOCK_METHOD0(isQueen, bool ());
-	MOCK_METHOD0(isKing, bool ());
-	MOCK_METHOD0(isPieceWhite, bool ());
-	MOCK_METHOD1(isSameColor, bool (int dest));
-	MOCK_METHOD0(getPieceMoveInfo, bool ());
+
+	// MOCK_METHOD0(isPawn, bool ());
+	// MOCK_METHOD0(isKnight, bool ());
+	// MOCK_METHOD0(isBishop, bool ());
+	// MOCK_METHOD0(isRook, bool ());
+	// MOCK_METHOD0(isQueen, bool ());
+	// MOCK_METHOD0(isKing, bool ());
+	// MOCK_METHOD0(isPieceWhite, bool ());
+	// MOCK_METHOD1(isSameColor, bool (int dest));
+	// MOCK_METHOD0(getPieceMoveInfo, bool ());
 };
 
 /*************************************************************************************/
@@ -103,72 +103,77 @@ public:
 class ChessTest : public ::testing::Test
 {
 protected:
-	void SetUp()
+    // mock object
+	MockChess *mock_chess = new MockChess;
+
+    // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
+    // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
+    // 'num_lines' -> how many moves will be made
+    int src, dest, num_lines;
+
+    // expects vs obtained FEN strings for a given board representation before and after
+    // moves are made for it
+    string fen_expected, fen_obtained;
+
+	void SetUp(ifstream & myfile)
 	{
 		// std::cout.setstate(std::ios_base::failbit);
+		mock_chess->boardInit();
+
+        // How many lines are in the file? (how many times expect to call makeMove)
+        // Exclude top line which indicated the expected FEN
+        num_lines = std::count(std::istreambuf_iterator<char>(myfile), std::istreambuf_iterator<char>(), '\n');
+
+        cout << num_lines << endl;
+
+        /* -------------------- Act -------------------- */
+        if(myfile.is_open()) //if the file is open
+        {
+           // read in the expected FEN (this is at the top of each test case file)
+            getline(myfile, fen_expected);
+
+            // read in the moves of the given test case file one line at a time
+            // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
+            while(!myfile.eof() && !mock_chess->getCheckmate() && !mock_chess->getStalemate()) 
+            {   
+                chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+                myfile >> src >> dest;
+                cout << src << " " << dest << endl;
+                mock_chess->makeMove(src, dest);
+            }
+            myfile.close(); //closing the file
+        }
+        else // test case file failed to open or doesn't exist
+        {
+            cout << "Unable to open file"; 
+            exit(1);
+        }
 	}
 
-	void TearDown()
+	void TearDown() override
 	{
 		// std::cout.clear();
+    	delete mock_chess;
 	}
 };
 
 TEST_F(ChessTest, makeMoveTest)
 {
 	/* ------------------ Arrange ------------------ */
-	// 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-    int src, dest;
+    ifstream myfile("test_cases/01-castleAfterKingMoved.txt");
 
-    // can make a separate folder for unit testing or use test_cases/*.txt for all test cases made by author
-    string filename = "test_cases/01-castleAfterKingMoved.txt"; 
-    string fen_expected, fen_obtained;
-	cout << "a" << endl;
-
-    ifstream myfile(filename); 
-
-	MockChess mock_chess;
-	mock_chess.boardInit();
-
-	cout << "b" << endl;
-	chessCAMO::printBoard(mock_chess.getBoard());
-	EXPECT_CALL(mock_chess, makeMove(52, 36))
-	.Times(AtLeast(2));
+    SetUp(myfile);
+    
+	EXPECT_CALL(*mock_chess, makeMove(_,_))
+	.Times(1);
 	// .WillRepeatedly(Return(boardFenConverter(mock_chess.getBoard())))
 
-	/* -------------------- Act -------------------- */
-	
-
-    if(myfile.is_open()) //if the file is open
-    {
-        // read in the expected FEN (this is at the top of each test case file)
-        getline(myfile, fen_expected);
-        myfile >> src >> dest;
-        cout << src << " " << dest << endl;
-        mock_chess.makeMove(src, dest);
-	chessCAMO::printBoard(mock_chess.getBoard());
-
-        cout << "c" << endl;
-        myfile.close(); //closing the file
-    }
-    else // test case file failed to open or doesn't exist
-    {
-        cout << "Unable to open file"; 
-        exit(1);
-    }
-    
-    cout << "d" << endl;
-    cout << fen_expected << endl;
-	chessCAMO::printBoard(mock_chess.getBoard());
-
-
-    // convert the final board position from a given test case file into a FEN string 
+	/* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
     fen_obtained = boardFenConverter(mock_chess);
-    cout << "e" << endl;
-    cout << fen_expected << endl;
+
 	/* -------------------- Assert -------------------- */
-	ASSERT_EQ(fen_obtained, fen_expected);
+	ASSERT_EQ(fen_expected, fen_obtained);
 
 }
 
@@ -187,15 +192,13 @@ TEST_F(ChessTest, makeMoveTest)
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules    
-string boardFenConverter(const MockChess & mock_chess)
+string boardFenConverter(MockChess * mock_chess)
 {
     int elem_count = 0, empty_count = 0;
     string fen;
     char temp[15];
-    
-    cout << "fen_a" << endl;
 
-	vector<Piece*> board = mock_chess.getBoard();
+	vector<Piece*> board = mock_chess->getBoard();
     for(auto elem : board)
     {
         // piece square handling
@@ -227,29 +230,22 @@ string boardFenConverter(const MockChess & mock_chess)
 
         elem_count++;
     }
-    cout << "fen_b" << endl;
 
     // player turn handling
-    fen.append(mock_chess.getTurn() == WHITE ? " w " : " b ");
-
-    cout << "fen_c" << endl;
+    fen.append(mock_chess->getTurn() == WHITE ? " w " : " b ");
 
     // castle handling (for both sides)
     /***** White player *****/
-    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
+    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, mock_chess) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
         fen.append("K");
-    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
+    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, mock_chess) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
         fen.append("Q");
 
     /***** Black player *****/
-    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
+    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, mock_chess) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
         fen.append("k");
-    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
+    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, mock_chess) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
         fen.append("q");
-
-    cout << "fen_d" << endl;
-    cout << fen << endl;
-    cout << "fen_e" << endl;
 
     return fen;
 }

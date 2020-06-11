@@ -852,28 +852,20 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
 
     bool legal = false;
     int src = this->getPieceSquare();
+    int diff = this->isPieceWhite() ? src-dest : dest - src;
 
     // on attack it can move diagonally, first move can be 2 squares forward,
     // en-passant is possible for one move if conditions are met
     if(this->getPieceMoveInfo())
     {
-        if(this->isPieceWhite()) // goes up
-            legal = (src-dest == 8 && board[dest]->isEmpty()) || 
-                    ( (src-dest == 7 || src-dest == 9) &&
-                      (!board[dest]->isEmpty() || board[src]->getEnPassant()) );
-        else // black, goes down
-            legal = (dest-src == 8 && board[dest]->isEmpty()) ||
-                    ( (dest-src == 7 || dest-src == 9) &&
-                      (!board[dest]->isEmpty() || board[src]->getEnPassant()) );
+        legal = (diff == 8 && board[dest]->isEmpty()) || 
+                ( (diff == 7 || diff == 9) &&
+                (!board[dest]->isEmpty() || board[src]->getEnPassant()) );
     }
     else // cannot en-passant if you have not moved yet
     {
-        if(this->isPieceWhite()) // goes up
-            legal = ((src-dest == 8 || src-dest == 16) && board[dest]->isEmpty()) ||
-                    ((src-dest == 7 || src-dest == 9) && !board[dest]->isEmpty());
-        else // black, goes down
-            legal = ((dest-src == 8 || dest-src == 16) && board[dest]->isEmpty()) ||
-                    ((dest-src == 7 || dest-src == 9) && !board[dest]->isEmpty());
+        legal = ((diff == 8 || diff == 16) && board[dest]->isEmpty()) ||
+                ((diff == 7 || diff == 9) && !board[dest]->isEmpty());
     }
 
     return legal && this->isPathFree(dest, chess) && !this->isSameColor(dest, chess);

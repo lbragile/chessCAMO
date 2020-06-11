@@ -10,3 +10,6 @@ gcov/*
 *.gcda
 *.gcno
 *.gcov
+
+# Shell Scripting Files
+*.sh
