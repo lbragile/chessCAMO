@@ -37,17 +37,13 @@ unit.exe:
 	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)
 
 gcov:
-	gcov chess.cpp >nul
+	gcov chess.cpp
 	gcovr -r . --html -o convergence.html
 
 	mkdir "gcov"
-	move /y *.gcov "gcov" >nul
-	move /y *.gcda "gcov" >nul
-	move /y *.gcno "gcov" >nul
+	mv *.g* "gcov"
 
 clean:
 	@echo "clean project"
-	rm *.o *.exe 
-	rm *.gcno *.gcda *.html
-	rmdir /S /Q "gcov"
+	rm *.o ; rm *.exe ; rm *.g* ; rm -r "gcov" ; rm *.html ;
 	@echo "clean completed"
