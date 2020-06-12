@@ -136,7 +136,7 @@ TEST_F(ChessTest, castleAfterKingMoved)
     fen_obtained = boardFenConverter(chess);
 
 	/* -------------------- Assert -------------------- */
-	ASSERT_EQ(fen_expected, fen_obtained);
+	EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleAfterKingSideRookMoved)
@@ -150,7 +150,7 @@ TEST_F(ChessTest, castleAfterKingSideRookMoved)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleAfterQueenSideRookMoved)
@@ -164,7 +164,7 @@ TEST_F(ChessTest, castleAfterQueenSideRookMoved)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleKingSide)
@@ -178,7 +178,7 @@ TEST_F(ChessTest, castleKingSide)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleQueenSide)
@@ -192,7 +192,7 @@ TEST_F(ChessTest, castleQueenSide)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, kingMoveIntoCheck)
@@ -206,7 +206,7 @@ TEST_F(ChessTest, kingMoveIntoCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenMate)
@@ -220,7 +220,7 @@ TEST_F(ChessTest, queenMate)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckKingMoves)
@@ -234,7 +234,7 @@ TEST_F(ChessTest, queenCheckKingMoves)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckPieceDefends)
@@ -248,7 +248,7 @@ TEST_F(ChessTest, queenCheckPieceDefends)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckPieceDefends2)
@@ -262,7 +262,7 @@ TEST_F(ChessTest, queenCheckPieceDefends2)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckPieceDefends3)
@@ -276,7 +276,7 @@ TEST_F(ChessTest, queenCheckPieceDefends3)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionQueen)
@@ -290,7 +290,7 @@ TEST_F(ChessTest, pawnPromotionQueen)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionKnight)
@@ -304,7 +304,7 @@ TEST_F(ChessTest, pawnPromotionKnight)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionBishop)
@@ -318,7 +318,7 @@ TEST_F(ChessTest, pawnPromotionBishop)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, trickyCastle)
@@ -332,7 +332,7 @@ TEST_F(ChessTest, trickyCastle)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleWhenInCheck)
@@ -346,7 +346,7 @@ TEST_F(ChessTest, castleWhenInCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleThroughCheck)
@@ -360,7 +360,7 @@ TEST_F(ChessTest, castleThroughCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleIntoCheck)
@@ -374,7 +374,7 @@ TEST_F(ChessTest, castleIntoCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassant)
@@ -388,7 +388,7 @@ TEST_F(ChessTest, enPassant)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantWithoutCapture)
@@ -402,7 +402,7 @@ TEST_F(ChessTest, enPassantWithoutCapture)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightCheck)
@@ -416,7 +416,7 @@ TEST_F(ChessTest, knightCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightCheckKingMoves)
@@ -430,7 +430,7 @@ TEST_F(ChessTest, knightCheckKingMoves)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightMate)
@@ -444,7 +444,7 @@ TEST_F(ChessTest, knightMate)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPieceBishop)
@@ -458,7 +458,7 @@ TEST_F(ChessTest, pinnedPieceBishop)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPieceQueen)
@@ -472,7 +472,7 @@ TEST_F(ChessTest, pinnedPieceQueen)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPiecePawnCanCapture)
@@ -486,7 +486,7 @@ TEST_F(ChessTest, pinnedPiecePawnCanCapture)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, moveIntoKnightCheck)
@@ -500,7 +500,7 @@ TEST_F(ChessTest, moveIntoKnightCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, moveIntoPawnCheck)
@@ -514,7 +514,7 @@ TEST_F(ChessTest, moveIntoPawnCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, stalemate)
@@ -528,7 +528,7 @@ TEST_F(ChessTest, stalemate)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckWithKnight)
@@ -542,7 +542,7 @@ TEST_F(ChessTest, doubleCheckWithKnight)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckwithBishop)
@@ -556,7 +556,7 @@ TEST_F(ChessTest, doubleCheckwithBishop)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckmateKnight)
@@ -570,7 +570,7 @@ TEST_F(ChessTest, doubleCheckmateKnight)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckmateBishop)
@@ -584,7 +584,7 @@ TEST_F(ChessTest, doubleCheckmateBishop)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
@@ -598,7 +598,7 @@ TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
@@ -612,7 +612,7 @@ TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingMustTake)
@@ -626,13 +626,13 @@ TEST_F(ChessTest, doubleCheckPawnKingMustTake)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedQueen)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/36-pinnedQueen.txt");
+    ifstream myfile("test_cases/37-pinnedQueen.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */    
@@ -640,7 +640,7 @@ TEST_F(ChessTest, pinnedQueen)
     fen_obtained = boardFenConverter(chess);
 
     /* -------------------- Assert -------------------- */
-    ASSERT_EQ(fen_expected, fen_obtained);
+    EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 // -lgtest_main does this for you automatically to avoid writing main
