@@ -51,7 +51,6 @@ using namespace std;
 using namespace chessCAMO;
 
 // forward declaration
-class MockChess;
 class ChessTest;
 
 /*************************************************************************************/
@@ -77,7 +76,7 @@ void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
 class ChessTest : public ::testing::Test
 {
 protected:
-    // mock object
+    // create the testing object
 	Chess *chess = new Chess;
 
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
@@ -89,6 +88,7 @@ protected:
     // moves are made for it
     string fen_expected, fen_obtained;
 
+    // before test is executed, this sets up everything
 	void SetUp(ifstream & myfile)
 	{
 		std::cout.setstate(std::ios_base::failbit); // surpress output
@@ -118,6 +118,7 @@ protected:
         }
 	}
 
+    // after test is completed, free the memory made by dynamic allocation
 	void TearDown() override
 	{
 		std::cout.clear(); // enable output again
