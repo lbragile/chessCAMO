@@ -6,9 +6,9 @@ CC = g++
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS  = -g -c -Wall
 AFLAGS = -g -Wall
-GTEST_CFLAGS = -I ../googletest-master/googletest/include -I ../googletest-master/googlemock/include -L ../googletest-master/googletest/lib
+GTEST_CFLAGS = -I ../googletest-master/googletest/include -L ../googletest-master/googletest/lib
 GCOV_CFLAGS = -fprofile-arcs -ftest-coverage
-GTEST_LFLAGS = -lgtest -lgmock -lgtest_main
+GTEST_LFLAGS = -lgtest -lgtest_main
 GCOV_LFLAGS = -lgcov
 
 all_main: chess.o main.o main.exe

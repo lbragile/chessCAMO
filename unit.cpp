@@ -42,17 +42,13 @@ Note:
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+// #include <gmock/gmock.h>
 
 #include "chess.h"
 
 // included in 'chess.h' but good to re-state
 using namespace std;
 using namespace chessCAMO;
-
-using ::testing::AtLeast;
-using ::testing::Return;
-using ::testing::_;
 
 // forward declaration
 class MockChess;
@@ -65,7 +61,7 @@ class ChessTest;
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules  
-string boardFenConverter(MockChess * mock_chess);
+string boardFenConverter(Chess * chess);
 
 // Description:    Decides what type of character to append to the formed FEN string
 // Pre-condition:  'fen'         - FEN string is made (can be empty)
@@ -74,28 +70,6 @@ string boardFenConverter(MockChess * mock_chess);
 //                 'isWhite'     - true if the passed piece is white, false otherwise (piece case in FEN)
 // Post-condition: Appends 'next_char' to 'fen' and returns updated variables by reference 
 void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
-   
-/*************************************************************************************/
-/*                              MOCK CLASS SETUP                                     */
-/*************************************************************************************/
-class MockChess : public Chess
-{
-public:
-	MOCK_METHOD2(makeMove, void (int src, int dest));
-	// MOCK_METHOD2(makeMove, void (string src, string dest));
-	MOCK_METHOD1(isCheckmate, void (string check_type));
-	MOCK_METHOD0(isStalemate, bool ());
-
-	// MOCK_METHOD0(isPawn, bool ());
-	// MOCK_METHOD0(isKnight, bool ());
-	// MOCK_METHOD0(isBishop, bool ());
-	// MOCK_METHOD0(isRook, bool ());
-	// MOCK_METHOD0(isQueen, bool ());
-	// MOCK_METHOD0(isKing, bool ());
-	// MOCK_METHOD0(isPieceWhite, bool ());
-	// MOCK_METHOD1(isSameColor, bool (int dest));
-	// MOCK_METHOD0(getPieceMoveInfo, bool ());
-};
 
 /*************************************************************************************/
 /*                              TEST FIXTURE SETUP                            		 */
@@ -104,7 +78,7 @@ class ChessTest : public ::testing::Test
 {
 protected:
     // mock object
-	MockChess *mock_chess = new MockChess;
+	Chess *chess = new Chess;
 
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
     // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
@@ -117,14 +91,8 @@ protected:
 
 	void SetUp(ifstream & myfile)
 	{
-		// std::cout.setstate(std::ios_base::failbit);
-		mock_chess->boardInit();
-
-        // How many lines are in the file? (how many times expect to call makeMove)
-        // Exclude top line which indicated the expected FEN
-        num_lines = std::count(std::istreambuf_iterator<char>(myfile), std::istreambuf_iterator<char>(), '\n');
-
-        cout << num_lines << endl;
+		std::cout.setstate(std::ios_base::failbit); // surpress output
+		chess->boardInit();
 
         /* -------------------- Act -------------------- */
         if(myfile.is_open()) //if the file is open
@@ -134,12 +102,12 @@ protected:
 
             // read in the moves of the given test case file one line at a time
             // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
-            while(!myfile.eof() && !mock_chess->getCheckmate() && !mock_chess->getStalemate()) 
+            while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate()) 
             {   
                 chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
                 myfile >> src >> dest;
                 cout << src << " " << dest << endl;
-                mock_chess->makeMove(src, dest);
+                chess->makeMove(src, dest);
             }
             myfile.close(); //closing the file
         }
@@ -152,29 +120,527 @@ protected:
 
 	void TearDown() override
 	{
-		// std::cout.clear();
-    	delete mock_chess;
+		std::cout.clear(); // enable output again
+    	delete chess;
 	}
 };
 
-TEST_F(ChessTest, makeMoveTest)
+TEST_F(ChessTest, castleAfterKingMoved)
 {
 	/* ------------------ Arrange ------------------ */
     ifstream myfile("test_cases/01-castleAfterKingMoved.txt");
-
     SetUp(myfile);
-    
-	EXPECT_CALL(*mock_chess, makeMove(_,_))
-	.Times(1);
-	// .WillRepeatedly(Return(boardFenConverter(mock_chess.getBoard())))
 
 	/* -------------------- Act -------------------- */    
     // // convert the final board position from a given test case file into a FEN string 
-    fen_obtained = boardFenConverter(mock_chess);
+    fen_obtained = boardFenConverter(chess);
 
 	/* -------------------- Assert -------------------- */
 	ASSERT_EQ(fen_expected, fen_obtained);
+}
 
+TEST_F(ChessTest, castleAfterKingSideRookMoved)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/02-castleAfterKingSideRookMoved.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleAfterQueenSideRookMoved)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/03-castleAfterQueenSideRookMoved.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleKingSide)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/04-castleKingSide.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleQueenSide)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/05-castleQueenSide.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, kingMoveIntoCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/06-kingMoveIntoCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, queenMate)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/07-queenMate.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, queenCheckKingMoves)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/08-queenCheckKingMoves.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, queenCheckPieceDefends)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/09-queenCheckPieceDefends.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, queenCheckPieceDefends2)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/10-queenCheckPieceDefends2.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, queenCheckPieceDefends3)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/11-queenCheckPieceDefends3.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pawnPromotionQueen)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/12-pawnPromotionQueen.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pawnPromotionKnight)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/13-pawnPromotionKnight.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pawnPromotionBishop)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/14-pawnPromotionBishop.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, trickyCastle)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/15-trickyCastle.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleWhenInCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/16-castleWhenInCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleThroughCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/17-castleThroughCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, castleIntoCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/18-castleIntoCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, enPassant)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/19-enPassant.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, enPassantWithoutCapture)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/20-enPassantWithoutCapture.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, knightCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/21-knightCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, knightCheckKingMoves)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/22-knightCheckKingMoves.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, knightMate)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/23-knightMate.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedPieceBishop)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/24-pinnedPieceBishop.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedPieceQueen)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/25-pinnedPieceQueen.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedPiecePawnCanCapture)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/26-pinnedPiecePawnCanCapture.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, moveIntoKnightCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/27-moveIntoKnightCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, moveIntoPawnCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/28-moveIntoPawnCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, stalemate)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/29-stalemate.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckWithKnight)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/30-doubleCheckWithKnight.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckwithBishop)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/31-doubleCheckwithBishop.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckmateKnight)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/32-doubleCheckmateKnight.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckmateBishop)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/33-doubleCheckmateBishop.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/34-doubleCheckPawnKingMovesOutofCheck.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/35-doubleCheckPawnKingChoosesToTake.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, doubleCheckPawnKingMustTake)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/36-doubleCheckPawnKingMustTake.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedQueen)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/36-pinnedQueen.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */    
+    // // convert the final board position from a given test case file into a FEN string 
+    fen_obtained = boardFenConverter(chess);
+
+    /* -------------------- Assert -------------------- */
+    ASSERT_EQ(fen_expected, fen_obtained);
 }
 
 // -lgtest_main does this for you automatically to avoid writing main
@@ -192,13 +658,13 @@ TEST_F(ChessTest, makeMoveTest)
 //                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
 // Pre-condition:  Start with an initialized board vector
 // Post-condition: Forms the FEN string based on piece type and common FEN making rules    
-string boardFenConverter(MockChess * mock_chess)
+string boardFenConverter(Chess * chess)
 {
     int elem_count = 0, empty_count = 0;
     string fen;
     char temp[15];
 
-	vector<Piece*> board = mock_chess->getBoard();
+	vector<Piece*> board = chess->getBoard();
     for(auto elem : board)
     {
         // piece square handling
@@ -232,19 +698,19 @@ string boardFenConverter(MockChess * mock_chess)
     }
 
     // player turn handling
-    fen.append(mock_chess->getTurn() == WHITE ? " w " : " b ");
+    fen.append(chess->getTurn() == WHITE ? " w " : " b ");
 
     // castle handling (for both sides)
     /***** White player *****/
-    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, mock_chess) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
+    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, chess) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
         fen.append("K");
-    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, mock_chess) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
+    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, chess) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
         fen.append("Q");
 
     /***** Black player *****/
-    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, mock_chess) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
+    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, chess) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
         fen.append("k");
-    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, mock_chess) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
+    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, chess) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
         fen.append("q");
 
     return fen;
