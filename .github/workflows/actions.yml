@@ -34,7 +34,7 @@ jobs:
         pip install gcovr
 
     - name: Generate Code Coverage Report
-    - shell: bash
+      shell: bash
       run: mingw32-make gcov
 
     - uses: codecov/codecov-action@v1
