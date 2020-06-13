@@ -4,7 +4,7 @@
 /*                                  Related Files:   chess.h                                        */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 11th, 2020                                */
+/*                                  Last Revision:   June 12th, 2020                                */
 /****************************************************************************************************/ 
 
 /*
@@ -106,7 +106,7 @@ protected:
                 chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
                 myfile >> src >> dest;
                 cout << src << " " << dest << endl;
-                chess->makeMove(src, dest);
+                chess->makeMove(src, dest, myfile);
             }
             myfile.close(); //closing the file
         }

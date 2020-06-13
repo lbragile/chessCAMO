@@ -4,7 +4,7 @@
 /*                                  Related Files:   chess.h                                        */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 5th, 2020                                 */
+/*                                  Last Revision:   June 12th, 2020                                */
 /****************************************************************************************************/
 
 /*
@@ -60,7 +60,7 @@ int main()
 
         // makes the corresponding move and updates the board state on the console after clearing it
         std::system("cls");
-        chess->makeMove(src, dest);
+        chess->makeMove(src, dest, cin);
 
         // prevent asking again after game is over
         if(!chess->getCheckmate() && !chess->getStalemate())

@@ -4,7 +4,7 @@
 /*                          Related Files:   chess.h                                        */
 /*                          Project:         chessCAMO                                      */
 /*                          Version:         1.0                                            */
-/*                          Last Revision:   June 6th, 2020                                 */
+/*                          Last Revision:   June 12th, 2020                                */
 /********************************************************************************************/ 
 
 #include "chess.h"
@@ -175,11 +175,12 @@ void Chess::boardInit(int board_size)
 // Pre-condition:   'chess'     - object is created
 //                  'src'       - source square (piece's current location)
 //                  'dest'      - destination square (piece's ending location)
+//					'in'		- input stream type (stdin or file)
 // Post-condition:  The pieces at 'src' and 'dest' positions are swapped.
 //                  If needed (attacking, castling, etc.) an empty square is made.
 //                  The board's state is updated to indicate that the move occured.
 //                  On failure, an error message is printed and user is asked to retry.
-void Chess::makeMove(int src, int dest)
+void Chess::makeMove(int src, int dest, istream &in)
 {
     vector<Piece*> board = this->getBoard();
     stack<Piece*> CheckStack = this->getCheckStack();
@@ -191,7 +192,7 @@ void Chess::makeMove(int src, int dest)
         // pawn promotion
         if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
         {
-            board[src]->promotePawn(dest, this);
+            board[src]->promotePawn(dest, this, in);
         }
 
         // store piece and it's information in case move fails (to restore board representation from previous move)
@@ -268,7 +269,7 @@ void Chess::makeMove(int src, int dest)
 }
 
 // same as above, but converts the string into it's coordinate (integer) and calls above function.
-void Chess::makeMove(string src, string dest)
+void Chess::makeMove(string src, string dest, istream &in)
 {
     int src_int, dest_int;
 
@@ -292,7 +293,7 @@ void Chess::makeMove(string src, string dest)
         dest_int = (int(dest[0]) - 65) + (8 - (int(dest[1]) - 48))*8; // file + rank
     }
 
-    this->makeMove(src_int, dest_int); // call the coordinate version
+    this->makeMove(src_int, dest_int, in); // call the coordinate version
 }
 
 // Description:     Decide if a move caused a checkmate
@@ -807,9 +808,9 @@ bool Piece::isPossibleMove(int dest, Chess *chess)
 // Pre-condition:   'chess'         - object is created
 //                  'dest'          - destination square is valid [0,63]
 // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-void Piece::promotePawn(int dest, Chess *chess)
+void Piece::promotePawn(int dest, Chess *chess, istream &in)
 {
-    if(this->isPawn()) {this->promotePawn(dest, chess);}
+    if(this->isPawn()) {this->promotePawn(dest, chess, in);}
 }
 
 // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
@@ -895,7 +896,7 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 }
 
 // Virtual Function -> See Piece::promotePawn(int dest)
-void Pawn::promotePawn(int dest, Chess *chess)
+void Pawn::promotePawn(int dest, Chess *chess, istream &in)
 {
     vector<Piece*> board = chess->getBoard();
     bool white_turn = chess->getTurn() == WHITE;
@@ -907,7 +908,7 @@ void Pawn::promotePawn(int dest, Chess *chess)
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
         cout << "\nWhich Piece: Q/q | R/r | B/b | N/n? ";
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-        cin >> piece;
+        in >> piece;
         if(piece == 'Q' || piece == 'q')
         {
             board[src] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);

@@ -8,5 +8,7 @@ r1bqkbn1/pppppN1p/n7/8/8/8/PPPPPPP1/RNBQKBNR b KQq
 23 14
 16 1
 14 7
+m
+n
 1 16
 7 13

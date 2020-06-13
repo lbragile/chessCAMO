@@ -4,7 +4,7 @@
 /*                                  Related Files:   chess.h                                        */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 6th, 2020                                 */
+/*                                  Last Revision:   June 12th, 2020                                */
 /****************************************************************************************************/ 
 
 /*
@@ -35,8 +35,7 @@ To include an additional test case:
 Note:
     - There is no draw or resign functionality here since this is meant for quick testing.
     - If an invalid move is made, the board is printed to allow debugging of the board state.
-    - Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter
-      'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to 
+    - Test cases 12 to 14 require user input to decide the promotion. The algorithm will promote to 
       appropriate piece color based on player's current move, regardless of the input's case.        
 */
 
@@ -118,7 +117,7 @@ int main()
                     chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
                     myfile >> src >> dest;
                     cout << src << " " << dest << endl;
-                    chess->makeMove(src, dest);
+                    chess->makeMove(src, dest, myfile);
                 }
                 myfile.close(); //closing the file
             }

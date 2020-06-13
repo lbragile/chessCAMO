@@ -4,7 +4,7 @@
 /*                                  Related Files:   chess.cpp                                      */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 6th, 2020                                 */
+/*                                  Last Revision:   June 12th, 2020                                */
 /****************************************************************************************************/
 
 /*
@@ -133,14 +133,15 @@ public:
     // Pre-condition:   'chess'     - object is created
     //                  'src'       - source square (piece's current location)
     //                  'dest'      - destination square (piece's ending location)
+    //                  'in'        - input stream type (stdin or file)
     // Post-condition:  The pieces at 'src' and 'dest' positions are swapped.
     //                  If needed (attacking, castling, etc.) an empty square is made.
     //                  The board's state is updated to indicate that the move occured.
     //                  On failure, an error message is printed and user is asked to retry.
-    void makeMove(int src, int dest); // for src = "52", dest = "36" type input (coordinate numbers)
+    void makeMove(int src, int dest, istream &in); 
 
     // same as above, but converts the string into it's coordinate (integer) and called above function.
-    void makeMove(string src, string dest); // overloaded for src = "e2", dest = "e4" type inputs
+    void makeMove(string src, string dest, istream &in);
 
     // Description:     Decide if a move caused a checkmate
     // Pre-condition:   'chess'     - object is created
@@ -351,7 +352,7 @@ public:
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-    virtual void promotePawn(int dest, Chess *chess);
+    virtual void promotePawn(int dest, Chess *chess, istream &in);
 
     // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
     // Pre-condition:   'chess'         - object is created
@@ -408,7 +409,7 @@ public:
     // virtual functions -> see Piece Class
     bool isPossibleMove(int dest, Chess *chess) override;
     void enPassantHandling(int src, Chess *chess) override;
-    void promotePawn(int dest, Chess *chess) override;
+    void promotePawn(int dest, Chess *chess, istream &in) override;
 
 private:
     bool en_passant;    // Can this pawn en-passant it's rival currently?
