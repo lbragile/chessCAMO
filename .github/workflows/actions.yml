@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
+compiler: gcc
+
 jobs:
   install:
     runs-on: windows-latest
@@ -23,6 +25,8 @@ jobs:
           cd ../../ # go back to github repo directory
 
   compile_link:
+    needs: install
+
     runs-on: windows-latest
 
     steps:
@@ -32,6 +36,8 @@ jobs:
       run: mingw32-make all_unit
 
   run:
+    needs: compile_link
+    
     runs-on: windows-latest
 
     steps:
