@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-compiler: gcc
-
 jobs:
   install:
     runs-on: windows-latest
@@ -37,7 +35,7 @@ jobs:
 
   run:
     needs: compile_link
-    
+
     runs-on: windows-latest
 
     steps:
