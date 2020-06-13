@@ -204,10 +204,20 @@ protected:
 /*************************************************************************************/
 /*                                       TESTS                                       */
 /*************************************************************************************/
-TEST_F(ChessTestString, resignForCoverage)
+TEST_F(ChessTestString, unableToOpenFileString)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/00-resignForCoverage.txt");
+    ifstream myfile("test_cases/unableToOpenFileString.txt");
+    SetUp(myfile);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, "-");
+}
+
+TEST_F(ChessTestString, stringInputsResignForCoverage)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/00-stringInputsResignForCoverage.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -232,10 +242,10 @@ TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, unableToOpenFile)
+TEST_F(ChessTest, unableToOpenFileInt)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/unableToOpenFile.txt");
+    ifstream myfile("test_cases/unableToOpenFileInt.txt");
     SetUp(myfile);
 
     /* ------------------- Assert ------------------ */

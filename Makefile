@@ -46,5 +46,5 @@ gcov:
 
 clean:
 	@echo "clean project"
-	rm *.o ; rm *.exe ; rm *.g* ; rm -r "gcov" ; rm *.html ;
+	rm *.g* ; rm -r "gcov" ; rm *.html ; rm *.o ; rm *.exe ;
 	@echo "clean completed"
