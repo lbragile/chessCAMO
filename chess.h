@@ -245,12 +245,6 @@ private:
 class Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    virtual ~Piece() = default; // destructor
-    Piece(const Piece & object) = default; // copy constructor
-    Piece & operator =(const Piece & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Piece() : square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {} // intentionally blank
 
@@ -388,12 +382,6 @@ private:
 class Pawn : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Pawn() = default; // destructor
-    Pawn(const Pawn & object) = default; // copy constructor
-    Pawn & operator =(const Pawn & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Pawn() : Piece(), en_passant{false} {} // intentionally blank
 
@@ -421,12 +409,6 @@ private:
 class Knight : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Knight() = default; // destructor
-    Knight(const Knight & object) = default; // copy constructor
-    Knight & operator =(const Knight & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Knight() : Piece() {} // intentionally blank
 
@@ -443,12 +425,6 @@ public:
 class Bishop : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Bishop() = default; // destructor
-    Bishop(const Bishop & object) = default; // copy constructor
-    Bishop & operator =(const Bishop & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Bishop() : Piece() {} // intentionally blank
 
@@ -465,12 +441,6 @@ public:
 class Rook : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Rook() = default; // destructor
-    Rook(const Rook & object) = default; // copy constructor
-    Rook & operator =(const Rook & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Rook() : Piece() {} // intentionally blank
 
@@ -487,12 +457,6 @@ public:
 class Queen : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Queen() = default; // destructor
-    Queen(const Queen & object) = default; // copy constructor
-    Queen & operator =(const Queen & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Queen() : Piece() {} // intentionally blank
 
@@ -509,12 +473,6 @@ public:
 class King : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~King() = default; // destructor
-    King(const King & object) = default; // copy constructor
-    King & operator =(const King & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     King() : Piece() {} // intentionally blank
 
@@ -533,12 +491,6 @@ public:
 class Empty : public Piece
 {
 public:
-    /*********************************** BIG THREE *********************************/
-    ~Empty() = default; // destructor
-    Empty(const Empty & object) = default; // copy constructor
-    Empty & operator =(const Empty & object) = default; // copy assignment
-    /************************************* END *************************************/
-
     // default constructor with default piece initialization
     Empty() : Piece() {} // intentionally blank
 
@@ -559,10 +511,11 @@ namespace chessCAMO
     void printBoard(const vector<Piece*> & board); // Print the current board position
 
     // Description:     At any moment, the players can either continue, draw, or resign
-    // Pre-condition:   None
+    // Pre-condition:   'chess'     - object is created
+    //                  'in'        - input stream is selected (stdin or file)
     // Post-condition:  Depending on the users choice, the program either continues
     //                  ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
-    void drawOrResign(Chess *chess); // resign or draw
+    void drawOrResign(Chess *chess, istream &in); // resign or draw
 
     // Description:     Prints the given message ('text') with a given 'color' to console
     // Pre-condition:   'text'      - message is created

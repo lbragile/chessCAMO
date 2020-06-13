@@ -1,14 +1,25 @@
 r1bqkbn1/pppppN1p/n7/8/8/8/PPPPPPP1/RNBQKBNR b KQq
 55 39
+y
 1 16
+y
 39 31
+y
 16 1
+y
 31 23
+y
 1 16
+y
 23 14
+y
 16 1
+y
 14 7
 m
 n
+y
 1 16
+y
 7 13
+y

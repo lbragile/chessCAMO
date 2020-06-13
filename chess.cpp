@@ -1265,14 +1265,14 @@ namespace chessCAMO
     // Pre-condition:   None
     // Post-condition:  Depending on the users choice, the program either continues
     //                  ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
-    void drawOrResign(Chess *chess)
+    void drawOrResign(Chess *chess, istream &in)
     {
         char user_input, draw_reply;
         string message;
 
         chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
-        cin >> user_input;
-        cin.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
+        in >> user_input;
+        in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
 
         // error check
         while((int) user_input != 89 && (int) user_input != 121 &&
@@ -1282,8 +1282,8 @@ namespace chessCAMO
             chessCAMO::printMessage("Pick one of the choices... try again!", YELLOW);
             chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
 
-            cin >> user_input; // get new input
-            cin.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
+            in >> user_input; // get new input
+            in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
         }
 
         if((int) user_input == 114 || (int) user_input == 82) // r
@@ -1291,13 +1291,14 @@ namespace chessCAMO
             message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
                                                 : "\nBlack resigned -> White wins\n";
             chessCAMO::printMessage(message, CYAN);
-            exit(0);
+            chess->setCheckmate(true); // to end the game
+            return;
         }
         else if((int) user_input == 68 || (int) user_input == 100) // d
         {
             chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
-            cin >> draw_reply;
-            cin.ignore(100, '\n'); // ignore rest of the previous input
+            in >> draw_reply;
+            in.ignore(100, '\n'); // ignore rest of the previous input
 
             // error check
             while((int) draw_reply != 89 && (int) draw_reply != 121 &&
@@ -1305,14 +1306,15 @@ namespace chessCAMO
             {
                 chessCAMO::printMessage("Pick one of the choices... try again! ", YELLOW);
                 chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
-                cin >> draw_reply; // get new input
-                cin.ignore(100, '\n'); // ignore rest of the previous input
+                in >> draw_reply; // get new input
+                in.ignore(100, '\n'); // ignore rest of the previous input
             }
 
             if((int) draw_reply == 89 || (int) draw_reply == 121) // y
             {
                 chessCAMO::printMessage("\nGame drawn by agreement\n", CYAN);
-                exit(0);
+            	chess->setCheckmate(true); // to end the game
+            	return;
             }
             else if((int) draw_reply == 78 || (int) draw_reply == 110) // n
             {

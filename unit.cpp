@@ -80,8 +80,7 @@ protected:
 
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
     // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-    // 'num_lines' -> how many moves will be made
-    int src, dest, num_lines;
+    int src, dest;
 
     // expects vs obtained FEN strings for a given board representation before and after
     // moves are made for it
@@ -107,13 +106,25 @@ protected:
                 myfile >> src >> dest;
                 cout << src << " " << dest << endl;
                 chess->makeMove(src, dest, myfile);
+
+                // prevent asking again after game is over
+                if(!chess->getCheckmate() && !chess->getStalemate())
+                {
+                    chessCAMO::drawOrResign(chess, myfile);
+
+                    // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
+                    // so if this happens break out of the while loop
+                    if(chess->getCheckmate())
+                        break;
+                }
+
+
             }
             myfile.close(); //closing the file
         }
         else // test case file failed to open or doesn't exist
         {
-            cout << "Unable to open file";
-            exit(1);
+            fen_expected = "-";
         }
     }
 
@@ -124,6 +135,112 @@ protected:
         delete chess;
     }
 };
+
+// TODO : Find a way to pass template variables here as only 'src' and 'dest' are different
+class ChessTestString : public ::testing::Test
+{
+protected:
+    // create the testing object
+    Chess *chess = new Chess;
+
+    // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
+    // coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+    string src, dest;
+
+    // expects vs obtained FEN strings for a given board representation before and after
+    // moves are made for it
+    string fen_expected, fen_obtained;
+
+    // before test is executed, this sets up everything
+    void SetUp(ifstream & myfile)
+    {
+        std::cout.setstate(std::ios_base::failbit); // surpress output
+        chess->boardInit();
+
+        /* -------------------- Act -------------------- */
+        if(myfile.is_open()) //if the file is open
+        {
+           // read in the expected FEN (this is at the top of each test case file)
+            getline(myfile, fen_expected);
+
+            // read in the moves of the given test case file one line at a time
+            // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
+            while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate())
+            {   
+                chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+                myfile >> src >> dest;
+                cout << src << " " << dest << endl;
+                chess->makeMove(src, dest, myfile);
+
+                // prevent asking again after game is over
+                if(!chess->getCheckmate() && !chess->getStalemate())
+                {
+                    chessCAMO::drawOrResign(chess, myfile);
+
+                    // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
+                    // so if this happens break out of the while loop
+                    if(chess->getCheckmate())
+                        break;
+                }
+
+
+            }
+            myfile.close(); //closing the file
+        }
+        else // test case file failed to open or doesn't exist
+        {
+            fen_expected = "-";
+        }
+    }
+
+    // after test is completed, free the memory made by dynamic allocation
+    void TearDown() override
+    {
+        std::cout.clear(); // enable output again
+        delete chess;
+    }
+};
+
+/*************************************************************************************/
+/*                                       TESTS                                       */
+/*************************************************************************************/
+TEST_F(ChessTestString, resignForCoverage)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/00-resignForCoverage.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/00-stringInputsNDrawFeaturesForCoverage.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, unableToOpenFile)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/unableToOpenFile.txt");
+    SetUp(myfile);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, "-");
+}
 
 TEST_F(ChessTest, castleAfterKingMoved)
 {

@@ -1,12 +1,23 @@
 rnbqkbnr/1pp1p2p/4Ppp1/p2p4/8/8/PPPP1PPP/RNBQKBNR w KQkq
 52 36
+y
 8 16
+y
 36 28
+y
 16 24
+y
 28 20
+y
 13 21
+y
 59 31
+y
 11 20
+y
 14 22
+y
 31 59
+y
 11 27
+y

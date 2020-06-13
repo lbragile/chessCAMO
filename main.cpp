@@ -64,8 +64,16 @@ int main()
 
         // prevent asking again after game is over
         if(!chess->getCheckmate() && !chess->getStalemate())
-            chessCAMO::drawOrResign(chess);
+        {
+            chessCAMO::drawOrResign(chess, cin);
+            
+            // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
+            // so if this happens break out of the while loop
+            if(chess->getCheckmate())
+                break;
+        }
     }
+            
 
     delete chess; // destroy the dynamic object to free its memory allocation
 

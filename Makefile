@@ -38,7 +38,7 @@ unit.exe:
 
 gcov:
 	gcov chess.cpp
-	gcovr -r . --html -o convergence.html
+	gcovr -r . --html --html-details -o convergence.html
 
 	mkdir "gcov"
 	mv *.g* "gcov"

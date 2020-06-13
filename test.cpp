@@ -61,13 +61,8 @@ string boardFenConverter(Chess * chess);
 // Post-condition: Appends 'next_char' to 'fen' and returns updated variables by reference 
 void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
    
-
 int main()
 {
-    // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-    int src, dest;
-
     // can make a separate folder for unit testing or use test_cases/*.txt for all test cases made by author
     string path = "test_cases/*.txt"; 
 
@@ -88,7 +83,7 @@ int main()
     HANDLE hFind = FindFirstFile(path.c_str(), &FindFileData);
     if(hFind == INVALID_HANDLE_VALUE){cout << "No files found" << endl; exit(0);}
     else
-    {
+    {	
         do
         {
             sprintf(text, "\n\n===================== TEST CASE %i ====================\n\n", file_num+1);
@@ -97,12 +92,16 @@ int main()
             // create the object dynamically to control when it is destroyed
             Chess *chess = new Chess;
 
+            // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
+			// coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
+			int src, dest;
+
             // Create 8x8 default board
             chess->boardInit();
 
             // form the path to the current test case and open the file
             sprintf(filename,"test_cases/%s", FindFileData.cFileName);
-            ifstream myfile(filename); 
+            ifstream myfile(filename);
 
             if(myfile.is_open()) //if the file is open
             {
@@ -118,6 +117,18 @@ int main()
                     myfile >> src >> dest;
                     cout << src << " " << dest << endl;
                     chess->makeMove(src, dest, myfile);
+
+                    // prevent asking again after game is over
+	                if(!chess->getCheckmate() && !chess->getStalemate())
+	                {
+	                    chessCAMO::drawOrResign(chess, myfile);
+
+	                    // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
+	                    // so if this happens break out of the while loop
+	                    if(chess->getCheckmate())
+	                        break;
+	                }
+
                 }
                 myfile.close(); //closing the file
             }
