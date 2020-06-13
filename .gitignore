@@ -11,5 +11,8 @@ gcov/*
 *.gcno
 *.gcov
 
+# Google Test
+googletest/* 
+
 # Shell Scripting Files
 *.sh
