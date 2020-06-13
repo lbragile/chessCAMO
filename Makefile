@@ -6,7 +6,7 @@ CC = g++
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS  = -g -c -Wall
 AFLAGS = -g -Wall
-GTEST_CFLAGS = -I googletest/googletest/include -L googletest/googletest/lib
+GTEST_CFLAGS = -I ../googletest/googletest/include -L ../googletest/googletest/lib
 GCOV_CFLAGS = -fprofile-arcs -ftest-coverage
 GTEST_LFLAGS = -lgtest -lgtest_main
 GCOV_LFLAGS = -lgcov
