@@ -27,3 +27,15 @@ jobs:
 
     - name: Run Tests
       run: .\unit.exe --gtests_color=yes
+
+    - name: install gcovr
+      run: pip install gcovr
+
+    - name: make code coverage report
+      run: |
+        gcov chess.cpp
+        gcovr -r . --xml -o coverage.xml
+
+    - uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
