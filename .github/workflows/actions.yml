@@ -34,7 +34,7 @@ jobs:
     - name: make code coverage report
       run: |
         gcov chess.cpp
-        gcovr -r . --xml -o coverage.xml
+        gcovr -r . --exclude-throw-branches --xml -o coverage.xml
 
     - uses: codecov/codecov-action@v1
       with:
