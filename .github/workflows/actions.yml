@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  install:
+  install_and_run:
     runs-on: windows-latest
 
     steps:
@@ -22,24 +22,8 @@ jobs:
           mingw32-make
           cd ../../ # go back to github repo directory
 
-  compile_link:
-    needs: install
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
     - name: Compile & Link
       run: mingw32-make all_unit
-
-  run:
-    needs: compile_link
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
 
     - name: Run Tests
       run: .\unit.exe --gtests_color=yes
