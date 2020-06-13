@@ -7,12 +7,10 @@
 # Code convergence files
 gcov/*
 *.html
+*.xml
 *.gcda
 *.gcno
-*.gcov
-
-# Google Test
-googletest/* 
+*.gcov 
 
 # Shell Scripting Files
 *.sh

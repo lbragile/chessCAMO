@@ -38,7 +38,8 @@ unit.exe:
 
 gcov:
 	gcov chess.cpp
-	gcovr -r . --html --html-details -o convergence.html
+	gcovr -r . --exclude-throw-branches --html-details -o convergence.html
+	gcovr -r . --exclude-throw-branches --xml -o convergence.xml
 
 	mkdir "gcov"
 	mv *.g* "gcov"
