@@ -25,13 +25,13 @@ main.o: main.cpp chess.h
 	$(CC) $(CFLAGS) main.cpp
 
 unit.o: unit.cpp chess.h
-	$(CC) $(CFLAGS) $(GTEST_CFLAGS) $(GCOV_CFLAGS) unit.cpp
+	$(CC) $(CFLAGS) $(GTEST_CFLAGS) unit.cpp
 
 test.exe:
-	$(CC) $(AFLAGS) chess.o test.o -o test $(GCOV_LFLAGS)
+	$(CC) $(AFLAGS) chess.o test.o -o test
 
 main.exe:
-	$(CC) $(AFLAGS) chess.o main.o -o main $(GCOV_LFLAGS)
+	$(CC) $(AFLAGS) chess.o main.o -o main
 
 unit.exe:
 	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)
