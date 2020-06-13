@@ -15,12 +15,12 @@ jobs:
 
     - name: Install GoogleTest
       run : |
-          cd ../
-          git clone https://github.com/google/googletest.git
-          cd ./googletest/googletest/
-          cmake -G "MinGW Makefiles" ..
-          mingw32-make
-          cd ../../ # go back to github repo directory
+        cd ../
+        git clone https://github.com/google/googletest.git
+        cd ./googletest/googletest/
+        cmake -G "MinGW Makefiles" ..
+        mingw32-make
+        cd ../../ # go back to github repo directory
 
     - name: Compile & Link
       run: mingw32-make all_unit
@@ -34,6 +34,7 @@ jobs:
         pip install gcovr
 
     - name: Generate Code Coverage Report
+    - shell: bash
       run: mingw32-make gcov
 
     - uses: codecov/codecov-action@v1
