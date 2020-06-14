@@ -50,9 +50,9 @@ gcov:
 # installs google test dependency in parent directory to pwd
 # goes back to github repo directory when finished
 ../googletest:
-	cd "../"
+	cd ../
 	git clone https://github.com/google/googletest.git
-	cd "./googletest/googletest/"
+	cd ./googletest/googletest/
 	cmake -G "MinGW Makefiles" ..
 	mingw32-make
 	cd ../../ 
