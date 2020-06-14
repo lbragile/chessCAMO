@@ -967,6 +967,20 @@ TEST_F(ChessTest, pawnPromotionKnightBlackUp)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
+TEST_F(ChessTest, checkmateQueenBlack)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/45-checkmateQueenBlack.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
 // TEST_F(ChessTest, enPassantPawnRight)
 // {
 //     /* ------------------ Arrange ------------------ */

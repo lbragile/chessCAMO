@@ -64,8 +64,7 @@ namespace
     //                  'board'     - initialize board representing the current position
     //                  'enemy'     - true if king color differs from piece color, else false
     // Post-condition:  Returns the coordinate position of the king, based on the current board
-    //                  representation and color determined by 'enemy'. If king is not found
-    //                  returns -1.
+    //                  representation and color determined by 'enemy'.
     int findKingPos(int src, Chess * chess, bool enemy); 
 } // unnamed namespace (makes these functions local to this implementation file)
 
@@ -406,7 +405,7 @@ void Chess::makeMoveForType(int src, int dest)
         {
             board[src+1] = new Empty(src+1, EMPTY, NEUTRAL);
         }
-        else if(std::abs(src-dest) == 9)
+        else // std::abs(src-dest) == 9
         {
             board[src-1] = new Empty(src-1, EMPTY, NEUTRAL);
         }
@@ -521,12 +520,12 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
         this->setBoard(board);
 
         // invalid move checking when a player is in check (single/double)
-        if(check_type.compare("double") == 0)
+        if(check_type == "double")
         {
             chessCAMO::printBoard(board);
             chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
         }
-        else if(check_type.compare("single") == 0)
+        else // check_type == "single"
         {
             chessCAMO::printBoard(board);
             chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
@@ -758,34 +757,25 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     vector<Piece*> board = chess->getBoard();
     stack<Piece*> CheckStack = chess->getCheckStack();
 
-    // causes a check if not a king (cannot check opponent with your king)
-    if(this->isKing())
+    king_pos = findKingPos(dest, chess, true); // opposite color king position
+    CheckStack.push(board[king_pos]); // make the king last in the stack
+
+    // how many pieces are checking the king
+    for(auto elem : board)
     {
-        return false;
+        if(elem->isLegalMove(king_pos, chess) && !elem->isSameColor(king_pos, chess))
+        {
+            checking_piece_counter++;
+        }
     }
-    else
+
+    // double check if 2 pieces are attacking the king
+    if(checking_piece_counter == 2)
     {
-        king_pos = findKingPos(dest, chess, true); // opposite color king position
-
-        CheckStack.push(board[king_pos]); // make the king last in the stack
-
-        // how many pieces are checking the king
-        for(auto elem : board)
-        {
-            if(elem->isLegalMove(king_pos, chess) && !elem->isSameColor(king_pos, chess))
-            {
-                checking_piece_counter++;
-            }
-        }
-
-        // double check if 2 pieces are attacking the king
-        if(checking_piece_counter == 2)
-        {
-            chess->setCheckStack(CheckStack);
-            chess->setDoubleCheck(true);
-            return true;
-        }
-    }   
+        chess->setCheckStack(CheckStack);
+        chess->setDoubleCheck(true);
+        return true;
+    }
 
     return chess->getDoubleCheck();
 }
@@ -1143,19 +1133,21 @@ namespace
     //                  'board'     - initialize board representing the current position
     //                  'enemy'     - true if king color differs from piece color, else false
     // Post-condition:  Returns the coordinate position of the king, based on the current board
-    //                  representation and color determined by 'enemy'. If king is not found
-    //                  returns -1.
+    //                  representation and color determined by 'enemy'.
     int findKingPos(int src, Chess * chess, bool enemy)
     {
+    	Piece* temp;
         for(auto elem : chess->getBoard())
         {
-            if(enemy && elem->isKing() && !elem->isSameColor(src, chess))
-                return elem->getPieceSquare();
-            else if(!enemy && elem->isKing() && elem->isSameColor(src, chess))
-                return elem->getPieceSquare();
+            if( (enemy && elem->isKing() && !elem->isSameColor(src, chess) ) ||
+                ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
+            {
+            	temp = elem;
+                break;
+            }
         } 
 
-        return -1; // king was not found
+        return temp->getPieceSquare();
     }
 } // unnamed namespace
 
