@@ -47,6 +47,16 @@ gcov:
 	mkdir "gcov"
 	mv *.g* "gcov"
 
+# installs google test dependency in parent directory to pwd
+# goes back to github repo directory when finished
+../googletest:
+	cd ../
+	git clone https://github.com/google/googletest.git
+	cd ./googletest/googletest/
+	cmake -G "MinGW Makefiles" ..
+	mingw32-make
+	cd ../../ 
+
 clean:
 	@echo "clean project"
 	rm *.g* ; rm -r "gcov" ; rm *.html ; rm *.o ; rm *.exe ;
