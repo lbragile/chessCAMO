@@ -340,7 +340,7 @@ public:
     // Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
     //                  the piece is capable of making the move.
     //                  false otherwise.
-    virtual bool isPossibleMove(int dest, Chess *chess);
+    virtual bool isPossibleMove(int dest, Chess *chess) {return false;}
 
     // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
     // Pre-condition:   'chess'         - object is created

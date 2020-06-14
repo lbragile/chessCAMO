@@ -780,17 +780,6 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     return chess->getDoubleCheck();
 }
 
-// Description:     Determine if the piece has a possible move towards the destination square
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
-//                  the piece is capable of making the move.
-//                  false otherwise.
-bool Piece::isPossibleMove(int dest, Chess *chess)
-{
-    return !this->isEmpty() ? this->isPossibleMove(dest, chess) : false;
-}
-
 // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
 // Pre-condition:   'chess'         - object is created
 //                  'dest'          - destination square is valid [0,63]
@@ -1009,16 +998,17 @@ bool King::canCastle(int dest, Chess *chess)
 bool King::movedIntoCheck(int dest, Chess *chess)
 {
     vector<Piece*> board = chess->getBoard();
+    int src, sign;
 
     for(auto elem : board)
     {
+    	src = elem->getPieceSquare();
+    	sign = elem->isPieceWhite() ? 1 : -1;
+
         // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        if( !elem->isEmpty() && !this->isSameColor(elem->getPieceSquare(), chess) &&
-            ( (!elem->isPawn() && elem->isPossibleMove(dest, chess)) ||
-              ( elem->isPawn() && elem->isPieceWhite() &&
-                (elem->getPieceSquare() - dest == 9 || elem->getPieceSquare() - dest == 7) ) ||
-              ( elem->isPawn() && elem->isPieceBlack() &&
-                (dest - elem->getPieceSquare() == 9 || dest - elem->getPieceSquare() == 7) ) ) )
+        if( !elem->isEmpty() && !this->isSameColor(src, chess) &&
+            ( ( !elem->isPawn() && elem->isPossibleMove(dest, chess) ) ||
+              ( elem->isPawn() && (sign*(src - dest) == 9 || sign*(src - dest) == 7) ) ))
         {
             return true;
         }
@@ -1245,9 +1235,7 @@ namespace chessCAMO
         in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
 
         // error check
-        while((int) user_input != 89 && (int) user_input != 121 &&
-              (int) user_input != 114 && (int) user_input != 82 &&
-              (int) user_input != 68 && (int) user_input != 100)
+        while( std::tolower(user_input) != 'y' && std::tolower(user_input) != 'd' && std::tolower(user_input) != 'r' )
         {
             chessCAMO::printMessage("Pick one of the choices... try again!", YELLOW);
             chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
@@ -1256,7 +1244,7 @@ namespace chessCAMO
             in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
         }
 
-        if((int) user_input == 114 || (int) user_input == 82) // r
+        if(std::tolower(user_input) == 'r')
         {
             message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
                                                 : "\nBlack resigned -> White wins\n";
@@ -1264,15 +1252,14 @@ namespace chessCAMO
             chess->setCheckmate(true); // to end the game
             return;
         }
-        else if((int) user_input == 68 || (int) user_input == 100) // d
+        else if(std::tolower(user_input) == 'd')
         {
             chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
             in >> draw_reply;
             in.ignore(100, '\n'); // ignore rest of the previous input
 
             // error check
-            while((int) draw_reply != 89 && (int) draw_reply != 121 &&
-                  (int) draw_reply != 78 && (int) draw_reply != 110)
+            while(std::tolower(draw_reply) != 'y' && std::tolower(draw_reply) != 'n')
             {
                 chessCAMO::printMessage("Pick one of the choices... try again! ", YELLOW);
                 chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
@@ -1280,19 +1267,19 @@ namespace chessCAMO
                 in.ignore(100, '\n'); // ignore rest of the previous input
             }
 
-            if((int) draw_reply == 89 || (int) draw_reply == 121) // y
+            if(std::tolower(draw_reply) == 'y')
             {
                 chessCAMO::printMessage("\nGame drawn by agreement\n", CYAN);
             	chess->setCheckmate(true); // to end the game
             	return;
             }
-            else if((int) draw_reply == 78 || (int) draw_reply == 110) // n
+            else // std::tolower(draw_reply) == 'n'
             {
                 chessCAMO::printMessage("\nDraw rejected. Game continues...\n", CYAN);
                 return;
             }
         }
-        else // y
+        else // player wants to continue
         {
             return ; // do nothing
         }
