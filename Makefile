@@ -28,10 +28,10 @@ unit.o: unit.cpp chess.h
 	$(CC) $(CFLAGS) $(GTEST_CFLAGS) unit.cpp
 
 test.exe:
-	$(CC) $(AFLAGS) chess.o test.o -o test
+	$(CC) $(AFLAGS) chess.o test.o -o test $(GCOV_LFLAGS)
 
 main.exe:
-	$(CC) $(AFLAGS) chess.o main.o -o main
+	$(CC) $(AFLAGS) chess.o main.o -o main $(GCOV_LFLAGS)
 
 unit.exe:
 	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)

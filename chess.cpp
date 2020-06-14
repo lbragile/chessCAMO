@@ -763,7 +763,7 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     // how many pieces are checking the king
     for(auto elem : board)
     {
-        if(elem->isLegalMove(king_pos, chess) && !elem->isSameColor(king_pos, chess))
+        if(elem->isLegalMove(king_pos, chess))
         {
             checking_piece_counter++;
         }
@@ -778,26 +778,6 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     }
 
     return chess->getDoubleCheck();
-}
-
-// Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
-//                  else all pawns have their en-passant abilities set to false.
-void Piece::enPassantHandling(int src, Chess *chess)
-{
-    if(this->isPawn()) {this->enPassantHandling(src, chess);}
-}
-
-// Description:     Can the king castle? See: https://bit.ly/2XQEXFr
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if the piece is a king and the conditions for castling are met,
-//                  false otherwise.  
-bool Piece::canCastle(int dest, Chess *chess)
-{
-    return this->isKing() ? this->canCastle(dest, chess) : false;
 }
 
 /*************************************************************************************/
@@ -956,7 +936,7 @@ bool King::isPossibleMove(int dest, Chess *chess)
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
     return ( (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest, chess) ) ||
-           ( (diff == 3 || diff == 4) && this->canCastle(dest, chess) && this->isSameColor(dest, chess) );
+           ( (diff == 3 || diff == 4) && this->canCastle(dest, chess) );
 }
 
 // Virtual Function -> See Piece::canCastle(int dest)
@@ -1164,7 +1144,7 @@ namespace chessCAMO
                 cout << "  +---+---+---+---+---+---+---+---+" << endl;
                 cout << ranks[count/8] << " | ";
             }
-            else if(count % 8 == 0 && count > 0)
+            else if(count % 8 == 0)
             {
                 cout << "  +---+---+---+---+---+---+---+---+" << endl;
                 cout << ranks[count/8] << " | ";

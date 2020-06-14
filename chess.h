@@ -347,7 +347,7 @@ public:
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
     //                  else all pawns have their en-passant abilities set to false.
-    virtual void enPassantHandling(int src, Chess *chess);
+    virtual void enPassantHandling(int src, Chess *chess) {return;}
 
     // Description:     Decides if a pawn can be promoted and applied the promotion
     // Pre-condition:   'chess'         - object is created
@@ -360,7 +360,7 @@ public:
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  true if the piece is a king and the conditions for castling are met,
     //                  false otherwise.                 
-    virtual bool canCastle(int dest, Chess *chess);
+    virtual bool canCastle(int dest, Chess *chess) {return false;}
 
     // Description:     Did the king move into check?
     // Pre-condition:   'chess'         - object is created
