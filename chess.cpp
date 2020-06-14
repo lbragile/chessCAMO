@@ -190,7 +190,7 @@ void Chess::makeMove(int src, int dest, istream &in)
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == this->getTurn())
     {   
         // pawn promotion
-        if(board[src]->isPawn() && (dest/8 == 0 || dest/8 == 7))
+        if(dest/8 == 0 || dest/8 == 7)
         {
             board[src]->promotePawn(dest, this, in);
         }
@@ -311,13 +311,13 @@ void Chess::isCheckmate(string check_type)
         king = CheckStack.top();
 
         // checkmate due to a double check
-        if(doubleCheckPieceIterator(king) || king->getPieceColor() != this->switchTurn())
+        if(doubleCheckPieceIterator(king))
             handleCheckmate();
         else // was not checkmate so can state that it is double check
             chessCAMO::printMessage("\n            Double Check!\n\n", CYAN); 
     }   
 
-    else if(check_type == "single") // CheckStack.top()->getPieceColor() != this->switchTurn()
+    else // check_type == "single"
     {
         // will not be set, so next time this will be identical
         piece = CheckStack.top();
@@ -325,7 +325,7 @@ void Chess::isCheckmate(string check_type)
         king = CheckStack.top();
 
         // checkmate due to a single piece
-        if(singleCheckPieceIterator(piece, king) || piece->getPieceColor() == this->switchTurn())
+        if(singleCheckPieceIterator(piece, king))
             handleCheckmate();
         else // was not checkmate so can state that it is check
             chessCAMO::printMessage("\n                Check!\n\n", CYAN); 
@@ -397,7 +397,7 @@ void Chess::makeMoveForType(int src, int dest)
     }
 
     // en-passant move
-    else if(board[src]->isPawn() && board[src]->getEnPassant() && !sameCol(src, dest))
+    else if(board[src]->getEnPassant() && !sameCol(src, dest))
     {
         this->pieceSwap(src, dest, board);
 
@@ -707,10 +707,7 @@ bool Piece::isLegalMove(int dest, Chess *chess)
     int src = this->getPieceSquare();
     if(0 <= dest && dest <= 63 && src != dest)
     {
-        if(!this->isKing())
-            return this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess);
-        else
-            return this->isPossibleMove(dest, chess) && !this->movedIntoCheck(dest, chess);
+        return this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess) && !this->movedIntoCheck(dest, chess);
     }
     else
         return false;
@@ -804,15 +801,6 @@ bool Piece::isPossibleMove(int dest, Chess *chess)
     return !this->isEmpty() ? this->isPossibleMove(dest, chess) : false;
 }
 
-// Description:     Decides if a pawn can be promoted and applied the promotion
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-void Piece::promotePawn(int dest, Chess *chess, istream &in)
-{
-    if(this->isPawn()) {this->promotePawn(dest, chess, in);}
-}
-
 // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
 // Pre-condition:   'chess'         - object is created
 //                  'dest'          - destination square is valid [0,63]
@@ -831,16 +819,6 @@ void Piece::enPassantHandling(int src, Chess *chess)
 bool Piece::canCastle(int dest, Chess *chess)
 {
     return this->isKing() ? this->canCastle(dest, chess) : false;
-}
-
-// Description:     Did the king move into check?
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  returns true if a king moves into a square that another opposing piece
-//                  also move into. false otherwise.
-bool Piece::movedIntoCheck(int dest, Chess *chess)
-{
-    return this->isKing() ? this->movedIntoCheck(dest, chess) : false;
 }
 
 /*************************************************************************************/
@@ -906,7 +884,7 @@ void Pawn::promotePawn(int dest, Chess *chess, istream &in)
     while(true)
     {
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-        cout << "\nWhich Piece: Q/q | R/r | B/b | N/n? ";
+        cout << "\nWhich Piece: Q/q | R/r | B/b | N/n? " << endl;
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
         in >> piece;
         if(piece == 'Q' || piece == 'q')

@@ -36,6 +36,9 @@ main.exe:
 unit.exe:
 	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)
 
+# generates the necessary files to make a code coverage report
+# generates the report in both html and xml formats
+# moves all generated gcov files to a folder called "gcov"
 gcov:
 	gcov chess.cpp
 	gcovr -r . --exclude-throw-branches --html-details -o coverage.html
@@ -43,6 +46,16 @@ gcov:
 
 	mkdir "gcov"
 	mv *.g* "gcov"
+
+# installs google test dependency in parent directory to pwd
+# goes back to github repo directory when finished
+../googletest:
+	cd "../"
+	git clone https://github.com/google/googletest.git
+	cd "./googletest/googletest/"
+	cmake -G "MinGW Makefiles" ..
+	mingw32-make
+	cd ../../ 
 
 clean:
 	@echo "clean project"

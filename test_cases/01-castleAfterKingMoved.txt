@@ -3,6 +3,8 @@ r1bqkbnr/pppppppp/n7/7Q/4P3/2NP4/PPPBKPPP/4RBNR w kq
 y
 5 100
 y
+12 28
+y
 52 36
 y
 1 16

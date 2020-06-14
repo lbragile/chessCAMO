@@ -270,7 +270,7 @@ public:
     void setPieceMoveInfo(bool moved) {this->moved = moved;}
 
     // En-passant ability information     
-    virtual bool getEnPassant() const {return this->getEnPassant();}
+    virtual bool getEnPassant() const {return false;}
     virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
     /************************************* END *************************************/
 
@@ -342,18 +342,18 @@ public:
     //                  false otherwise.
     virtual bool isPossibleMove(int dest, Chess *chess);
 
-    // Description:     Decides if a pawn can be promoted and applied the promotion
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
-    virtual void promotePawn(int dest, Chess *chess, istream &in);
-
     // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
     // Pre-condition:   'chess'         - object is created
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
     //                  else all pawns have their en-passant abilities set to false.
     virtual void enPassantHandling(int src, Chess *chess);
+
+    // Description:     Decides if a pawn can be promoted and applied the promotion
+    // Pre-condition:   'chess'         - object is created
+    //                  'dest'          - destination square is valid [0,63]
+    // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
+    virtual void promotePawn(int dest, Chess *chess, istream &in) {return;}
 
     // Description:     Can the king castle? See: https://bit.ly/2XQEXFr
     // Pre-condition:   'chess'         - object is created
@@ -367,7 +367,7 @@ public:
     //                  'dest'          - destination square is valid [0,63]
     // Post-condition:  returns true if a king moves into a square that another opposing piece
     //                  also move into. false otherwise.
-    virtual bool movedIntoCheck(int dest, Chess *chess);
+    virtual bool movedIntoCheck(int dest, Chess *chess) {return false;}
 
 private:
     int square;         // position of the piece on the board [0, 63] -> [top left, bottom right]
