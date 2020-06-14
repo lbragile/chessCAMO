@@ -125,7 +125,7 @@ void Chess::boardInit(int board_size)
         }
 
         /********** NEUTRAL (EMPTY SQUARES) **********/
-        else if(board_size/4 <= i && i < board_size*3/4) 
+        else if(i < board_size*3/4) 
         {   
             board.push_back(new Empty(i, EMPTY, NEUTRAL)); // middle 4 rows
         }
