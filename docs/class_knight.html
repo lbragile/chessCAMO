@@ -69,6 +69,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>This class describes a knight and provides functions related to knight movements.  
+ <a href="class_knight.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="chess_8h_source.html">chess.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Knight:</div>
@@ -76,17 +79,17 @@ Inheritance diagram for Knight:</div>
  <div class="center">
   <img src="class_knight.png" usemap="#Knight_map" alt=""/>
   <map id="Knight_map" name="Knight_map">
-<area href="class_piece.html" alt="Piece" shape="rect" coords="0,0,47,24"/>
+<area href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini..." alt="Piece" shape="rect" coords="0,0,47,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa5c98808cbb05f2772bc3a32ef859387"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_knight.html#aa5c98808cbb05f2772bc3a32ef859387">Knight</a> ()</td></tr>
-<tr class="memdesc:aa5c98808cbb05f2772bc3a32ef859387"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor with default board parameter initialization - Constructs a new instance. Calls <a class="el" href="class_piece.html">Piece</a> class constructor to intialize the member variables.  <a href="class_knight.html#aa5c98808cbb05f2772bc3a32ef859387">More...</a><br /></td></tr>
+<tr class="memdesc:aa5c98808cbb05f2772bc3a32ef859387"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor with default board parameter initialization - Constructs a new instance. Calls <a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> class constructor to intialize the member variables.  <a href="class_knight.html#aa5c98808cbb05f2772bc3a32ef859387">More...</a><br /></td></tr>
 <tr class="separator:aa5c98808cbb05f2772bc3a32ef859387"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16069b43b229f211eb783bfe0658f09a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_knight.html#a16069b43b229f211eb783bfe0658f09a">Knight</a> (int <a class="el" href="class_piece.html#a210f49c2c0e92a1403de79856eb03478">square</a>, <a class="el" href="chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549">pieceType</a> <a class="el" href="class_piece.html#a9b1f38cb1e0b28d80c548b07b87b396a">type</a>, <a class="el" href="chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c">pieceColor</a> <a class="el" href="class_piece.html#a7dbcb06a7738adf4db8310eefd699759">color</a>)</td></tr>
-<tr class="memdesc:a16069b43b229f211eb783bfe0658f09a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new instance with valid piece information initialization. Calls <a class="el" href="class_piece.html">Piece</a> class constructor to intialize the member variables.  <a href="class_knight.html#a16069b43b229f211eb783bfe0658f09a">More...</a><br /></td></tr>
+<tr class="memdesc:a16069b43b229f211eb783bfe0658f09a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new instance with valid piece information initialization. Calls <a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> class constructor to intialize the member variables.  <a href="class_knight.html#a16069b43b229f211eb783bfe0658f09a">More...</a><br /></td></tr>
 <tr class="separator:a16069b43b229f211eb783bfe0658f09a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a691621576a1a51013c8092a3aceac00f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_knight.html#a691621576a1a51013c8092a3aceac00f">isPossibleMove</a> (int dest, <a class="el" href="class_chess.html">Chess</a> *chess) override</td></tr>
 <tr class="separator:a691621576a1a51013c8092a3aceac00f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,7 +176,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a22ce3767f265ea27503d618207d2a2d9 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did the move cause a double check?  <a href="class_piece.html#a22ce3767f265ea27503d618207d2a2d9">More...</a><br /></td></tr>
 <tr class="separator:a22ce3767f265ea27503d618207d2a2d9 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad343fd74c9793f2d462f26bdc177f3b7 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">enPassantHandling</a> (int src, <a class="el" href="class_chess.html">Chess</a> *chess)</td></tr>
-<tr class="memdesc:ad343fd74c9793f2d462f26bdc177f3b7 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pawn.html">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>  <a href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">More...</a><br /></td></tr>
+<tr class="memdesc:ad343fd74c9793f2d462f26bdc177f3b7 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pawn.html" title="This class describes a pawn and provides functions related to pawn movements.">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>  <a href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">More...</a><br /></td></tr>
 <tr class="separator:ad343fd74c9793f2d462f26bdc177f3b7 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c73d39025162073c154471273e26fcc inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a9c73d39025162073c154471273e26fcc">promotePawn</a> (int dest, <a class="el" href="class_chess.html">Chess</a> *chess, istream &amp;in)</td></tr>
 <tr class="memdesc:a9c73d39025162073c154471273e26fcc inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Promotes the pawn if needed.  <a href="class_piece.html#a9c73d39025162073c154471273e26fcc">More...</a><br /></td></tr>
@@ -185,7 +188,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a445cf878adb5712c7c0b5657ea43298d inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did the king move into check?  <a href="class_piece.html#a445cf878adb5712c7c0b5657ea43298d">More...</a><br /></td></tr>
 <tr class="separator:a445cf878adb5712c7c0b5657ea43298d inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>This class describes a knight and provides functions related to knight movements. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa5c98808cbb05f2772bc3a32ef859387"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5c98808cbb05f2772bc3a32ef859387">&#9670;&nbsp;</a></span>Knight() <span class="overload">[1/2]</span></h2>
 
@@ -209,7 +214,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Default constructor with default board parameter initialization - Constructs a new instance. Calls <a class="el" href="class_piece.html">Piece</a> class constructor to intialize the member variables. </p>
+<p>Default constructor with default board parameter initialization - Constructs a new instance. Calls <a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> class constructor to intialize the member variables. </p>
 <dl class="section note"><dt>Note</dt><dd>Intentionally left blank. </dd></dl>
 
 </div>
@@ -254,7 +259,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Constructs a new instance with valid piece information initialization. Calls <a class="el" href="class_piece.html">Piece</a> class constructor to intialize the member variables. </p>
+<p>Constructs a new instance with valid piece information initialization. Calls <a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> class constructor to intialize the member variables. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">square</td><td>The square of the piece </td></tr>

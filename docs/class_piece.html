@@ -70,6 +70,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>This class describes the pieces on the board at any given moment. It contains functions for determining the piece's type, color, possible/legal moves, and more helpful utilities for making decisions regarding move candidates.  
+ <a href="class_piece.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="chess_8h_source.html">chess.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Piece:</div>
@@ -77,13 +80,13 @@ Inheritance diagram for Piece:</div>
  <div class="center">
   <img src="class_piece.png" usemap="#Piece_map" alt=""/>
   <map id="Piece_map" name="Piece_map">
-<area href="class_bishop.html" alt="Bishop" shape="rect" coords="0,56,50,80"/>
-<area href="class_empty.html" alt="Empty" shape="rect" coords="60,56,110,80"/>
-<area href="class_king.html" alt="King" shape="rect" coords="120,56,170,80"/>
-<area href="class_knight.html" alt="Knight" shape="rect" coords="180,56,230,80"/>
-<area href="class_pawn.html" alt="Pawn" shape="rect" coords="240,56,290,80"/>
-<area href="class_queen.html" alt="Queen" shape="rect" coords="300,56,350,80"/>
-<area href="class_rook.html" alt="Rook" shape="rect" coords="360,56,410,80"/>
+<area href="class_bishop.html" title="This class describes a bishop and provides functions related to bishop movements." alt="Bishop" shape="rect" coords="0,56,50,80"/>
+<area href="class_empty.html" title="This class describes an empty square which is necessary to keep in mind when playing a game of chess." alt="Empty" shape="rect" coords="60,56,110,80"/>
+<area href="class_king.html" title="This class describes a king and provides functions related to king movements." alt="King" shape="rect" coords="120,56,170,80"/>
+<area href="class_knight.html" title="This class describes a knight and provides functions related to knight movements." alt="Knight" shape="rect" coords="180,56,230,80"/>
+<area href="class_pawn.html" title="This class describes a pawn and provides functions related to pawn movements." alt="Pawn" shape="rect" coords="240,56,290,80"/>
+<area href="class_queen.html" title="This class describes a queen and provides functions related to queen movements." alt="Queen" shape="rect" coords="300,56,350,80"/>
+<area href="class_rook.html" title="This class describes a rook and provides functions related to rook movements." alt="Rook" shape="rect" coords="360,56,410,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -174,7 +177,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:afe8ff6a72b28c751282a7e282ccd8262"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if the piece has a possible move towards the destination square.  <a href="class_piece.html#afe8ff6a72b28c751282a7e282ccd8262">More...</a><br /></td></tr>
 <tr class="separator:afe8ff6a72b28c751282a7e282ccd8262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad343fd74c9793f2d462f26bdc177f3b7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">enPassantHandling</a> (int src, <a class="el" href="class_chess.html">Chess</a> *chess)</td></tr>
-<tr class="memdesc:ad343fd74c9793f2d462f26bdc177f3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pawn.html">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>  <a href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">More...</a><br /></td></tr>
+<tr class="memdesc:ad343fd74c9793f2d462f26bdc177f3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pawn.html" title="This class describes a pawn and provides functions related to pawn movements.">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>  <a href="class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7">More...</a><br /></td></tr>
 <tr class="separator:ad343fd74c9793f2d462f26bdc177f3b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c73d39025162073c154471273e26fcc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a9c73d39025162073c154471273e26fcc">promotePawn</a> (int dest, <a class="el" href="class_chess.html">Chess</a> *chess, istream &amp;in)</td></tr>
 <tr class="memdesc:a9c73d39025162073c154471273e26fcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Promotes the pawn if needed.  <a href="class_piece.html#a9c73d39025162073c154471273e26fcc">More...</a><br /></td></tr>
@@ -197,7 +200,9 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a7dbcb06a7738adf4db8310eefd699759"><td class="memItemLeft" align="right" valign="top"><a class="el" href="chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c">pieceColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a7dbcb06a7738adf4db8310eefd699759">color</a></td></tr>
 <tr class="separator:a7dbcb06a7738adf4db8310eefd699759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>This class describes the pieces on the board at any given moment. It contains functions for determining the piece's type, color, possible/legal moves, and more helpful utilities for making decisions regarding move candidates. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac57de5803bbad829b143bc7268267dc1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac57de5803bbad829b143bc7268267dc1">&#9670;&nbsp;</a></span>Piece() <span class="overload">[1/2]</span></h2>
 
@@ -1165,7 +1170,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_pawn.html">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a> </p>
+<p><a class="el" href="class_pawn.html" title="This class describes a pawn and provides functions related to pawn movements.">Pawn</a> attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The source square of the piece </td></tr>
@@ -1229,7 +1234,7 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section pre"><dt>Precondition</dt><dd><a class="el" href="class_pawn.html">Pawn</a> must be on a rank that can promote next move</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><a class="el" href="class_pawn.html" title="This class describes a pawn and provides functions related to pawn movements.">Pawn</a> must be on a rank that can promote next move</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>Changes the piece (pawn) to a stronger piece according to user input </dd></dl>
 
 <p>Reimplemented in <a class="el" href="class_pawn.html#ae7461ef975b7222be180e699158bea67">Pawn</a>.</p>

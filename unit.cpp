@@ -8,7 +8,7 @@
 /****************************************************************************************************/ 
 
 /**
- * \page unit.cpp Implementation File Description
+ * \page unit Implementation File Description
  * This implementation file is meant to be used as a test case checker to improve efficiency in debugging.
  * The algorithm reads in text files that outline a given board position and feeds in the moves presented
  * in these files one-by-one until the end of each file. At the end, the algorithm compares the expected
@@ -80,7 +80,7 @@ string boardFenConverter(Chess * chess);
  * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
  * 
  * \pre
- * Empty 'fen' string
+ * An empty 'fen' string
  * 
  * \post
  * Appends 'next_char' to 'fen' and returns updated variables by reference
@@ -279,6 +279,7 @@ protected:
 /*************************************************************************************/
 /*                                       TESTS                                       */
 /*************************************************************************************/
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 TEST_F(ChessTestString, unableToOpenFileString)
 {
     /* ------------------ Arrange ------------------ */
@@ -887,10 +888,38 @@ TEST_F(ChessTest, doubleCheckPawnKingMustTake)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pinnedQueen)
+TEST_F(ChessTest, pinnedWithBishop)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/37-pinnedQueen.txt");
+    ifstream myfile("test_cases/37-pinnedWithBishop.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedWithQueen)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/37-pinnedWithQueen.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pinnedWithRook)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("test_cases/37-pinnedWithRook.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1118,7 +1147,7 @@ TEST_F(ChessTest, resignBlack)
 //  ::testing::InitGoogleTest(&argc, argv);
 //  return RUN_ALL_TESTS();
 // }
-
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*************************************************************************************/
 /*                              FUNCTION DEFINITION                                  */
@@ -1203,7 +1232,7 @@ string boardFenConverter(Chess * chess)
  * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
  * 
  * \pre
- * Empty 'fen' string
+ * An empty 'fen' string
  * 
  * \post
  * Appends 'next_char' to 'fen' and returns updated variables by reference

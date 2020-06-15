@@ -16,7 +16,11 @@ using namespace chessCAMO;
 /*************************************************************************************/
 /*                              LOCAL FUNCTIONS / OBJECTS                            */
 /*************************************************************************************/
-
+/**
+ * @brief   This anonymous namespace contains the local functions related to chessCAMO which 
+ * 			are mainly used as helper functions to determine critical information regarding
+ * 			a given move choice.
+ */
 namespace
 {
     /**
@@ -875,8 +879,8 @@ bool Piece::causeCheck(int dest, Chess *chess)
     stack<Piece*> CheckStack = chess->getCheckStack();
     vector<Piece*> board = chess->getBoard();
     
-    // causes a check if not a king (cannot check opponent with your king)
-    if(this->isKing() || !chess->getCheckStack().empty())
+    // was already in check before the move
+    if(!chess->getCheckStack().empty())
     {
         return false;
     }
@@ -1139,8 +1143,7 @@ bool King::canCastle(int dest, Chess *chess)
     vector<Piece*> board = chess->getBoard();
     stack<Piece*> stack = chess->getCheckStack();
 
-    if( this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() ||
-        chess->getCheck() || !board[dest]->isRook() || !sameRow(src, dest) )
+    if( this->getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess->getCheck() || !board[dest]->isRook() )
     {
         return false;
     }
@@ -1212,8 +1215,7 @@ namespace
         int inc_dest = incrementChoice(src, dest);
         int inc_pin = incrementChoice(src, pin);
 
-        return !( inc_dest != 0 && inc_pin != 0 && inc_dest == inc_pin &&
-                  std::min(src, dest) + inc_pin <= std::max(src, dest) );
+        return !(inc_dest != 0 && inc_dest == inc_pin);
     }
 
     /**
@@ -1342,7 +1344,6 @@ namespace
                 ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
             {
             	temp = elem;
-                break;
             }
         } 
 

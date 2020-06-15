@@ -92,6 +92,11 @@ class Piece;
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+/**
+ * @brief      This class describes the chess board on which the game takes place. 
+ *             It contains functions which analyze specific flags to determinewhen to
+ *             switch turns, display warnings, and even end the game.
+ */
 class Chess
 {
 public:
@@ -464,6 +469,11 @@ private:
 /*************************************************************************************/
 /*                              PIECE CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+/**
+ * @brief      This class describes the pieces on the board at any given moment.
+ *             It contains functions for determining the piece's type, color, possible/legal moves,
+ *             and more helpful utilities for making decisions regarding move candidates.
+ */
 class Piece
 {
 public:
@@ -803,6 +813,9 @@ private:
 /*************************************************************************************/
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a pawn and provides functions related to pawn movements.
+ */
 class Pawn : public Piece
 {
 public:
@@ -864,6 +877,9 @@ private:
 /*************************************************************************************/
 /*                              KNIGHT CLASS - MEMBER FUNCTIONS                      */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a knight and provides functions related to knight movements.
+ */
 class Knight : public Piece
 {
 public:
@@ -901,6 +917,9 @@ public:
 /*************************************************************************************/
 /*                              BISHOP CLASS - MEMBER FUNCTIONS                      */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a bishop and provides functions related to bishop movements.
+ */
 class Bishop : public Piece
 {
 public:
@@ -938,6 +957,9 @@ public:
 /*************************************************************************************/
 /*                              ROOK CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a rook and provides functions related to rook movements.
+ */
 class Rook : public Piece
 {
 public:
@@ -975,6 +997,9 @@ public:
 /*************************************************************************************/
 /*                              QUEEN CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a queen and provides functions related to queen movements.
+ */
 class Queen : public Piece
 {
 public:
@@ -1012,6 +1037,9 @@ public:
 /*************************************************************************************/
 /*                              KING CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a king and provides functions related to king movements.
+ */
 class King : public Piece
 {
 public:
@@ -1059,6 +1087,9 @@ public:
 /*************************************************************************************/
 /*                              EMPTY CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+/**
+ * @brief      This class describes an empty square which is necessary to keep in mind when playing a game of chess.
+ */
 class Empty : public Piece
 {
 public:
@@ -1088,7 +1119,11 @@ public:
 /*************************************************************************************/
 /*                              GLOBAL FUNCTIONS / OBJECTS                           */
 /*************************************************************************************/
-
+/**
+ * @brief   This namespace contains the global functions related to chessCAMO which are mainly
+ *          used as helper functions to print information to the console to improve user
+ *          experience while playing the game.
+ */
 namespace chessCAMO
 {
     /**

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>chessCAMO: Todo List</title>
+<title>chessCAMO: Implementation File Description</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,32 +62,25 @@ $(function() {
 </div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Todo List </div>  </div>
+<div class="title">Implementation File Description </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><dl class="reflist">
-<dt>Namespace <a class="el" href="namespacestd.html">std</a>  </dt>
-<dd><a class="anchor" id="_todo000001"></a><ul>
-<li><b> Regular <a class="el" href="class_chess.html" title="This class describes the chess board on which the game takes place. It contains functions which analy...">Chess</a> </b>:<ol type="1">
-<li>Three move repetition (draw) &amp; 50 move rule.</li>
-<li>Board representation undo (use queue?).</li>
-<li>Input as PGN rather than two integers (template) - working currently but not really a template.</li>
-<li>GUI - nice to be able to move pieces with mouse rather than inputting coordinates. <br  />
-</li>
+<div class="textblock"><p>This implementation file is meant to be used as a test case checker to improve efficiency in debugging. The algorithm reads in text files that outline a given board position and feeds in the moves presented in these files one-by-one until the end of each file. At the end, the algorithm compares the expected FEN string value to the one obtained by making the corresponding moves. If these FEN strings are identical then the algorithm increments the number of test cases passed, otherwise it increments the number of test cases failed. These results are summarized at the end, when all the files are read and processed, and if a "Failed Test Case" Summary is provided for each test case that failed.</p>
+<p>Simply run <b>mingw32-make all_test &amp;&amp; test</b> on a Windows machine to start the test checking script.</p>
+<p>To include an additional test case:</p><ol type="1">
+<li>A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a> and extract the FEN at the bottom of the board;</li>
+<li>The user then makes a text file and pastes this FEN at the top, making sure to remove the last 6 characters. E.g. <em> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em> <b>- 0 1</b>, becomes <em>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em>;</li>
+<li>On the next line, the user enters the corresponding source ('src') and destination ('dest') coordinates for a given move. E.g. 52 36 (note the space) means moving from square 52 to 36;</li>
+<li>Rinse and repeat step 3 until the position provided in step 1 is met. Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;</li>
+<li>Name the file a meaningful name according to what is being tested. E.g. to check if a given piece (<a class="el" href="class_queen.html" title="This class describes a queen and provides functions related to queen movements.">Queen</a>) delivers a checkmate <span>&rarr;</span> <em>queenCheckmate.txt</em>;</li>
+<li>Place test case files in a folder named <b>./test_cases/</b> (used by the algorithm).</li>
 </ol>
-</li>
-<li><b> ChessCAMO </b>:<ol type="1">
-<li>Make piece reservoir (stack)</li>
-<li>Allow players to replace existing pieces with reservoir pieces</li>
-<li>Implement abovementioned check and pawn promotion rules</li>
-<li>Make test cases to confirm that overall functionality still works  </li>
-</ol>
-</li>
+<dl class="section note"><dt>Note</dt><dd><ul>
+<li>There is no draw or resign functionality here since this is meant for quick testing.</li>
+<li>If an invalid move is made, the board is printed to allow debugging of the board state.</li>
+<li>Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter 'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to appropriate piece color based on player's current move, regardless of the input's case. </li>
 </ul>
-</dd>
-<dt>Class <a class="el" href="class_chess_test_string.html">ChessTestString</a>  </dt>
-<dd><a class="anchor" id="_todo000002"></a>Find a way to pass template variables here as only 'src' and 'dest' are different </dd>
-</dl>
+</dd></dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

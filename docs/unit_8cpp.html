@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>chessCAMO: Implementation File Description</title>
+<title>chessCAMO: unit.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -60,29 +60,120 @@ $(function() {
 </div>
 
 </div><!-- top -->
-<div class="PageDoc"><div class="header">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Implementation File Description </div>  </div>
+<div class="title">unit.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This implementation file is meant to be used as a test case checker to improve efficiency in debugging. The algorithm reads in text files that outline a given board position and feeds in the moves presented in these files one-by-one until the end of each file. At the end, the algorithm compares the expected FEN string value to the one obtained by making the corresponding moves. If these FEN strings are identical then the algorithm increments the number of test cases passed, otherwise it increments the number of test cases failed. These results are summarized at the end, when all the files are read and processed, and if a "Failed Test Case" Summary is provided for each test case that failed.</p>
-<p>Simply run <b>mingw32-make all_test &amp;&amp; test</b> on a Windows machine to start the test checking script.</p>
-<p>To include an additional test case:</p><ol type="1">
-<li>A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a> and extract the FEN at the bottom of the board;</li>
-<li>The user then makes a text file and pastes this FEN at the top, making sure to remove the last 6 characters. E.g. <em> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em> <b>- 0 1</b>, becomes <em>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em>;</li>
-<li>On the next line, the user enters the corresponding source ('src') and destination ('dest') coordinates for a given move. E.g. 52 36 (note the space) means moving from square 52 to 36;</li>
-<li>Rinse and repeat step 3 until the position provided in step 1 is met. Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;</li>
-<li>Name the file a meaningful name according to what is being tested. E.g. to check if a given piece (<a class="el" href="class_queen.html">Queen</a>) delivers a checkmate <span>&rarr;</span> <em>queenCheckmate.txt</em>;</li>
-<li>Place test case files in a folder named <b>./test_cases/</b> (used by the algorithm).</li>
-</ol>
-<dl class="section note"><dt>Note</dt><dd><ul>
-<li>There is no draw or resign functionality here since this is meant for quick testing.</li>
-<li>If an invalid move is made, the board is printed to allow debugging of the board state.</li>
-<li>Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter 'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to appropriate piece color based on player's current move, regardless of the input's case. </li>
-</ul>
-</dd></dl>
-</div></div><!-- contents -->
-</div><!-- PageDoc -->
+<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;gtest/gtest.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="chess_8h_source.html">chess.h</a>&quot;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess_test.html">ChessTest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class describes a chess test for integer source and destination squares. It is used as a fixture to quickly set up tests without duplicating the code, by utilizing the overriden SetUp and TearDown functions.  <a href="class_chess_test.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess_test_string.html">ChessTestString</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class describes a chess test for string source and destination squares. It is used as a fixture to quickly set up tests without duplicating the code, by utilizing the overriden SetUp and TearDown functions.  <a href="class_chess_test_string.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ab1bc0620e9b182b5bbced5184486d80a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unit_8cpp.html#ab1bc0620e9b182b5bbced5184486d80a">boardFenConverter</a> (<a class="el" href="class_chess.html">Chess</a> *chess)</td></tr>
+<tr class="memdesc:ab1bc0620e9b182b5bbced5184486d80a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation.  <a href="unit_8cpp.html#ab1bc0620e9b182b5bbced5184486d80a">More...</a><br /></td></tr>
+<tr class="separator:ab1bc0620e9b182b5bbced5184486d80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a29ec0c22286dba386dd2c5294e80ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unit_8cpp.html#a4a29ec0c22286dba386dd2c5294e80ac">appendFEN</a> (string &amp;fen, int &amp;empty_count, char next_char, bool isWhite)</td></tr>
+<tr class="memdesc:a4a29ec0c22286dba386dd2c5294e80ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decides what type of character to append to the formed FEN string.  <a href="unit_8cpp.html#a4a29ec0c22286dba386dd2c5294e80ac">More...</a><br /></td></tr>
+<tr class="separator:a4a29ec0c22286dba386dd2c5294e80ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ab1bc0620e9b182b5bbced5184486d80a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1bc0620e9b182b5bbced5184486d80a">&#9670;&nbsp;</a></span>boardFenConverter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string boardFenConverter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_chess.html">Chess</a> *&#160;</td>
+          <td class="paramname"><em>chess</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chess</td><td>The chess object</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Start with an initialized board vector</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>None</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The FEN string based on piece type and common FEN making rules </dd></dl>
+
+</div>
+</div>
+<a id="a4a29ec0c22286dba386dd2c5294e80ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a29ec0c22286dba386dd2c5294e80ac">&#9670;&nbsp;</a></span>appendFEN()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void appendFEN </td>
+          <td>(</td>
+          <td class="paramtype">string &amp;&#160;</td>
+          <td class="paramname"><em>fen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>empty_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>next_char</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isWhite</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decides what type of character to append to the formed FEN string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">fen</td><td>The FEN string that characters will be appended to (can be empty) </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">empty_count</td><td>The number of empty squares found in the current row </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">next_char</td><td>The next character to append to 'fen', must be one of P, N, B, Q, K (upper case) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">isWhite</td><td>True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>An empty 'fen' string</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>Appends 'next_char' to 'fen' and returns updated variables by reference </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

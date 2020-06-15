@@ -17,5 +17,5 @@ var searchData=
   ['isrook_64',['isRook',['../class_piece.html#aacbb06e52794bc1644ac40ad223ab9ff',1,'Piece']]],
   ['issamecolor_65',['isSameColor',['../class_piece.html#a8783a8c0a75d192d5ddbc0a91479bd8b',1,'Piece']]],
   ['isstalemate_66',['isStalemate',['../class_chess.html#a98db2cbd05b743e05bca80ede848d80f',1,'Chess']]],
-  ['implementation_20file_20description_67',['Implementation File Description',['../unit_8cpp.html',1,'']]]
+  ['implementation_20file_20description_67',['Implementation File Description',['../unit.html',1,'']]]
 ];
