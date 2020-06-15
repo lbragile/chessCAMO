@@ -4,47 +4,22 @@
 /*                                  Related Files:   chess.cpp                                      */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 14th, 2020                                */
+/*                                  Last Revision:   June 15th, 2020                                */
 /****************************************************************************************************/
 
-/*
-Project Description:
-chessCAMO is a newly proposed chess variant that stands for "Calculations Always Make Opportunities"
-and was inspired by the very popular chess variant "Crazyhouse" (https://en.wikipedia.org/wiki/Crazyhouse).
-The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a 
-move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of 
-camouflaging each piece that is currently on the board. The piece reservoir is limited in size and 
-cannot be re-stocked with pieces. Once a player decides to use a piece from the reservoir to replace
-one of his existing pieces on the board, their turn is over. An obvious rule is that player cannot use
-the reservoir while in check as they must make a move to avoid check. Additionally, just like in the 
-Crazyhouse variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from 
-the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
-
-To Do:
-    Regular Chess:
-        1) Three move repetition (draw) & 50 move rule.
-        2) Board representation undo (use queue?).
-        3) Input as PGN rather than two integers (template) - working currently but not really a template.
-        4) GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
-
-    ChessCAMO:
-        1) Make piece reservoir (stack)
-        2) Allow players to replace existing pieces with reservoir pieces
-        3) Implement abovementioned check and pawn promotion rules
-        4) Make test cases to confirm that overall functionality still works
-
-Why?
-    I decided to create this project due to my growing interest in software development. Coming from an
-    Engineering background with Deep Learning research experience (Recent Master of Applied Science
-    graduate), I realized that writing and developing code (both front and back end) were highly
-    appealing to me. Thus, I spent a lot of time building upon my existing coding knowledge through online
-    material and knew that it is time to test my knowledge on a challenging project. Additionally, I played
-    chess (not very seriously) consistently since the age of about 4-5, so one can say that it is a very
-    big part of my life. As a result, this project allowed me to gain valuable experience and knowledge
-    while working on a topic that I am passionate about and have expertise in. 
-    Any constructive criticism regarding this project is welcomed and appreciated, as ultimately I love
-    learning new things and getting better!       
-*/
+/**
+ * \todo
+ * - <b> Regular Chess </b>:
+ *   1. Three move repetition (draw) & 50 move rule.
+ *   2. Board representation undo (use queue?).
+ *   3. Input as PGN rather than two integers (template) - working currently but not really a template.
+ *   4. GUI - nice to be able to move pieces with mouse rather than inputting coordinates.    
+ * - <b> ChessCAMO </b>:
+ *   1. Make piece reservoir (stack)
+ *   2. Allow players to replace existing pieces with reservoir pieces
+ *   3. Implement abovementioned check and pawn promotion rules
+ *   4. Make test cases to confirm that overall functionality still works
+ */
 
 #ifndef CHESS_H // header guard to prevent multiple includes of the classes (results in compilation error)
 #define CHESS_H
@@ -290,14 +265,11 @@ public:
     void makeMove(int src, int dest, istream &in); 
 
     /** 
-     * 
-     * @copydoc Chess::makeMove(string, string, istream) 
-     * 
-     * \brief      
-     * This is an overloaded member function, provided for convenience. 
-     * It differs from the above function only in what argument(s) it accepts.
+     * \brief 
      * Converts the input strings into their coordinates (integer)
-     * and calls makeMove(int, int, istream).
+     * and calls Chess::makeMove(int src, int dest, istream& in). 
+     * 
+     * \overload void Chess::makeMove(string,string,istream&)   
      */
     void makeMove(string src, string dest, istream &in);
 
@@ -598,114 +570,154 @@ public:
 
     /************************ TYPE DETERMINATION FUNCTIONS *************************/
     /**
-     * @brief      Determines if empty.
+     * @brief      Determines if the square is empty.
      *
-     * @return     True if empty, False otherwise.
+     * @return     True if the square is empty, False otherwise.
      */
     bool isEmpty() {return this->getPieceType() == EMPTY;}
 
     /**
-     * @brief      Determines if pawn.
+     * @brief      Determines if the piece is a pawn.
      *
-     * @return     True if pawn, False otherwise.
+     * @return     True if the piece is a pawn, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isPawn() {return this->getPieceType() == PAWN;}
 
     /**
-     * @brief      Determines if knight.
+     * @brief      Determines if the piece is a knight.
      *
-     * @return     True if knight, False otherwise.
+     * @return     True if the piece is a knight, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isKnight() {return this->getPieceType() == KNIGHT;}
 
     /**
-     * @brief      Determines if bishop.
+     * @brief      Determines if the piece is a bishop.
      *
-     * @return     True if bishop, False otherwise.
+     * @return     True if the piece is a bishop, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isBishop() {return this->getPieceType() == BISHOP;}
 
     /**
-     * @brief      Determines if rook.
+     * @brief      Determines if the piece is a rook.
      *
-     * @return     True if rook, False otherwise.
+     * @return     True if the piece is a rook, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isRook() {return this->getPieceType() == ROOK;}
 
     /**
-     * @brief      Determines if queen.
+     * @brief      Determines if the piece is a queen.
      *
-     * @return     True if queen, False otherwise.
+     * @return     True if the piece is a queen, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isQueen() {return this->getPieceType() == QUEEN;}
 
     /**
-     * @brief      Determines if king.
+     * @brief      Determines if the piece is a king.
      *
-     * @return     True if king, False otherwise.
+     * @return     True if the piece is a king, False otherwise.
+     * 
+     * \note
+     * Color of the piece is not considered
      */
     bool isKing() {return this->getPieceType() == KING;}
     /************************************* END *************************************/
 
     /************************ COLOR DETERMINATION FUNCTIONS ************************/
     /**
-     * @brief      Determines if piece white.
+     * @brief      Determines if the piece is white.
      *
-     * @return     True if piece white, False otherwise.
+     * @return     True if the piece is white, False otherwise.
      */
     bool isPieceWhite() {return this->getPieceColor() == WHITE;}
 
     /**
-     * @brief      Determines if piece black.
+     * @brief      Determines if the piece is black.
      *
-     * @return     True if piece black, False otherwise.
+     * @return     True if the piece is black, False otherwise.
      */
     bool isPieceBlack() {return this->getPieceColor() == BLACK;}
     /************************************* END *************************************/
-
-    // Description:     Determines if 2 pieces have the same color
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if source piece color matches destination piece color,
-    //                  false otherwise
+    /**
+     * @brief      Determines if 2 pieces have the same color
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if source piece color matches destination piece color, False otherwise.
+     */
     bool isSameColor(int dest, Chess *chess);
-
-    // Description:     Determines if a given piece is pinned to the king by opposing piece
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
-    //                  the path (pinning piece -> king from pinned piece side) to be free,
-    //                  false otherwise.
+    
+    /**
+     * @brief      Determines if a given piece is pinned to the king by opposing piece
+     *
+     * @param[in]  dest   The destination square of the piece  
+     * @param      chess  The chess object
+     *
+     * @return     True if piece is pinned to the king and moving to 'dest' will cause
+     *             the path (pinning piece -> king from pinned piece side) to be free, False otherwise.
+     */
     bool isPinned(int dest, Chess *chess);
 
-    // Description:     Determines if the path from the piece to its destination is empty
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if squares along the path (src, dest) are empty,
-    //                  false otherwise.
+    /**
+     * @brief      Determines if the path from the piece to its destination is empty
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if squares along the path (src, dest) are empty, False otherwise.
+     */
     bool isPathFree(int dest, Chess *chess);
 
-    // Description:     Determines if a move is legal based on the rules of chess
-    //                  Note that a possible move, is not necessarily legal.
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if moving the piece to 'dest' is legal from any type 
-    //                  of move and piece, false otherwise.
+    /**
+     * @brief      Determines if a move is legal based on the rules of chess
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if moving the piece to 'dest' is legal from any type 
+     *             of move and piece, False otherwise.
+     * 
+     * \note       A possible move, is not necessarily legal.
+     */
     bool isLegalMove(int dest, Chess *chess);
 
-    // Description:     Did the move cause a check?
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
-    //                  false otherwise.
+    /**
+     * @brief      Did the move cause a check?
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return    True if moving the piece to 'dest' now threatens the opposing king.
+     *            False otherwise.
+     */
     bool causeCheck(int dest, Chess *chess);
 
-    // Description:     Did the move cause a double check?
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
-    //                  and an additional piece from the same side also has a legal move towards the 
-    //                  opposing king, false otherwise.
+    /**
+     * @brief      Did the move cause a double check?
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if moving the piece to 'dest' now threatens the opposing king,
+     *             and an additional piece from the same side also has a legal move towards the 
+     *             opposing king.
+     *             False otherwise.
+     */
     bool causeDoubleCheck(int dest, Chess *chess);
     
     /**
@@ -720,7 +732,7 @@ public:
     virtual bool isPossibleMove(int dest, Chess *chess) {return false;}
 
     /**
-     * @brief      Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
+     * @brief      Pawn attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>
      *
      * @param[in]  src    The source square of the piece
      * @param      chess  The chess object
@@ -750,7 +762,7 @@ public:
     virtual void promotePawn(int dest, Chess *chess, istream &in) {return;}
 
     /**
-     * @brief      Can the king castle? (https://bit.ly/2XQEXFr)
+     * @brief      Can the king <a href="https://bit.ly/2XQEXFr" target="__blank">castle</a>?
      *
      * @param[in]  dest   The destination square of the piece
      * @param      chess  The chess object
@@ -777,10 +789,14 @@ private:
     /** has the piece been moved yet? */       
     bool moved; 
 
-    /** PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, OR EMPTY */       
+    /** PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, OR EMPTY
+     * \see pieceType
+     */       
     pieceType type;
 
-    /** BLACK, NEUTRAL, OR WHITE */     
+    /** BLACK, NEUTRAL, OR WHITE
+     * \see pieceColor
+     */     
     pieceColor color;   
 };
 

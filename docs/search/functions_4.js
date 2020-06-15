@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['findkingpos_132',['findKingPos',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a442bad3768ead332dc60d445e2a9b07b',1,'anonymous_namespace{chess.cpp}']]]
+  ['empty_149',['Empty',['../class_empty.html#a5781d064902dfe80b60f06c0db299d52',1,'Empty::Empty()'],['../class_empty.html#a6aba4fe2b65d86d3b5d6a0a45ba29a55',1,'Empty::Empty(int square, pieceType type, pieceColor color)']]],
+  ['enpassanthandling_150',['enPassantHandling',['../class_piece.html#ad343fd74c9793f2d462f26bdc177f3b7',1,'Piece::enPassantHandling()'],['../class_pawn.html#a6b8974e504003ac0da7c8a72f2eff9ce',1,'Pawn::enPassantHandling()']]]
 ];

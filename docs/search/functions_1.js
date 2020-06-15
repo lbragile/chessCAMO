@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['cancastle_123',['canCastle',['../class_piece.html#a5f5192176e3a04e7c60f31694d6cbd84',1,'Piece::canCastle()'],['../class_king.html#a82ea2723df34f8dbcbbba9cffd12c513',1,'King::canCastle()']]],
-  ['causecheck_124',['causeCheck',['../class_piece.html#a101ff01625a81941f219499ca09b99ab',1,'Piece']]],
-  ['causedoublecheck_125',['causeDoubleCheck',['../class_piece.html#a22ce3767f265ea27503d618207d2a2d9',1,'Piece']]],
-  ['chess_126',['Chess',['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()']]]
+  ['bishop_139',['Bishop',['../class_bishop.html#af4568da25142a681c699ee046e3a630b',1,'Bishop::Bishop()'],['../class_bishop.html#a790f874e43dc236a9358d8c9f0e4b71f',1,'Bishop::Bishop(int square, pieceType type, pieceColor color)']]],
+  ['boardfenconverter_140',['boardFenConverter',['../unit_8cpp.html#ab1bc0620e9b182b5bbced5184486d80a',1,'unit.cpp']]],
+  ['boardinit_141',['boardInit',['../class_chess.html#ab70732bf3fc882b5c6aa76fa906f14d8',1,'Chess']]]
 ];

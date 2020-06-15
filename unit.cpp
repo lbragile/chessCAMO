@@ -4,40 +4,41 @@
 /*                                  Related Files:   chess.h                                        */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 12th, 2020                                */
+/*                                  Last Revision:   June 15th, 2020                                */
 /****************************************************************************************************/ 
 
-/*
-This implementation file is meant to be used as a test case checker to improve efficiency in debugging.
-The algorithm reads in text files that outline a given board position and feeds in the moves presented
-in these files one-by-one until the end of each file. At the end, the algorithm compares the expected
-FEN string value to the one obtained by making the corresponding moves. If these FEN strings are
-identical then the algorithm increments the number of test cases passed, otherwise it increments the
-number of test cases failed. These results are summarized at the end, when all the files are read and
-processed, and if a "Failed Test Case" Summary is provided for each test case that failed.
+/**
+ * \page unit.cpp Implementation File Description
+ * This implementation file is meant to be used as a test case checker to improve efficiency in debugging.
+ * The algorithm reads in text files that outline a given board position and feeds in the moves presented
+ * in these files one-by-one until the end of each file. At the end, the algorithm compares the expected
+ * FEN string value to the one obtained by making the corresponding moves. If these FEN strings are
+ * identical then the algorithm increments the number of test cases passed, otherwise it increments the
+ * number of test cases failed. These results are summarized at the end, when all the files are read and
+ * processed, and if a "Failed Test Case" Summary is provided for each test case that failed.
+ * 
+ * Simply run <b>mingw32-make all_test && test</b> on a Windows machine to start the test checking script.
+ * 
+ * To include an additional test case:
+ *     1. A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a>
+ *        and extract the FEN at the bottom of the board;
+ *     2. The user then makes a text file and pastes this FEN at the top, making sure to remove the last
+ *        6 characters. E.g. <i> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</i> <b>- 0 1</b>, becomes
+ *        <i>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</i>;
+ *     3. On the next line, the user enters the corresponding source ('src') and destination ('dest')
+ *        coordinates for a given move. E.g. 52 36 (note the space) means moving from square 52 to 36;
+ *     4. Rinse and repeat step 3 until the position provided in step 1 is met.
+ *        Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;
+ *     5. Name the file a meaningful name according to what is being tested.
+ *        E.g. to check if a given piece (Queen) delivers a checkmate <span>&rarr;</span> <i>queenCheckmate.txt</i>;
+ *     6. Place test case files in a folder named <b>./test_cases/</b> (used by the algorithm).
 
-Simply run "mingw32-make all_test && test" on a Windows machine to start the test checking script.
-
-To include an additional test case:
-    1) A user can set-up a position in common chess sites like lichess (https://lichess.org/editor)
-       and extract the FEN at the bottom of the board;
-    2) The user then makes a text file and pastes this FEN at the top, making sure to remove the last
-       6 characters. E.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1, becomes
-       rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq;
-    3) On the next line, the user enters the corresponding source ('src') and destination ('dest')
-       coordinates for a given move. E.g. 52 36 (note the space) means moving from square 52 to 36;
-    4) Rinse and repeat step 3) until the position provided in step 1) is met.
-       Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;
-    5) Name the file a meaningful name according to what is being tested.
-       E.g. to check if a given piece (Queen) delivers a checkmate -> "queenCheckmate.txt";
-    6) Place test case files in a folder named "./test_cases/" (used by the algorithm).
-
-Note:
-    - There is no draw or resign functionality here since this is meant for quick testing.
-    - If an invalid move is made, the board is printed to allow debugging of the board state.
-    - Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter
-      'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to
-      appropriate piece color based on player's current move, regardless of the input's case.
+ * \note
+ *     - There is no draw or resign functionality here since this is meant for quick testing.
+ *     - If an invalid move is made, the board is printed to allow debugging of the board state.
+ *     - Test cases 12 to 14 require user input to decide the promotion. To avoid errors please enter
+ *       'q' (or 'Q'), 'n' (or 'N'), and 'b' (or 'B'), respectively. The algorithm will promote to
+ *       appropriate piece color based on player's current move, regardless of the input's case.
 */
 
 #include <iostream>
@@ -55,38 +56,79 @@ class ChessTest;
 /*************************************************************************************/
 /*                              FUNCTION DECLARATION                                 */
 /*************************************************************************************/
-// Description:    Converts a given board position into a FEN
-//                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
-// Pre-condition:  Start with an initialized board vector
-// Post-condition: Forms the FEN string based on piece type and common FEN making rules
+/**
+ * @brief      Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation
+ *
+ * @param      chess  The chess object
+ *
+ * \pre
+ * Start with an initialized board vector
+ * 
+ * \post
+ * None
+ * 
+ * @return     The FEN string based on piece type and common FEN making rules
+ */
 string boardFenConverter(Chess * chess);
 
-// Description:    Decides what type of character to append to the formed FEN string
-// Pre-condition:  'fen'         - FEN string is made (can be empty)
-//                 'empty_count' - Number of empty squares found in the current row
-//                 'next_char'   - Character to append to the FEN, must be one of P, N, B, Q, K (upper case)
-//                 'isWhite'     - true if the passed piece is white, false otherwise (piece case in FEN)
-// Post-condition: Appends 'next_char' to 'fen' and returns updated variables by reference
+/**
+ * @brief      Decides what type of character to append to the formed FEN string
+ *
+ * @param      fen          The FEN string that characters will be appended to (can be empty)
+ * @param      empty_count  The number of empty squares found in the current row
+ * @param[in]  next_char    The next character to append to 'fen', must be one of P, N, B, Q, K (upper case)
+ * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
+ * 
+ * \pre
+ * Empty 'fen' string
+ * 
+ * \post
+ * Appends 'next_char' to 'fen' and returns updated variables by reference
+ */
 void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
 
 /*************************************************************************************/
 /*                              TEST FIXTURE SETUP                                   */
 /*************************************************************************************/
+/**
+ * @brief      This class describes a chess test for integer source and destination squares.
+ *             It is used as a fixture to quickly set up tests without duplicating the code,
+ *             by utilizing the overriden SetUp and TearDown functions.
+ */ 
 class ChessTest : public ::testing::Test
 {
 protected:
-    // create the testing object
+    /// create the testing object
     Chess *chess = new Chess;
 
-    // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-    int src, dest;
+    /**
+     * \brief The source square of the piece to-be-moved
+     * 
+     * \note 
+     * Coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
+     */
+    int src;
 
-    // expects vs obtained FEN strings for a given board representation before and after
-    // moves are made for it
-    string fen_expected, fen_obtained;
+     /**
+     * \brief The destination square of the piece to-be-moved
+      * 
+     * \note 
+     * Coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
+     */
+    int dest;
 
-    // before test is executed, this sets up everything
+    /// Expected FEN string for a given board representation before moves are made for it
+    string fen_expected;
+
+    /// Obtained FEN string for a given board representation after moves are made for it
+    string fen_obtained;
+
+    /**
+     * @brief      Before a given test is executed, this sets up everything and initializes the variables
+     *             Additionally, this performs the actual gameplay moves needed to obtain the final board representation
+     *
+     * @param      myfile  The file to read moves from
+     */
     void SetUp(ifstream & myfile)
     {
         std::cout.setstate(std::ios_base::failbit); // surpress output
@@ -128,7 +170,11 @@ protected:
         }
     }
 
-    // after test is completed, free the memory made by dynamic allocation
+    /**
+     * @brief      After a given test is completed, free the memory made by dynamic allocation.
+     *             This ensures that the following test can dynamically allocate memory without
+     *             causing a memory leak. 
+     */
     void TearDown() override
     {
         std::cout.clear(); // enable output again
@@ -136,22 +182,47 @@ protected:
     }
 };
 
-// TODO : Find a way to pass template variables here as only 'src' and 'dest' are different
+/**
+ * @brief      This class describes a chess test for string source and destination squares.
+ *             It is used as a fixture to quickly set up tests without duplicating the code,
+ *             by utilizing the overriden SetUp and TearDown functions.
+ *             
+ * \todo       Find a way to pass template variables here as only 'src' and 'dest' are different
+ */ 
 class ChessTestString : public ::testing::Test
 {
 protected:
-    // create the testing object
+    /// create the testing object
     Chess *chess = new Chess;
 
-    // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
-    string src, dest;
+    /**
+     * \brief The source square of the piece to-be-moved
+     * 
+     * \note 
+     * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+     */
+    string src;
 
-    // expects vs obtained FEN strings for a given board representation before and after
-    // moves are made for it
-    string fen_expected, fen_obtained;
+     /**
+     * \brief The destination square of the piece to-be-moved
+    * 
+     * \note 
+     * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+     */
+    string dest;
 
-    // before test is executed, this sets up everything
+    /// Expected FEN string for a given board representation before moves are made for it
+    string fen_expected;
+
+    /// Obtained FEN string for a given board representation after moves are made for it
+    string fen_obtained;
+
+    /**
+     * @brief      Before a given test is executed, this sets up everything and initializes the variables
+     *             Additionally, this performs the actual gameplay moves needed to obtain the final board representation
+     *
+     * @param      myfile  The file to read moves from
+     */
     void SetUp(ifstream & myfile)
     {
         std::cout.setstate(std::ios_base::failbit); // surpress output
@@ -193,7 +264,11 @@ protected:
         }
     }
 
-    // after test is completed, free the memory made by dynamic allocation
+    /**
+     * @brief      After a given test is completed, free the memory made by dynamic allocation.
+     *             This ensures that the following test can dynamically allocate memory without
+     *             causing a memory leak. 
+     */
     void TearDown() override
     {
         std::cout.clear(); // enable output again
@@ -1048,10 +1123,19 @@ TEST_F(ChessTest, resignBlack)
 /*************************************************************************************/
 /*                              FUNCTION DEFINITION                                  */
 /*************************************************************************************/
-// Description:    Converts a given board position into a FEN
-//                 (https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string representation
-// Pre-condition:  Start with an initialized board vector
-// Post-condition: Forms the FEN string based on piece type and common FEN making rules    
+/**
+ * @brief      Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation
+ *
+ * @param      chess  The chess object
+ *
+ * \pre
+ * Start with an initialized board vector
+ * 
+ * \post
+ * None
+ * 
+ * @return     The FEN string based on piece type and common FEN making rules
+ */   
 string boardFenConverter(Chess * chess)
 {
     int elem_count = 0, empty_count = 0;
@@ -1110,12 +1194,20 @@ string boardFenConverter(Chess * chess)
     return fen;
 }
 
-// Description:    Decides what type of character to append to the formed FEN string
-// Pre-condition:  'fen'         - FEN string is made (can be empty)
-//                 'empty_count' - Number of empty squares found in the current row
-//                 'next_char'   - Character to append to the FEN, must be one of P, N, B, Q, K (upper case)
-//                 'isWhite'     - true if the passed piece is white, false otherwise (to determine case of piece in FEN)
-// Post-condition: Appends 'next_char' to 'fen' and returns updated variables by reference   
+/**
+ * @brief      Decides what type of character to append to the formed FEN string
+ *
+ * @param      fen          The FEN string that characters will be appended to (can be empty)
+ * @param      empty_count  The number of empty squares found in the current row
+ * @param[in]  next_char    The next character to append to 'fen', must be one of P, N, B, Q, K (upper case)
+ * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
+ * 
+ * \pre
+ * Empty 'fen' string
+ * 
+ * \post
+ * Appends 'next_char' to 'fen' and returns updated variables by reference
+ */
 void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite)
 {
     // accumulated empty squares leading up to a piece in a given row?

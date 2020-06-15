@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['destnotinpinpath_127',['destNotInPinPath',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a1f1974d53bb57b31a6957f9803c1a520',1,'anonymous_namespace{chess.cpp}']]],
-  ['doublecheckpieceiterator_128',['doubleCheckPieceIterator',['../class_chess.html#af34695d147ce3ab81fa4826bb45e0e16',1,'Chess']]],
-  ['draworresign_129',['drawOrResign',['../namespacechess_c_a_m_o.html#a2b71caa3f868c1d52e85af443b2e7943',1,'chessCAMO']]]
+  ['cancastle_142',['canCastle',['../class_piece.html#a5f5192176e3a04e7c60f31694d6cbd84',1,'Piece::canCastle()'],['../class_king.html#a82ea2723df34f8dbcbbba9cffd12c513',1,'King::canCastle()']]],
+  ['causecheck_143',['causeCheck',['../class_piece.html#a101ff01625a81941f219499ca09b99ab',1,'Piece']]],
+  ['causedoublecheck_144',['causeDoubleCheck',['../class_piece.html#a22ce3767f265ea27503d618207d2a2d9',1,'Piece']]],
+  ['chess_145',['Chess',['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()']]]
 ];

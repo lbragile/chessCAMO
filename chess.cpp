@@ -4,7 +4,7 @@
 /*                          Related Files:   chess.h                                        */
 /*                          Project:         chessCAMO                                      */
 /*                          Version:         1.0                                            */
-/*                          Last Revision:   June 12th, 2020                                */
+/*                          Last Revision:   June 15th, 2020                                */
 /********************************************************************************************/ 
 
 #include "chess.h"
@@ -319,15 +319,12 @@ void Chess::makeMove(int src, int dest, istream &in)
     }
 }
 
-/**
- *
- * @copydoc Chess::makeMove(string, string, istream) 
- * 
- * \brief      
- * This is an overloaded member function, provided for convenience. 
- * It differs from the above function only in what argument(s) it accepts.
+/** 
+ * \brief 
  * Converts the input strings into their coordinates (integer)
- * and calls makeMove(int, int, istream).
+ * and calls Chess::makeMove(int src, int dest, istream& in). 
+ * 
+ * \overload void Chess::makeMove(string,string,istream&)   
  */
 void Chess::makeMove(string src, string dest, istream &in)
 {
@@ -754,11 +751,14 @@ pieceColor Chess::switchTurn()
 /*************************************************************************************/
 /*                              PIECE CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
-// Description:     Determines if 2 pieces have the same color
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if source piece color matches destination piece color,
-//                  false otherwise
+/**
+ * @brief      Determines if 2 pieces have the same color
+ *
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
+ *
+ * @return     True if source piece color matches destination piece color, False otherwise.
+ */
 bool Piece::isSameColor(int dest, Chess *chess)
 {
 
@@ -768,12 +768,15 @@ bool Piece::isSameColor(int dest, Chess *chess)
     return board[this->getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
 }
 
-// Description:     Determines if a given piece is pinned to the king by opposing piece
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if piece is pinned to the king and moving to 'dest' will cause
-//                  the path (pinning piece -> king from pinned piece side) to be free,
-//                  false otherwise.
+/**
+ * @brief      Determines if a given piece is pinned to the king by opposing piece
+ *
+ * @param[in]  dest   The destination square of the piece  
+ * @param      chess  The chess object
+ *
+ * @return     True if piece is pinned to the king and moving to 'dest' will cause
+ *             the path (pinning piece -> king from pinned piece side) to be free, False otherwise.
+ */
 bool Piece::isPinned(int dest, Chess *chess)
 {
     int king_pos, src = this->getPieceSquare();
@@ -797,11 +800,14 @@ bool Piece::isPinned(int dest, Chess *chess)
     return false; // king cannot be pinned to itself
 }
 
-// Description:     Determines if the path from the piece to its destination is empty
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if squares along the path (src, dest) are empty,
-//                  false otherwise.
+/**
+ * @brief      Determines if the path from the piece to its destination is empty
+ *
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
+ *
+ * @return     True if squares along the path (src, dest) are empty, False otherwise.
+ */
 bool Piece::isPathFree(int dest, Chess *chess)
 {
     int increment, src = this->getPieceSquare();
@@ -833,12 +839,17 @@ bool Piece::isPathFree(int dest, Chess *chess)
     } 
 }
 
-// Description:     Determines if a move is legal based on the rules of chess
-//                  Note that a possible move, is not necessarily legal.
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if moving the piece to 'dest' is legal from any type 
-//                  of move and piece, false otherwise.
+/**
+ * @brief      Determines if a move is legal based on the rules of chess
+ *
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
+ *
+ * @return     True if moving the piece to 'dest' is legal from any type 
+ *             of move and piece, False otherwise.
+ * 
+ * \note       A possible move, is not necessarily legal.
+ */
 bool Piece::isLegalMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
@@ -850,11 +861,15 @@ bool Piece::isLegalMove(int dest, Chess *chess)
         return false;
 }
 
-// Description:     Did the move cause a check?
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
-//                  false otherwise.
+/**
+ * @brief      Did the move cause a check?
+ *
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
+ *
+ * @return    True if moving the piece to 'dest' now threatens the opposing king.
+ *            False otherwise.
+ */
 bool Piece::causeCheck(int dest, Chess *chess)
 {
     stack<Piece*> CheckStack = chess->getCheckStack();
@@ -883,12 +898,17 @@ bool Piece::causeCheck(int dest, Chess *chess)
     return chess->getCheck();
 }
 
-// Description:     Did the move cause a double check?
-// Pre-condition:   'chess'         - object is created
-//                  'dest'          - destination square is valid [0,63]
-// Post-condition:  true if moving the piece to 'dest' now threatens the opposing king,
-//                  and an additional piece from the same side also has a legal move towards the 
-//                  opposing king, false otherwise.
+/**
+ * @brief      Did the move cause a double check?
+ *
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
+ *
+ * @return     True if moving the piece to 'dest' now threatens the opposing king,
+ *             and an additional piece from the same side also has a legal move towards the 
+ *             opposing king.
+ *             False otherwise.
+ */
 bool Piece::causeDoubleCheck(int dest, Chess *chess)
 {
     int king_pos, checking_piece_counter = 0;

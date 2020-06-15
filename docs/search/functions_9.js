@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['makemove_167',['makeMove',['../class_chess.html#ac149ff524cf6e5409652a6263570008a',1,'Chess::makeMove(int src, int dest, istream &amp;in)'],['../class_chess.html#af6d1a4704c99a1be516074bf131bae55',1,'Chess::makeMove(string src, string dest, istream &amp;in)']]],
-  ['makemovefortype_168',['makeMoveForType',['../class_chess.html#a9e4d4b34ec9b3da12d834499515dc463',1,'Chess']]],
-  ['movedintocheck_169',['movedIntoCheck',['../class_piece.html#a445cf878adb5712c7c0b5657ea43298d',1,'Piece::movedIntoCheck()'],['../class_king.html#ac1c77b2a96584aabb21a7ebe0924f246',1,'King::movedIntoCheck()']]]
+  ['king_184',['King',['../class_king.html#ae374efc047c95212f78a49c877e34563',1,'King::King()'],['../class_king.html#afd60a171ccdd134047c9d5d6d75bc1d7',1,'King::King(int square, pieceType type, pieceColor color)']]],
+  ['knight_185',['Knight',['../class_knight.html#aa5c98808cbb05f2772bc3a32ef859387',1,'Knight::Knight()'],['../class_knight.html#a16069b43b229f211eb783bfe0658f09a',1,'Knight::Knight(int square, pieceType type, pieceColor color)']]]
 ];
