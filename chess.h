@@ -82,78 +82,184 @@ class Chess
 {
 public:
     /*********************************** BIG THREE *********************************/
+    /**
+     * @brief      Destructor - destroys the objects.
+     */
     ~Chess(); // destructor
     Chess(const Chess & object) = default; // copy constructor
     Chess & operator =(const Chess & object) = default; // copy assignment
     /************************************* END *************************************/
 
-    // default constructor with default board parameter initialization
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     */
     Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {} // intentionally blank
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
-    // Current board representation/state
+    /**
+     * @brief      (Accessor) Gets the board representation.
+     *
+     * @return     The board with current piece positions in correct indicies.
+     */
     vector<Piece*> getBoard() const {return board;}
+
+    /**
+     * @brief      (Mutator) Sets the board representation.
+     *
+     * @param[in]  board  The current board representation
+     */
     void setBoard(const vector<Piece*> & board) {this->board = board;}
 
-    // Checking pieces and checked king
+    /**
+     * @brief      (Accessor) Gets the check stack information.
+     *
+     * @return     The check stack.
+     */
     stack<Piece*> getCheckStack() const {return checkStack;}
+
+    /**
+     * @brief      (Mutator) Sets the check stack information.
+     *
+     * @param[in]  checkStack  The check stack
+     */
     void setCheckStack(const stack<Piece*> & checkStack) {this->checkStack = checkStack;}
 
-    // Checking state (single check)
+    /**
+     * @brief      (Accessor) Gets the check information.
+     *
+     * @return     The check.
+     */
     bool getCheck() const {return check;}
+
+    /**
+     * @brief      (Mutator) Sets the check information.
+     *
+     * @param[in]  check  The check
+     */
     void setCheck(bool check) {this->check = check;}
 
-    // Checking state (double check)
+    /**
+     * @brief      (Accessor) Gets the double check information.
+     *
+     * @return     The double check.
+     */
     bool getDoubleCheck() const {return double_check;}
+
+    /**
+     * @brief      (Mutator) Sets the double check information.
+     *
+     * @param[in]  double_check  The double check
+     */
     void setDoubleCheck(bool double_check) {this->double_check = double_check;}
 
-    // Checkmate state
+    /**
+     * @brief      (Accessor) Gets the checkmate information.
+     *
+     * @return     The checkmate.
+     */
     bool getCheckmate() const {return checkmate;}
+
+    /**
+     * @brief      (Mutator) Sets the checkmate information.
+     *
+     * @param[in]  checkmate  The checkmate
+     */
     void setCheckmate(bool checkmate) {this->checkmate = checkmate;}
 
-    // Stalemate state
+    /**
+     * @brief      (Accessor) Gets the stalemate information.
+     *
+     * @return     The stalemate.
+     */
     bool getStalemate() const {return stalemate;}
+
+    /**
+     * @brief      (Mutator) Sets the stalemate information.
+     *
+     * @param[in]  stalemate  The stalemate
+     */
     void setStalemate(bool stalemate) {this->stalemate = stalemate;}
 
-    // Player's turn information
+    /**
+     * @brief      (Accessor) Gets the player's turn information.
+     *
+     * @return     The turn.
+     */
     pieceColor getTurn() const {return turn;}
+
+    /**
+     * @brief      (Mutator) Sets the player's turn information.
+     *
+     * @param[in]  turn  The turn
+     */
     void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
     /************************************* END *************************************/
 
-    // Description:     Places the pieces on the board at their correct starting positions
-    // Pre-condition:   'chess'       - global object is initialized
-    //                  'board_size'  - 8x8 board has 64 index positions
-    // Post-condition:  Instantiates new objects corresponding to the pieces, places them
-    //                  in the corresponding index of the board vector and set the global
-    //                  object's board variable  
+    /**
+     * @brief      Places the pieces on the board at their correct starting positions
+     *
+     * @param[in]  board_size  8x8 board has 64 index positions
+     * \pre
+     * The chess object is intialized
+     * \post 
+     * Instantiates new objects corresponding to the pieces, places them
+     * in the corresponding index of the board vector and set the global
+     * object's board variable
+     */  
     void boardInit(int board_size = 64); // Board intialization
 
-    // Description:     Moves a piece on the board from 'src' to 'dest' if conditions
-    //                  for a legal move are met
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - source square (piece's current location)
-    //                  'dest'      - destination square (piece's ending location)
-    //                  'in'        - input stream type (stdin or file)
-    // Post-condition:  The pieces at 'src' and 'dest' positions are swapped.
-    //                  If needed (attacking, castling, etc.) an empty square is made.
-    //                  The board's state is updated to indicate that the move occured.
-    //                  On failure, an error message is printed and user is asked to retry.
+    /**
+     * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
+     *             for a legal move are met.
+     *
+     * @param[in]  src   The source square (piece's current location)
+     * @param[in]  dest  The destination square (piece's ending location)
+     * @param      in    input stream type (stdin or file)
+     * 
+     * \pre
+     * The chess object is created.
+     * 
+     * \post
+     * The pieces at 'src' and 'dest' positions are swapped.
+     * If needed (attacking, castling, etc.) an empty square is made.
+     * The board's state is updated to indicate that the move occured.
+     * On failure, an error message is printed and user is asked to retry.
+     */
     void makeMove(int src, int dest, istream &in); 
 
-    // same as above, but converts the string into it's coordinate (integer) and called above function.
+    /*! @copydoc Chess::makeMove(string, string, in) 
+     * \brief      
+     * This is an overloaded member function, provided for convenience. 
+     * It differs from the above function only in what argument(s) it accepts.
+     * Converts the input strings into their coordinates (integer)
+     * and calls makeMove(int, int, istream).
+     */
     void makeMove(string src, string dest, istream &in);
 
-    // Description:     Decide if a move caused a checkmate
-    // Pre-condition:   'chess'     - object is created
-    //                  'check_type'    - string representing the checking type ("single" or "double")      
-    // Post-condition:  If board's state is in checkmate, calls handleCheckmate() to print messages
-    //                  to console indicating the winner. Else, game continues as usual.
+    /**
+     * @brief      Decide if a move caused a checkmate according to 'check_type'
+     *
+     * @param[in]  check_type  Either "single" or "double" corresponding to the check on the board
+     * 
+     * \pre
+     * The chess object is created.
+     * 
+     * \post
+     * If board's state is in checkmate, calls handleCheckmate() to print messages
+     * to console indicating the winner. Else, game continues as usual.
+     */
     void isCheckmate(string check_type);
+              
+    /**
+     * @brief      Decide if a move caused a stalemate
 
-    // Description:     Decide if a move caused a stalemate
-    // Pre-condition:   'chess'     - object is created     
-    // Post-condition:  If board's state is in stalemate, calls handleStalemate() to print messages
-    //                  to console indicating that game is drawn. Else, game continues as usual.
+     * \pre
+     * The chess object is created.
+     * 
+     * \post
+     * If board's state is in stalemate, calls handleStalemate() to print messages
+     * to console indicating that game is drawn. Else, game continues as usual.
+     */
     bool isStalemate();
     
 private:
@@ -253,39 +359,142 @@ public:
     {this->square = square; this->type = type; this->color = color;}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
-    // Piece square information
+    /**
+     * @brief      (Accessor) Gets the piece square information.
+     *
+     * @return     The piece square information.
+     */
     int getPieceSquare() const {return square;}
+
+    /**
+     * @brief      (Mutator) Sets the piece square information.
+     *
+     * @param[in]  square  The piece square information
+     */
     void setPieceSquare(int square) {this->square = square;}
 
-    // Piece type information
+    /**
+     * @brief      (Accessor) Gets the piece type information.
+     *
+     * @return     The piece type information.
+     */
     pieceType getPieceType() const {return type;}
+
+    /**
+     * @brief      (Mutator) Sets the piece type information.
+     *
+     * @param[in]  type  The piece type information
+     */
     void setPieceType(pieceType type) {this->type = type;}
 
-    // Piece color information
+    /**
+     * @brief      (Accessor) Gets the piece color information.
+     *
+     * @return     The piece color information.
+     */
     pieceColor getPieceColor() const {return color;}
+
+    /**
+     * @brief      (Mutator) Sets the piece color information.
+     *
+     * @param[in]  color  The color information
+     */
     void setPieceColor(pieceColor color) {this->color = color;}
 
-    // Piece moving state information(useful for pawns, rooks, kings)
-    bool getPieceMoveInfo() const {return moved;}
-    void setPieceMoveInfo(bool moved) {this->moved = moved;}
 
-    // En-passant ability information     
+    /**
+     * @brief      (Accessor) Gets the piece move information useful for pawns, rooks, kings.
+     *
+     * @return     The piece move information.
+     */
+    bool getPieceMoveInfo() const {return moved;}
+
+    /**
+     * @brief      (Mutator) Sets the piece move information.
+     *
+     * @param[in]  moved  Indicates if piece moved
+     */
+    void setPieceMoveInfo(bool moved) {this->moved = moved;}    
+    
+    /**
+     * @brief      (Accessor) Gets the piece en-passant ability information.
+     *
+     * @return     The piece en-passant ability information.
+     */
     virtual bool getEnPassant() const {return false;}
+
+    /**
+     * @brief      (Mutator) Sets the piece en-passant ability information.
+     *
+     * @param[in]  en_passant  The piece en-passant ability information
+     */
     virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
     /************************************* END *************************************/
 
     /************************ TYPE DETERMINATION FUNCTIONS *************************/
+    /**
+     * @brief      Determines if empty.
+     *
+     * @return     True if empty, False otherwise.
+     */
     bool isEmpty() {return this->getPieceType() == EMPTY;}
+
+    /**
+     * @brief      Determines if pawn.
+     *
+     * @return     True if pawn, False otherwise.
+     */
     bool isPawn() {return this->getPieceType() == PAWN;}
+
+    /**
+     * @brief      Determines if knight.
+     *
+     * @return     True if knight, False otherwise.
+     */
     bool isKnight() {return this->getPieceType() == KNIGHT;}
+
+    /**
+     * @brief      Determines if bishop.
+     *
+     * @return     True if bishop, False otherwise.
+     */
     bool isBishop() {return this->getPieceType() == BISHOP;}
+
+    /**
+     * @brief      Determines if rook.
+     *
+     * @return     True if rook, False otherwise.
+     */
     bool isRook() {return this->getPieceType() == ROOK;}
+
+    /**
+     * @brief      Determines if queen.
+     *
+     * @return     True if queen, False otherwise.
+     */
     bool isQueen() {return this->getPieceType() == QUEEN;}
+
+    /**
+     * @brief      Determines if king.
+     *
+     * @return     True if king, False otherwise.
+     */
     bool isKing() {return this->getPieceType() == KING;}
     /************************************* END *************************************/
 
     /************************ COLOR DETERMINATION FUNCTIONS ************************/
+    /**
+     * @brief      Determines if piece white.
+     *
+     * @return     True if piece white, False otherwise.
+     */
     bool isPieceWhite() {return this->getPieceColor() == WHITE;}
+
+    /**
+     * @brief      Determines if piece black.
+     *
+     * @return     True if piece black, False otherwise.
+     */
     bool isPieceBlack() {return this->getPieceColor() == BLACK;}
     /************************************* END *************************************/
 
@@ -501,28 +710,58 @@ public:
 /*************************************************************************************/
 /*                              GLOBAL FUNCTIONS / OBJECTS                           */
 /*************************************************************************************/
+
+/*!
+ *  \addtogroup chessCAMO
+ *  @{
+ */
 namespace chessCAMO
 {
-    // Description:     Iterates through the pieces on a current board representation to 
-    //                  produce the board on the console screen
-    // Pre-condition:   'board'      - a board is created and contains pieces
-    // Post-condition:  Each piece of the current board representation is printed to the
-    //                  screen using a corresponding letter inside a formatted board
+    /**
+     * \ingroup chessCAMO
+     * @brief      Iterates through the pieces on a current board representation to 
+     *             produce the board on the console screen
+     *
+     * @param[in]  board  The board representation
+     * 
+     * \post
+     * Each piece of the current board representation is printed to the
+     * screen using a corresponding letter inside a formatted board
+     */
     void printBoard(const vector<Piece*> & board); // Print the current board position
 
-    // Description:     At any moment, the players can either continue, draw, or resign
-    // Pre-condition:   'chess'     - object is created
-    //                  'in'        - input stream is selected (stdin or file)
-    // Post-condition:  Depending on the users choice, the program either continues
-    //                  ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
+    /**
+     * \ingroup chessCAMO
+     * @brief      At any moment, the players can either continue, draw, or resign
+     *
+     * @param      chess  The chess object is created
+     * @param      in     Input stream is selected (stdin or file)
+     * 
+     * \pre
+     * None
+     * 
+     * \post
+     *  Depending on the users choice, the program either continues
+     * ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
+     */
     void drawOrResign(Chess *chess, istream &in); // resign or draw
 
-    // Description:     Prints the given message ('text') with a given 'color' to console
-    // Pre-condition:   'text'      - message is created
-    //                  'color'     - one of the defined values at the top of the file
-    // Post-condition:  The message is printed to the screen with color chosen and then
-    //                  the color is changed back to default prior to return
+    /**
+     * \ingroup chessCAMO
+     * @brief      Prints the given message ('text') with a given 'color' to console
+     *
+     * @param[in]  text   The text message to be created
+     * @param[in]  color  One of the defined values at the top of the file
+     * 
+     * \pre
+     * None
+     * 
+     * \post
+     * The message is printed to the screen with color chosen and then
+     * the color is changed back to default prior to return
+     */
     void printMessage(string text, int color);
-}
+} // end namespace chessCAMO
+/** @} End of Doxygen Groups*/
 
 #endif // CHESS_H

@@ -18,60 +18,97 @@ using namespace chessCAMO;
 /*************************************************************************************/
 namespace
 {
-    // Description:     Determines if a destination square is in the pinning path
-    //                  as sometimes you can simply move the pinned piece closer to the 
-    //                  pinning piece.
-    // Pre-condition:   'src'       - source square of pinned piece
-    //                  'dest'      - destination square of pinned piece
-    //                  'pin'       - source square of pinning piece    
-    // Post-condition:  Allows the move (returns false) if piece can move closer to pinning
-    //                  piece, else move is invalid (returns true)
+    /**
+     * @brief      Determines if a destination square is in the pinning path
+     *             as sometimes you can simply move the pinned piece closer to the 
+     *             pinning piece.
+     *
+     * @param[in]  src   Source square of pinned piece
+     * @param[in]  dest  Destination square of pinned piece
+     * @param[in]  pin   Source square of pinning piece
+     *
+     * @return     Allows the move (returns false) if piece can move closer to pinning
+     *             piece, else move is invalid (returns true)
+     */
     bool destNotInPinPath(int src, int dest, int pin);
 
-    // Description:     Determines if the source and destination squares are in the same column
-    // Pre-condition:   'src'       - source square of piece
-    //                  'dest'      - destination square of piece   
-    // Post-condition:  Returns true if the source and destination are in the same column,
-    //                  else retuns false.
+    /**
+     * @brief      Determines if the source and destination squares are in the same column
+     *
+     * @param[in]  src   Source square of piece
+     * @param[in]  dest  Destination square of piece 
+     *
+     * @return     Returns true if the source and destination are in the same column,
+     *             else retuns false.
+     */
     bool sameCol(int src, int dest);
 
-    // similar to sameCol(.), just for rows
+    /**
+     * @brief      Determines if the source and destination squares are in the same row
+     *
+     * @param[in]  src   Source square of piece
+     * @param[in]  dest  Destination square of piece 
+     *
+     * @return     Returns true if the source and destination are in the same row,
+     *             else retuns false.
+     */
     bool sameRow(int src, int dest);
 
-    // similar to sameCol(.), just for diagonals
+    /**
+     * @brief      Determines if the source and destination squares are in the same diagonal
+     *
+     * @param[in]  src   Source square of piece
+     * @param[in]  dest  Destination square of piece 
+     *
+     * @return     Returns true if the source and destination are in the same diagonal,
+     *             else retuns false.
+     */
     bool sameDiag(int src, int dest);
 
-    // Description:     Used to determine the coordinate of a pinned piece.
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - source square of pinning piece
-    //                  'dest'      - destination square of pinning piece
-    // Post-condition:  If only 1 piece is in the path from 'src' to 'dest', return its coordinates
-    //                  else, return -1 to indicate that there is either no piece or multiple
-    //                  pieces in the path.
+    /**
+     * @brief      Used to determine the coordinate of a pinned piece.
+     *
+     * @param[in]  src    The source square of pinning piece
+     * @param[in]  dest   The destination square of pinning piece
+     * @param      chess  The chess object is created
+     *
+     * @return     If only 1 piece is in the path from 'src' to 'dest', return its coordinates
+     *             else, return -1 to indicate that there is either no piece or multiple
+     *             pieces in the path.
+     */
     int squareOfPieceInPath(int src, int dest, Chess * chess);
 
-    // Description:     Used to determine the increment to use when moving a piece from 'src' to 'dest'.
-    // Pre-condition:   'src'       - source square of piece
-    //                  'dest'      - destination square of piece
-    // Post-condition:  Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
-    //                  8 if moving in same column, 9 if moving in diagonal to the left. If move does 
-    //                  not correspond to one of the pieces, returns 0.
+    /**
+     * @brief      Used to determine the increment to use when moving a piece from 'src' to 'dest'.
+     *
+     * @param[in]  src   The source square of piece
+     * @param[in]  dest  The destination square of piece
+     *
+     * @return     Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
+     *             8 if moving in same column, 9 if moving in diagonal to the left. If move does 
+     *             not correspond to one of the pieces, returns 0.
+     */
     int incrementChoice(int src, int dest);
 
-    // Description:     Used to determine the coordinate of a pinned piece.
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - source square of pinning piece
-    //                  'board'     - initialize board representing the current position
-    //                  'enemy'     - true if king color differs from piece color, else false
-    // Post-condition:  Returns the coordinate position of the king, based on the current board
-    //                  representation and color determined by 'enemy'.
+    /**
+     * @brief      Used to determine the coordinate of a pinned piece.
+     *
+     * @param[in]  src    The source square of pinning piece
+     * @param      chess  The chess object is created
+     * @param[in]  enemy  True if king color differs from piece color, else false
+     *
+     * @return     Returns the coordinate position of the king, based on the current board
+     *             representation and color determined by 'enemy'.
+     */
     int findKingPos(int src, Chess * chess, bool enemy); 
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
-// Destructor
+/**
+ * @brief      Destructor - destroys the objects.
+ */
 Chess::~Chess()
 {
     vector<Piece*> board = this->getBoard();
@@ -81,12 +118,15 @@ Chess::~Chess()
     }
 }
 
-// Description:     Places the pieces on the board at their correct starting positions
-// Pre-condition:   'chess'      - global object is initialized
-//                  'board_size'  - 8x8 board has 64 index positions
-// Post-condition:  Instantiates new objects corresponding to the pieces, places them
-//                  in the corresponding index of the board vector and set the global
-//                  object's board variable 
+/**
+ * @brief      Places the pieces on the board at their correct starting positions
+ *
+ * @param[in]  board_size  8x8 board has 64 index positions
+ * \post 
+ * Instantiates new objects corresponding to the pieces, places them
+ * in the corresponding index of the board vector and set the global
+ * object's board variable
+ */
 void Chess::boardInit(int board_size)
 {
     vector<Piece*> board = this->getBoard();
@@ -927,10 +967,22 @@ bool Queen::isPossibleMove(int dest, Chess *chess)
 }
 
 /*************************************************************************************/
-/*                              KING CLASS - MEMBER FUNCTIONS                        */
+/*                             KING CLASS - MEMBER FUNCTIONS                         */
 /*************************************************************************************/
+
+
+
 // Virtual Function -> See Piece::isPossibleMove(int dest)
 // combines rook and bishop moves but only 1 square
+ 
+/**
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
+ */
 bool King::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();

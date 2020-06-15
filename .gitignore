@@ -4,7 +4,7 @@
 # Executables
 *.exe
 
-# Code convergence files
+# Code converage files
 gcov/*
 *.html
 *.xml
@@ -14,3 +14,6 @@ gcov/*
 
 # Shell Scripting Files
 *.sh
+
+# doxygen related files
+doc_config
