@@ -1,4 +1,3 @@
-*.cpp linguist-vendored
-*.html linguist-vendored=false
-Makefile linguist-vendored=false
-docs/* linguist-documentation
+Makefile linguist-vendored
+*.html linguist-vendored
+*.cpp linguist-vendored=false
