@@ -1,3 +1,7 @@
+# Excluded
 Makefile linguist-vendored
 *.html linguist-vendored
+docs/* linguist-documentation
+
+# Included
 *.cpp linguist-vendored=false
