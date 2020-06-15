@@ -17,7 +17,7 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 
 ## Documentation
 
-Check out the very detailed <a href="https://lbragile.github.io/doxygen_documentation/" target="__blank">documentation file</a> to clear up any questions you might have.
+Check out the very detailed <a href="https://lbragile.github.io/doxygen_documentation/index.html" target="__blank">documentation file</a> to clear up any questions you might have.
 
 ## To Do
 
