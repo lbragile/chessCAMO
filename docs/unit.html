@@ -66,7 +66,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This implementation file is meant to be used as a test case checker to improve efficiency in debugging. The algorithm reads in text files that outline a given board position and feeds in the moves presented in these files one-by-one until the end of each file. At the end, the algorithm compares the expected FEN string value to the one obtained by making the corresponding moves. If these FEN strings are identical then the algorithm increments the number of test cases passed, otherwise it increments the number of test cases failed. These results are summarized at the end, when all the files are read and processed, and if a "Failed Test Case" Summary is provided for each test case that failed.</p>
-<p>Simply run <b>mingw32-make all_test &amp;&amp; test</b> on a Windows machine to start the test checking script.</p>
+<p>Simply run <b>mingw32-make all_unit &amp;&amp; unit &ndash;gtest_color=yes</b> on a Windows machine to start the test checking script.</p>
 <p>To include an additional test case:</p><ol type="1">
 <li>A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a> and extract the FEN at the bottom of the board;</li>
 <li>The user then makes a text file and pastes this FEN at the top, making sure to remove the last 6 characters. E.g. <em> rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em> <b>- 0 1</b>, becomes <em>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq</em>;</li>

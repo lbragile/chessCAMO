@@ -17,7 +17,7 @@
  * number of test cases failed. These results are summarized at the end, when all the files are read and
  * processed, and if a "Failed Test Case" Summary is provided for each test case that failed.
  * 
- * Simply run <b>mingw32-make all_test && test</b> on a Windows machine to start the test checking script.
+ * Simply run <b>mingw32-make all_unit && unit --gtest_color=yes</b> on a Windows machine to start the test checking script.
  * 
  * To include an additional test case:
  *     1. A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a>
