@@ -45,7 +45,7 @@ gcov:
 	gcovr -r . --exclude-throw-branches --xml -o coverage.xml
 
 	mkdir "gcov"
-	mv *.g* "gcov"
+	mv *.g* *.html *.xml "gcov"
 
 clean:
 	@echo "clean project"
