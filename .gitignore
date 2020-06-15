@@ -13,3 +13,7 @@ gcov/*
 
 # Shell Scripting Files
 *.sh
+
+# Doxygen
+Doxyfile
+README_Web.md

@@ -15,6 +15,10 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 3. An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.
 4. Additionally, just like in the *Crazyhouse* variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
 
+## Documentation
+
+Check out the very detailed <a href="https://lbragile.github.io/doxygen_documentation/" target="__blank">documentation file</a> to clear up any questions you might have.
+
 ## To Do
 
 #### <u>Regular Chess:</u>
@@ -40,3 +44,7 @@ big part of my life. As a result, this project allowed me to gain valuable exper
 ## YouTube - Look Out
 
 Be on the look out for a detailed YouTube video series explaining the various sections of this project. I feel like others could benefit from the logic involved in creating a project on this scale, which is relatively large and requires a substantial time commitment. Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before anything major is finished. I was in the same boat before and understand the frustration of wanting to work on an interesting project, but simply not being able to. It is often best to work on small pieces and build your way to the final product. This gives you a sense of accomplishment at each step and prevents you from experiencing the overwhelmed feeling. Let me know if you are interested in me making the videos and what you would like to see.
+
+## License
+
+MIT (Open Source)
