@@ -4,7 +4,7 @@
 /*                                  Related Files:   chess.cpp                                      */
 /*                                  Project:         chessCAMO                                      */
 /*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 12th, 2020                                */
+/*                                  Last Revision:   June 14th, 2020                                */
 /****************************************************************************************************/
 
 /*
@@ -61,16 +61,55 @@ Why?
 
 using namespace std;
 
-// some colors for console text
+/*! \file */
+
+/** Changes console text color to green */
 #define GREEN 10
+
+/** Changes console text color to cyan */
 #define CYAN 11
+
+/** Changes console text color to red */
 #define RED 12
+
+/** Changes console text color to pink */
 #define PINK 13
+
+/** Changes console text color to yellow */
 #define YELLOW 14
+
+/** Changes console text color to white (default) */
 #define DEFAULT 15
 
-enum pieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, EMPTY};
-enum pieceColor {BLACK, NEUTRAL, WHITE}; // neutral corresponds to an empty square
+/**
+ * @brief      Piece's Type
+ * 
+ * \note
+ * EMPTY corresponds to a square with no piece in it
+ */
+enum pieceType 
+{
+    PAWN,       ///< 0
+    KNIGHT,     ///< 1
+    BISHOP,     ///< 2
+    ROOK,       ///< 3
+    QUEEN,      ///< 4
+    KING,       ///< 5
+    EMPTY       ///< 6
+};
+
+/**
+ * @brief      Piece's Color
+ * 
+ * \note
+ * NEUTRAL corresponds to an empty square
+ */
+enum pieceColor 
+{
+    BLACK,      ///< 0
+    NEUTRAL,    ///< 1
+    WHITE       ///< 2
+};
 
 // forward declaration
 class Piece; 
@@ -85,15 +124,36 @@ public:
     /**
      * @brief      Destructor - destroys the objects.
      */
-    ~Chess(); // destructor
+    ~Chess();
+
+    /**
+     * @brief      Copy constructor - Constructs a new instance and copies the calling object's values to it.
+     * 
+     * @param[in]  object  The object whose values will be copied
+     * 
+     * \note Default
+     */
     Chess(const Chess & object) = default; // copy constructor
+
+    /**
+     * @brief      Copy Assignment operator - assigns values of one object to another existing object
+     *
+     * @param[in]  object  The object whose values will be copied
+     *
+     * @return     The resulting object from the assignment
+     * 
+     * \note Default
+     */
     Chess & operator =(const Chess & object) = default; // copy assignment
     /************************************* END *************************************/
 
     /**
      * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             
+     * \note
+     * Intentionally left blank.
      */
-    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {} // intentionally blank
+    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
@@ -199,8 +259,10 @@ public:
      * @brief      Places the pieces on the board at their correct starting positions
      *
      * @param[in]  board_size  8x8 board has 64 index positions
+     * 
      * \pre
      * The chess object is intialized
+     * 
      * \post 
      * Instantiates new objects corresponding to the pieces, places them
      * in the corresponding index of the board vector and set the global
@@ -227,7 +289,10 @@ public:
      */
     void makeMove(int src, int dest, istream &in); 
 
-    /*! @copydoc Chess::makeMove(string, string, in) 
+    /** 
+     * 
+     * @copydoc Chess::makeMove(string, string, istream) 
+     * 
      * \brief      
      * This is an overloaded member function, provided for convenience. 
      * It differs from the above function only in what argument(s) it accepts.
@@ -257,91 +322,170 @@ public:
      * The chess object is created.
      * 
      * \post
-     * If board's state is in stalemate, calls handleStalemate() to print messages
-     * to console indicating that game is drawn. Else, game continues as usual.
+     * Calls handleStalemate() to print messages to console indicating that game is drawn, if needed.
+     * 
+     * @return     True if board's state is in stalemate, else False and game continues as usual.
      */
     bool isStalemate();
     
 private:
-    vector<Piece*> board;       // Chess board representation with the pieces in correct spots
-    stack<Piece*> checkStack;   // Stores the pieces involved in a checking scenario
-    bool checkmate;             /* \                                */
-    bool stalemate;             /*  Store relevant information for  */
-    bool check;                 /*  game continuation decisions     */
-    bool double_check;          /* /                                */
-    pieceColor turn;            // Either WHITE or BLACK, note NEUTRAL is ignored here 
+    /** Chess board representation with the pieces in correct spots */
+    vector<Piece*> board;   
+
+    /** Stores the pieces involved in a checking scenario */   
+    stack<Piece*> checkStack; 
+
+    /** Flag which ends the game and prints winner */
+    bool checkmate;  
+
+    /** Flag which ends the game and indicates that it is drawn */           
+    bool stalemate; 
+
+    /** Flag for single check detection */            
+    bool check;    
+
+    /** Flag for double check detection */             
+    bool double_check;  
+
+    /** Either WHITE or BLACK
+     * \note NEUTRAL is not considered here
+     */                                       
+    pieceColor turn;            
 
 	/*************************************************************************************/
 	/*                              PIECE CLASS - HELPER FUNCTIONS                       */
 	/*************************************************************************************/
-    // Description:     A move can be one of: attack, castle, en-passant, regular
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - valid input source square
-    //                  'dest'      - valid input destination square (move is legal)        
-    // Post-condition:  Swaps the pieces on the board according to 'src' and 'dest' and proper
-    //                  chess rules, using pieceSwap(.). If a new empty square must be created,
-    //                  this is handled. Returns board representation with the made move.
+    /**
+     * @brief      A move can be one of: attack, castle, en-passant, regular
+     *
+     * @param[in]  src   The source square of piece
+     * @param[in]  dest  The destination square of piece 
+     * 
+     * \pre
+     * The chess object is created 
+     * 
+     * \post
+     * Swaps the pieces on the board according to 'src' and 'dest' and proper
+     * chess rules, using pieceSwap(.). If a new empty square must be created,
+     * this is handled. Returns board representation with the made move.
+     */
     void makeMoveForType(int src, int dest);
 
-    // Description:     Used in makeMoveForType(.) to swap pieces on the board
-    // Pre-condition:   'chess'     - object is created
-    //                  'src'       - valid input source square
-    //                  'dest'      - valid input destination square (move is legal)
-    //                  'board'     - valid board representation        
-    // Post-condition:  Swaps the pieces on the board according to 'src' and 'dest'.
+    /**
+     * @brief      Used in makeMoveForType(.) to swap pieces on the board
+     *
+     * @param[in]  src   The source square of piece
+     * @param[in]  dest  The destination square of piece 
+     * @param      board  The current board representation
+     * 
+     * \pre 
+     * The chess object is created
+     * 
+     * \post
+     * Swaps the pieces on the board according to 'src' and 'dest'.
+     */
     void pieceSwap(int src, int dest, vector<Piece*> & board);
 
-    // Description:     Indicates who will move next via a message to console
-    // Pre-condition:   'chess'     - object is created 
-    // Post-condition:  Player turn is switched, board is printed, and message is displayed
-    //                  if game is not over to indicate whose turn it is.
+    /**
+     * @brief      Indicates who will move next via a message to console
+     * 
+     * \pre 
+     * The chess object is created
+     * 
+     * \post
+     * Player turn is switched, board is printed, and message is displayed
+     * if game is not over to indicate whose turn it is.
+     */
     void handleChangeTurn();
 
-    // Description:     Indicates which player won by checkmate via a message to console
-    // Pre-condition:   'chess'     - object is created
-    //                  A move was made (cannot checkmate in less than 2 moves in theory)   
-    // Post-condition:  global object's checkmate state is set to true (to end the algorithm)
+    /**
+     * @brief      Indicates which player won by checkmate via a message to console
+     * 
+     * \pre 
+     * The chess object is created. A move was made (cannot checkmate in less than 2 moves in theory).
+     * 
+     * \post
+     * Object's checkmate state is set to true (to end the algorithm)
+     */
     void handleCheckmate();
 
-    // Description:     Indicates the game is drawn via a message to console
-    // Pre-condition:   'chess'     - object is created
-    //                  A move was made
-    // Post-condition:  global object's stalemate state is set to true (to end the algorithm)
+    /**
+     * @brief      Indicates the game is drawn via a message to console
+     * \pre 
+     * The chess object is created. A move was made.
+     * 
+     * \post
+     * Object's stalemate state is set to true (to end the algorithm)
+     */
     void handleStalemate();
 
-    // Description:     After a move is made, can undo it if move was invalid and return to
-    //                  previous board state
-    // Pre-condition:   'chess'         - object is created
-    //                  'src'           - source square of piece prior to current board state
-    //                  'dest'          - destination square of piece prior to current board state
-    //                  'king'          - king that is being attacked currently
-    //                  'piece'         - piece that is attacking the king currently
-    //                  'undo_piece'    - if move fails, this is the piece that was moved previously
-    //                  'undo_moveInfo' - if move fails, this is the piece's move information
-    //                  'check_type'    - "single" or "double" check
-    // Post-condition:  If after move, the 'king' is still in check (single or double) or the move was
-    //                  invalid, output warning message and undo the move. Else, continue the game
-    //                  without undoing the move.
+    /**
+     * @brief      After a move is made, can undo it if move was invalid and return to previous board state
+     *
+     * @param[in]  src            The source square of piece prior to current board state
+     * @param[in]  dest           The destination square of piece prior to current board state
+     * @param      king           The king that is being attacked currently
+     * @param      piece          The piece that is attacking the king currently
+     * @param      undo_piece     If move fails, this is the piece that was moved previously
+     * @param[in]  undo_moveInfo  If move fails, this is the piece's move information
+     * @param[in]  check_type     The check type (single or double)
+     * 
+     * \pre 
+     * The chess object is created. A move was made.
+     * 
+     * \post
+     * None
+     *
+     * @return     True if after move, the 'king' is still in check (single or double) or the move was
+     *             invalid, output warning message and undo the move. Else, False and continue the game
+     *             without undoing the move.
+     */
     bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
     
-    // Description:     If in a single check, see if piece can defend the king, capture attacking piece,
-    //                  or move the king out of check. Used in isCheckmate("single")
-    // Pre-condition:   'chess'         - object is created
-    //                  'king'          - king that is being attacked currently
-    //                  'piece'         - piece that is attacking the king currently
-    // Post-condition:  If no legal moves found return true (checkmate), else return false and make the move
+    /**
+     * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
+     *             or move the king out of check. Used in isCheckmate("single")
+     *
+     * @param      piece  The piece that is attacking the king currently
+     * @param      king   The king that is being attacked currently
+     *
+     * \pre 
+     * The chess object is created. A move was made.
+     * 
+     * \post
+     * None
+     *
+     * @return     True if no legal moves found (checkmate), else False and make the move
+     */
     bool singleCheckPieceIterator(Piece* piece, Piece* king); 
     
-    // Description:     If in a double check, see if the king can move out of check as this is the only
-    //                  valid move option. Used in isCheckmate("double")
-    // Pre-condition:   'chess'         - object is created
-    //                  'king'          - king that is being attacked currently
-    // Post-condition:  If no legal moves found return true (checkmate), else return false and make the move
+    /**
+     * @brief      If in a double check, see if the king can move out of check as this is the only
+     *             valid move option. Used in isCheckmate("double").
+     *
+     * @param      king  The king that is being attacked currently
+     *
+     * \pre 
+     * The chess object is created.
+     * 
+     * \post
+     * None
+     *
+     * @return     True if no legal moves found (checkmate), else False and make the move
+     */
     bool doubleCheckPieceIterator(Piece* king);
 
-    // Description:     Decides whose turn it is currently and updates the private member variable accordingly
-    // Pre-condition:   'chess'         - object is created
-    // Post-condition:  'chess.turn' is set to the correct player
+    /**
+     * @brief      Decides whose turn it is currently and updates the private member variable ('turn') accordingly
+     *
+     * \pre 
+     * The chess object is created.
+     * 
+     * \post
+     * None
+     *
+     * @return     'chess.turn' is set to the correct player
+     */
     pieceColor switchTurn();
 };
 
@@ -351,12 +495,31 @@ private:
 class Piece
 {
 public:
-    // default constructor with default piece initialization
-    Piece() : square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Piece() : square{0}, moved{false}, type{EMPTY}, color{NEUTRAL} {}
 
-    // constructor with valid piece information initialization
-    Piece(int square, pieceType type, pieceColor color) : moved{false}
-    {this->square = square; this->type = type; this->color = color;}
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Has 'moved' initialization.
+     */
+    Piece(int square, pieceType type, pieceColor color) 
+        : moved{false}
+    {
+        this->square = square;
+        this->type = type;
+        this->color = color;
+    }
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
@@ -401,7 +564,6 @@ public:
      */
     void setPieceColor(pieceColor color) {this->color = color;}
 
-
     /**
      * @brief      (Accessor) Gets the piece move information useful for pawns, rooks, kings.
      *
@@ -427,8 +589,11 @@ public:
      * @brief      (Mutator) Sets the piece en-passant ability information.
      *
      * @param[in]  en_passant  The piece en-passant ability information
+     * 
+     * \note
+     * Intentionally left blank.
      */
-    virtual void setEnPassant(bool en_passant) {} // purposely left definition blank
+    virtual void setEnPassant(bool en_passant) {}
     /************************************* END *************************************/
 
     /************************ TYPE DETERMINATION FUNCTIONS *************************/
@@ -543,46 +708,80 @@ public:
     //                  opposing king, false otherwise.
     bool causeDoubleCheck(int dest, Chess *chess);
     
-    // Description:     Determine if the piece has a possible move towards the destination square
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if moving the piece to 'dest' is possible since the path is free, or 
-    //                  the piece is capable of making the move.
-    //                  false otherwise.
+    /**
+     * @brief      Determine if the piece has a possible move towards the destination square
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if moving the piece to 'dest' is possible since the path is free, or 
+     *             the piece is capable of making the move. False otherwise.
+     */
     virtual bool isPossibleMove(int dest, Chess *chess) {return false;}
 
-    // Description:     Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  En-passant private member is set to true if a pawn meets the criteria,
-    //                  else all pawns have their en-passant abilities set to false.
+    /**
+     * @brief      Pawn attacks opposing pawn with en-passant (https://bit.ly/3cQj7G4)
+     *
+     * @param[in]  src    The source square of the piece
+     * @param      chess  The chess object
+     * 
+     * \pre
+     * None
+     * 
+     * \post
+     * En-passant private member is set to true if a pawn meets the criteria,
+     * else all pawns have their en-passant abilities set to false. 
+     */
     virtual void enPassantHandling(int src, Chess *chess) {return;}
 
-    // Description:     Decides if a pawn can be promoted and applied the promotion
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  Changes the piece (pawn) to a stronger piece according to user input
+    /**
+     * @brief      Promotes the pawn if needed.
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     * @param      in     input stream type (stdin or file)
+     * 
+     * \pre
+     * Pawn must be on a rank that can promote next move
+     * 
+     * \post
+     * Changes the piece (pawn) to a stronger piece according to user input
+     */
     virtual void promotePawn(int dest, Chess *chess, istream &in) {return;}
 
-    // Description:     Can the king castle? See: https://bit.ly/2XQEXFr
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  true if the piece is a king and the conditions for castling are met,
-    //                  false otherwise.                 
+    /**
+     * @brief      Can the king castle? (https://bit.ly/2XQEXFr)
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if able to castle, False otherwise.
+     */
     virtual bool canCastle(int dest, Chess *chess) {return false;}
 
-    // Description:     Did the king move into check?
-    // Pre-condition:   'chess'         - object is created
-    //                  'dest'          - destination square is valid [0,63]
-    // Post-condition:  returns true if a king moves into a square that another opposing piece
-    //                  also move into. false otherwise.
+    /**
+     * @brief      Did the king move into check?
+     *
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
+     *
+     * @return     True if a king moves into a square that another opposing piece
+     *             also move into. False otherwise.
+     */
     virtual bool movedIntoCheck(int dest, Chess *chess) {return false;}
 
 private:
-    int square;         // position of the piece on the board [0, 63] -> [top left, bottom right]
-    bool moved;         // has the piece been moved yet?
-    pieceType type;     // Pawn, Knight, Bishop, Rook, Queen, King, or Empty
-    pieceColor color;   // Black, Neutral, or White
+    /** position of the piece on the board [0, 63] -> [top left, bottom right] */
+    int square;
+
+    /** has the piece been moved yet? */       
+    bool moved; 
+
+    /** PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, OR EMPTY */       
+    pieceType type;
+
+    /** BLACK, NEUTRAL, OR WHITE */     
+    pieceColor color;   
 };
 
 /*************************************************************************************/
@@ -591,11 +790,30 @@ private:
 class Pawn : public Piece
 {
 public:
-    // default constructor with default piece initialization
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     *             
+     * \note
+     * Intentionally left blank. Has en-passant initialization.
+     */
     Pawn() : Piece(), en_passant{false} {} // intentionally blank
 
     // constructor with valid piece information initialization
-    Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {} // intentionally blank
+    
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank. Has en-passant initialization.
+     */
+    Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     // En-passant ability information 
@@ -603,13 +821,28 @@ public:
     void setEnPassant(bool en_passant) override {this->en_passant = en_passant;}
     /************************************* END *************************************/
 
-    // virtual functions -> see Piece Class
+    /**
+      * \note
+      * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
+      * en-passant, and promote.
+      *   
+      * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
+
+    /**
+     * \see virtual Piece::enPassantHandling(int dest, Chess *chess)
+     */
     void enPassantHandling(int src, Chess *chess) override;
+
+    /**
+     * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
+     */
     void promotePawn(int dest, Chess *chess, istream &in) override;
 
 private:
-    bool en_passant;    // Can this pawn en-passant it's rival currently?
+    /** * Can this pawn en-passant it's rival currently? */
+    bool en_passant;
 };  
 
 /*************************************************************************************/
@@ -618,13 +851,34 @@ private:
 class Knight : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    Knight() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Knight() : Piece() {}
 
-    // constructor with valid piece information initialization
-    Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    Knight(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-    // virtual functions -> see Piece Class
+    /**
+     * \note
+     * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
+     * 
+     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
 };
 
@@ -634,13 +888,34 @@ public:
 class Bishop : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    Bishop() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Bishop() : Piece() {}
 
-    // constructor with valid piece information initialization
-    Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    Bishop(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-    // virtual functions -> see Piece Class
+    /**
+     * \note
+     * Can move diagonally any number of squares.
+     * 
+     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
 };
 
@@ -650,13 +925,34 @@ public:
 class Rook : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    Rook() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Rook() : Piece() {}
 
-    // constructor with valid piece information initialization
-    Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    Rook(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-    // virtual functions -> see Piece Class
+    /**
+     * \note
+     * Can move horizontally or vertically any number of squares.
+     * 
+     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
 };
 
@@ -666,13 +962,34 @@ public:
 class Queen : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    Queen() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Queen() : Piece() {}
 
-    // constructor with valid piece information initialization
-    Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    Queen(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-    // virtual functions -> see Piece Class
+    /**
+     * \note
+     * Combines rook and bishop moves.
+     * 
+     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
 };
 
@@ -682,15 +999,44 @@ public:
 class King : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    King() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    King() : Piece() {}
 
-    // constructor with valid piece information initialization
-    King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    King(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 
-    // virtual functions -> see Piece Class
+    /**
+     * \note
+     * Combines rook and bishop moves but only 1 square
+     * 
+     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     */
     bool isPossibleMove(int dest, Chess *chess) override;
+
+    /**
+     * \see virtual Piece::canCastle(int dest, Chess *chess)
+     */
     bool canCastle(int dest, Chess *chess) override;
+
+    /**
+     * \see virtual Piece::movedIntoCheck(int dest, Chess *chess)
+     */
     bool movedIntoCheck(int dest, Chess *chess) override;
 };
 
@@ -700,25 +1046,36 @@ public:
 class Empty : public Piece
 {
 public:
-    // default constructor with default piece initialization
-    Empty() : Piece() {} // intentionally blank
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             Calls Piece class constructor to intialize the member variables.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Empty() : Piece() {}
 
-    // constructor with valid piece information initialization
-    Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {} // intentionally blank
+    /**
+     * @brief      Constructs a new instance with valid piece information initialization.
+     *             Calls Piece class constructor to intialize the member variables.
+     *
+     * @param[in]  square  The square of the piece
+     * @param[in]  type    The type of the piece
+     * @param[in]  color   The color of the piece
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    Empty(int square, pieceType type, pieceColor color) : Piece(square, type, color) {}
 };
 
 /*************************************************************************************/
 /*                              GLOBAL FUNCTIONS / OBJECTS                           */
 /*************************************************************************************/
 
-/*!
- *  \addtogroup chessCAMO
- *  @{
- */
 namespace chessCAMO
 {
     /**
-     * \ingroup chessCAMO
      * @brief      Iterates through the pieces on a current board representation to 
      *             produce the board on the console screen
      *
@@ -731,7 +1088,6 @@ namespace chessCAMO
     void printBoard(const vector<Piece*> & board); // Print the current board position
 
     /**
-     * \ingroup chessCAMO
      * @brief      At any moment, the players can either continue, draw, or resign
      *
      * @param      chess  The chess object is created
@@ -747,7 +1103,6 @@ namespace chessCAMO
     void drawOrResign(Chess *chess, istream &in); // resign or draw
 
     /**
-     * \ingroup chessCAMO
      * @brief      Prints the given message ('text') with a given 'color' to console
      *
      * @param[in]  text   The text message to be created
@@ -762,6 +1117,5 @@ namespace chessCAMO
      */
     void printMessage(string text, int color);
 } // end namespace chessCAMO
-/** @} End of Doxygen Groups*/
 
 #endif // CHESS_H

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['makemove_33',['makeMove',['../class_chess.html#ac149ff524cf6e5409652a6263570008a',1,'Chess::makeMove(int src, int dest, istream &amp;in)'],['../class_chess.html#af6d1a4704c99a1be516074bf131bae55',1,'Chess::makeMove(string src, string dest, istream &amp;in)']]]
+  ['handlechangeturn_40',['handleChangeTurn',['../class_chess.html#afb0e6941c0f1bedfad490df9649045d4',1,'Chess']]],
+  ['handlecheckmate_41',['handleCheckmate',['../class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72',1,'Chess']]],
+  ['handlestalemate_42',['handleStalemate',['../class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9',1,'Chess']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['printboard_90',['printBoard',['../group__chess_c_a_m_o.html#ga639e125cd734b4dd09cef6dd1cfeafbf',1,'chessCAMO']]],
-  ['printmessage_91',['printMessage',['../group__chess_c_a_m_o.html#gaf39e7057e0eb51f78ea1466ec4d1e678',1,'chessCAMO']]]
+  ['handlechangeturn_145',['handleChangeTurn',['../class_chess.html#afb0e6941c0f1bedfad490df9649045d4',1,'Chess']]],
+  ['handlecheckmate_146',['handleCheckmate',['../class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72',1,'Chess']]],
+  ['handlestalemate_147',['handleStalemate',['../class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9',1,'Chess']]]
 ];
