@@ -6,7 +6,6 @@
 
 # Code converage files
 gcov/*
-*.html
 *.xml
 *.gcda
 *.gcno
