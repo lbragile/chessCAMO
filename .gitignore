@@ -14,6 +14,3 @@ gcov/*
 
 # Shell Scripting Files
 *.sh
-
-# doxygen related files
-doc_config
