@@ -10,9 +10,7 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 
 [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits) [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO) [![Active Development](https://img.shields.io/badge/maintenance-active-brightgreen.svg)](https://github.com/lbragile/chessCAMO) [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
 
-<img src="docs/gameplay.gif" alt="checkmate" align="left" style="zoom:100%;" />
-
-<br>
+<img src="docs/gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
 
 ## Installation
 
@@ -59,9 +57,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 ## Tests [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
 
-<img src="docs/testing.gif" alt="testing" align="left" style="zoom:100%;" />
-
-<br>
+<img src="docs/testing.gif" alt="testing" style="float: left; zoom:100%;" />
 
 ### Unit Testing
 
@@ -98,5 +94,8 @@ Reach out to me at any of the following:
 ## License [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
 
 - <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a>
+
 - Copyright 2020 @ Lior Bragilevsky
+
+  
 
