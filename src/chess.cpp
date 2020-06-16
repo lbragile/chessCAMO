@@ -1,11 +1,28 @@
-/********************************************************************************************/  
-/*                          Title:           chess.cpp                                      */
-/*                          Author:          Lior Bragilevsky                               */
-/*                          Related Files:   chess.h                                        */
-/*                          Project:         chessCAMO                                      */
-/*                          Version:         1.0                                            */
-/*                          Last Revision:   June 15th, 2020                                */
-/********************************************************************************************/ 
+/**
+ * \page chess Chess Implementation File (Project Description)
+ * 
+ * <b>Title</b><br>
+ * <span>&emsp;&emsp;&emsp;chess.cpp </span>
+ * \author Lior Bragilevsky
+ * \relates chess.h
+ * <b>Project</b><br>
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span>
+ * \version 1.0
+ * \date \today
+ * 
+ * <i>chessCAMO</i> is a newly proposed chess variant that stands for <b>C</b>alculations <b>A</b>lways <b>M</b>ake <b>O</b>pportunities
+ * and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank">Crazyhouse</a>.
+ *
+ * The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their
+ * pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
+ * 
+ * <b>Variant's Rules</b>
+ * 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
+ * 2. Once a player decides to use a piece from the reservoir to replace one of his existing pieces on the board, their turn is over.
+ * 3. An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.
+ * 4. Additionally, just like in the <i>Crazyhouse</i> variant, a player cannot directly promote a pawn from the reservoir.
+ *    That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
+ */
 
 #include "chess.h"
 
@@ -407,7 +424,7 @@ void Chess::isCheckmate(string check_type)
  * The chess object is created.
  * 
  * \post
- * Calls handleStalemate() to print messages to console indicating that game is drawn, if needed.
+ * Calls Chess::handleStalemate() to print messages to console indicating that game is drawn, if needed.
  * 
  * @return     True if board's state is in stalemate, else False and game continues as usual.
  */

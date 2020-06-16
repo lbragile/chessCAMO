@@ -1,20 +1,43 @@
-/****************************************************************************************************/
-/*                                  Title:           chess.h                                        */
-/*                                  Author:          Lior Bragilevsky                               */
-/*                                  Related Files:   chess.cpp                                      */
-/*                                  Project:         chessCAMO                                      */
-/*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 15th, 2020                                */
-/****************************************************************************************************/
-
 /**
+ * \page chessheader Chess Header File (Functions & Todo List)
+ * 
+ * <b>Title</b><br>
+ * <span>&emsp;&emsp;&emsp;chess.h </span>
+ * \author Lior Bragilevsky
+ * \relates chess.cpp
+ * <b>Project</b><br>
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span>
+ * \version 1.0
+ * \date \today
+ * 
+ * I decided to create this project due to my growing interest in software development.
+ * Coming from an Engineering background with Deep Learning research experience
+ * (Recent Master of Applied Science graduate), I realized that writing and developing code
+ * (both front and back end) were highly appealing to me. Thus, I spent a lot of time building
+ * upon my existing coding knowledge through online material and knew that it is time to test my
+ * knowledge on a challenging project. Additionally, I played chess (not very seriously) consistently
+ * since the age of about 4-5, so one can say that it is a very big part of my life. As a result,
+ * this project allowed me to gain valuable experience and knowledge while working on a topic that
+ * I am passionate about and have expertise in.
+ * 
+ * <b>YouTube - Look Out</b>
+ *Be on the look out for a detailed YouTube video series explaining the various sections of this project.
+ * I feel like others could benefit from the logic involved in creating a project on this scale, which is
+ * relatively large and requires a substantial time commitment. Often times, when starting from scratch,
+ * an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end
+ * the project before anything major is finished. I was in the same boat before and understand the
+ * frustration of wanting to work on an interesting project, but simply not being able to. It is often
+ * best to work on small pieces and build your way to the final product. This gives you a sense of
+ * accomplishment at each step and prevents you from experiencing the overwhelmed feeling.
+ * Let me know if you are interested in me making the videos and what you would like to see.
+ * 
  * \todo
- * - <b> Regular Chess </b>:
+ * - <b> Regular Chess:</b>
  *   1. Three move repetition (draw) & 50 move rule.
  *   2. Board representation undo (use queue?).
  *   3. Input as PGN rather than two integers (template) - working currently but not really a template.
  *   4. GUI - nice to be able to move pieces with mouse rather than inputting coordinates.    
- * - <b> ChessCAMO </b>:
+ * - <b> ChessCAMO:</b>
  *   1. Make piece reservoir (stack)
  *   2. Allow players to replace existing pieces with reservoir pieces
  *   3. Implement abovementioned check and pawn promotion rules

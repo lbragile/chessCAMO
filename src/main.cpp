@@ -1,26 +1,28 @@
-/****************************************************************************************************/
-/*                                  Title:           main.cpp                                       */
-/*                                  Author:          Lior Bragilevsky                               */
-/*                                  Related Files:   chess.h                                        */
-/*                                  Project:         chessCAMO                                      */
-/*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 12th, 2020                                */
-/****************************************************************************************************/
-
-/*
-This implementation file is meant to be used by avid chess players. Once the program is running,
-the player inputs a source ('src') coordinate and destination ('dest') coordinate to make a move.
-If the user enters an invalid move, an appropriate error message is displayed. At any given moment,
-a player can decide to either continue, offer a draw, or resign.
-
-Simply run "mingw32-make all_main && main" on a Windows machine to start the game.
-
-Note:
-    - Currently all standard chess rules are supported, except three move repetition & 50 move rule.
-    - There is no undo board representation (yet!).
-    - You can choose to input PGN notation ('e2 e4') rather than coordinates ('52 36'), but you must be
-      consistant at each input. That is, you cannot input mixed notations such as 'e2 36'.
-    - GUI is in the works, stay tuned!      
+/**
+ * \page main Main Implementation File Description (Allow User to Play)
+ * 
+ * <b>Title</b><br>
+ * <span>&emsp;&emsp;&emsp;main.cpp</span>
+ * \author Lior Bragilevsky
+ * \relates chess.h
+ * <b>Project</b><br>
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span>
+ * \version 1.0
+ * \date \today
+ *
+ * This implementation file is meant to be used by avid chess players. Once the program is running,
+ * the player inputs a source ('src') coordinate and destination ('dest') coordinate to make a move.
+ * If the user enters an invalid move, an appropriate error message is displayed. At any given moment,
+ * a player can decide to either continue, offer a draw, or resign.
+ *
+ * Simply run <b>mingw32-make all_main && main</b> on a Windows machine to start the game.
+ *
+ * \note
+ *   - Currently all standard chess rules are supported, except three move repetition & 50 move rule.
+ *   - There is no undo board representation (yet!).
+ *   - You can choose to input PGN notation ('e2 e4') rather than coordinates ('52 36'), but you must be
+ *     consistant at each input. That is, you cannot input mixed notations such as 'e2 36'.
+ *   - GUI is in the works, stay tuned!      
 */
 
 #include "chess.h"
@@ -29,6 +31,20 @@ Note:
 using namespace std;
 using namespace chessCAMO; 
 
+/**
+ * @brief      Simulates a chess game between two players.
+ *             At any point, the player whose turn it is, can decide whether they want to
+ *             continue, offer a draw, or resign. Depending on the response from the
+ *             opponent (if required), the game either continue or end.
+ *             If game continues, the player must choose a turn to make by selecting the 
+ *             source and destination squares corresponding to the piece they would like to
+ *             move. Error checking exists to prevent invalid input. The console screen
+ *             refreshes after a valid move is made and the board position is updated and
+ *             printed to illustrate the current position. Relevant warning messages are 
+ *             displayed and the game ends when the engine detects that the game is over.
+ *
+ * @return     0 if program exited successfully
+ */
 int main()
 {
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location

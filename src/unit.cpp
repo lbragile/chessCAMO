@@ -1,14 +1,15 @@
-/****************************************************************************************************/  
-/*                                  Title:           test.cpp                                       */
-/*                                  Author:          Lior Bragilevsky                               */
-/*                                  Related Files:   chess.h                                        */
-/*                                  Project:         chessCAMO                                      */
-/*                                  Version:         1.0                                            */
-/*                                  Last Revision:   June 15th, 2020                                */
-/****************************************************************************************************/ 
-
 /**
- * \page unit Implementation File Description
+ * \page unit Unit Implementation File Description (GoogleTest FrameWork)
+ * 
+ * <b>Title</b><br>
+ * <span>&emsp;&emsp;&emsp;unit.cpp</span>
+ * \author Lior Bragilevsky
+ * \relates chess.h
+ * <b>Project</b><br>
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span>
+ * \version 1.0
+ * \date \today
+ * 
  * This implementation file is meant to be used as a test case checker to improve efficiency in debugging.
  * The algorithm reads in text files that outline a given board position and feeds in the moves presented
  * in these files one-by-one until the end of each file. At the end, the algorithm compares the expected
@@ -19,7 +20,7 @@
  * 
  * Simply run <b>mingw32-make all_unit && unit --gtest_color=yes</b> on a Windows machine to start the test checking script.
  * 
- * To include an additional test case:
+ * <b> Include Addition Tests </b>
  *     1. A user can set-up a position in common chess sites like <a href="https://lichess.org/editor" target="__blank">lichess</a>
  *        and extract the FEN at the bottom of the board;
  *     2. The user then makes a text file and pastes this FEN at the top, making sure to remove the last
