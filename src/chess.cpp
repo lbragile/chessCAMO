@@ -3,11 +3,14 @@
  * 
  * <b>Title</b><br>
  * <span>&emsp;&emsp;&emsp;chess.cpp </span>
- * \author Lior Bragilevsky
- * \relates chess.h
+ * \author Lior Bragilevsky<br>
+ * 
+ * <b>Related</b><br>
+ * <span>&emsp;&emsp;&emsp;chess.h</span><br> 
+ * 
  * <b>Project</b><br>
- * <span>&emsp;&emsp;&emsp;chessCAMO</span>
- * \version 1.0
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span><br>
+ * \version \version_num
  * \date \today
  * 
  * <i>chessCAMO</i> is a newly proposed chess variant that stands for <b>C</b>alculations <b>A</b>lways <b>M</b>ake <b>O</b>pportunities

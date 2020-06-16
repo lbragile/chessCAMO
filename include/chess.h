@@ -3,11 +3,14 @@
  * 
  * <b>Title</b><br>
  * <span>&emsp;&emsp;&emsp;chess.h </span>
- * \author Lior Bragilevsky
- * \relates chess.cpp
+ * \author Lior Bragilevsky<br>
+ * 
+ * <b>Related</b><br>
+ * <span>&emsp;&emsp;&emsp;chess.cpp</span><br> 
+ * 
  * <b>Project</b><br>
- * <span>&emsp;&emsp;&emsp;chessCAMO</span>
- * \version 1.0
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span><br>
+ * \version \version_num
  * \date \today
  * 
  * I decided to create this project due to my growing interest in software development.

@@ -3,11 +3,14 @@
  * 
  * <b>Title</b><br>
  * <span>&emsp;&emsp;&emsp;main.cpp</span>
- * \author Lior Bragilevsky
- * \relates chess.h
+ * \author Lior Bragilevsky<br>
+ * 
+ * <b>Related</b><br>
+ * <span>&emsp;&emsp;&emsp;chess.h</span><br> 
+ * 
  * <b>Project</b><br>
- * <span>&emsp;&emsp;&emsp;chessCAMO</span>
- * \version 1.0
+ * <span>&emsp;&emsp;&emsp;chessCAMO</span><br>
+ * \version \version_num
  * \date \today
  *
  * This implementation file is meant to be used by avid chess players. Once the program is running,

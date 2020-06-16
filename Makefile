@@ -20,7 +20,7 @@ chess.o: src/chess.cpp include/chess.h
 	$(CC) $(CFLAGS) $(GCOV_CFLAGS) $(CHESS_CFLAGS) src/chess.cpp
 
 main.o: src/main.cpp include/chess.h
-	$(CC) $(CFLAGS) $(CHESS_CFLAGS) main.cpp
+	$(CC) $(CFLAGS) $(CHESS_CFLAGS) src/main.cpp
 
 unit.o: src/unit.cpp include/chess.h
 	$(CC) $(CFLAGS) $(GTEST_CFLAGS) $(CHESS_CFLAGS) src/unit.cpp
