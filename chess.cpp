@@ -302,7 +302,7 @@ void Chess::makeMove(int src, int dest, istream &in)
         }
 
         // did the move cause a double check?
-        if(!board[src]->causeCheck(dest, this) && board[src]->causeDoubleCheck(dest, this)) 
+        if(board[src]->causeDoubleCheck(dest, this)) 
         {
             this->isCheckmate("double"); // check for checkmates
         }
@@ -459,7 +459,7 @@ void Chess::makeMoveForType(int src, int dest)
     vector<Piece*> board = this->getBoard();
 
     // castling move
-    if(board[src]->canCastle(dest, this) && (std::abs(src - dest) == 3 || std::abs(src - dest) == 4))
+    if(board[src]->canCastle(dest, this))
     {
         // note that the pieces are moved
         board[src]->setPieceMoveInfo(true);
@@ -479,7 +479,7 @@ void Chess::makeMoveForType(int src, int dest)
     }
 
     // en-passant move
-    else if(board[src]->getEnPassant() && !sameCol(src, dest))
+    else if(board[src]->getEnPassant())
     {
         this->pieceSwap(src, dest, board);
 

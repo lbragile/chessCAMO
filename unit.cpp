@@ -146,6 +146,7 @@ protected:
             {   
                 chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
                 myfile >> src >> dest;
+
                 cout << src << " " << dest << endl;
                 chess->makeMove(src, dest, myfile);
 
@@ -159,8 +160,6 @@ protected:
                     if(chess->getCheckmate())
                         break;
                 }
-
-
             }
             myfile.close(); //closing the file
         }
@@ -253,8 +252,6 @@ protected:
                     if(chess->getCheckmate())
                         break;
                 }
-
-
             }
             myfile.close(); //closing the file
         }
