@@ -17,3 +17,6 @@ gcov/*
 # Doxygen
 Doxyfile
 README_Web.md
+
+# Misc
+test.cpp

@@ -31,7 +31,7 @@
  *        Make sure to not end on a blank line to avoid unnecessary warnings from the algorithm;
  *     5. Name the file a meaningful name according to what is being tested.
  *        E.g. to check if a given piece (Queen) delivers a checkmate <span>&rarr;</span> <i>queenCheckmate.txt</i>;
- *     6. Place test case files in a folder named <b>./test_cases/</b> (used by the algorithm).
+ *     6. Place test case files in a folder named <b>./tests/</b> (used by the algorithm).
 
  * \note
  *     - There is no draw or resign functionality here since this is meant for quick testing.
@@ -280,7 +280,7 @@ protected:
 TEST_F(ChessTestString, unableToOpenFileString)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/unableToOpenFileString.txt");
+    ifstream myfile("tests/unableToOpenFileString.txt");
     SetUp(myfile);
 
     /* ------------------- Assert ------------------ */
@@ -290,7 +290,7 @@ TEST_F(ChessTestString, unableToOpenFileString)
 TEST_F(ChessTestString, stringInputsResignForCoverage)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/00-stringInputsResignForCoverage.txt");
+    ifstream myfile("tests/00-stringInputsResignForCoverage.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -304,7 +304,7 @@ TEST_F(ChessTestString, stringInputsResignForCoverage)
 TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/00-stringInputsNDrawFeaturesForCoverage.txt");
+    ifstream myfile("tests/00-stringInputsNDrawFeaturesForCoverage.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -318,7 +318,7 @@ TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
 TEST_F(ChessTest, unableToOpenFileInt)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/unableToOpenFileInt.txt");
+    ifstream myfile("tests/unableToOpenFileInt.txt");
     SetUp(myfile);
 
     /* ------------------- Assert ------------------ */
@@ -328,7 +328,7 @@ TEST_F(ChessTest, unableToOpenFileInt)
 TEST_F(ChessTest, castleAfterKingMoved)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/01-castleAfterKingMoved.txt");
+    ifstream myfile("tests/01-castleAfterKingMoved.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -342,7 +342,7 @@ TEST_F(ChessTest, castleAfterKingMoved)
 TEST_F(ChessTest, castleAfterKingSideRookMoved)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/02-castleAfterKingSideRookMoved.txt");
+    ifstream myfile("tests/02-castleAfterKingSideRookMoved.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -356,7 +356,7 @@ TEST_F(ChessTest, castleAfterKingSideRookMoved)
 TEST_F(ChessTest, castleAfterQueenSideRookMoved)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/03-castleAfterQueenSideRookMoved.txt");
+    ifstream myfile("tests/03-castleAfterQueenSideRookMoved.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -370,7 +370,7 @@ TEST_F(ChessTest, castleAfterQueenSideRookMoved)
 TEST_F(ChessTest, castleKingSide)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/04-castleKingSide.txt");
+    ifstream myfile("tests/04-castleKingSide.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -384,7 +384,7 @@ TEST_F(ChessTest, castleKingSide)
 TEST_F(ChessTest, castleQueenSide)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/05-castleQueenSide.txt");
+    ifstream myfile("tests/05-castleQueenSide.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -398,7 +398,7 @@ TEST_F(ChessTest, castleQueenSide)
 TEST_F(ChessTest, kingMoveIntoCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/06-kingMoveIntoCheck.txt");
+    ifstream myfile("tests/06-kingMoveIntoCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -412,7 +412,7 @@ TEST_F(ChessTest, kingMoveIntoCheck)
 TEST_F(ChessTest, queenMate)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/07-queenMate.txt");
+    ifstream myfile("tests/07-queenMate.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -426,7 +426,7 @@ TEST_F(ChessTest, queenMate)
 TEST_F(ChessTest, queenCheckKingMoves)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/08-queenCheckKingMoves.txt");
+    ifstream myfile("tests/08-queenCheckKingMoves.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -440,7 +440,7 @@ TEST_F(ChessTest, queenCheckKingMoves)
 TEST_F(ChessTest, queenCheckPieceDefends)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/09-queenCheckPieceDefends.txt");
+    ifstream myfile("tests/09-queenCheckPieceDefends.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -454,7 +454,7 @@ TEST_F(ChessTest, queenCheckPieceDefends)
 TEST_F(ChessTest, queenCheckPieceDefends2)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/10-queenCheckPieceDefends2.txt");
+    ifstream myfile("tests/10-queenCheckPieceDefends2.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -468,7 +468,7 @@ TEST_F(ChessTest, queenCheckPieceDefends2)
 TEST_F(ChessTest, queenCheckPieceDefends3)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/11-queenCheckPieceDefends3.txt");
+    ifstream myfile("tests/11-queenCheckPieceDefends3.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -482,7 +482,7 @@ TEST_F(ChessTest, queenCheckPieceDefends3)
 TEST_F(ChessTest, pawnPromotionQueenWhiteLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/12-pawnPromotionQueenWhiteLow.txt");
+    ifstream myfile("tests/12-pawnPromotionQueenWhiteLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -496,7 +496,7 @@ TEST_F(ChessTest, pawnPromotionQueenWhiteLow)
 TEST_F(ChessTest, pawnPromotionQueenWhiteUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/12-pawnPromotionQueenWhiteUp.txt");
+    ifstream myfile("tests/12-pawnPromotionQueenWhiteUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -510,7 +510,7 @@ TEST_F(ChessTest, pawnPromotionQueenWhiteUp)
 TEST_F(ChessTest, pawnPromotionKnightWhiteLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/13-pawnPromotionKnightWhiteLow.txt");
+    ifstream myfile("tests/13-pawnPromotionKnightWhiteLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -524,7 +524,7 @@ TEST_F(ChessTest, pawnPromotionKnightWhiteLow)
 TEST_F(ChessTest, pawnPromotionKnightWhiteUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/13-pawnPromotionKnightWhiteUp.txt");
+    ifstream myfile("tests/13-pawnPromotionKnightWhiteUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -538,7 +538,7 @@ TEST_F(ChessTest, pawnPromotionKnightWhiteUp)
 TEST_F(ChessTest, pawnPromotionBishopWhiteLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/14-pawnPromotionBishopWhiteLow.txt");
+    ifstream myfile("tests/14-pawnPromotionBishopWhiteLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -552,7 +552,7 @@ TEST_F(ChessTest, pawnPromotionBishopWhiteLow)
 TEST_F(ChessTest, pawnPromotionBishopWhiteUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/14-pawnPromotionBishopWhiteUp.txt");
+    ifstream myfile("tests/14-pawnPromotionBishopWhiteUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -566,7 +566,7 @@ TEST_F(ChessTest, pawnPromotionBishopWhiteUp)
 TEST_F(ChessTest, trickyCastle)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/15-trickyCastle.txt");
+    ifstream myfile("tests/15-trickyCastle.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -580,7 +580,7 @@ TEST_F(ChessTest, trickyCastle)
 TEST_F(ChessTest, castleWhenInCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/16-castleWhenInCheck.txt");
+    ifstream myfile("tests/16-castleWhenInCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -594,7 +594,7 @@ TEST_F(ChessTest, castleWhenInCheck)
 TEST_F(ChessTest, castleThroughCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/17-castleThroughCheck.txt");
+    ifstream myfile("tests/17-castleThroughCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -608,7 +608,7 @@ TEST_F(ChessTest, castleThroughCheck)
 TEST_F(ChessTest, castleIntoCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/18-castleIntoCheck.txt");
+    ifstream myfile("tests/18-castleIntoCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -622,7 +622,7 @@ TEST_F(ChessTest, castleIntoCheck)
 TEST_F(ChessTest, enPassantTakeRight)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/19-enPassantTakeRight.txt");
+    ifstream myfile("tests/19-enPassantTakeRight.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -636,7 +636,7 @@ TEST_F(ChessTest, enPassantTakeRight)
 TEST_F(ChessTest, enPassantTakeLeft)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/19-enPassantTakeLeft.txt");
+    ifstream myfile("tests/19-enPassantTakeLeft.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -650,7 +650,7 @@ TEST_F(ChessTest, enPassantTakeLeft)
 TEST_F(ChessTest, enPassantWithoutCapture)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/20-enPassantWithoutCapture.txt");
+    ifstream myfile("tests/20-enPassantWithoutCapture.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -664,7 +664,7 @@ TEST_F(ChessTest, enPassantWithoutCapture)
 TEST_F(ChessTest, knightCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/21-knightCheck.txt");
+    ifstream myfile("tests/21-knightCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -678,7 +678,7 @@ TEST_F(ChessTest, knightCheck)
 TEST_F(ChessTest, knightCheckKingMoves)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/22-knightCheckKingMoves.txt");
+    ifstream myfile("tests/22-knightCheckKingMoves.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -692,7 +692,7 @@ TEST_F(ChessTest, knightCheckKingMoves)
 TEST_F(ChessTest, knightMate)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/23-knightMate.txt");
+    ifstream myfile("tests/23-knightMate.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -706,7 +706,7 @@ TEST_F(ChessTest, knightMate)
 TEST_F(ChessTest, pinnedPieceBishop)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/24-pinnedPieceBishop.txt");
+    ifstream myfile("tests/24-pinnedPieceBishop.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -720,7 +720,7 @@ TEST_F(ChessTest, pinnedPieceBishop)
 TEST_F(ChessTest, pinnedPieceQueen)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/25-pinnedPieceQueen.txt");
+    ifstream myfile("tests/25-pinnedPieceQueen.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -734,7 +734,7 @@ TEST_F(ChessTest, pinnedPieceQueen)
 TEST_F(ChessTest, pinnedPiecePawnCanCapture)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/26-pinnedPiecePawnCanCapture.txt");
+    ifstream myfile("tests/26-pinnedPiecePawnCanCapture.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -748,7 +748,7 @@ TEST_F(ChessTest, pinnedPiecePawnCanCapture)
 TEST_F(ChessTest, moveIntoKnightCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/27-moveIntoKnightCheck.txt");
+    ifstream myfile("tests/27-moveIntoKnightCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -762,7 +762,7 @@ TEST_F(ChessTest, moveIntoKnightCheck)
 TEST_F(ChessTest, moveIntoPawnCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/28-moveIntoPawnCheck.txt");
+    ifstream myfile("tests/28-moveIntoPawnCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -776,7 +776,7 @@ TEST_F(ChessTest, moveIntoPawnCheck)
 TEST_F(ChessTest, stalemate)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/29-stalemate.txt");
+    ifstream myfile("tests/29-stalemate.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -790,7 +790,7 @@ TEST_F(ChessTest, stalemate)
 TEST_F(ChessTest, doubleCheckWithKnight)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/30-doubleCheckWithKnight.txt");
+    ifstream myfile("tests/30-doubleCheckWithKnight.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -804,7 +804,7 @@ TEST_F(ChessTest, doubleCheckWithKnight)
 TEST_F(ChessTest, doubleCheckwithBishop)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/31-doubleCheckwithBishop.txt");
+    ifstream myfile("tests/31-doubleCheckwithBishop.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -818,7 +818,7 @@ TEST_F(ChessTest, doubleCheckwithBishop)
 TEST_F(ChessTest, doubleCheckmateKnight)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/32-doubleCheckmateKnight.txt");
+    ifstream myfile("tests/32-doubleCheckmateKnight.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -832,7 +832,7 @@ TEST_F(ChessTest, doubleCheckmateKnight)
 TEST_F(ChessTest, doubleCheckmateBishop)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/33-doubleCheckmateBishop.txt");
+    ifstream myfile("tests/33-doubleCheckmateBishop.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -846,7 +846,7 @@ TEST_F(ChessTest, doubleCheckmateBishop)
 TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/34-doubleCheckPawnKingMovesOutofCheck.txt");
+    ifstream myfile("tests/34-doubleCheckPawnKingMovesOutofCheck.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -860,7 +860,7 @@ TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
 TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/35-doubleCheckPawnKingChoosesToTake.txt");
+    ifstream myfile("tests/35-doubleCheckPawnKingChoosesToTake.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -874,7 +874,7 @@ TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
 TEST_F(ChessTest, doubleCheckPawnKingMustTake)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/36-doubleCheckPawnKingMustTake.txt");
+    ifstream myfile("tests/36-doubleCheckPawnKingMustTake.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -888,7 +888,7 @@ TEST_F(ChessTest, doubleCheckPawnKingMustTake)
 TEST_F(ChessTest, pinnedWithBishop)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/37-pinnedWithBishop.txt");
+    ifstream myfile("tests/37-pinnedWithBishop.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -902,7 +902,7 @@ TEST_F(ChessTest, pinnedWithBishop)
 TEST_F(ChessTest, pinnedWithQueen)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/37-pinnedWithQueen.txt");
+    ifstream myfile("tests/37-pinnedWithQueen.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -916,7 +916,7 @@ TEST_F(ChessTest, pinnedWithQueen)
 TEST_F(ChessTest, pinnedWithRook)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/37-pinnedWithRook.txt");
+    ifstream myfile("tests/37-pinnedWithRook.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -930,7 +930,7 @@ TEST_F(ChessTest, pinnedWithRook)
 TEST_F(ChessTest, pawnPromotionRookWhiteLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/38-pawnPromotionRookWhiteLow.txt");
+    ifstream myfile("tests/38-pawnPromotionRookWhiteLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -944,7 +944,7 @@ TEST_F(ChessTest, pawnPromotionRookWhiteLow)
 TEST_F(ChessTest, pawnPromotionRookWhiteUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/38-pawnPromotionRookWhiteUp.txt");
+    ifstream myfile("tests/38-pawnPromotionRookWhiteUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -958,7 +958,7 @@ TEST_F(ChessTest, pawnPromotionRookWhiteUp)
 TEST_F(ChessTest, pawnPromotionQueenBlackLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/41-pawnPromotionQueenBlackLow.txt");
+    ifstream myfile("tests/41-pawnPromotionQueenBlackLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -972,7 +972,7 @@ TEST_F(ChessTest, pawnPromotionQueenBlackLow)
 TEST_F(ChessTest, pawnPromotionQueenBlackUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/41-pawnPromotionQueenBlackUp.txt");
+    ifstream myfile("tests/41-pawnPromotionQueenBlackUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -986,7 +986,7 @@ TEST_F(ChessTest, pawnPromotionQueenBlackUp)
 TEST_F(ChessTest, pawnPromotionRookBlackLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/42-pawnPromotionRookBlackLow.txt");
+    ifstream myfile("tests/42-pawnPromotionRookBlackLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1000,7 +1000,7 @@ TEST_F(ChessTest, pawnPromotionRookBlackLow)
 TEST_F(ChessTest, pawnPromotionRookBlackUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/42-pawnPromotionRookBlackUp.txt");
+    ifstream myfile("tests/42-pawnPromotionRookBlackUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1015,7 +1015,7 @@ TEST_F(ChessTest, pawnPromotionRookBlackUp)
 TEST_F(ChessTest, pawnPromotionBishopBlackLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/43-pawnPromotionBishopBlackLow.txt");
+    ifstream myfile("tests/43-pawnPromotionBishopBlackLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1029,7 +1029,7 @@ TEST_F(ChessTest, pawnPromotionBishopBlackLow)
 TEST_F(ChessTest, pawnPromotionBishopBlackUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/43-pawnPromotionBishopBlackUp.txt");
+    ifstream myfile("tests/43-pawnPromotionBishopBlackUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1043,7 +1043,7 @@ TEST_F(ChessTest, pawnPromotionBishopBlackUp)
 TEST_F(ChessTest, pawnPromotionKnightBlackLow)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/44-pawnPromotionKnightBlackLow.txt");
+    ifstream myfile("tests/44-pawnPromotionKnightBlackLow.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1057,7 +1057,7 @@ TEST_F(ChessTest, pawnPromotionKnightBlackLow)
 TEST_F(ChessTest, pawnPromotionKnightBlackUp)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/44-pawnPromotionKnightBlackUp.txt");
+    ifstream myfile("tests/44-pawnPromotionKnightBlackUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1071,7 +1071,7 @@ TEST_F(ChessTest, pawnPromotionKnightBlackUp)
 TEST_F(ChessTest, checkmateQueenBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/45-checkmateQueenBlack.txt");
+    ifstream myfile("tests/45-checkmateQueenBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1085,7 +1085,7 @@ TEST_F(ChessTest, checkmateQueenBlack)
 TEST_F(ChessTest, stalemateBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/46-stalemateBlack.txt");
+    ifstream myfile("tests/46-stalemateBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1099,7 +1099,7 @@ TEST_F(ChessTest, stalemateBlack)
 TEST_F(ChessTest, resignBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("test_cases/47-resignBlack.txt");
+    ifstream myfile("tests/47-resignBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1113,7 +1113,7 @@ TEST_F(ChessTest, resignBlack)
 // TEST_F(ChessTest, enPassantPawnRight)
 // {
 //     /* ------------------ Arrange ------------------ */
-//     ifstream myfile("test_cases/39-enPassantPawnLeft.txt");
+//     ifstream myfile("tests/39-enPassantPawnLeft.txt");
 //     SetUp(myfile);
 
 //     /* -------------------- Act -------------------- */
@@ -1127,7 +1127,7 @@ TEST_F(ChessTest, resignBlack)
 // TEST_F(ChessTest, enPassantPawnLeft)
 // {
 //     /* ------------------ Arrange ------------------ */
-//     ifstream myfile("test_cases/40-enPassantPawnRight.txt");
+//     ifstream myfile("tests/40-enPassantPawnRight.txt");
 //     SetUp(myfile);
 
 //     /* -------------------- Act -------------------- */

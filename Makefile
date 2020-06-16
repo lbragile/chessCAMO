@@ -7,34 +7,36 @@ CC = g++
 CFLAGS  = -g -c -Wall
 AFLAGS = -g -Wall
 GTEST_CFLAGS = -I ../googletest/googletest/include -L ../googletest/googletest/lib
+CHESS_CFLAGS = -I ./include/
 GCOV_CFLAGS = -fprofile-arcs -ftest-coverage
 GTEST_LFLAGS = -lgtest -lgtest_main
 GCOV_LFLAGS = -lgcov
 
 all_main: chess.o main.o main.exe
-all_test: chess.o test.o test.exe
 all_unit: chess.o unit.o unit.exe
+# all_test: chess.o test.o test.exe
 
-chess.o: chess.cpp chess.h
-	$(CC) $(CFLAGS) $(GCOV_CFLAGS) chess.cpp
+chess.o: src/chess.cpp include/chess.h
+	$(CC) $(CFLAGS) $(GCOV_CFLAGS) $(CHESS_CFLAGS) src/chess.cpp
 
-test.o: test.cpp chess.h
-	$(CC) $(CFLAGS) test.cpp
+main.o: src/main.cpp include/chess.h
+	$(CC) $(CFLAGS) $(CHESS_CFLAGS) main.cpp
 
-main.o: main.cpp chess.h
-	$(CC) $(CFLAGS) main.cpp
+unit.o: src/unit.cpp include/chess.h
+	$(CC) $(CFLAGS) $(GTEST_CFLAGS) $(CHESS_CFLAGS) src/unit.cpp
 
-unit.o: unit.cpp chess.h
-	$(CC) $(CFLAGS) $(GTEST_CFLAGS) unit.cpp
-
-test.exe:
-	$(CC) $(AFLAGS) chess.o test.o -o test $(GCOV_LFLAGS)
+# test.o: test.cpp chess.h
+# 	$(CC) $(CFLAGS) test.cpp
+# 	
 
 main.exe:
 	$(CC) $(AFLAGS) chess.o main.o -o main $(GCOV_LFLAGS)
 
 unit.exe:
 	$(CC) $(AFLAGS) $(GTEST_CFLAGS) chess.o unit.o -o unit $(GTEST_LFLAGS) $(GCOV_LFLAGS)
+
+# test.exe:
+# 	$(CC) $(AFLAGS) chess.o test.o -o test $(GCOV_LFLAGS)
 
 # generates the necessary files to make a code coverage report
 # generates the report in both html and xml formats
