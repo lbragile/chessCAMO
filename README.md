@@ -12,6 +12,8 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 
 <img src="docs/gameplay.gif" alt="checkmate" align="left" style="zoom:100%;" />
 
+
+
 ## Installation
 
 #### Compiler
@@ -58,6 +60,8 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 ## Tests [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
 
 <img src="docs/testing.gif" alt="testing" align="left" style="zoom:100%;" />
+
+
 
 ### Unit Testing
 
