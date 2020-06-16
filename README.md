@@ -12,7 +12,7 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 
 <img src="docs/gameplay.gif" alt="checkmate" align="left" style="zoom:100%;" />
 
-
+<br>
 
 ## Installation
 
@@ -61,7 +61,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 <img src="docs/testing.gif" alt="testing" align="left" style="zoom:100%;" />
 
-
+<br>
 
 ### Unit Testing
 
