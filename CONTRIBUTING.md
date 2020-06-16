@@ -1,16 +1,49 @@
-# Contributing
+## Contributing :cupid:
 
 Thank you so much for wanting to contribute to *chessCAMO*. Any constructive criticism regarding this project is welcomed and appreciated, as ultimately I love learning new things and getting better! It would be amazing if this project inspires or assists other users with their project ideas.
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owner(s) of this repository before making a change. 
 
-Note that there is a code of conduct, please follow it in all your interactions with the project.
+There is a <a href="https://github.com/lbragile/chessCAMO/blob/master/CODE_OF_CONDUCT.md" target="__blank" style="text-decoration: none;">code of conduct</a>, please follow it in all your interactions with the project.
 
-## What to Contribute
+### Process :star2:
+
+#### Step 1
+
+- ##### Option 1
+
+  - :fork_and_knife: Fork this repository :fork_and_knife:
+
+    <img src="docs/forking.png" alt="testing" style="float: left; zoom:100%;" />
+
+- ##### Option 2
+
+  - Clone this repository to your local machine using:
+
+    `git clone https://github.com/lbragile/chessCAMO.git`
+
+#### Step 2
+
+- Make your changes and/or additions. :wrench::hammer:
+
+- Ensure all test cases pass (must have <b>100%</b> pass rate to be approved): :heavy_check_mark:
+
+  <img src="docs/testing.gif" alt="testing" style="float: left; zoom:100%;" />
+
+- Increase the version numbers in all files to the new version that this Pull Request would represent. 
+
+#### Step 3
+
+- Create a new <a href=" https://github.com/lbragile/chessCAMO/pulls" target="__blank" style="text-decoration: none;">pull request</a>. :sunglasses:
+- Include a relevant message discussing your contribution.
+- Wait for the maintainer to review your pull request and merge it into the master branch :pray:.
+- Celebrate your new open source contribution :trophy::clap::boom::exclamation:
+
+## What to Contribute? :blush:
 
 As this project is open-source, you can pick an choose what it is that you would like to contribute. This includes anything from improving the code (new function implementation, edits, comments, etc.), to adding test cases and/or any other files that you deem necessary for the successful completion of this project.
 
-### How to Make Test Cases
+### Making Test Cases :100:
 
 Take a look at the implementation file "*test.cpp*". This implementation file is meant to be used as a test case checker to improve efficiency in debugging and will indicate how to produce an appropriate test case.
 
@@ -30,7 +63,7 @@ The main process is as follows:
 
 5. Name the file a meaningful name according to what is being tested. 
 
-   **E.g.** to check if a given piece (Queen) delivers a checkmate => "*queenCheckmate.txt*"
+   **E.g.** to check if a given piece (Queen) delivers a checkmate <span>&rarr;</span> "*queenCheckmate.txt*"
 
 6. Place test case files in a folder named "*./test_cases/*" (used by the algorithm).
 
@@ -38,10 +71,3 @@ The main process is as follows:
 
 - ​	There is no draw or resign functionality here since this is meant for quick testing.
 - ​	If an invalid move is made, the board is printed to allow debugging of the board state. 
-
-## Pull Request Process
-
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2. Update the README.md with details of changes to the interface, this includes new environment variables and useful file locations.
-3. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. 
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you do not have permission to do that, you may request the second reviewer to merge it for you.
