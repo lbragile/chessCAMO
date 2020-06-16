@@ -15,5 +15,5 @@ var searchData=
   ['chessteststring_19',['ChessTestString',['../class_chess_test_string.html',1,'']]],
   ['color_20',['color',['../class_piece.html#a7dbcb06a7738adf4db8310eefd699759',1,'Piece']]],
   ['cyan_21',['CYAN',['../chess_8h.html#ad243f93c16bc4c1d3e0a13b84421d760',1,'chess.h']]],
-  ['chesscamo_22',['chessCAMO',['../index.html',1,'']]]
+  ['chesscamo_20_3agem_3a_22',['chessCAMO :gem:',['../index.html',1,'']]]
 ];
