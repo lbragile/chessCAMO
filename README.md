@@ -74,7 +74,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 <img src="docs/testing.gif" alt="testing" style="float: left; zoom:100%;" />
 
-### Unit Testing :star:
+### Unit Testing :mag:
 
 Currently chessCAMO utilizes the <a href="https://github.com/google/googletest" target="__blank" style="text-decoration: none;">GoogleTest</a> Framework to create test fixtures that cover as much of the implementation file as possible.
 
