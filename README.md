@@ -35,7 +35,9 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 3. An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.
 4. Additionally, just like in the *Crazyhouse* variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
 
-## Documentation :raised_hands: [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/)
+## Documentation :raised_hands:
+
+[![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/)
 
 Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a> to clear up any questions you might have.
 
@@ -55,7 +57,21 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 - [ ] Implement abovementioned check and pawn promotion rules.
 - [ ] Make test cases to confirm that overall functionality still works.
 
-## Tests :heart_eyes: [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
+## Tests :heart_eyes: 
+
+[![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
+
+#### Run
+
+- `mingw32-make all_unit`
+
+- `unit --gtest_color=yes` :arrow_right: colored output (<span style="color:green">Pass</span>/<span style="color:red">Fail</span>) 
+
+  <b> OR </b>
+
+- `mingw32-make all_unit`
+
+- `unit` :arrow_right: regular output (no color) 
 
 <img src="docs/testing.gif" alt="testing" style="float: left; zoom:100%;" />
 
@@ -65,7 +81,9 @@ Currently chessCAMO utilizes the <a href="https://github.com/google/googletest" 
 
 You can contribute to this project by making test cases that can challenge the chessCAMO engine in unique ways to ensure that it follows proper chess rules. To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a> in the documentation file.
 
-## Contributing :sparkling_heart: ​[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO) [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) 
+## Contributing :sparkling_heart: 
+
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO) [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO)
 
 Please refer to the <a href="https://github.com/lbragile/chessCAMO/blob/master/CONTRIBUTING.md" target="__blank" style="text-decoration: none;">CONTRIBUTING.md</a> document.
 
@@ -87,11 +105,13 @@ Reach out to me at any of the following:
 - <a href="https://www.facebook.com/lbragi/" target="__blank" style="text-decoration: none;">Facebook</a>
 - lbragile.masc@gmail.com
 
-## License [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
+## License :car:
 
-- <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a>
+[![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
 
-- :copyright: 2020 @ Lior Bragilevsky
+- <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a> 
+
+- C​o​p​y​ri​gh​t​ :copyright: 2020 Lior Bragilevsky
 
   
 

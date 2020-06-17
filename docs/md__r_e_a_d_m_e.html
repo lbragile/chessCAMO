@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>chessCAMO: README</title>
+<title>chessCAMO: chessCAMO :gem:</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,10 +62,109 @@ $(function() {
 </div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">README </div>  </div>
+<div class="title"><a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> :gem: </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This is just a central place where I plan to include documentation files for coding projects that I write. </p>
+<div class="textblock"><h2><a class="anchor" id="autotoc_md20"></a>
+:point_right: &lt;em&gt;Chess Engine with a twist in the form of a new variant&lt;/em&gt; :point_left:</h2>
+<h1><a class="anchor" id="autotoc_md21"></a>
+Project Description :pencil:</h1>
+<p><em><a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a></em> is a newly proposed chess variant that stands for Calculations Always Make Opportunities and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank" style="text-decoration: none;">Crazyhouse</a>.</p>
+<p>The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board.</p>
+<p><a href="https://github.com/lbragile/chessCAMO/actions"><img src="https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master" alt="Build" class="inline"/></a> <a href="https://codecov.io/gh/lbragile/chessCAMO/commits"><img src="https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master" alt="Coverage" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO/issues"><img src="https://img.shields.io/github/issues/lbragile/chessCAMO" alt="Issues" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/github/forks/lbragile/chessCAMO" alt="Forks" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/github/stars/lbragile/chessCAMO" alt="Stars" class="inline"/></a> <a href="https://lbragile.github.io/chessCAMO/"><img src="https://img.shields.io/badge/doc-available-brightgreen.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/badge/maintenance-active-brightgreen.svg" alt="Active Development" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lbragile/chessCAMO" alt="License" class="inline"/></a></p>
+<p><img src="docs/gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" class="inline"/></p>
+<h1><a class="anchor" id="autotoc_md22"></a>
+Installation :arrow_down:</h1>
+<h3><a class="anchor" id="autotoc_md23"></a>
+Compiler</h3>
+<ul>
+<li>A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md24"></a>
+Clone</h3>
+<ul>
+<li><code>git clone <a href="https://github.com/lbragile/chessCAMO.git">https://github.com/lbragile/chessCAMO.git</a></code></li>
+</ul>
+<h3><a class="anchor" id="autotoc_md25"></a>
+Run</h3>
+<ul>
+<li><code>cd <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a></code></li>
+<li><code>mingw32-make all_main</code></li>
+<li><code>main</code></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md26"></a>
+Variant's Rules :straight_ruler::notebook:</h1>
+<ol type="1">
+<li>The piece reservoir is limited in size and cannot be re-stocked with pieces.</li>
+<li>Once a player decides to use a piece from the reservoir to replace one of his existing pieces on the board, their turn is over.</li>
+<li>An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.</li>
+<li>Additionally, just like in the <em>Crazyhouse</em> variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md27"></a>
+Documentation :raised_hands:</h1>
+<p><a href="https://lbragile.github.io/chessCAMO/"><img src="https://img.shields.io/badge/doc-available-brightgreen.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a></p>
+<p>Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a> to clear up any questions you might have.</p>
+<h2><a class="anchor" id="autotoc_md28"></a>
+To Do :wink:</h2>
+<h4><a class="anchor" id="autotoc_md29"></a>
+Regular Chess: :smirk:</h4>
+<ul>
+<li>[ ] Three move repetition (draw) &amp; 50 move rule.</li>
+<li>[ ] Board representation undo (use queue?).</li>
+<li>[ ] Input as PGN rather than two integers (template) - working currently but not really a template.</li>
+<li>[ ] GUI - nice to be able to move pieces with mouse rather than inputting coordinates.</li>
+</ul>
+<h4><a class="anchor" id="autotoc_md30"></a>
+ChessCAMO: :grin:</h4>
+<ul>
+<li>[ ] Make piece reservoir (stack).</li>
+<li>[ ] Allow players to replace existing pieces with reservoir pieces.</li>
+<li>[ ] Implement abovementioned check and pawn promotion rules.</li>
+<li>[ ] Make test cases to confirm that overall functionality still works.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md31"></a>
+Tests :heart_eyes:</h1>
+<p><a href="https://github.com/lbragile/chessCAMO/actions"><img src="https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master" alt="Build" class="inline"/></a> <a href="https://codecov.io/gh/lbragile/chessCAMO/commits"><img src="https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master" alt="Coverage" class="inline"/></a></p>
+<h3><a class="anchor" id="autotoc_md32"></a>
+Run</h3>
+<ul>
+<li><code>mingw32-make all_unit</code></li>
+<li><p class="startli"><code>unit --gtest_color=yes</code> :arrow_right: colored output (<span style="color:green">Pass</span>/<span style="color:red">Fail</span>)</p>
+<p class="startli"><b> OR </b></p>
+</li>
+<li><code>mingw32-make all_unit</code></li>
+<li><code>unit</code> :arrow_right: regular output (no color)</li>
+</ul>
+<p><img src="docs/testing.gif" alt="testing" style="float: left; zoom:100%;" class="inline"/></p>
+<h2><a class="anchor" id="autotoc_md33"></a>
+Unit Testing :star:</h2>
+<p>Currently <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> utilizes the <a href="https://github.com/google/googletest" target="__blank" style="text-decoration: none;">GoogleTest</a> Framework to create test fixtures that cover as much of the implementation file as possible.</p>
+<p>You can contribute to this project by making test cases that can challenge the <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> engine in unique ways to ensure that it follows proper chess rules. To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a> in the documentation file.</p>
+<h1><a class="anchor" id="autotoc_md34"></a>
+Contributing :sparkling_heart:</h1>
+<p><a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO/issues"><img src="https://img.shields.io/github/issues/lbragile/chessCAMO" alt="Issues" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/github/forks/lbragile/chessCAMO" alt="Forks" class="inline"/></a></p>
+<p>Please refer to the <a href="https://github.com/lbragile/chessCAMO/blob/master/CONTRIBUTING.md" target="__blank" style="text-decoration: none;">CONTRIBUTING.md</a> document.</p>
+<h1><a class="anchor" id="autotoc_md35"></a>
+Inspiration​ :chart_with_upwards_trend:</h1>
+<p>I decided to create this project due to my growing interest in software development. Coming from an Engineering background with Deep Learning research experience (Recent Master of Applied Science graduate), I realized that writing and developing code (both front and back end) were highly appealing to me. Thus, I spent a lot of time building upon my existing coding knowledge through online material and knew that it is time to test my knowledge on a challenging project. Additionally, I played chess (not very seriously) consistently since the age of about 4-5, so one can say that it is a very big part of my life. As a result, this project allowed me to gain valuable experience and knowledge while working on a topic that I am passionate about and have expertise in.</p>
+<h1><a class="anchor" id="autotoc_md36"></a>
+YouTube - Look Out :fire:</h1>
+<p>Be on the look out for a detailed YouTube video series explaining the various sections of this project. I feel like others could benefit from the logic involved in creating a project on this scale, which is relatively large and requires a substantial time commitment. Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before anything major is finished. I was in the same boat before and understand the frustration of wanting to work on an interesting project, but simply not being able to. It is often best to work on small pieces and build your way to the final product. This gives you a sense of accomplishment at each step and prevents you from experiencing the overwhelmed feeling. Let me know if you are interested in me making the videos and what you would like to see.</p>
+<h1><a class="anchor" id="autotoc_md37"></a>
+Need Support? :ok_hand:</h1>
+<p>Reach out to me at any of the following:</p>
+<ul>
+<li><a href="https://www.linkedin.com/in/liorbragilevsky/" target="__blank" style="text-decoration: none;">LinkedIn</a></li>
+<li><a href="https://www.facebook.com/lbragi/" target="__blank" style="text-decoration: none;">Facebook</a></li>
+<li><a href="#" onclick="location.href='mai'+'lto:'+'lbr'+'ag'+'ile'+'.m'+'asc'+'@g'+'mai'+'l.'+'com'; return false;">lbrag<span style="display: none;">.nosp@m.</span>ile.<span style="display: none;">.nosp@m.</span>masc@<span style="display: none;">.nosp@m.</span>gmai<span style="display: none;">.nosp@m.</span>l.com</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md38"></a>
+License :car:</h1>
+<p><a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lbragile/chessCAMO" alt="License" class="inline"/></a></p>
+<ul>
+<li><a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a></li>
+<li>C​o​p​y​ri​gh​t​ :copyright: 2020 Lior Bragilevsky </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
