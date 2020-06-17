@@ -840,13 +840,8 @@ bool Piece::isPathFree(int dest, Chess *chess)
  */
 bool Piece::isLegalMove(int dest, Chess *chess)
 {
-    int src = this->getPieceSquare();
-    if(0 <= dest && dest <= 63 && src != dest)
-    {
-        return this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess) && !this->movedIntoCheck(dest, chess);
-    }
-    else
-        return false;
+        return 0 <= dest && dest <= 63 && this->getPieceSquare() != dest && 
+               this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess) && !this->movedIntoCheck(dest, chess);
 }
 
 /**
@@ -949,8 +944,8 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
     if(this->getPieceMoveInfo())
     {
         legal = (diff == 8 && board[dest]->isEmpty()) || 
-                ( (diff == 7 || diff == 9) &&
-                (!board[dest]->isEmpty() || board[src]->getEnPassant()) );
+                ( ( diff == 7 && ( !board[dest]->isEmpty() || (board[src]->getEnPassant() && board[src+1]->isPawn()) ) ) ||
+                  ( diff == 9 && ( !board[dest]->isEmpty() || (board[src]->getEnPassant() && board[src-1]->isPawn()) ) ) );
     }
     else // cannot en-passant if you have not moved yet
     {

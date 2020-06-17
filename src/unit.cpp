@@ -858,6 +858,34 @@ TEST_F(ChessTest, pawnPromotionRookWhiteUp)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
+TEST_F(ChessTest, enPassantPawnRight)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/39-enPassantPawnLeft.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, enPassantPawnLeft)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/40-enPassantPawnRight.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
 TEST_F(ChessTest, pawnPromotionQueenBlackLow)
 {
     /* ------------------ Arrange ------------------ */
@@ -1012,34 +1040,6 @@ TEST_F(ChessTest, resignBlack)
     /* ------------------- Assert ------------------ */
     EXPECT_EQ(fen_expected, fen_obtained);
 }
-
-// TEST_F(ChessTest, enPassantPawnRight)
-// {
-//     /* ------------------ Arrange ------------------ */
-//     ifstream myfile("tests/39-enPassantPawnLeft.txt");
-//     SetUp(myfile);
-
-//     /* -------------------- Act -------------------- */
-//     // convert the final board position from a given test case file into a FEN string
-//     fen_obtained = boardFenConverter(chess);
-
-//     /* ------------------- Assert ------------------ */
-//     EXPECT_EQ(fen_expected, fen_obtained);
-// }
-
-// TEST_F(ChessTest, enPassantPawnLeft)
-// {
-//     /* ------------------ Arrange ------------------ */
-//     ifstream myfile("tests/40-enPassantPawnRight.txt");
-//     SetUp(myfile);
-
-//     /* -------------------- Act -------------------- */
-//     // convert the final board position from a given test case file into a FEN string
-//     fen_obtained = boardFenConverter(chess);
-
-//     /* ------------------- Assert ------------------ */
-//     EXPECT_EQ(fen_expected, fen_obtained);
-// }
 
 // -lgtest_main does this for you automatically to avoid writing main
 // int main(int argc, char **argv)
