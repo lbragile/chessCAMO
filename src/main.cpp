@@ -92,8 +92,7 @@ int main()
                 break;
         }
     }
-            
-
+    
     delete chess; // destroy the dynamic object to free its memory allocation
 
     return 0;

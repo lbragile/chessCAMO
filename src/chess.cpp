@@ -146,8 +146,6 @@ Chess::~Chess()
 /**
  * @brief      Places the pieces on the board at their correct starting positions
  *
- * @param[in]  board_size  8x8 board has 64 index positions
- * 
  * \pre
  * The chess object is intialized
  * 
@@ -578,7 +576,7 @@ void Chess::handleCheckmate()
  */
 void Chess::handleStalemate()
 {
-    string message = this->getTurn() != WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
+    string message = this->switchTurn() == WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
     chessCAMO::printMessage(message, CYAN);
     this->setStalemate(true);
 }
@@ -608,7 +606,7 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
 {
     vector<Piece*> board = this->getBoard();
 
-    if(piece->isPossibleMove(king->getPieceSquare(), this) && piece->isPathFree(king->getPieceSquare(), this))
+    if(piece->isPossibleMove(king->getPieceSquare(), this))
     {
         this->makeMoveForType(dest, src); // undo the move
 
@@ -1117,8 +1115,9 @@ bool King::isPossibleMove(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
     int diff = std::abs(src - dest);
-    return ( (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest, chess) ) ||
-           ( (diff == 3 || diff == 4) && this->canCastle(dest, chess) );
+    int col_diff = std::abs(src%8 - dest%8), row_diff = std::abs(src/8 - dest/8);
+    return ( (col_diff <= 1 && row_diff <= 1) && (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !this->isSameColor(dest, chess) ) ||
+           ( (diff == 3 || diff == 4) && this->canCastle(dest, chess) ) ;
 }
 
  /**
