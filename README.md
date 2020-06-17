@@ -14,15 +14,15 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 
 ## Installation :arrow_down:
 
-#### Compiler
+### Compiler
 
 - A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
 
-#### Clone
+### Clone
 
 - `git clone https://github.com/lbragile/chessCAMO.git`
 
-#### Run
+### Run
 
 - `cd chessCAMO`
 - `mingw32-make all_main`
@@ -43,13 +43,13 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 ### To Do :wink:
 
-##### Regular Chess: :smirk:
+#### Regular Chess: :smirk:
 
 - [ ] Three move repetition (draw) & 50 move rule.
 - [ ] Board representation undo (use queue?).
 - [ ] GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
 
-##### ChessCAMO: :grin:
+#### ChessCAMO: :grin:
 
 - [ ] Make piece reservoir (stack).
 - [ ] Allow players to replace existing pieces with reservoir pieces.
@@ -60,13 +60,13 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
 
-#### Run
+### Run
 
 - `mingw32-make all_unit`
 
 - `unit --gtest_color=yes` :arrow_right: colored output (<span style="color:green">Pass</span>/<span style="color:red">Fail</span>) 
 
-  <b> OR </b>
+  #### <b> OR </b>
 
 - `mingw32-make all_unit`
 
