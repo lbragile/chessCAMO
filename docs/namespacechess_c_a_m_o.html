@@ -73,6 +73,10 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a011d5021afd7d9ab7cfc0e15f15d2f23"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a011d5021afd7d9ab7cfc0e15f15d2f23"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a011d5021afd7d9ab7cfc0e15f15d2f23">preProcessInput</a> (T input)</td></tr>
+<tr class="memdesc:a011d5021afd7d9ab7cfc0e15f15d2f23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the input string into its corresponding coordinate (integer) for easier computation in chess::makeMove(int src, int dest, istream&amp; in).  <a href="namespacechess_c_a_m_o.html#a011d5021afd7d9ab7cfc0e15f15d2f23">More...</a><br /></td></tr>
+<tr class="separator:a011d5021afd7d9ab7cfc0e15f15d2f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a639e125cd734b4dd09cef6dd1cfeafbf">printBoard</a> (const vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board)</td></tr>
 <tr class="memdesc:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterates through the pieces on a current board representation to produce the board on the console screen.  <a href="namespacechess_c_a_m_o.html#a639e125cd734b4dd09cef6dd1cfeafbf">More...</a><br /></td></tr>
 <tr class="separator:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -86,6 +90,42 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This namespace contains the global functions related to <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> which are mainly used as helper functions to print information to the console to improve user experience while playing the game. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a011d5021afd7d9ab7cfc0e15f15d2f23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a011d5021afd7d9ab7cfc0e15f15d2f23">&#9670;&nbsp;</a></span>preProcessInput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int chessCAMO::preProcessInput </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts the input string into its corresponding coordinate (integer) for easier computation in chess::makeMove(int src, int dest, istream&amp; in). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>The input square of the piece (as a string, E.g. "e2")</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Either string or integer type</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The source or destination squares in integer form</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Can use integers as well due to template functionality </dd></dl>
+
+</div>
+</div>
 <a id="a639e125cd734b4dd09cef6dd1cfeafbf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a639e125cd734b4dd09cef6dd1cfeafbf">&#9670;&nbsp;</a></span>printBoard()</h2>
 

@@ -51,8 +51,8 @@ using namespace chessCAMO;
 int main()
 {
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-    int src, dest;
+    // coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+    string src, dest;
 
     // create the object dynamically to control when it is destroyed
     Chess *chess = new Chess;
@@ -64,7 +64,7 @@ int main()
     // while the game is NOT finished (checkmate, stalemate, draw, resign)
     while(!chess->getCheckmate() && !chess->getStalemate())
     {   
-        chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+        chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK);
         cin >> src >> dest;
 
         // input error checking
@@ -73,13 +73,13 @@ int main()
             chessCAMO::printMessage("\nInput type is invalid... try again!\n", YELLOW);
             cin.clear(); // clear error flag of cin
             cin.ignore(100,'\n'); // ignore the first 100 characters until '\n' is reached
-            chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+            chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK);
             cin >> src >> dest;
         }
 
         // makes the corresponding move and updates the board state on the console after clearing it
         std::system("cls");
-        chess->makeMove(src, dest, cin);
+        chess->makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), cin);
 
         // prevent asking again after game is over
         if(!chess->getCheckmate() && !chess->getStalemate())

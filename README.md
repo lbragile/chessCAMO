@@ -1,10 +1,10 @@
 # chessCAMO :gem:
 
-### :point_right: *Chess Engine with a twist in the form of a new variant* :point_left:
+### :point_right: *Chess engine with a twist in the form of a new variant* :point_left:
 
 ## Project Description :pencil:
 
-*chessCAMO* is a newly proposed chess variant that stands for Calculations Always Make Opportunities and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank" style="text-decoration: none;">Crazyhouse</a>.
+*chessCAMO* is a newly proposed chess engine with a built-in variant that stands for **C**alculations **A**lways **M**ake **O**pportunities and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank" style="text-decoration: none;">Crazyhouse</a>.
 
 The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
 
@@ -47,7 +47,6 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 - [ ] Three move repetition (draw) & 50 move rule.
 - [ ] Board representation undo (use queue?).
-- [ ] Input as PGN rather than two integers (template) - working currently but not really a template.
 - [ ] GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
 
 ##### ChessCAMO: :grin:
@@ -87,6 +86,22 @@ You can contribute to this project by making test cases that can challenge the c
 
 Please refer to the <a href="https://github.com/lbragile/chessCAMO/blob/master/CONTRIBUTING.md" target="__blank" style="text-decoration: none;">CONTRIBUTING.md</a> document.
 
+## Like What You See? :thumbsup:
+
+[![Stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO)
+
+### Give Stars :star:
+
+Make the maintainer happy by hitting the star icon for this repository!
+
+<img src="docs/star.PNG" alt="checkmate" style="float: left; zoom:100%;" />
+
+### Add to Watch List :eyes:
+
+Consider adding this repository to your watch list to stay updated on what new feature is implements.
+
+<img src="docs/watch.PNG" alt="checkmate" style="float: left; zoom:100%;" />
+
 ## Inspiration​ :chart_with_upwards_trend:
 
 I decided to create this project due to my growing interest in software development. Coming from an Engineering background with Deep Learning research experience (Recent Master of Applied Science graduate), I realized that writing and developing code (both front and back end) were highly
@@ -112,6 +127,4 @@ Reach out to me at any of the following:
 - <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a> 
 
 - C​o​p​y​ri​gh​t​ :copyright: 2020 Lior Bragilevsky
-
-  
 

@@ -343,40 +343,6 @@ void Chess::makeMove(int src, int dest, istream &in)
     }
 }
 
-/** 
- * \brief 
- * Converts the input strings into their coordinates (integer)
- * and calls Chess::makeMove(int src, int dest, istream& in). 
- * 
- * \overload void Chess::makeMove(string,string,istream&)   
- */
-void Chess::makeMove(string src, string dest, istream &in)
-{
-    int src_int, dest_int;
-
-    /************ src **********/
-    if(islower(src[0])) // src[0] -> file, src[1] -> rank
-    {
-        src_int = (int(src[0]) - 97) + (8 - (int(src[1]) - 48))*8; // file + rank
-    }
-    else
-    {
-        src_int = (int(src[0]) - 65) + (8 - (int(src[1]) - 48))*8; // file + rank
-    }
-
-    /************ dest **********/
-    if(islower(dest[0])) // dest[0] -> file, dest[1] -> rank
-    {
-        dest_int = (int(dest[0]) - 97) + (8 - (int(dest[1]) - 48))*8; // file + rank
-    }
-    else
-    {
-        dest_int = (int(dest[0]) - 65) + (8 - (int(dest[1]) - 48))*8; // file + rank
-    }
-
-    this->makeMove(src_int, dest_int, in); // call the coordinate version
-}
-
 /**
  * @brief      Decide if a move caused a checkmate according to 'check_type'
  *

@@ -138,8 +138,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac149ff524cf6e5409652a6263570008a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ac149ff524cf6e5409652a6263570008a">makeMove</a> (int src, int dest, istream &amp;in)</td></tr>
 <tr class="memdesc:ac149ff524cf6e5409652a6263570008a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a piece on the board from 'src' to 'dest' if conditions for a legal move are met.  <a href="class_chess.html#ac149ff524cf6e5409652a6263570008a">More...</a><br /></td></tr>
 <tr class="separator:ac149ff524cf6e5409652a6263570008a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6d1a4704c99a1be516074bf131bae55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#af6d1a4704c99a1be516074bf131bae55">makeMove</a> (string src, string dest, istream &amp;in)</td></tr>
-<tr class="separator:af6d1a4704c99a1be516074bf131bae55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb419f9d3c34d47519ff38b3180747a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0">isCheckmate</a> (string check_type)</td></tr>
 <tr class="memdesc:aeb419f9d3c34d47519ff38b3180747a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decide if a move caused a checkmate according to 'check_type'.  <a href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0">More...</a><br /></td></tr>
 <tr class="separator:aeb419f9d3c34d47519ff38b3180747a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -779,7 +777,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <a id="ac149ff524cf6e5409652a6263570008a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac149ff524cf6e5409652a6263570008a">&#9670;&nbsp;</a></span>makeMove() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac149ff524cf6e5409652a6263570008a">&#9670;&nbsp;</a></span>makeMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -821,43 +819,6 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created.</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>The pieces at 'src' and 'dest' positions are swapped. If needed (attacking, castling, etc.) an empty square is made. The board's state is updated to indicate that the move occured. On failure, an error message is printed and user is asked to retry. </dd></dl>
-
-</div>
-</div>
-<a id="af6d1a4704c99a1be516074bf131bae55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6d1a4704c99a1be516074bf131bae55">&#9670;&nbsp;</a></span>makeMove() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Chess::makeMove </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>dest</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">istream &amp;&#160;</td>
-          <td class="paramname"><em>in</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>This is an overloaded member function, provided for convenience. It differs from the above function only in what argument(s) it accepts.</p>
-<p><br  />
- </p>
 
 </div>
 </div>

@@ -109,106 +109,13 @@ protected:
      * \brief The source square of the piece to-be-moved
      * 
      * \note 
-     * Coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-     */
-    int src;
-
-     /**
-     * \brief The destination square of the piece to-be-moved
-      * 
-     * \note 
-     * Coordinates are in [0, 63] -> 0 is top left, 63 if bottom right
-     */
-    int dest;
-
-    /// Expected FEN string for a given board representation before moves are made for it
-    string fen_expected;
-
-    /// Obtained FEN string for a given board representation after moves are made for it
-    string fen_obtained;
-
-    /**
-     * @brief      Before a given test is executed, this sets up everything and initializes the variables
-     *             Additionally, this performs the actual gameplay moves needed to obtain the final board representation
-     *
-     * @param      myfile  The file to read moves from
-     */
-    void SetUp(ifstream & myfile)
-    {
-        std::cout.setstate(std::ios_base::failbit); // surpress output
-        chess->boardInit();
-
-        /* -------------------- Act -------------------- */
-        if(myfile.is_open()) //if the file is open
-        {
-           // read in the expected FEN (this is at the top of each test case file)
-            getline(myfile, fen_expected);
-
-            // read in the moves of the given test case file one line at a time
-            // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
-            while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate())
-            {   
-                chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
-                myfile >> src >> dest;
-
-                cout << src << " " << dest << endl;
-                chess->makeMove(src, dest, myfile);
-
-                // prevent asking again after game is over
-                if(!chess->getCheckmate() && !chess->getStalemate())
-                {
-                    chessCAMO::drawOrResign(chess, myfile);
-
-                    // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
-                    // so if this happens break out of the while loop
-                    if(chess->getCheckmate())
-                        break;
-                }
-            }
-            myfile.close(); //closing the file
-        }
-        else // test case file failed to open or doesn't exist
-        {
-            fen_expected = "-";
-        }
-    }
-
-    /**
-     * @brief      After a given test is completed, free the memory made by dynamic allocation.
-     *             This ensures that the following test can dynamically allocate memory without
-     *             causing a memory leak. 
-     */
-    void TearDown() override
-    {
-        std::cout.clear(); // enable output again
-        delete chess;
-    }
-};
-
-/**
- * @brief      This class describes a chess test for string source and destination squares.
- *             It is used as a fixture to quickly set up tests without duplicating the code,
- *             by utilizing the overriden SetUp and TearDown functions.
- *             
- * \todo       Find a way to pass template variables here as only 'src' and 'dest' are different
- */ 
-class ChessTestString : public ::testing::Test
-{
-protected:
-    /// create the testing object
-    Chess *chess = new Chess;
-
-    /**
-     * \brief The source square of the piece to-be-moved
-     * 
-     * \note 
      * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
      */
     string src;
 
      /**
      * \brief The destination square of the piece to-be-moved
-    * 
+      * 
      * \note 
      * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
      */
@@ -241,10 +148,11 @@ protected:
             // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
             while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate())
             {   
-                chessCAMO::printMessage("\nEnter a source AND destination square in [0, 63]: ", PINK);
+                chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK); // for debugging purposes
                 myfile >> src >> dest;
-                cout << src << " " << dest << endl;
-                chess->makeMove(src, dest, myfile);
+
+                cout << src << " " << dest << endl; // for debugging purposes
+                chess->makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), myfile);
 
                 // prevent asking again after game is over
                 if(!chess->getCheckmate() && !chess->getStalemate())
@@ -277,11 +185,12 @@ protected:
     }
 };
 
+
 /*************************************************************************************/
 /*                                       TESTS                                       */
 /*************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-TEST_F(ChessTestString, unableToOpenFileString)
+TEST_F(ChessTest, unableToOpenFileString)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/unableToOpenFileString.txt");
@@ -291,7 +200,7 @@ TEST_F(ChessTestString, unableToOpenFileString)
     EXPECT_EQ(fen_expected, "-");
 }
 
-TEST_F(ChessTestString, stringInputsResignForCoverage)
+TEST_F(ChessTest, stringInputsResignForCoverage)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/00-stringInputsResignForCoverage.txt");
@@ -305,7 +214,7 @@ TEST_F(ChessTestString, stringInputsResignForCoverage)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
+TEST_F(ChessTest, stringInputsNDrawFeaturesForCoverage)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/00-stringInputsNDrawFeaturesForCoverage.txt");
@@ -317,16 +226,6 @@ TEST_F(ChessTestString, stringInputsNDrawFeaturesForCoverage)
 
     /* ------------------- Assert ------------------ */
     EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, unableToOpenFileInt)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/unableToOpenFileInt.txt");
-    SetUp(myfile);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, "-");
 }
 
 TEST_F(ChessTest, castleAfterKingMoved)

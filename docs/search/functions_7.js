@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['handlechangeturn_165',['handleChangeTurn',['../class_chess.html#afb0e6941c0f1bedfad490df9649045d4',1,'Chess']]],
-  ['handlecheckmate_166',['handleCheckmate',['../class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72',1,'Chess']]],
-  ['handlestalemate_167',['handleStalemate',['../class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9',1,'Chess']]]
+  ['handlechangeturn_164',['handleChangeTurn',['../class_chess.html#afb0e6941c0f1bedfad490df9649045d4',1,'Chess']]],
+  ['handlecheckmate_165',['handleCheckmate',['../class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72',1,'Chess']]],
+  ['handlestalemate_166',['handleStalemate',['../class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9',1,'Chess']]]
 ];
