@@ -159,7 +159,7 @@ public:
      * \note
      * Intentionally left blank.
      */
-    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
+    Chess() : board{64}, checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
@@ -263,8 +263,6 @@ public:
 
     /**
      * @brief      Places the pieces on the board at their correct starting positions
-     *
-     * @param[in]  board_size  8x8 board has 64 index positions
      * 
      * \pre
      * The chess object is intialized
@@ -274,7 +272,7 @@ public:
      * in the corresponding index of the board vector and set the global
      * object's board variable
      */  
-    void boardInit(int board_size = 64); // Board intialization
+    void boardInit(); // Board intialization
 
     /**
      * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
@@ -1219,6 +1217,7 @@ namespace chessCAMO
  * @mainpage chessCAMO
  * ## Chess engine with a twist in the form of a new variant
  * # Project Description
+ * <hr style="border: 1px solid #EAECEF;">
  * *chessCAMO* is a newly proposed chess engine with a built-in variant that stands for <b>C</b>alculations <b>A</b>lways <b>M</b>ake <b>O</b>pportunities
  * and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank" style="text-decoration: none;">Crazyhouse</a>.
  * 
@@ -1236,9 +1235,10 @@ namespace chessCAMO
  * [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
  * 
  * <img src="gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
- * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+ * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  * 
  * # Installation
+ * <hr style="border: 1px solid #EAECEF;">
  * ## Compiler
  * - A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
  * ## Clone
@@ -1249,6 +1249,7 @@ namespace chessCAMO
  * - <span style="background-color:#F3F4F4;">main</span>
  * 
  * # Variant's Rules
+ * <hr style="border: 1px solid #EAECEF;">
  * 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
  * 2. Once a player decides to use a piece from the reservoir to replace one of his existing pieces on the board, their turn is over.
  * 3. An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.
@@ -1256,11 +1257,13 @@ namespace chessCAMO
  * That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
  * 
  * # Documentation
+ * <hr style="border: 1px solid #EAECEF;">
  * [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/)
  * 
  * Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a> to clear up any questions you might have.
  * 
  * # To Do
+ * <hr style="border: 1px solid #EAECEF;">
  * ### Regular Chess: 
  * - [ ] Three move repetition (draw) & 50 move rule.
  * - [ ] Board representation undo (use queue?).
@@ -1274,12 +1277,13 @@ namespace chessCAMO
  * - [ ] Make test cases to confirm that overall functionality still works.
  * 
  * # Tests
+ * <hr style="border: 1px solid #EAECEF;">
  * [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions)
  * [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
  * 
  * <img src="testing.gif" alt="testing" align="left" style="zoom:100%;" />
  * 
- * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+ * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  * 
  * ## Run
  * - <span style="background-color:#F3F4F4;">mingw32-make all_unit</span>
@@ -1296,7 +1300,8 @@ namespace chessCAMO
  * You can contribute to this project by making test cases that can challenge the chessCAMO engine in unique ways to ensure that it follows proper chess rules.
  * To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a> in the documentation file.
  * 
- * # Contributing
+ * # Contributing 
+ * <hr style="border: 1px solid #EAECEF;">
  * [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO)
  * [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues)
  * [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) 
@@ -1318,6 +1323,7 @@ namespace chessCAMO
  * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  *
  * # Inspiration​
+ * <hr style="border: 1px solid #EAECEF;">
  * I decided to create this project due to my growing interest in software development. 
  * Coming from an Engineering background with Deep Learning research experience (Recent Master of Applied Science graduate), 
  * I realized that writing and developing code (both front and back end) were highly appealing to me. 
@@ -1326,6 +1332,7 @@ namespace chessCAMO
  * As a result, this project allowed me to gain valuable experience and knowledge while working on a topic that I am passionate about and have expertise in.
  * 
  * # YouTube - Look Out
+ * <hr style="border: 1px solid #EAECEF;">
  * Be on the look out for a detailed YouTube video series explaining the various sections of this project.
  * I feel like others could benefit from the logic involved in creating a project on this scale, which is relatively large and requires a substantial time commitment.
  * Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before anything major is finished.
@@ -1335,12 +1342,14 @@ namespace chessCAMO
  * Let me know if you are interested in me making the videos and what you would like to see.
  * 
  * # Need Support?
+ * <hr style="border: 1px solid #EAECEF;">
  * Reach out to me at any of the following:
  * - <a href="https://www.linkedin.com/in/liorbragilevsky/" target="__blank" style="text-decoration: none;">LinkedIn</a>
  * - <a href="https://www.facebook.com/lbragi/" target="__blank" style="text-decoration: none;">Facebook</a>
  * - lbragile.masc@gmail.com
  * 
  * # License
+ * <hr style="border: 1px solid #EAECEF;">
  * [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
  * - <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE" target="__blank" style="text-decoration: none;"><b>MIT License</b></a> 
  * - C​o​p​y​ri​gh​t​ (c) 2020 Lior Bragilevsky

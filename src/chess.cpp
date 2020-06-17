@@ -156,46 +156,46 @@ Chess::~Chess()
  * in the corresponding index of the board vector and set the global
  * object's board variable
  */  
-void Chess::boardInit(int board_size)
+void Chess::boardInit()
 {
     vector<Piece*> board = this->getBoard();
 
     // initialize the board
-    for(int i = 0; i < board_size; i++)
+    for(unsigned int i = 0; i < board.size(); i++)
     {
         /******************* BLACK *******************/
-        if(i < board_size/4)            // first 2 rows
+        if(i < board.size()/4)            // first 2 rows
         {
             if(i == 0 || i == 7)        // rook
             {
-                board.push_back(new Rook(i, ROOK, BLACK));
+                board[i] = new Rook(i, ROOK, BLACK);
             }
             else if(i == 1 || i == 6)   // knight
             {
-                board.push_back(new Knight(i, KNIGHT, BLACK)); 
+                board[i] = new Knight(i, KNIGHT, BLACK); 
             }
             else if(i == 2 || i == 5)   // bishop
             {
-                board.push_back(new Bishop(i, BISHOP, BLACK)); 
+                board[i] = new Bishop(i, BISHOP, BLACK); 
             }
             else if(i == 3)             // queen
             {
-                board.push_back(new Queen(i, QUEEN, BLACK));
+                board[i] = new Queen(i, QUEEN, BLACK);
             }
             else if(i == 4)             // king
             {
-                board.push_back(new King(i, KING, BLACK));
+                board[i] = new King(i, KING, BLACK);
             }
             else                        // pawn
             {
-                board.push_back(new Pawn(i, PAWN, BLACK));
+                board[i] = new Pawn(i, PAWN, BLACK);
             }
         }
 
         /********** NEUTRAL (EMPTY SQUARES) **********/
-        else if(i < board_size*3/4) 
+        else if(i < board.size()*3/4) 
         {   
-            board.push_back(new Empty(i, EMPTY, NEUTRAL)); // middle 4 rows
+            board[i] = new Empty(i, EMPTY, NEUTRAL); // middle 4 rows
         }
 
         /***************** WHITE *******************/
@@ -203,27 +203,27 @@ void Chess::boardInit(int board_size)
         {
             if(i == 56 || i == 63)          // rook
             {
-                board.push_back(new Rook(i, ROOK, WHITE));
+                board[i] = new Rook(i, ROOK, WHITE);
             }
             else if(i == 57 || i == 62)     // knight
             {
-                board.push_back(new Knight(i, KNIGHT, WHITE)); 
+                board[i] = new Knight(i, KNIGHT, WHITE); 
             }
             else if(i == 58 || i == 61)     // bishop
             {
-                board.push_back(new Bishop(i, BISHOP, WHITE));
+                board[i] = new Bishop(i, BISHOP, WHITE);
             }
             else if(i == 59)                // queen
             {
-                board.push_back(new Queen(i, QUEEN, WHITE));
+                board[i] = new Queen(i, QUEEN, WHITE);
             }
             else if(i == 60)                // king
             {
-                board.push_back(new King(i, KING, WHITE));
+                board[i] = new King(i, KING, WHITE);
             }
             else                            // pawn
             {
-                board.push_back(new Pawn(i, PAWN, WHITE));
+                board[i] = new Pawn(i, PAWN, WHITE);
             }
         }
     }
@@ -405,7 +405,7 @@ bool Chess::isStalemate()
     int possible_moves[22] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18,
                               21, 27, 28, 35, 36, 42, 45, 49, 54, 56, 63};
     
-    for(auto elem : board)
+    for(const auto & elem : board)
     {
         if(elem->getPieceColor() == this->switchTurn())
         {
@@ -662,7 +662,7 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     if(!board[src]->isKnight())
     {
         increment = incrementChoice(src, dest);
-        for(auto elem : board)
+        for(const auto & elem : board)
         {
             if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest)
             {
@@ -678,7 +678,7 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     }
     else // for a Knight check, to defend the king a piece must take the knight
     {
-        for(auto elem : board)
+        for(const auto & elem : board)
         {
             if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest && elem->isPossibleMove(src, this))
             {
@@ -776,7 +776,7 @@ bool Piece::isPinned(int dest, Chess *chess)
     {
         king_pos = findKingPos(src, chess, false); // same color king position
 
-        for(auto elem : board)
+        for(const auto & elem : board)
         {
             if( !elem->isSameColor(king_pos, chess) &&
                 (elem->isBishop() || elem->isRook() || elem->isQueen()) &&
@@ -909,7 +909,7 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     CheckStack.push(board[king_pos]); // make the king last in the stack
 
     // how many pieces are checking the king
-    for(auto elem : board)
+    for(const auto & elem : board)
     {
         if(elem->isLegalMove(king_pos, chess))
         {
@@ -973,7 +973,10 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 
     // First, cancel en-passant abilities of all pawns.
     // Then determine which pawn can have en-passant abilities
-    for(auto elem : board) {elem->setEnPassant(false);}
+    for(const auto & elem : board) 
+    {
+        elem->setEnPassant(false);
+    }
 
     // pawn moves 2 squares and there is a pawn to its left
     if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest, chess))
@@ -1135,7 +1138,7 @@ bool King::canCastle(int dest, Chess *chess)
     }
     else
     {
-        for(auto elem : board)
+        for(const auto & elem : board)
         {
             if(!elem->isEmpty() && !elem->isSameColor(src, chess))
             {
@@ -1162,7 +1165,7 @@ bool King::movedIntoCheck(int dest, Chess *chess)
     vector<Piece*> board = chess->getBoard();
     int src, sign;
 
-    for(auto elem : board)
+    for(const auto & elem : board)
     {
     	src = elem->getPieceSquare();
     	sign = elem->isPieceWhite() ? 1 : -1;
@@ -1324,7 +1327,7 @@ namespace
     int findKingPos(int src, Chess * chess, bool enemy)
     {
     	Piece* temp;
-        for(auto elem : chess->getBoard())
+        for(const auto & elem : chess->getBoard())
         {
             if( (enemy && elem->isKing() && !elem->isSameColor(src, chess) ) ||
                 ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
@@ -1358,14 +1361,14 @@ namespace chessCAMO
         char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
         
         int count = 0;
-        for(auto elem : board)
+        for(const auto & elem : board)
         {
             if(count == 0)
             {
-                cout << "  +---+---+---+---+---+---+---+---+" << endl;
-                cout << ranks[count/8] << " | ";
+                cout << "    A   B   C   D   E   F   G   H" << endl;
             }
-            else if(count % 8 == 0)
+
+            if(count % 8 == 0)
             {
                 cout << "  +---+---+---+---+---+---+---+---+" << endl;
                 cout << ranks[count/8] << " | ";
@@ -1412,7 +1415,7 @@ namespace chessCAMO
 
             // go to next row if reached last column
             if(count % 8 == 7)
-                cout << endl;
+                cout << ranks[count/8] << endl;
             if(count == 63)
             {
                 cout << "  +---+---+---+---+---+---+---+---+" << endl;

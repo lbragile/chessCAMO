@@ -51,7 +51,7 @@ using namespace chessCAMO;
 int main()
 {
     // 'src' -> coordinate of to-be-moved piece, 'dest' -> coordinate of it's final location
-    // coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+    // Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top right
     string src, dest;
 
     // create the object dynamically to control when it is destroyed
@@ -64,7 +64,7 @@ int main()
     // while the game is NOT finished (checkmate, stalemate, draw, resign)
     while(!chess->getCheckmate() && !chess->getStalemate())
     {   
-        chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK);
+        chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK);
         cin >> src >> dest;
 
         // input error checking
@@ -73,7 +73,7 @@ int main()
             chessCAMO::printMessage("\nInput type is invalid... try again!\n", YELLOW);
             cin.clear(); // clear error flag of cin
             cin.ignore(100,'\n'); // ignore the first 100 characters until '\n' is reached
-            chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK);
+            chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK);
             cin >> src >> dest;
         }
 

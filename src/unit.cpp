@@ -95,7 +95,7 @@ void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
 /*                              TEST FIXTURE SETUP                                   */
 /*************************************************************************************/
 /**
- * @brief      This class describes a chess test for integer source and destination squares.
+ * @brief      This class describes a chess test for string or integer source and destination squares.
  *             It is used as a fixture to quickly set up tests without duplicating the code,
  *             by utilizing the overriden SetUp and TearDown functions.
  */ 
@@ -109,7 +109,7 @@ protected:
      * \brief The source square of the piece to-be-moved
      * 
      * \note 
-     * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+     * Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top right
      */
     string src;
 
@@ -117,7 +117,7 @@ protected:
      * \brief The destination square of the piece to-be-moved
       * 
      * \note 
-     * Coordinates are in [a8, h1] -> a8 is top left, h1 if bottom right
+     * Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top right
      */
     string dest;
 
@@ -148,7 +148,7 @@ protected:
             // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
             while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate())
             {   
-                chessCAMO::printMessage("\nEnter a source AND destination square in [a8, h1]: ", PINK); // for debugging purposes
+                chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK); // for debugging purposes
                 myfile >> src >> dest;
 
                 cout << src << " " << dest << endl; // for debugging purposes

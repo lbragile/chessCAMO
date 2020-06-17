@@ -132,9 +132,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa14266c2293dda5038b0741c7df74382"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aa14266c2293dda5038b0741c7df74382">setTurn</a> (<a class="el" href="chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c">pieceColor</a> <a class="el" href="class_chess.html#a996834f05cddcc153aaca82034d2c21b">turn</a>)</td></tr>
 <tr class="memdesc:aa14266c2293dda5038b0741c7df74382"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the player's turn information.  <a href="class_chess.html#aa14266c2293dda5038b0741c7df74382">More...</a><br /></td></tr>
 <tr class="separator:aa14266c2293dda5038b0741c7df74382"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab70732bf3fc882b5c6aa76fa906f14d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab70732bf3fc882b5c6aa76fa906f14d8">boardInit</a> (int board_size=64)</td></tr>
-<tr class="memdesc:ab70732bf3fc882b5c6aa76fa906f14d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the pieces on the board at their correct starting positions.  <a href="class_chess.html#ab70732bf3fc882b5c6aa76fa906f14d8">More...</a><br /></td></tr>
-<tr class="separator:ab70732bf3fc882b5c6aa76fa906f14d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab64de78c01967188afa372f417a2325d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab64de78c01967188afa372f417a2325d">boardInit</a> ()</td></tr>
+<tr class="memdesc:ab64de78c01967188afa372f417a2325d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the pieces on the board at their correct starting positions.  <a href="class_chess.html#ab64de78c01967188afa372f417a2325d">More...</a><br /></td></tr>
+<tr class="separator:ab64de78c01967188afa372f417a2325d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac149ff524cf6e5409652a6263570008a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ac149ff524cf6e5409652a6263570008a">makeMove</a> (int src, int dest, istream &amp;in)</td></tr>
 <tr class="memdesc:ac149ff524cf6e5409652a6263570008a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a piece on the board from 'src' to 'dest' if conditions for a legal move are met.  <a href="class_chess.html#ac149ff524cf6e5409652a6263570008a">More...</a><br /></td></tr>
 <tr class="separator:ac149ff524cf6e5409652a6263570008a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -748,8 +748,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab70732bf3fc882b5c6aa76fa906f14d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab70732bf3fc882b5c6aa76fa906f14d8">&#9670;&nbsp;</a></span>boardInit()</h2>
+<a id="ab64de78c01967188afa372f417a2325d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab64de78c01967188afa372f417a2325d">&#9670;&nbsp;</a></span>boardInit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -757,14 +757,15 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Chess::boardInit </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>board_size</em> = <code>64</code></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Places the pieces on the board at their correct starting positions. </p>
+<dl class="section pre"><dt>Precondition</dt><dd>The chess object is intialized</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>Instantiates new objects corresponding to the pieces, places them in the corresponding index of the board vector and set the global object's board variable</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">board_size</td><td>8x8 board has 64 index positions</td></tr>

@@ -4,5 +4,5 @@ var searchData=
   ['black_3',['BLACK',['../chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2caf77fb67151d0c18d397069ad8c271ba3',1,'chess.h']]],
   ['board_4',['board',['../class_chess.html#a980bd65812f24a84c25ccd46770e6a29',1,'Chess']]],
   ['boardfenconverter_5',['boardFenConverter',['../unit_8cpp.html#ab1bc0620e9b182b5bbced5184486d80a',1,'unit.cpp']]],
-  ['boardinit_6',['boardInit',['../class_chess.html#ab70732bf3fc882b5c6aa76fa906f14d8',1,'Chess']]]
+  ['boardinit_6',['boardInit',['../class_chess.html#ab64de78c01967188afa372f417a2325d',1,'Chess']]]
 ];
