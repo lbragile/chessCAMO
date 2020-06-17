@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['piececolor_242',['pieceColor',['../chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c',1,'chess.h']]],
-  ['piecetype_243',['pieceType',['../chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549',1,'chess.h']]]
+  ['piececolor_239',['pieceColor',['../chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c',1,'chess.h']]],
+  ['piecetype_240',['pieceType',['../chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549',1,'chess.h']]]
 ];
