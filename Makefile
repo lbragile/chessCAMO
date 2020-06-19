@@ -39,6 +39,7 @@ gcov: chess.cpp
 	gcovr -r . --exclude-throw-branches --html-details -o coverage.html
 	gcovr -r . --exclude-throw-branches --xml -o coverage.xml
 	
+	mkdir -p "gcov"
 	mv *.html *.xml "gcov"
 
 clean:
