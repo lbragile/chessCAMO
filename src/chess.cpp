@@ -678,7 +678,7 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     {
         for(const auto & elem : board)
         {
-            if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest && elem->isPossibleMove(src, this))
+            if(!elem->isKing() && elem->isSameColor(dest, this) && elem->isPossibleMove(src, this))
             {
                 return false;
             }
@@ -711,7 +711,7 @@ bool Chess::doubleCheckPieceIterator(Piece* king)
     // can king move out of check?
     for(auto move : king_moves)
     {
-        if(board[dest]->isLegalMove(dest + move, this) || board[dest]->isLegalMove(dest - move, this))
+        if(king->isLegalMove(dest + move, this) || king->isLegalMove(dest - move, this))
         {
             return false;
         }
@@ -840,8 +840,8 @@ bool Piece::isPathFree(int dest, Chess *chess)
  */
 bool Piece::isLegalMove(int dest, Chess *chess)
 {
-        return 0 <= dest && dest <= 63 && this->getPieceSquare() != dest && 
-               this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess) && !this->movedIntoCheck(dest, chess);
+    return 0 <= dest && dest <= 63 && this->getPieceSquare() != dest && 
+           this->isPossibleMove(dest, chess) && !this->isPinned(dest, chess) && !this->movedIntoCheck(dest, chess);
 }
 
 /**
@@ -1157,16 +1157,20 @@ bool King::canCastle(int dest, Chess *chess)
 bool King::movedIntoCheck(int dest, Chess *chess)
 {
     vector<Piece*> board = chess->getBoard();
-    int src, sign;
+    int src, sign, increment;
 
     for(const auto & elem : board)
     {
     	src = elem->getPieceSquare();
     	sign = elem->isPieceWhite() ? 1 : -1;
+        increment = src > dest ? incrementChoice(src, dest) : -1 * incrementChoice(src, dest);
 
         // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        if( !elem->isEmpty() && !this->isSameColor(src, chess) &&
-            ( ( !elem->isPawn() && elem->isPossibleMove(dest, chess) ) ||
+        // checking dest-increment and increment since if a piece is only 1 square away dest-increment gives src=dest.
+        // However, since move isn't made it is possible that a piece of same color causes isPossibleMove(dest, chess)
+        // to be false, see 48-scholarMate.txt
+        if( !elem->isEmpty() && !this->isSameColor(src, chess) && 
+            ( ( !elem->isPawn() && (elem->isPossibleMove(dest-increment, chess) || elem->isPossibleMove(dest, chess)) ) ||
               ( elem->isPawn() && (sign*(src - dest) == 9 || sign*(src - dest) == 7) ) ))
         {
             return true;

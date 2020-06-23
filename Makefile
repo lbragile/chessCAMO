@@ -2,9 +2,11 @@ CC = g++
 
 CFLAGS  = -g -c -Wall
 AFLAGS = -g -Wall
+
 GTEST_CFLAGS = -I ../googletest/googletest/include -L ../googletest/googletest/lib
 CHESS_CFLAGS = -I include/
 GCOV_CFLAGS = -fprofile-arcs -ftest-coverage
+
 GTEST_LFLAGS = -lgtest -lgtest_main
 GCOV_LFLAGS = -lgcov
 
@@ -15,6 +17,8 @@ vpath %.h include
 
 all_main: chess.o main.o main.exe
 all_unit: chess.o unit.o unit.exe
+all_gui:
+	mingw32-make -C ./GUI/
 
 # $< (name of first pre-requisite) 
 # https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html#Automatic-Variables
