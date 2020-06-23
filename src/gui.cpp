@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "chess.h"
-#include "chess.cpp"
 
 using namespace sf;
 using namespace std;
@@ -41,6 +40,9 @@ int main()
 
     // Create 8x8 default board
     chess->boardInit();
+
+    stack<vector<Piece*>> board_positions;
+    board_positions.push(chess->getBoard());
 
     RenderWindow window(VideoMode(721,721), "chessCAMO");
 
@@ -87,6 +89,15 @@ int main()
             if (e.type == Event::Closed)
                 window.close();   
 
+            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+            {
+                board_positions.pop();
+                chess->setBoard(board_positions.top());
+                chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+                drawPieces(pieces, pieceType, chess->getBoard());
+                break;
+            }
+
             if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left)
             {
                 
@@ -116,7 +127,8 @@ int main()
                 // here means that you pressed and released the mousebutton,
                 // so can make a move
                 chess->makeMove(src, dest, cin);
-                drawPieces(pieces, pieceType, chess->getBoard());         
+                drawPieces(pieces, pieceType, chess->getBoard());
+                board_positions.push(chess->getBoard());         
             }    
         }
 

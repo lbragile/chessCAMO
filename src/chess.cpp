@@ -38,8 +38,8 @@ using namespace chessCAMO;
 /*************************************************************************************/
 /**
  * @brief   This anonymous namespace contains the local functions related to chessCAMO which 
- * 			are mainly used as helper functions to determine critical information regarding
- * 			a given move choice.
+ *          are mainly used as helper functions to determine critical information regarding
+ *          a given move choice.
  */
 namespace
 {
@@ -256,7 +256,7 @@ void Chess::boardInit()
 void Chess::makeMove(int src, int dest, istream &in)
 {
     vector<Piece*> board = this->getBoard();
-    stack<Piece*> CheckStack = this->getCheckStack();
+    stack<Piece*> check_stack = this->getCheckStack();
     Piece *king, *piece, *undo_piece; // "undo_piece" needed for attacking moves that
     bool undo_moveInfo;               //  are illegal (to restore the piece that goes missing)
     
@@ -278,35 +278,35 @@ void Chess::makeMove(int src, int dest, istream &in)
         // when in double check you must move the king
         if(this->getDoubleCheck())
         {      
-            king = CheckStack.top();
-            CheckStack.pop();
+            king = check_stack.top();
+            check_stack.pop();
 
             for(auto elem : this->getBoard()) // must always update the board as it is possible an undo happened
             {    
-                // if the move failed, undo the board representation and do not set checkstack               
+                // if the move failed, undo the board representation and do not set check_stack               
                 if(this->undoMove(src, dest, king, elem, undo_piece, undo_moveInfo, "double"))
                     return;
             }
 
             // if here, did not return so set the appropriate member variables
-            this->setCheckStack(CheckStack);
+            this->setCheckStack(check_stack);
             this->setDoubleCheck(false);
         }
 
         // when in single check you have three choices: move the king, defend the path, attack the checking piece
         else if(this->getCheck())
         {
-            piece = CheckStack.top();
-            CheckStack.pop();
-            king = CheckStack.top();
-            CheckStack.pop();
+            piece = check_stack.top();
+            check_stack.pop();
+            king = check_stack.top();
+            check_stack.pop();
 
-            // if the move failed, undo the board representation and do not set checkstack               
+            // if the move failed, undo the board representation and do not set check_stack               
             if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo, "single"))
                 return;
 
             // if here, did not return so set the appropriate member variables
-            this->setCheckStack(CheckStack);
+            this->setCheckStack(check_stack);
             this->setCheck(false);
         }
 
@@ -355,12 +355,12 @@ void Chess::makeMove(int src, int dest, istream &in)
  */
 void Chess::isCheckmate(string check_type)
 {
-    stack<Piece*> CheckStack = this->getCheckStack();
+    stack<Piece*> check_stack = this->getCheckStack();
     Piece *king, *piece;
 
     if(check_type == "double") // this type of check requires the king to move
     {
-        king = CheckStack.top();
+        king = check_stack.top();
 
         // checkmate due to a double check
         if(doubleCheckPieceIterator(king))
@@ -372,9 +372,9 @@ void Chess::isCheckmate(string check_type)
     else // check_type == "single"
     {
         // will not be set, so next time this will be identical
-        piece = CheckStack.top();
-        CheckStack.pop();
-        king = CheckStack.top();
+        piece = check_stack.top();
+        check_stack.pop();
+        king = check_stack.top();
 
         // checkmate due to a single piece
         if(singleCheckPieceIterator(piece, king))
@@ -386,7 +386,6 @@ void Chess::isCheckmate(string check_type)
 
 /**
  * @brief      Decide if a move caused a stalemate
-
  * \pre
  * The chess object is created.
  * 
@@ -855,7 +854,7 @@ bool Piece::isLegalMove(int dest, Chess *chess)
  */
 bool Piece::causeCheck(int dest, Chess *chess)
 {
-    stack<Piece*> CheckStack = chess->getCheckStack();
+    stack<Piece*> check_stack = chess->getCheckStack();
     vector<Piece*> board = chess->getBoard();
     
     // was already in check before the move
@@ -871,9 +870,9 @@ bool Piece::causeCheck(int dest, Chess *chess)
         {
             // push the king and checking piece onto the stack and set the corresponding 
             // object variables (checkStack and setCheck)
-            CheckStack.push(board[king_pos]);
-            CheckStack.push(board[dest]);
-            chess->setCheckStack(CheckStack);
+            check_stack.push(board[king_pos]);
+            check_stack.push(board[dest]);
+            chess->setCheckStack(check_stack);
             chess->setCheck(true);
         }
     } 
@@ -896,10 +895,10 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
 {
     int king_pos, checking_piece_counter = 0;
     vector<Piece*> board = chess->getBoard();
-    stack<Piece*> CheckStack = chess->getCheckStack();
+    stack<Piece*> check_stack = chess->getCheckStack();
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
-    CheckStack.push(board[king_pos]); // make the king last in the stack
+    check_stack.push(board[king_pos]); // make the king last in the stack
 
     // how many pieces are checking the king
     for(const auto & elem : board)
@@ -913,7 +912,7 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     // double check if 2 pieces are attacking the king
     if(checking_piece_counter == 2)
     {
-        chess->setCheckStack(CheckStack);
+        chess->setCheckStack(check_stack);
         chess->setDoubleCheck(true);
         return true;
     }
@@ -1161,8 +1160,8 @@ bool King::movedIntoCheck(int dest, Chess *chess)
 
     for(const auto & elem : board)
     {
-    	src = elem->getPieceSquare();
-    	sign = elem->isPieceWhite() ? 1 : -1;
+        src = elem->getPieceSquare();
+        sign = elem->isPieceWhite() ? 1 : -1;
         increment = src > dest ? incrementChoice(src, dest) : -1 * incrementChoice(src, dest);
 
         // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
@@ -1324,13 +1323,13 @@ namespace
      */
     int findKingPos(int src, Chess * chess, bool enemy)
     {
-    	Piece* temp;
+        Piece* temp;
         for(const auto & elem : chess->getBoard())
         {
             if( (enemy && elem->isKing() && !elem->isSameColor(src, chess) ) ||
                 ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
             {
-            	temp = elem;
+                temp = elem;
             }
         } 
 
@@ -1481,8 +1480,8 @@ namespace chessCAMO
             if(std::tolower(draw_reply) == 'y')
             {
                 chessCAMO::printMessage("\nGame drawn by agreement\n", CYAN);
-            	chess->setCheckmate(true); // to end the game
-            	return;
+                chess->setCheckmate(true); // to end the game
+                return;
             }
             else // std::tolower(draw_reply) == 'n'
             {

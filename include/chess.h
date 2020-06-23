@@ -160,7 +160,7 @@ public:
      * Intentionally left blank.
      */
     Chess() : board{64}, checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
-
+    
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
      * @brief      (Accessor) Gets the board representation.
@@ -179,77 +179,77 @@ public:
     /**
      * @brief      (Accessor) Gets the check stack information.
      *
-     * @return     The check stack.
+     * @return     The check stack after any given move.
      */
-    stack<Piece*> getCheckStack() const {return checkStack;}
+    stack<Piece*> getCheckStack() const {return check_stack;}
 
     /**
      * @brief      (Mutator) Sets the check stack information.
      *
-     * @param[in]  checkStack  The check stack
+     * @param[in]  check_stack  The check stack which contains the board representations after each move
      */
-    void setCheckStack(const stack<Piece*> & checkStack) {this->checkStack = checkStack;}
+    void setCheckStack(const stack<Piece*> & check_stack) {this->check_stack = check_stack;}
 
     /**
      * @brief      (Accessor) Gets the check information.
      *
-     * @return     The check.
+     * @return     True if board representation has a check, False otherwise.
      */
     bool getCheck() const {return check;}
 
     /**
      * @brief      (Mutator) Sets the check information.
      *
-     * @param[in]  check  The check
+     * @param[in]  check  The check flag
      */
     void setCheck(bool check) {this->check = check;}
 
     /**
      * @brief      (Accessor) Gets the double check information.
      *
-     * @return     The double check.
+     * @return     True if board representation has a double check, False otherwise.
      */
     bool getDoubleCheck() const {return double_check;}
 
     /**
      * @brief      (Mutator) Sets the double check information.
      *
-     * @param[in]  double_check  The double check
+     * @param[in]  double_check  The double check flag
      */
     void setDoubleCheck(bool double_check) {this->double_check = double_check;}
 
     /**
      * @brief      (Accessor) Gets the checkmate information.
      *
-     * @return     The checkmate.
+     * @return     True if board representation has a checkmate, False otherwise.
      */
     bool getCheckmate() const {return checkmate;}
 
     /**
      * @brief      (Mutator) Sets the checkmate information.
      *
-     * @param[in]  checkmate  The checkmate
+     * @param[in]  checkmate  The checkmate flag
      */
     void setCheckmate(bool checkmate) {this->checkmate = checkmate;}
 
     /**
      * @brief      (Accessor) Gets the stalemate information.
      *
-     * @return     The stalemate.
+     * @return     True if board representation has a stalemate, False otherwise.
      */
     bool getStalemate() const {return stalemate;}
 
     /**
      * @brief      (Mutator) Sets the stalemate information.
      *
-     * @param[in]  stalemate  The stalemate
+     * @param[in]  stalemate  The stalemate flag
      */
     void setStalemate(bool stalemate) {this->stalemate = stalemate;}
 
     /**
      * @brief      (Accessor) Gets the player's turn information.
      *
-     * @return     The turn.
+     * @return     The turn at any given moment (either white's or black's).
      */
     pieceColor getTurn() const {return turn;}
 
@@ -292,7 +292,7 @@ public:
      * On failure, an error message is printed and user is asked to retry.
      */
     void makeMove(int src, int dest, istream &in); 
-
+    
     /**
      * @brief      Decide if a move caused a checkmate according to 'check_type'
      *
@@ -322,10 +322,10 @@ public:
     
 private:
     /** Chess board representation with the pieces in correct spots */
-    vector<Piece*> board;   
+    vector<Piece*> board;
 
     /** Stores the pieces involved in a checking scenario */   
-    stack<Piece*> checkStack; 
+    stack<Piece*> check_stack; 
 
     /** Flag which ends the game and prints winner */
     bool checkmate;  
@@ -433,7 +433,7 @@ private:
      *             without undoing the move.
      */
     bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
-    
+
     /**
      * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
      *             or move the king out of check. Used in isCheckmate("single")
