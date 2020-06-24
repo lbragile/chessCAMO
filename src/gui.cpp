@@ -27,7 +27,7 @@ void drawPieces(vector<Sprite> &pieces, const vector<Sprite> &pieceType, const v
             pieces[i] = pieceType[0];
 
         shape = pieces[i].getGlobalBounds();
-        pieces[i].setPosition(shape.width + shape.width * (i % 8), shape.height + shape.height * (i / 8));
+        pieces[i].setPosition(shape.width/2 + shape.width * (i % 8), shape.height/2 + shape.height * (i / 8));
         i++;
     }
 }
@@ -83,7 +83,7 @@ int main()
 
     board_positions.push(chess->getBoard());
 
-    RenderWindow window(VideoMode(600, 600), "chessCAMO", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(540, 540), "chessCAMO", Style::Titlebar | Style::Close);
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -176,7 +176,7 @@ int main()
                 {
                     clicked = false;
                     getMoves = true;
-                    dest = int((pos.x / size_rect.x) - 1) + 8 * int((pos.y / size_rect.y) - 1);
+                    dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
                     // here means that you pressed and released the mousebutton,
                     // so can make a move
@@ -204,7 +204,7 @@ int main()
         // board
         if (font.loadFromFile("font/arial.ttf"))
         {
-            text.setCharacterSize(30);
+            text.setCharacterSize(20);
             text.setFont(font);
             text.setFillColor(Color::Black);
 
@@ -218,39 +218,72 @@ int main()
                     // top and bottom rows
                     if ((i == 0 || i == 9) && (1 <= j && j <= 8))
                     {
-                        i == 0 ? text.setPosition(j * distance + size_rect.x / 2, size_rect.y / 2) : text.setPosition(j * distance + size_rect.x / 2, size_rect.y * (numRows - 1));
+                        i == 0 ? text.setPosition(j * distance - size_rect.x / 4, size_rect.y / 8) : text.setPosition(j * distance - size_rect.x / 4, size_rect.y * (numRows - 1.5));
                         text.setString(piece_file[j - 1]);
+                        
+                        rect.setSize(Vector2f(size_rect.x, size_rect.y/2));
                         if (i == 0)
+                        {
                             rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
+                            rect.setPosition(j * distance - size_rect.x/2, i * distance);
+                        }
                         else
+                        {
                             rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
+                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
+                        }
                     }
 
                     // left and right columns
                     else if ((j == 0 || j == 9) && (1 <= i && i <= 8))
                     {
-                        j == 0 ? text.setPosition(size_rect.x / 2, i * distance + size_rect.y / 2) : text.setPosition(size_rect.x * (numCols - 1), i * distance + size_rect.y / 2);
+                        j == 0 ? text.setPosition(size_rect.x / 8, i * distance - size_rect.y / 4) : text.setPosition(size_rect.x * (numCols - 1.5), i * distance - size_rect.y / 4);
                         text.setString(piece_rank[i - 1]);
 
+                        rect.setSize(Vector2f(size_rect.x/2, size_rect.y));
                         if (j == 0)
+                        {
                             rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
+                            rect.setPosition(j * distance, i * distance - size_rect.y/2);
+                        }
                         else
+                        {
                             rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
+                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
+                        }
                     }
 
                     // corners
                     else if ((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
                     {
+                        if(i == 0 && j == 0)
+                        {
+                            rect.setPosition(j * distance, i * distance);
+                        }
+                        else if(i == 0 && j == 9)
+                        {
+                            rect.setPosition(j * distance - size_rect.x/2, i * distance);
+                        }
+                        else if(i == 9 && j == 0)
+                        {
+                            rect.setPosition(j * distance, i * distance - size_rect.y/2);
+                        }
+                        else if(i == 9 && j == 9)
+                        {
+                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
+                        }
+
+                        rect.setSize(Vector2f(size_rect.x/2, size_rect.y/2));
                         rect.setFillColor(color_red);
                     }
 
                     // middle squares
                     else
                     {
+                        rect.setSize(Vector2f(size_rect.x, size_rect.y));
                         rect.setFillColor((i + j) % 2 != 0 ? color_dark : Color::White);
+                        rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
                     }
-
-                    rect.setPosition(j * distance, i * distance);
 
                     // legal move highlighting
                     auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));

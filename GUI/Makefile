@@ -4,7 +4,7 @@ CFLAGS  = -g -c -Wall
 AFLAGS = -g -Wall
 
 SFML_CFLAGS = -I ../../SFML/include/ -I ../include/ -I ../src/ -L ../../SFML/lib/
-SFML_LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+SFML_LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -mwindows
 
 vpath %.cpp ../src
 vpath %.h ../include
