@@ -252,21 +252,22 @@ int main()
 
                     rect.setPosition(j * distance, i * distance);
 
+                    // legal move highlighting
                     auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
-                    if(found != legalMoves.end() && i != 0 && j != 0 && i != 9 && j != 9)
+                    if(found != legalMoves.end() && chess->getBoard()[src]->getPieceColor() == chess->getTurn() && 
+                       i != 0 && j != 0 && i != 9 && j != 9)
                     {
-                        // cout << *found << endl;
                         rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
                         rect.setOutlineColor(Color::Cyan);
                         window.draw(rect);
                     }
+
                     else
                     {
                         rect.setOutlineThickness(0);
-
                         window.draw(rect);
-
                     }
+
                     window.draw(text);
                 }
             }
