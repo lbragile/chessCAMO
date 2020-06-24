@@ -32,6 +32,29 @@ void drawPieces(vector<Sprite> & pieces, const vector<Sprite> & pieceType, const
     }
 
 }
+
+void storeOrRestore(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type)
+{
+    int i = 0;
+    for(auto & elem : board)
+    {
+        if(type == "restore")
+        {   
+            elem->setPieceSquare(squares_prior[i]);
+            elem->setPieceMoveInfo(moved_prior[i]);
+            elem->setEnPassant(enpassant_prior[i]);
+        }
+        else // type == "store"
+        {
+            squares_prior[i] = elem->getPieceSquare();
+            moved_prior[i] = elem->getPieceMoveInfo();
+            enpassant_prior[i] = elem->getEnPassant();
+        }
+
+        i++;
+    }
+}  
+
 int main()
 {
     // cout.setstate(std::ios_base::failbit); // surpress output
@@ -42,14 +65,12 @@ int main()
     chess->boardInit();
 
     stack<vector<Piece*>> board_positions;
+    vector<int> squares_prior(64);
+    vector<bool> moved_prior(64), enpassant_prior(64);
+
     board_positions.push(chess->getBoard());
 
     RenderWindow window(VideoMode(600,600), "chessCAMO");
-
-    // board
-    Texture board;
-    board.loadFromFile("images/board.png"); 
-    Sprite sBoard(board); 
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -74,7 +95,6 @@ int main()
     vector<Sprite> pieces(64); 
 
     drawPieces(pieces, pieceType, chess->getBoard());
-    // sBoard.setScale(600/721.0, 600/721.0);
 
     Vector2f size_rect(60.0, 60.0);
     Vector2f lr_rect(size_rect.x/2, size_rect.y);
@@ -98,13 +118,17 @@ int main()
             if(e.type == Event::Closed)
                 window.close();   
 
-            if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+            if(e.type == sf::Event::KeyPressed)
             {
-                board_positions.pop();
-                chess->setBoard(board_positions.top());
-                chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
-                drawPieces(pieces, pieceType, chess->getBoard());
-                break;
+                if(e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+                {
+                    board_positions.pop();
+                    chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+                    chess->setBoard(board_positions.top());
+
+                    storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
+                    drawPieces(pieces, pieceType, chess->getBoard());
+                }
             }
 
             if(e.type == Event::MouseButtonPressed)
@@ -115,7 +139,9 @@ int main()
                     for(iter = pieces.begin(); iter != pieces.end(); iter++)
                     {
                         if(iter->getGlobalBounds().contains(pos.x, pos.y))
+                        {
                             src = iter - pieces.begin();
+                        }
                     }
                 }
             }
@@ -125,17 +151,18 @@ int main()
                 if(e.mouseButton.button == Mouse::Left)
                 {
                     clicked = false;
-                    cout << pos.x << " " << pos.y << endl;
-                    cout << int((pos.x / size_rect.x) - 1) << " " << ((pos.y / size_rect.y) - 1) << endl;
                     dest = int((pos.x / size_rect.x) - 1) +  8*int((pos.y / size_rect.y) - 1) ;
                 }
 
                 // here means that you pressed and released the mousebutton,
                 // so can make a move
-                 cout << src << " " << dest << endl;
+                storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
                 chess->makeMove(src, dest, cin);
+
                 drawPieces(pieces, pieceType, chess->getBoard());
-                board_positions.push(chess->getBoard());         
+
+                if(chess->getBoard() != board_positions.top())
+                    board_positions.push(chess->getBoard());         
             }   
 
             if(clicked)
