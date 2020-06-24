@@ -3,6 +3,7 @@
 
 # Executables
 *.exe
+!GUI/*.exe
 
 # Code converage files
 gcov/*
