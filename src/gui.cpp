@@ -100,10 +100,15 @@ int main()
     Vector2f lr_rect(size_rect.x/2, size_rect.y);
     Vector2f tb_rect(size_rect.x, size_rect.y/2);
     RectangleShape rect(size_rect);
-    const int numRows = 10; //number of rows
-    const int numCols = 10; //number of columns
+    Text text;
+    Font font;
+    const int numRows = 10; 
+    const int numCols = 10; 
     const int distance = 60; //distance between squuares
-    Color color_dark(211, 211, 211, 255); // color of dark squares
+    Color color_dark(211, 211, 211, 255); 
+    Color color_yellow(255, 255, 153, 255); 
+    Color color_orange(255, 204, 153, 255); 
+    Color color_red(255, 204, 204, 255); 
     bool clicked = false;
 
     while(window.isOpen())
@@ -172,15 +177,64 @@ int main()
         window.clear();
 
         // board
-        for(int i=1; i < numRows-1; i++)
+        if(font.loadFromFile("font/arial.ttf"))
         {
-            for(int j=1; j < numCols-1; j++)
+            text.setCharacterSize(30);
+            text.setFont(font);
+            text.setFillColor(Color::Black);
+
+            string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+            string piece_rank[8] = {"1", "2", "3", "4", "5", "6", "7", "8"};
+
+            for(int i=0; i < numRows; i++)
             {
-                rect.setPosition(j*distance, i*distance);
-                rect.setFillColor((i+j)%2 != 0 ? color_dark : Color::White);
-                window.draw(rect);  
-            }
+                for(int j=0; j < numCols; j++)
+                {
+                    // top and bottom rows
+                    if((i == 0 || i == 9) && (1 <= j && j <= 8))
+                    {
+                        i == 0 ? text.setPosition(j*distance + size_rect.x/2, size_rect.y/2) : text.setPosition(j*distance + size_rect.x/2, size_rect.y*(numRows-1));
+                        text.setString(piece_file[j-1]);
+                        if(i == 0)
+                            rect.setFillColor((i+j)%2 != 0 ? color_yellow : color_orange);
+                        else
+                            rect.setFillColor((i+j)%2 == 0 ? color_yellow : color_orange);
+                    }
+
+                    // left and right columns
+                    else if((j == 0 || j == 9) && (1 <= i && i <= 8))
+                    {
+                        j == 0 ? text.setPosition(size_rect.x/2, i*distance + size_rect.y/2) : text.setPosition(size_rect.x*(numCols-1), i*distance + size_rect.y/2);
+                        text.setString(piece_rank[i-1]);
+                        if(j == 0)
+                            rect.setFillColor((i+j)%2 != 0 ? color_yellow : color_orange);
+                        else
+                            rect.setFillColor((i+j)%2 == 0 ? color_yellow : color_orange);
+                    }
+
+                    // corners
+                    else if((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
+                    {
+                        rect.setFillColor(color_red);
+                    }
+
+                    // middle squares
+                    else
+                    {
+                        rect.setFillColor((i+j)%2 != 0 ? color_dark : Color::White);
+                    }
+
+                    rect.setPosition(j*distance, i*distance);
+                    window.draw(rect);  
+                    window.draw(text);
+                }
+            } 
         }
+        else
+        {
+            cout << "failed to load font file" << endl;
+        }
+        
 
         // pieces
         for(const auto & piece : pieces)
