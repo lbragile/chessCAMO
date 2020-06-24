@@ -27,7 +27,7 @@ void drawPieces(vector<Sprite> & pieces, const vector<Sprite> & pieceType, const
             pieces[i] = pieceType[0];
 
         shape = pieces[i].getGlobalBounds();
-        pieces[i].setPosition((shape.width-10)+80*(i%8), (shape.height-10)+80*(i/8));
+        pieces[i].setPosition(shape.width + shape.width*(i%8), shape.height + shape.height*(i/8));
         i++;
     }
 
@@ -44,7 +44,7 @@ int main()
     stack<vector<Piece*>> board_positions;
     board_positions.push(chess->getBoard());
 
-    RenderWindow window(VideoMode(721,721), "chessCAMO");
+    RenderWindow window(VideoMode(600,600), "chessCAMO");
 
     // board
     Texture board;
@@ -76,20 +76,29 @@ int main()
     drawPieces(pieces, pieceType, chess->getBoard());
     // sBoard.setScale(600/721.0, 600/721.0);
 
+    Vector2f size_rect(60.0, 60.0);
+    Vector2f lr_rect(size_rect.x/2, size_rect.y);
+    Vector2f tb_rect(size_rect.x, size_rect.y/2);
+    RectangleShape rect(size_rect);
+    const int numRows = 10; //number of rows
+    const int numCols = 10; //number of columns
+    const int distance = 60; //distance between squuares
+    Color color_dark(211, 211, 211, 255); // color of dark squares
+    bool clicked = false;
+
     while(window.isOpen())
     {   
         Vector2i pos = Mouse::getPosition(window);
         int src, dest;
         vector<Sprite>::const_iterator iter;
-        FloatRect shape;
 
         Event e;
         while (window.pollEvent(e))
         {
-            if (e.type == Event::Closed)
+            if(e.type == Event::Closed)
                 window.close();   
 
-            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+            if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
             {
                 board_positions.pop();
                 chess->setBoard(board_positions.top());
@@ -98,43 +107,55 @@ int main()
                 break;
             }
 
-            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left)
+            if(e.type == Event::MouseButtonPressed)
             {
-                
-                for(iter = pieces.begin(); iter != pieces.end(); iter++)
+                if(e.mouseButton.button == Mouse::Left)
                 {
-                    shape = iter->getGlobalBounds();
-                    if(shape.contains(pos.x, pos.y))
+                    clicked = true;
+                    for(iter = pieces.begin(); iter != pieces.end(); iter++)
                     {
-                        src = iter - pieces.begin();
-                        break;
+                        if(iter->getGlobalBounds().contains(pos.x, pos.y))
+                            src = iter - pieces.begin();
                     }
                 }
             }
-
-            else if (e.type == Event::MouseButtonReleased && e.mouseButton.button == Mouse::Left)
+                
+            if(e.type == Event::MouseButtonReleased)
             {
-                  for(iter = pieces.begin(); iter != pieces.end(); iter++)
+                if(e.mouseButton.button == Mouse::Left)
                 {
-                    shape = iter->getGlobalBounds();
-                    if(shape.contains(pos.x, pos.y))
-                    {
-                        dest = iter - pieces.begin();
-                        break;
-                    }
+                    clicked = false;
+                    cout << pos.x << " " << pos.y << endl;
+                    cout << int((pos.x / size_rect.x) - 1) << " " << ((pos.y / size_rect.y) - 1) << endl;
+                    dest = int((pos.x / size_rect.x) - 1) +  8*int((pos.y / size_rect.y) - 1) ;
                 }
 
                 // here means that you pressed and released the mousebutton,
                 // so can make a move
+                 cout << src << " " << dest << endl;
                 chess->makeMove(src, dest, cin);
                 drawPieces(pieces, pieceType, chess->getBoard());
                 board_positions.push(chess->getBoard());         
-            }    
+            }   
+
+            if(clicked)
+                pieces[src].setPosition( pos.x - size_rect.x/2, pos.y - size_rect.y/2 ); 
         }
 
         window.clear();
 
-        window.draw(sBoard);
+        // board
+        for(int i=1; i < numRows-1; i++)
+        {
+            for(int j=1; j < numCols-1; j++)
+            {
+                rect.setPosition(j*distance, i*distance);
+                rect.setFillColor((i+j)%2 != 0 ? color_dark : Color::White);
+                window.draw(rect);  
+            }
+        }
+
+        // pieces
         for(const auto & piece : pieces)
             window.draw(piece);
 
