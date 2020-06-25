@@ -9,19 +9,19 @@ void drawPieces(vector<Sprite> &pieces, const vector<Sprite> &pieceType, const v
 {
     FloatRect shape;
     int i = 0;
-    for (const auto &elem : board)
+    for(const auto &elem : board)
     {
-        if (elem->isRook())
+        if(elem->isRook())
             pieces[i] = elem->isPieceWhite() ? pieceType[1] : pieceType[7];
-        else if (elem->isKnight())
+        else if(elem->isKnight())
             pieces[i] = elem->isPieceWhite() ? pieceType[2] : pieceType[8];
-        else if (elem->isBishop())
+        else if(elem->isBishop())
             pieces[i] = elem->isPieceWhite() ? pieceType[3] : pieceType[9];
-        else if (elem->isQueen())
+        else if(elem->isQueen())
             pieces[i] = elem->isPieceWhite() ? pieceType[4] : pieceType[10];
-        else if (elem->isKing())
+        else if(elem->isKing())
             pieces[i] = elem->isPieceWhite() ? pieceType[5] : pieceType[11];
-        else if (elem->isPawn())
+        else if(elem->isPawn())
             pieces[i] = elem->isPieceWhite() ? pieceType[6] : pieceType[12];
         else
             pieces[i] = pieceType[0];
@@ -36,9 +36,9 @@ void getLegalMoves(vector<int> &legalMoves, int src, Chess *chess)
 {
     vector<Piece *> board = chess->getBoard();
 
-    for (unsigned int dest = 0; dest < board.size(); dest++)
+    for(unsigned int dest = 0; dest < board.size(); dest++)
     {
-        if (board[src]->isLegalMove(dest, chess))
+        if(board[src]->isLegalMove(dest, chess))
         {
             legalMoves.push_back(dest);
         }
@@ -47,8 +47,6 @@ void getLegalMoves(vector<int> &legalMoves, int src, Chess *chess)
 
 int main()
 {
-    // cout.setstate(std::ios_base::failbit); // surpress output
-
     Chess *chess = new Chess;
 
     // Create 8x8 default board
@@ -102,21 +100,21 @@ int main()
     Color color_red(255, 204, 204, 255);
     bool clicked = false, getMoves = true;
 
-    while (window.isOpen())
+    while(window.isOpen())
     {
         Vector2i pos = Mouse::getPosition(window);
         int src, dest;
         vector<Sprite>::const_iterator iter;
 
         Event e;
-        while (window.pollEvent(e))
+        while(window.pollEvent(e))
         {
-            if (e.type == Event::Closed)
+            if(e.type == Event::Closed)
                 window.close();
 
-            if (e.type == sf::Event::KeyPressed)
+            if(e.type == sf::Event::KeyPressed)
             {
-                if (e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+                if(e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
                 {
                     board_positions.pop();
                     chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
@@ -127,20 +125,20 @@ int main()
                 }
             }
 
-            if (e.type == Event::MouseButtonPressed)
+            if(e.type == Event::MouseButtonPressed)
             {
-                if (e.mouseButton.button == Mouse::Left)
+                if(e.mouseButton.button == Mouse::Left)
                 {
                     clicked = true;
-                    for (iter = pieces.begin(); iter != pieces.end(); iter++)
+                    for(iter = pieces.begin(); iter != pieces.end(); iter++)
                     {
-                        if (iter->getGlobalBounds().contains(pos.x, pos.y))
+                        if(iter->getGlobalBounds().contains(pos.x, pos.y))
                         {
                             src = iter - pieces.begin();
                         }
                     }
 
-                    if (getMoves)
+                    if(getMoves)
                     {
                         getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
                         getMoves = false;
@@ -148,9 +146,9 @@ int main()
                 }
             }
 
-            if (e.type == Event::MouseButtonReleased)
+            if(e.type == Event::MouseButtonReleased)
             {
-                if (e.mouseButton.button == Mouse::Left)
+                if(e.mouseButton.button == Mouse::Left)
                 {
                     clicked = false;
                     getMoves = true;
@@ -173,66 +171,76 @@ int main()
                 }
             }
 
-            if (clicked)
+            if(clicked)
                 pieces[src].setPosition(pos.x - size_rect.x / 2, pos.y - size_rect.y / 2);
         }
 
         window.clear();
 
         // board
-        if (font.loadFromFile("font/arial.ttf"))
+        if(font.loadFromFile("font/arial.ttf"))
         {
             text.setCharacterSize(20);
             text.setFont(font);
             text.setFillColor(Color::Black);
 
-            string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
-            string piece_rank[8] = {"1", "2", "3", "4", "5", "6", "7", "8"};
+            // center the text inside it's bounding box
+            FloatRect textRect = text.getLocalBounds();
+            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top  + textRect.height/2.0);
 
-            for (int i = 0; i < numRows; i++)
+            string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+            string piece_rank[8] = {"8", "7", "6", "5", "4", "3", "2", "1"};
+
+            for(int i = 0; i < numRows; i++)
             {
-                for (int j = 0; j < numCols; j++)
+                for(int j = 0; j < numCols; j++)
                 {
                     // top and bottom rows
-                    if ((i == 0 || i == 9) && (1 <= j && j <= 8))
+                    if((i == 0 || i == 9) && (1 <= j && j <= 8))
                     {
-                        i == 0 ? text.setPosition(j * distance - size_rect.x / 4, size_rect.y / 8) : text.setPosition(j * distance - size_rect.x / 4, size_rect.y * (numRows - 1.5));
+                        int x = j * distance, y1 = size_rect.y/4, y2 = size_rect.y * (numRows - 1.25);
+                        i == 0 ? text.setPosition(x, y1) : text.setPosition(x, y2);
                         text.setString(piece_file[j - 1]);
                         
                         rect.setSize(Vector2f(size_rect.x, size_rect.y/2));
                         if (i == 0)
                         {
+                            text.setStyle(Text::Bold);
                             rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
                             rect.setPosition(j * distance - size_rect.x/2, i * distance);
                         }
                         else
                         {
+                            text.setStyle(Text::Bold);
                             rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
                             rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
                         }
                     }
 
                     // left and right columns
-                    else if ((j == 0 || j == 9) && (1 <= i && i <= 8))
+                    else if((j == 0 || j == 9) && (1 <= i && i <= 8))
                     {
-                        j == 0 ? text.setPosition(size_rect.x / 8, i * distance - size_rect.y / 4) : text.setPosition(size_rect.x * (numCols - 1.5), i * distance - size_rect.y / 4);
+                        int y = i * distance, x1 = size_rect.x/4, x2 = size_rect.x * (numCols - 1.25);
+                        j == 0 ? text.setPosition(x1, y) : text.setPosition(x2, y);
                         text.setString(piece_rank[i - 1]);
 
                         rect.setSize(Vector2f(size_rect.x/2, size_rect.y));
                         if (j == 0)
                         {
+                            text.setStyle(Text::Regular);
                             rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
                             rect.setPosition(j * distance, i * distance - size_rect.y/2);
                         }
                         else
                         {
+                            text.setStyle(Text::Bold);
                             rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
                             rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
                         }
                     }
 
                     // corners
-                    else if ((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
+                    else if((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
                     {
                         if(i == 0 && j == 0)
                         {

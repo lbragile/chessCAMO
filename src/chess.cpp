@@ -162,7 +162,7 @@ void Chess::boardInit()
     for(unsigned int i = 0; i < board.size(); i++)
     {
         /******************* BLACK *******************/
-        if(i < board.size()/4)            // first 2 rows
+        if(i < board.size()/4)          // first 2 rows
         {
             if(i == 0 || i == 7)        // rook
             {
@@ -318,7 +318,7 @@ void Chess::makeMove(int src, int dest, istream &in)
             king = check_stack.top();
             check_stack.pop();
 
-            for(auto & elem : board) // must always update the board as it is possible an undo happened
+            for(auto & elem : board)
             {    
                 // if the move failed, undo the board representation and do not set check_stack               
                 if(this->undoMove(board, squares_prior, moved_prior, enpassant_prior, king, elem, "double"))
@@ -687,14 +687,14 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
     int increment, src = piece->getPieceSquare(), dest = king->getPieceSquare();
 
     // can a piece defend the king from check?
-    if(!board[src]->isKnight())
+    if(!piece->isKnight())
     {
-        increment = incrementChoice(src, dest);
+        increment = src > dest ? -1*incrementChoice(src, dest) : incrementChoice(src, dest);
         for(const auto & elem : board)
         {
-            if(elem->isSameColor(dest, this) && elem->getPieceSquare() != dest)
+            if(elem->isSameColor(dest, this) && !elem->isKing())
             {
-                for(int pos = std::min(src, dest)+increment; pos <= std::max(src, dest); pos += increment)
+                for(int pos = src; pos != dest; pos += increment)
                 {   
                     if(elem->isPossibleMove(pos, this))
                     {
@@ -735,13 +735,13 @@ bool Chess::singleCheckPieceIterator(Piece* piece, Piece* king)
  */
 bool Chess::doubleCheckPieceIterator(Piece* king)
 {
-    int dest = king->getPieceSquare();
+    int src = king->getPieceSquare();
     int king_moves[4] = {1, 7, 8, 9}; // possible king moves (absolute values here)
 
     // can king move out of check?
     for(auto move : king_moves)
     {
-        if(king->isLegalMove(dest + move, this) || king->isLegalMove(dest - move, this))
+        if(king->isLegalMove(src + move, this) || king->isLegalMove(src - move, this))
         {
             return false;
         }
