@@ -642,7 +642,7 @@ bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector
 {
     if(piece->isPossibleMove(king->getPieceSquare(), this))
     {   
-        this->getBoardPositions().pop();
+        this->setBoardPositions().pop();
         board = this->getBoard();
         this->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "restore");
 

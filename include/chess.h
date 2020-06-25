@@ -162,11 +162,12 @@ public:
     Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
     
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
-    stack<vector<Piece*>> & getBoardPositions() {return board_positions;}
-
-    void setBoardPositions(const stack<vector<Piece*>> board_positions) {this->board_positions = board_positions;}
-
-    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type);
+    /**
+     * @brief      (Mutator) Sets the board positions stack.
+     *
+     * @return     A reference to the board positions stack, which can be modified as needed.
+     */
+    stack<vector<Piece*>> & setBoardPositions() {return board_positions;}
 
     /**
      * @brief      (Accessor) Gets the board representation.
@@ -279,6 +280,24 @@ public:
      * object's board variable
      */  
     void boardInit(); // Board intialization
+
+    /**
+     * @brief      Stores relevant board representation information that is useful when "undoing" a move is required
+     *
+     * @param      board            The current board representation
+     * @param      squares_prior    The previous board representation's element square information
+     * @param      moved_prior      The previous board representation's element move information
+     * @param      enpassant_prior  The previous board representation's element en-passant ability information
+     * @param[in]  type             Either "store" or "restore", corresponding to storing information prior to a move
+     *                              being made or restoring information after the move was made and an undo was applied.
+     * 
+     * \pre 
+     * None
+     * 
+     * \post
+     * Updates the board and relevant information flags (square, has moved, en-passant ability).
+    */
+    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type);
 
     /**
      * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
