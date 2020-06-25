@@ -1197,27 +1197,36 @@ bool King::canCastle(int dest, Chess *chess)
 bool King::movedIntoCheck(int dest, Chess *chess)
 {
     vector<Piece*> board = chess->getBoard();
-    int src, sign, increment;
+    int src, sign;
+
+    pieceColor original_color = board[dest]->getPieceColor();
+    bool ret_val = false;
 
     for(const auto & elem : board)
     {
         src = elem->getPieceSquare();
         sign = elem->isPieceWhite() ? 1 : -1;
-        increment = src > dest ? incrementChoice(src, dest) : -1 * incrementChoice(src, dest);
+
+        // change the color of the attacking piece so that if it is supported,
+        // one can check if the supporting piece can move into that square (in which case
+        // the king cannot capture the attacker)
+        board[dest]->setPieceColor(NEUTRAL);
 
         // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
         // checking dest-increment and increment since if a piece is only 1 square away dest-increment gives src=dest.
         // However, since move isn't made it is possible that a piece of same color causes isPossibleMove(dest, chess)
         // to be false, see 48-scholarMate.txt
         if( !elem->isEmpty() && !this->isSameColor(src, chess) && 
-            ( ( !elem->isPawn() && (elem->isPossibleMove(dest-increment, chess) || elem->isPossibleMove(dest, chess)) ) ||
+            ( ( !elem->isPawn() && elem->isPossibleMove(dest, chess) ) ||
               ( elem->isPawn() && (sign*(src - dest) == 9 || sign*(src - dest) == 7) ) ))
         {
-            return true;
+            ret_val = true;
+            break;
         }
     }
 
-    return false;
+    board[dest]->setPieceColor(original_color);
+    return ret_val;
 }
 
 /*************************************************************************************/

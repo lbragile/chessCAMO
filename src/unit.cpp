@@ -1069,20 +1069,19 @@ TEST_F(ChessTest, enpassantDeniedPawnMoves)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-// TEST_F(ChessTest, scholarAttemptWithJustQueen)
-// {
-//     /* ------------------ Arrange ------------------ */
-//     ifstream myfile("tests/50-scholarAttemptWithJustQueen.txt");
-//     SetUp(myfile);
+TEST_F(ChessTest, scholarAttemptWithJustQueen)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/50-scholarAttemptWithJustQueen.txt");
+    SetUp(myfile);
 
-//      -------------------- Act -------------------- 
-//     // convert the final board position from a given test case file into a FEN string
-//     fen_obtained = boardFenConverter(chess);
+    // -------------------- Act -------------------- 
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
 
-//     /* ------------------- Assert ------------------ */
-//     EXPECT_EQ(fen_expected, fen_obtained);
-// }
-
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
 
 TEST_F(ChessTest, enpassantWithBlackPawn)
 {
