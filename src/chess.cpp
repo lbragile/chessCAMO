@@ -252,22 +252,24 @@ void Chess::boardInit()
  * \post
  * Updates the board and relevant information flags (square, has moved, en-passant ability).
 */
-void Chess::storeOrRestore(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type)
+void Chess::storeOrRestore(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, string type)
 {
     for(auto & elem : board)
     {
         int index = &elem - &board[0];
-        if(type == "restore")
-        {
-            elem->setPieceSquare(squares_prior[index]);
-            elem->setPieceMoveInfo(moved_prior[index]);
-            elem->setEnPassant(enpassant_prior[index]);
-        }
-        else // type == "store"
+        if(type == "store")
         {
             squares_prior[index] = elem->getPieceSquare();
             moved_prior[index] = elem->getPieceMoveInfo();
-            enpassant_prior[index] = elem->getEnPassant();
+            enpassant_prior[index].first = elem->getEnPassantLeft();
+            enpassant_prior[index].second = elem->getEnPassantRight();
+        }
+        else // type == "restore"
+        {
+            elem->setPieceSquare(squares_prior[index]);
+            elem->setPieceMoveInfo(moved_prior[index]);
+            elem->setEnPassantLeft(enpassant_prior[index].first);
+            elem->setEnPassantRight(enpassant_prior[index].second);
         }
     }
 }
@@ -296,7 +298,8 @@ void Chess::makeMove(int src, int dest, istream &in)
     Piece *king, *piece;
 
     vector<int> squares_prior(64);
-    vector<bool> moved_prior(64), enpassant_prior(64);
+    vector<bool> moved_prior(64);
+    vector<pair<bool, bool>> enpassant_prior(64);
     
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == this->getTurn())
     {   
@@ -499,19 +502,22 @@ void Chess::makeMoveForType(int src, int dest)
     }
 
     // en-passant move
-    else if(board[src]->getEnPassant() && std::abs(src-dest) != 8)
+    else if((board[src]->getEnPassantLeft() || board[src]->getEnPassantRight()) && std::abs(src-dest) != 8)
     {
-        this->pieceSwap(src, dest, board);
+        int sign = board[src]->isPieceWhite() ? 1 : -1;
 
-        // delete the pawn that caused en-passant (make it empty square)
+        // delete the pawn that caused en-passant (make it an empty square)
         if(std::abs(src-dest) == 7)
         {
-            board[src+1] = new Empty(src+1, EMPTY, NEUTRAL);
+            board[src+sign] = new Empty(src+sign, EMPTY, NEUTRAL);
         }
         else // std::abs(src-dest) == 9
         {
-            board[src-1] = new Empty(src-1, EMPTY, NEUTRAL);
+            board[src-sign] = new Empty(src-sign, EMPTY, NEUTRAL);
         }
+
+        // after the violating pawn is removed, can make the move
+        this->pieceSwap(src, dest, board);
     }
 
     // regular or attacking
@@ -638,7 +644,7 @@ void Chess::handleStalemate()
  *             invalid, output warning message and undo the move. Else, False and continue the game
  *             without undoing the move.
  */
-bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, Piece* king, Piece* piece, string check_type)
+bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, Piece* king, Piece* piece, string check_type)
 {
     if(piece->isPossibleMove(king->getPieceSquare(), this))
     {   
@@ -968,14 +974,15 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
     bool legal = false;
     int src = this->getPieceSquare();
     int diff = this->isPieceWhite() ? src-dest : dest - src;
+    int sign = this->isPieceWhite() ? 1 : -1;
 
     // on attack it can move diagonally, first move can be 2 squares forward,
     // en-passant is possible for one move if conditions are met
     if(this->getPieceMoveInfo())
     {
         legal = (diff == 8 && board[dest]->isEmpty()) || 
-                ( ( diff == 7 && ( !board[dest]->isEmpty() || (board[src]->getEnPassant() && board[src+1]->isPawn()) ) ) ||
-                  ( diff == 9 && ( !board[dest]->isEmpty() || (board[src]->getEnPassant() && board[src-1]->isPawn()) ) ) );
+                ( ( diff == 7 && ( !board[dest]->isEmpty() || (board[src]->getEnPassantRight() && board[src+sign]->isPawn()) ) ) ||
+                  ( diff == 9 && ( !board[dest]->isEmpty() || (board[src]->getEnPassantLeft() && board[src-sign]->isPawn()) ) ) );
     }
     else // cannot en-passant if you have not moved yet
     {
@@ -993,25 +1000,28 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 {
     vector<Piece*> board = chess->getBoard();
     int dest = this->getPieceSquare();
+    int sign = this->isPieceWhite() ? 1 : -1;
 
     // First, cancel en-passant abilities of all pawns.
     // Then determine which pawn can have en-passant abilities
     for(const auto & elem : board) 
     {
-        elem->setEnPassant(false);
+        elem->setEnPassantLeft(false);
+        elem->setEnPassantRight(false);
     }
 
-    // pawn moves 2 squares and there is a pawn to its left
-    if(std::abs(src-dest) == 16 && board[dest-1]->isPawn() && !board[dest-1]->isSameColor(dest, chess))
+    // pawn moves 2 squares ...
+    if(std::abs(src-dest) == 16)
     {
-        board[dest-1]->setEnPassant(true);
-    }
+        // and there is a pawn to its left
+        if(board[dest-sign]->isPawn() && !board[dest-sign]->isSameColor(dest, chess))
+            board[dest-sign]->setEnPassantLeft(true);
 
-    // pawn moves 2 squares and there is a pawn to its right
-    if(std::abs(src-dest) == 16 && board[dest+1]->isPawn() && !board[dest+1]->isSameColor(dest, chess))
-    {
-        board[dest+1]->setEnPassant(true);
+        // and there is a pawn to its right
+        if(board[dest+sign]->isPawn() && !board[dest+sign]->isSameColor(dest, chess))
+            board[dest+sign]->setEnPassantRight(true);
     }
+    
 }
 
 /**

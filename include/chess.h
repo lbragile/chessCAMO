@@ -297,7 +297,7 @@ public:
      * \post
      * Updates the board and relevant information flags (square, has moved, en-passant ability).
     */
-    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type);
+    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, string type);
 
     /**
      * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
@@ -459,7 +459,7 @@ private:
      *             invalid, output warning message and undo the move. Else, False and continue the game
      *             without undoing the move.
      */
-    bool undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, Piece* king, Piece* piece, string check_type);
+    bool undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, Piece* king, Piece* piece, string check_type);
 
     /**
      * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
@@ -603,21 +603,38 @@ public:
     void setPieceMoveInfo(bool moved) {this->moved = moved;}    
     
     /**
-     * @brief      (Accessor) Gets the piece en-passant ability information.
+     * @brief      (Accessor) Gets the piece en-passant ability information for left side.
      *
-     * @return     The piece en-passant ability information.
+     * @return     The piece en-passant ability information in left direction.
      */
-    virtual bool getEnPassant() const {return false;}
+    virtual bool getEnPassantLeft() const {return false;}
 
     /**
-     * @brief      (Mutator) Sets the piece en-passant ability information.
+     * @brief      (Mutator) Sets the piece en-passant ability information for left side.
      *
-     * @param[in]  en_passant  The piece en-passant ability information
+     * @param[in]  en_passant_left  The piece en-passant ability information in left direction
      * 
      * \note
      * Intentionally left blank.
      */
-    virtual void setEnPassant(bool en_passant) {}
+    virtual void setEnPassantLeft(bool en_passant_left) {}
+
+    /**
+     * @brief      (Accessor) Gets the piece en-passant ability information for right side.
+     *
+     * @return     The piece en-passant ability information in right direction.
+     */
+    virtual bool getEnPassantRight() const {return false;}
+
+    /**
+     * @brief      (Mutator) Sets the piece en-passant ability information  for right side.
+     *
+     * @param[in]  en_passant_right  The piece en-passant ability information in right direction 
+     * 
+     * \note
+     * Intentionally left blank.
+     */
+    virtual void setEnPassantRight(bool en_passant_right) {}
     /************************************* END *************************************/
 
     /************************ TYPE DETERMINATION FUNCTIONS *************************/
@@ -869,7 +886,7 @@ public:
      * \note
      * Intentionally left blank. Has en-passant initialization.
      */
-    Pawn() : Piece(), en_passant{false} {} // intentionally blank
+    Pawn() : Piece(), en_passant_left{false}, en_passant_right{false} {} // intentionally blank
 
     // constructor with valid piece information initialization
     
@@ -884,12 +901,16 @@ public:
      * \note
      * Intentionally left blank. Has en-passant initialization.
      */
-    Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant{false} {}
+    Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant_left{false}, en_passant_right{false} {}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
-    // En-passant ability information 
-    bool getEnPassant() const override {return en_passant;}
-    void setEnPassant(bool en_passant) override {this->en_passant = en_passant;}
+    // En-passant ability information (LEFT)
+    bool getEnPassantLeft() const override {return en_passant_left;}
+    void setEnPassantLeft(bool en_passant_left) override {this->en_passant_left = en_passant_left;}
+
+    // En-passant ability information (RIGHT)
+    bool getEnPassantRight() const override {return en_passant_right;}
+    void setEnPassantRight(bool en_passant_right) override {this->en_passant_right = en_passant_right;}
     /************************************* END *************************************/
 
     /**
@@ -912,8 +933,11 @@ public:
     void promotePawn(int dest, Chess *chess, istream &in) override;
 
 private:
-    /** * Can this pawn en-passant it's rival currently? */
-    bool en_passant;
+    /** * Can this pawn en-passant it's left rival currently? */
+    bool en_passant_left;
+
+    /** * Can this pawn en-passant it's right rival currently? */
+    bool en_passant_right;
 };  
 
 /*************************************************************************************/

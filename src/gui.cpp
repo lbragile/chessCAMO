@@ -54,7 +54,8 @@ int main()
 
     stack<vector<Piece *>> board_positions;
     vector<int> squares_prior(64);
-    vector<bool> moved_prior(64), enpassant_prior(64);
+    vector<bool> moved_prior(64);
+    vector<pair<bool, bool>> enpassant_prior(64);
     vector<int> legalMoves;
 
     board_positions.push(chess->getBoard());

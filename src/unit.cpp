@@ -1083,6 +1083,21 @@ TEST_F(ChessTest, enpassantDeniedPawnMoves)
 //     EXPECT_EQ(fen_expected, fen_obtained);
 // }
 
+
+TEST_F(ChessTest, enpassantWithBlackPawn)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/51-enpassantWithBlackPawn.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
 // -lgtest_main does this for you automatically to avoid writing main
 // int main(int argc, char **argv)
 // {
