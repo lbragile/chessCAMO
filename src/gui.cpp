@@ -113,67 +113,78 @@ int main()
             if(e.type == Event::Closed)
                 window.close();
 
-            if(e.type == sf::Event::KeyPressed)
+            if(!chess->getCheckmate() && !chess->getStalemate())
             {
-                if(e.key.code == sf::Keyboard::Space && board_positions.size() > 1)
+                if(e.type == sf::Event::KeyPressed)
                 {
-                    board_positions.pop();
-                    chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
-                    chess->setBoard(board_positions.top());
-
-                    chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
-                    drawPieces(pieces, pieceType, chess->getBoard());
-                }
-            }
-
-            if(e.type == Event::MouseButtonPressed)
-            {
-                if(e.mouseButton.button == Mouse::Left)
-                {
-                    clicked = true;
-                    for(iter = pieces.begin(); iter != pieces.end(); iter++)
+                    if(e.key.code == sf::Keyboard::U && board_positions.size() > 1)
                     {
-                        if(iter->getGlobalBounds().contains(pos.x, pos.y))
+                        board_positions.pop();
+                        chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+                        chess->setBoard(board_positions.top());
+
+                        chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
+                        drawPieces(pieces, pieceType, chess->getBoard());
+                    }
+
+                    if(e.key.code == sf::Keyboard::R)
+                    {
+                        string message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
+                                                                   : "\nBlack resigned -> White wins\n";
+                        chessCAMO::printMessage(message, CYAN);
+                        chess->setCheckmate(true); // to end the game
+                    }
+                }
+
+                if(e.type == Event::MouseButtonPressed)
+                {
+                    if(e.mouseButton.button == Mouse::Left)
+                    {
+                        clicked = true;
+                        for(iter = pieces.begin(); iter != pieces.end(); iter++)
                         {
-                            src = iter - pieces.begin();
+                            if(iter->getGlobalBounds().contains(pos.x, pos.y))
+                            {
+                                src = iter - pieces.begin();
+                            }
+                        }
+
+                        if(getMoves)
+                        {
+                            getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                            getMoves = false;
                         }
                     }
+                }
 
-                    if(getMoves)
+                if(e.type == Event::MouseButtonReleased)
+                {
+                    if(e.mouseButton.button == Mouse::Left)
                     {
-                        getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
-                        getMoves = false;
+                        clicked = false;
+                        getMoves = true;
+                        dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
+
+                        // here means that you pressed and released the mousebutton,
+                        // so can make a move
+                        chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
+                        chess->makeMove(src, dest, cin);
+
+                        drawPieces(pieces, pieceType, chess->getBoard());
+
+                        // add new position to the stack
+                        if (chess->getBoard() != board_positions.top())
+                            board_positions.push(chess->getBoard());
+
+                        // clear all legal moves for next cycle
+                        while(!legalMoves.empty())
+                            legalMoves.pop_back();
                     }
                 }
-            }
 
-            if(e.type == Event::MouseButtonReleased)
-            {
-                if(e.mouseButton.button == Mouse::Left)
-                {
-                    clicked = false;
-                    getMoves = true;
-                    dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
-
-                    // here means that you pressed and released the mousebutton,
-                    // so can make a move
-                    chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
-                    chess->makeMove(src, dest, cin);
-
-                    drawPieces(pieces, pieceType, chess->getBoard());
-
-                    // add new position to the stack
-                    if (chess->getBoard() != board_positions.top())
-                        board_positions.push(chess->getBoard());
-
-                    // clear all legal moves for next cycle
-                    while(!legalMoves.empty())
-                        legalMoves.pop_back();
-                }
-            }
-
-            if(clicked)
-                pieces[src].setPosition(pos.x - size_rect.x / 2, pos.y - size_rect.y / 2);
+                if(clicked)
+                    pieces[src].setPosition(pos.x - size_rect.x / 2, pos.y - size_rect.y / 2);
+            }  
         }
 
         window.clear();

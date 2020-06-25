@@ -1577,11 +1577,11 @@ namespace chessCAMO
             chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
 
             // re-print board and display move information
-            std::system("cls");
-
             cout << "___________________________________________________" << endl;
-            chess->getTurn() == WHITE ? chessCAMO::printMessage("\n            White's move\n", CYAN)
-                                     : chessCAMO::printMessage("\n            Black's move\n", CYAN);
+            if(chess->getTurn() == WHITE)
+                chessCAMO::printMessage("\n            White's move\n", CYAN);
+            else
+                chessCAMO::printMessage("\n            Black's move\n", CYAN);
 
             chessCAMO::printBoard(board);
         }
