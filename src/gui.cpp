@@ -32,28 +32,6 @@ void drawPieces(vector<Sprite> &pieces, const vector<Sprite> &pieceType, const v
     }
 }
 
-void storeOrRestore(vector<Piece *> &board, vector<int> &squares_prior, vector<bool> &moved_prior, vector<bool> &enpassant_prior, string type)
-{
-    int i = 0;
-    for (auto &elem : board)
-    {
-        if (type == "restore")
-        {
-            elem->setPieceSquare(squares_prior[i]);
-            elem->setPieceMoveInfo(moved_prior[i]);
-            elem->setEnPassant(enpassant_prior[i]);
-        }
-        else // type == "store"
-        {
-            squares_prior[i] = elem->getPieceSquare();
-            moved_prior[i] = elem->getPieceMoveInfo();
-            enpassant_prior[i] = elem->getEnPassant();
-        }
-
-        i++;
-    }
-}
-
 void getLegalMoves(vector<int> &legalMoves, int src, Chess *chess)
 {
     vector<Piece *> board = chess->getBoard();
@@ -144,7 +122,7 @@ int main()
                     chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
                     chess->setBoard(board_positions.top());
 
-                    storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
+                    chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
                     drawPieces(pieces, pieceType, chess->getBoard());
                 }
             }
@@ -180,7 +158,7 @@ int main()
 
                     // here means that you pressed and released the mousebutton,
                     // so can make a move
-                    storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
+                    chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
                     chess->makeMove(src, dest, cin);
 
                     drawPieces(pieces, pieceType, chess->getBoard());

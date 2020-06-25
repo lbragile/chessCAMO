@@ -236,6 +236,22 @@ void Chess::boardInit()
     chessCAMO::printMessage("\n            White's move\n", CYAN);
 }
 
+/**
+ * @brief      Stores relevant board representation information that is useful when "undoing" a move is required
+ *
+ * @param      board            The current board representation
+ * @param      squares_prior    The previous board representation's element square information
+ * @param      moved_prior      The previous board representation's element move information
+ * @param      enpassant_prior  The previous board representation's element en-passant ability information
+ * @param[in]  type             Either "store" or "restore", corresponding to storing information prior to a move
+ *                              being made or restoring information after the move was made and an undo was applied.
+ * 
+ * \pre 
+ * None
+ * 
+ * \post
+ * Updates the board and relevant information flags (square, has moved, en-passant ability).
+*/
 void Chess::storeOrRestore(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type)
 {
     for(auto & elem : board)
@@ -483,7 +499,7 @@ void Chess::makeMoveForType(int src, int dest)
     }
 
     // en-passant move
-    else if(board[src]->getEnPassant())
+    else if(board[src]->getEnPassant() && std::abs(src-dest) != 8)
     {
         this->pieceSwap(src, dest, board);
 

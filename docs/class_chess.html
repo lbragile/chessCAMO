@@ -95,6 +95,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab492bd8e530275a9a5d1261a92fd984d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab492bd8e530275a9a5d1261a92fd984d">setBoardPositions</a> (const stack&lt; vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&gt; <a class="el" href="class_chess.html#a7f27f2558ea9f65e655ddfe0439eda5e">board_positions</a>)</td></tr>
 <tr class="separator:ab492bd8e530275a9a5d1261a92fd984d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61ef5a826e66a1b4beaa00ea6a18c4dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a61ef5a826e66a1b4beaa00ea6a18c4dc">storeOrRestore</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board, vector&lt; int &gt; &amp;squares_prior, vector&lt; bool &gt; &amp;moved_prior, vector&lt; bool &gt; &amp;enpassant_prior, string type)</td></tr>
+<tr class="memdesc:a61ef5a826e66a1b4beaa00ea6a18c4dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores relevant board representation information that is useful when "undoing" a move is required.  <a href="class_chess.html#a61ef5a826e66a1b4beaa00ea6a18c4dc">More...</a><br /></td></tr>
 <tr class="separator:a61ef5a826e66a1b4beaa00ea6a18c4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a008d126d4430bdf95c79f935f8185c8e"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">getBoard</a> () const</td></tr>
 <tr class="memdesc:a008d126d4430bdf95c79f935f8185c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the board representation.  <a href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">More...</a><br /></td></tr>
@@ -414,6 +415,20 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Stores relevant board representation information that is useful when "undoing" a move is required. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">board</td><td>The current board representation </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">squares_prior</td><td>The previous board representation's element square information </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">moved_prior</td><td>The previous board representation's element move information </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">enpassant_prior</td><td>The previous board representation's element en-passant ability information </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>Either "store" or "restore", corresponding to storing information prior to a move being made or restoring information after the move was made and an undo was applied.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>None</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>Updates the board and relevant information flags (square, has moved, en-passant ability). </dd></dl>
 
 </div>
 </div>
