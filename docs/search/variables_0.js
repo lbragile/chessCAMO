@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['board_222',['board',['../class_chess.html#a980bd65812f24a84c25ccd46770e6a29',1,'Chess']]]
+  ['board_5fpositions_228',['board_positions',['../class_chess.html#a7f27f2558ea9f65e655ddfe0439eda5e',1,'Chess']]]
 ];

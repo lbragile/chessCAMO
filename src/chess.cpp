@@ -156,7 +156,7 @@ Chess::~Chess()
  */  
 void Chess::boardInit()
 {
-    vector<Piece*> board = this->getBoard();
+    vector<Piece*> board(64);
 
     // initialize the board
     for(unsigned int i = 0; i < board.size(); i++)
@@ -236,6 +236,26 @@ void Chess::boardInit()
     chessCAMO::printMessage("\n            White's move\n", CYAN);
 }
 
+void Chess::storeOrRestore(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type)
+{
+    for(auto & elem : board)
+    {
+        int index = &elem - &board[0];
+        if(type == "restore")
+        {
+            elem->setPieceSquare(squares_prior[index]);
+            elem->setPieceMoveInfo(moved_prior[index]);
+            elem->setEnPassant(enpassant_prior[index]);
+        }
+        else // type == "store"
+        {
+            squares_prior[index] = elem->getPieceSquare();
+            moved_prior[index] = elem->getPieceMoveInfo();
+            enpassant_prior[index] = elem->getEnPassant();
+        }
+    }
+}
+
 /**
  * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
  *             for a legal move are met.
@@ -257,8 +277,10 @@ void Chess::makeMove(int src, int dest, istream &in)
 {
     vector<Piece*> board = this->getBoard();
     stack<Piece*> check_stack = this->getCheckStack();
-    Piece *king, *piece, *undo_piece; // "undo_piece" needed for attacking moves that
-    bool undo_moveInfo;               //  are illegal (to restore the piece that goes missing)
+    Piece *king, *piece;
+
+    vector<int> squares_prior(64);
+    vector<bool> moved_prior(64), enpassant_prior(64);
     
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == this->getTurn())
     {   
@@ -268,9 +290,8 @@ void Chess::makeMove(int src, int dest, istream &in)
             board[src]->promotePawn(dest, this, in);
         }
 
-        // store piece and it's information in case move fails (to restore board representation from previous move)
-        undo_piece = board[dest];
-        undo_moveInfo = board[src]->getPieceMoveInfo();
+        // store relevant piece information
+        this->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "store");
 
         // make the appropriate move from 'src' to 'dest'
         this->makeMoveForType(src, dest);
@@ -281,10 +302,10 @@ void Chess::makeMove(int src, int dest, istream &in)
             king = check_stack.top();
             check_stack.pop();
 
-            for(auto elem : this->getBoard()) // must always update the board as it is possible an undo happened
+            for(auto & elem : board) // must always update the board as it is possible an undo happened
             {    
                 // if the move failed, undo the board representation and do not set check_stack               
-                if(this->undoMove(src, dest, king, elem, undo_piece, undo_moveInfo, "double"))
+                if(this->undoMove(board, squares_prior, moved_prior, enpassant_prior, king, elem, "double"))
                     return;
             }
 
@@ -302,7 +323,7 @@ void Chess::makeMove(int src, int dest, istream &in)
             check_stack.pop();
 
             // if the move failed, undo the board representation and do not set check_stack               
-            if(this->undoMove(src, dest, king, piece, undo_piece, undo_moveInfo, "single"))
+            if(this->undoMove(board, squares_prior, moved_prior, enpassant_prior, king, piece, "single"))
                 return;
 
             // if here, did not return so set the appropriate member variables
@@ -583,13 +604,13 @@ void Chess::handleStalemate()
 /**
  * @brief      After a move is made, can undo it if move was invalid and return to previous board state
  *
- * @param[in]  src            The source square of piece prior to current board state
- * @param[in]  dest           The destination square of piece prior to current board state
- * @param      king           The king that is being attacked currently
- * @param      piece          The piece that is attacking the king currently
- * @param      undo_piece     If move fails, this is the piece that was moved previously
- * @param[in]  undo_moveInfo  If move fails, this is the piece's move information
- * @param[in]  check_type     The check type (single or double)
+ * @param      board            The current board representation
+ * @param      squares_prior    The previous board representation's element squares
+ * @param      moved_prior      The previous board representation's element move information
+ * @param      enpassant_prior  The previous board representation's element en-passant ability information
+ * @param      king             The king that is being attacked currently
+ * @param      piece            The piece that is attacking the king currently
+ * @param[in]  check_type       The check type (single or double)
  * 
  * \pre 
  * The chess object is created. A move was made.
@@ -601,19 +622,13 @@ void Chess::handleStalemate()
  *             invalid, output warning message and undo the move. Else, False and continue the game
  *             without undoing the move.
  */
-bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type)
+bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, Piece* king, Piece* piece, string check_type)
 {
-    vector<Piece*> board = this->getBoard();
-
     if(piece->isPossibleMove(king->getPieceSquare(), this))
-    {
-        this->makeMoveForType(dest, src); // undo the move
-
-        // reset board representation
+    {   
+        this->getBoardPositions().pop();
         board = this->getBoard();
-        board[dest] = undo_piece;
-        board[src]->setPieceMoveInfo(undo_moveInfo);
-        this->setBoard(board);
+        this->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "restore");
 
         // invalid move checking when a player is in check (single/double)
         if(check_type == "double")
@@ -627,11 +642,11 @@ bool Chess::undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_p
             chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
         }
         
-        return true; // undo the move? 
+        return true; 
     }
     else
     {
-        return false; // did not undo the move?
+        return false; // did not undo the move
     }
 }
 

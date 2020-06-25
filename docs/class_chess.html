@@ -90,10 +90,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8b493f742d0ceced6f853fa30d3c05a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8">Chess</a> ()</td></tr>
 <tr class="memdesc:a8b493f742d0ceced6f853fa30d3c05a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor with default board parameter initialization - Constructs a new instance.  <a href="class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8">More...</a><br /></td></tr>
 <tr class="separator:a8b493f742d0ceced6f853fa30d3c05a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1aff83f25e3c40b0c7427bbd53733036"><td class="memItemLeft" align="right" valign="top">stack&lt; vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a1aff83f25e3c40b0c7427bbd53733036">getBoardPositions</a> ()</td></tr>
+<tr class="separator:a1aff83f25e3c40b0c7427bbd53733036"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab492bd8e530275a9a5d1261a92fd984d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab492bd8e530275a9a5d1261a92fd984d">setBoardPositions</a> (const stack&lt; vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&gt; <a class="el" href="class_chess.html#a7f27f2558ea9f65e655ddfe0439eda5e">board_positions</a>)</td></tr>
+<tr class="separator:ab492bd8e530275a9a5d1261a92fd984d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61ef5a826e66a1b4beaa00ea6a18c4dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a61ef5a826e66a1b4beaa00ea6a18c4dc">storeOrRestore</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board, vector&lt; int &gt; &amp;squares_prior, vector&lt; bool &gt; &amp;moved_prior, vector&lt; bool &gt; &amp;enpassant_prior, string type)</td></tr>
+<tr class="separator:a61ef5a826e66a1b4beaa00ea6a18c4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a008d126d4430bdf95c79f935f8185c8e"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">getBoard</a> () const</td></tr>
 <tr class="memdesc:a008d126d4430bdf95c79f935f8185c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the board representation.  <a href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">More...</a><br /></td></tr>
 <tr class="separator:a008d126d4430bdf95c79f935f8185c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2679734ba5315a4f2136bad327d23167"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a2679734ba5315a4f2136bad327d23167">setBoard</a> (const vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;<a class="el" href="class_chess.html#a980bd65812f24a84c25ccd46770e6a29">board</a>)</td></tr>
+<tr class="memitem:a2679734ba5315a4f2136bad327d23167"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a2679734ba5315a4f2136bad327d23167">setBoard</a> (const vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board)</td></tr>
 <tr class="memdesc:a2679734ba5315a4f2136bad327d23167"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the board representation.  <a href="class_chess.html#a2679734ba5315a4f2136bad327d23167">More...</a><br /></td></tr>
 <tr class="separator:a2679734ba5315a4f2136bad327d23167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a990bc41ad329b880201352f1d632650f"><td class="memItemLeft" align="right" valign="top">stack&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a990bc41ad329b880201352f1d632650f">getCheckStack</a> () const</td></tr>
@@ -150,7 +156,7 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a9e4d4b34ec9b3da12d834499515dc463"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a9e4d4b34ec9b3da12d834499515dc463">makeMoveForType</a> (int src, int dest)</td></tr>
 <tr class="memdesc:a9e4d4b34ec9b3da12d834499515dc463"><td class="mdescLeft">&#160;</td><td class="mdescRight">A move can be one of: attack, castle, en-passant, regular.  <a href="class_chess.html#a9e4d4b34ec9b3da12d834499515dc463">More...</a><br /></td></tr>
 <tr class="separator:a9e4d4b34ec9b3da12d834499515dc463"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">pieceSwap</a> (int src, int dest, vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;<a class="el" href="class_chess.html#a980bd65812f24a84c25ccd46770e6a29">board</a>)</td></tr>
+<tr class="memitem:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">pieceSwap</a> (int src, int dest, vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board)</td></tr>
 <tr class="memdesc:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used in makeMoveForType(.) to swap pieces on the board.  <a href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">More...</a><br /></td></tr>
 <tr class="separator:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb0e6941c0f1bedfad490df9649045d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#afb0e6941c0f1bedfad490df9649045d4">handleChangeTurn</a> ()</td></tr>
@@ -162,9 +168,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">handleStalemate</a> ()</td></tr>
 <tr class="memdesc:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates the game is drawn via a message to console.  <a href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">More...</a><br /></td></tr>
 <tr class="separator:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24a27ebf8f1b59027ddba52b8a7f7fca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a24a27ebf8f1b59027ddba52b8a7f7fca">undoMove</a> (int src, int dest, <a class="el" href="class_piece.html">Piece</a> *king, <a class="el" href="class_piece.html">Piece</a> *piece, <a class="el" href="class_piece.html">Piece</a> *undo_piece, bool undo_moveInfo, string check_type)</td></tr>
-<tr class="memdesc:a24a27ebf8f1b59027ddba52b8a7f7fca"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#a24a27ebf8f1b59027ddba52b8a7f7fca">More...</a><br /></td></tr>
-<tr class="separator:a24a27ebf8f1b59027ddba52b8a7f7fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba1d0b3aa0b5291dd38e720ef9b27a65"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aba1d0b3aa0b5291dd38e720ef9b27a65">undoMove</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board, vector&lt; int &gt; &amp;squares_prior, vector&lt; bool &gt; &amp;moved_prior, vector&lt; bool &gt; &amp;enpassant_prior, <a class="el" href="class_piece.html">Piece</a> *king, <a class="el" href="class_piece.html">Piece</a> *piece, string check_type)</td></tr>
+<tr class="memdesc:aba1d0b3aa0b5291dd38e720ef9b27a65"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#aba1d0b3aa0b5291dd38e720ef9b27a65">More...</a><br /></td></tr>
+<tr class="separator:aba1d0b3aa0b5291dd38e720ef9b27a65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">singleCheckPieceIterator</a> (<a class="el" href="class_piece.html">Piece</a> *piece, <a class="el" href="class_piece.html">Piece</a> *king)</td></tr>
 <tr class="memdesc:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in isCheckmate("single")  <a href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">More...</a><br /></td></tr>
 <tr class="separator:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,8 +183,8 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a980bd65812f24a84c25ccd46770e6a29"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a980bd65812f24a84c25ccd46770e6a29">board</a></td></tr>
-<tr class="separator:a980bd65812f24a84c25ccd46770e6a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f27f2558ea9f65e655ddfe0439eda5e"><td class="memItemLeft" align="right" valign="top">stack&lt; vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a7f27f2558ea9f65e655ddfe0439eda5e">board_positions</a></td></tr>
+<tr class="separator:a7f27f2558ea9f65e655ddfe0439eda5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bea6f68b3978eebfeae2ed248073a4a"><td class="memItemLeft" align="right" valign="top">stack&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a1bea6f68b3978eebfeae2ed248073a4a">check_stack</a></td></tr>
 <tr class="separator:a1bea6f68b3978eebfeae2ed248073a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d5ec257f6aa4011b2159fe8eccd4a86"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a6d5ec257f6aa4011b2159fe8eccd4a86">checkmate</a></td></tr>
@@ -311,6 +317,103 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting object from the assignment</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Default </dd></dl>
+
+</div>
+</div>
+<a id="a1aff83f25e3c40b0c7427bbd53733036"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1aff83f25e3c40b0c7427bbd53733036">&#9670;&nbsp;</a></span>getBoardPositions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">stack&lt;vector&lt;<a class="el" href="class_piece.html">Piece</a>*&gt; &gt;&amp; Chess::getBoardPositions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab492bd8e530275a9a5d1261a92fd984d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab492bd8e530275a9a5d1261a92fd984d">&#9670;&nbsp;</a></span>setBoardPositions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chess::setBoardPositions </td>
+          <td>(</td>
+          <td class="paramtype">const stack&lt; vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&gt;&#160;</td>
+          <td class="paramname"><em>board_positions</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a61ef5a826e66a1b4beaa00ea6a18c4dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61ef5a826e66a1b4beaa00ea6a18c4dc">&#9670;&nbsp;</a></span>storeOrRestore()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chess::storeOrRestore </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>board</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>squares_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>moved_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>enpassant_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1056,8 +1159,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a24a27ebf8f1b59027ddba52b8a7f7fca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24a27ebf8f1b59027ddba52b8a7f7fca">&#9670;&nbsp;</a></span>undoMove()</h2>
+<a id="aba1d0b3aa0b5291dd38e720ef9b27a65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba1d0b3aa0b5291dd38e720ef9b27a65">&#9670;&nbsp;</a></span>undoMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1068,14 +1171,26 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">bool Chess::undoMove </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>board</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dest</em>, </td>
+          <td class="paramtype">vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>squares_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>moved_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>enpassant_prior</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1088,18 +1203,6 @@ Private Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
           <td class="paramname"><em>piece</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
-          <td class="paramname"><em>undo_piece</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>undo_moveInfo</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1123,12 +1226,12 @@ Private Attributes</h2></td></tr>
 <p>After a move is made, can undo it if move was invalid and return to previous board state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The source square of piece prior to current board state </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dest</td><td>The destination square of piece prior to current board state </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">board</td><td>The current board representation </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">squares_prior</td><td>The previous board representation's element squares </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">moved_prior</td><td>The previous board representation's element move information </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">enpassant_prior</td><td>The previous board representation's element en-passant ability information </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">king</td><td>The king that is being attacked currently </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">piece</td><td>The piece that is attacking the king currently </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">undo_piece</td><td>If move fails, this is the piece that was moved previously </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">undo_moveInfo</td><td>If move fails, this is the piece's move information </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">check_type</td><td>The check type (single or double)</td></tr>
   </table>
   </dd>
@@ -1255,8 +1358,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a980bd65812f24a84c25ccd46770e6a29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a980bd65812f24a84c25ccd46770e6a29">&#9670;&nbsp;</a></span>board</h2>
+<a id="a7f27f2558ea9f65e655ddfe0439eda5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f27f2558ea9f65e655ddfe0439eda5e">&#9670;&nbsp;</a></span>board_positions</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1265,7 +1368,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="class_piece.html">Piece</a>*&gt; Chess::board</td>
+          <td class="memname">stack&lt;vector&lt;<a class="el" href="class_piece.html">Piece</a>*&gt; &gt; Chess::board_positions</td>
         </tr>
       </table>
   </td>
@@ -1274,7 +1377,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p><a class="el" href="class_chess.html" title="This class describes the chess board on which the game takes place. It contains functions which analy...">Chess</a> board representation with the pieces in correct spots </p>
+<p>A stack that keeps the chess board representation with the pieces in correct spots, each layers corresponds to a move made on the board. </p>
 
 </div>
 </div>

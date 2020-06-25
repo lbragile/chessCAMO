@@ -6,7 +6,7 @@ var searchData=
   ['check_10',['check',['../class_chess.html#a9805134df65a99fa13629f4cce725117',1,'Chess']]],
   ['check_5fstack_11',['check_stack',['../class_chess.html#a1bea6f68b3978eebfeae2ed248073a4a',1,'Chess']]],
   ['checkmate_12',['checkmate',['../class_chess.html#a6d5ec257f6aa4011b2159fe8eccd4a86',1,'Chess']]],
-  ['chess_13',['Chess',['../class_chess.html',1,'Chess'],['../class_chess_test.html#a8a2cd354c20df2ece2d5d5319e55541f',1,'ChessTest::chess()'],['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../chess.html',1,'(Global Namespace)']]],
+  ['chess_13',['Chess',['../class_chess.html',1,'Chess'],['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../class_chess_test.html#a8a2cd354c20df2ece2d5d5319e55541f',1,'ChessTest::chess()'],['../chess.html',1,'(Global Namespace)']]],
   ['chess_2ecpp_14',['chess.cpp',['../chess_8cpp.html',1,'']]],
   ['chess_2eh_15',['chess.h',['../chess_8h.html',1,'']]],
   ['chesscamo_16',['chessCAMO',['../namespacechess_c_a_m_o.html',1,'']]],

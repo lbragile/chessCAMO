@@ -159,22 +159,28 @@ public:
      * \note
      * Intentionally left blank.
      */
-    Chess() : board{64}, checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
+    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
     
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
+    stack<vector<Piece*>> & getBoardPositions() {return board_positions;}
+
+    void setBoardPositions(const stack<vector<Piece*>> board_positions) {this->board_positions = board_positions;}
+
+    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, string type);
+
     /**
      * @brief      (Accessor) Gets the board representation.
      *
      * @return     The board with current piece positions in correct indicies.
      */
-    vector<Piece*> getBoard() const {return board;}
+    vector<Piece*> getBoard() const {return board_positions.top();}
 
     /**
      * @brief      (Mutator) Sets the board representation.
      *
      * @param[in]  board  The current board representation
      */
-    void setBoard(const vector<Piece*> & board) {this->board = board;}
+    void setBoard(const vector<Piece*> & board) {board_positions.push(board);}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
@@ -321,8 +327,10 @@ public:
     bool isStalemate();
     
 private:
-    /** Chess board representation with the pieces in correct spots */
-    vector<Piece*> board;
+    /** A stack that keeps the chess board representation with the pieces in correct spots,
+     * each layers corresponds to a move made on the board.
+     */
+    stack<vector<Piece*>> board_positions;
 
     /** Stores the pieces involved in a checking scenario */   
     stack<Piece*> check_stack; 
@@ -414,13 +422,13 @@ private:
     /**
      * @brief      After a move is made, can undo it if move was invalid and return to previous board state
      *
-     * @param[in]  src            The source square of piece prior to current board state
-     * @param[in]  dest           The destination square of piece prior to current board state
-     * @param      king           The king that is being attacked currently
-     * @param      piece          The piece that is attacking the king currently
-     * @param      undo_piece     If move fails, this is the piece that was moved previously
-     * @param[in]  undo_moveInfo  If move fails, this is the piece's move information
-     * @param[in]  check_type     The check type (single or double)
+     * @param      board            The current board representation
+     * @param      squares_prior    The previous board representation's element squares
+     * @param      moved_prior      The previous board representation's element move information
+     * @param      enpassant_prior  The previous board representation's element en-passant ability information
+     * @param      king             The king that is being attacked currently
+     * @param      piece            The piece that is attacking the king currently
+     * @param[in]  check_type       The check type (single or double)
      * 
      * \pre 
      * The chess object is created. A move was made.
@@ -432,7 +440,7 @@ private:
      *             invalid, output warning message and undo the move. Else, False and continue the game
      *             without undoing the move.
      */
-    bool undoMove(int src, int dest, Piece* king, Piece* piece, Piece* undo_piece, bool undo_moveInfo, string check_type);
+    bool undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<bool> & enpassant_prior, Piece* king, Piece* piece, string check_type);
 
     /**
      * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
