@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7echess_230',['~Chess',['../class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8',1,'Chess']]]
+  ['undomove_231',['undoMove',['../class_chess.html#aa4277b6f5f72fa225a4c8d0d38b84921',1,'Chess']]]
 ];

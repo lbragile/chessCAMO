@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_3d_196',['operator=',['../class_chess.html#a30c101ca0cc850be82e59301c544dd2f',1,'Chess']]]
+  ['needundomove_197',['needUndoMove',['../class_chess.html#a2ddb779092d8a79f10378eb655271a1a',1,'Chess']]]
 ];

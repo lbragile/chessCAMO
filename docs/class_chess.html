@@ -168,9 +168,12 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">handleStalemate</a> ()</td></tr>
 <tr class="memdesc:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates the game is drawn via a message to console.  <a href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">More...</a><br /></td></tr>
 <tr class="separator:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79f89a52a08eef0bad8dae9c7287822a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a79f89a52a08eef0bad8dae9c7287822a">undoMove</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board, vector&lt; int &gt; &amp;squares_prior, vector&lt; bool &gt; &amp;moved_prior, vector&lt; pair&lt; bool, bool &gt;&gt; &amp;enpassant_prior, <a class="el" href="class_piece.html">Piece</a> *king, <a class="el" href="class_piece.html">Piece</a> *piece, string check_type)</td></tr>
-<tr class="memdesc:a79f89a52a08eef0bad8dae9c7287822a"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#a79f89a52a08eef0bad8dae9c7287822a">More...</a><br /></td></tr>
-<tr class="separator:a79f89a52a08eef0bad8dae9c7287822a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ddb779092d8a79f10378eb655271a1a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a2ddb779092d8a79f10378eb655271a1a">needUndoMove</a> (<a class="el" href="class_piece.html">Piece</a> *king, <a class="el" href="class_piece.html">Piece</a> *piece, string check_type)</td></tr>
+<tr class="memdesc:a2ddb779092d8a79f10378eb655271a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#a2ddb779092d8a79f10378eb655271a1a">More...</a><br /></td></tr>
+<tr class="separator:a2ddb779092d8a79f10378eb655271a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4277b6f5f72fa225a4c8d0d38b84921"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aa4277b6f5f72fa225a4c8d0d38b84921">undoMove</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board, vector&lt; int &gt; &amp;squares_prior, vector&lt; bool &gt; &amp;moved_prior, vector&lt; pair&lt; bool, bool &gt;&gt; &amp;enpassant_prior)</td></tr>
+<tr class="memdesc:aa4277b6f5f72fa225a4c8d0d38b84921"><td class="mdescLeft">&#160;</td><td class="mdescRight">Undo a move if needed and restore the piece information on the new board representation.  <a href="class_chess.html#aa4277b6f5f72fa225a4c8d0d38b84921">More...</a><br /></td></tr>
+<tr class="separator:aa4277b6f5f72fa225a4c8d0d38b84921"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">singleCheckPieceIterator</a> (<a class="el" href="class_piece.html">Piece</a> *piece, <a class="el" href="class_piece.html">Piece</a> *king)</td></tr>
 <tr class="memdesc:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in isCheckmate("single")  <a href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">More...</a><br /></td></tr>
 <tr class="separator:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1150,8 +1153,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a79f89a52a08eef0bad8dae9c7287822a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79f89a52a08eef0bad8dae9c7287822a">&#9670;&nbsp;</a></span>undoMove()</h2>
+<a id="a2ddb779092d8a79f10378eb655271a1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ddb779092d8a79f10378eb655271a1a">&#9670;&nbsp;</a></span>needUndoMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1160,32 +1163,8 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool Chess::undoMove </td>
+          <td class="memname">bool Chess::needUndoMove </td>
           <td>(</td>
-          <td class="paramtype">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;&#160;</td>
-          <td class="paramname"><em>board</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>squares_prior</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
-          <td class="paramname"><em>moved_prior</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; pair&lt; bool, bool &gt;&gt; &amp;&#160;</td>
-          <td class="paramname"><em>enpassant_prior</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
           <td class="paramname"><em>king</em>, </td>
         </tr>
@@ -1217,10 +1196,6 @@ Private Attributes</h2></td></tr>
 <p>After a move is made, can undo it if move was invalid and return to previous board state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">board</td><td>The current board representation </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">squares_prior</td><td>The previous board representation's element squares </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">moved_prior</td><td>The previous board representation's element move information </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">enpassant_prior</td><td>The previous board representation's element en-passant ability information </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">king</td><td>The king that is being attacked currently </td></tr>
     <tr><td class="paramdir"></td><td class="paramname">piece</td><td>The piece that is attacking the king currently </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">check_type</td><td>The check type (single or double)</td></tr>
@@ -1230,6 +1205,67 @@ Private Attributes</h2></td></tr>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created. A move was made.</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>None</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>True if after move, the 'king' is still in check (single or double) or the move was invalid, output warning message and undo the move. Else, False and continue the game without undoing the move. </dd></dl>
+
+</div>
+</div>
+<a id="aa4277b6f5f72fa225a4c8d0d38b84921"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4277b6f5f72fa225a4c8d0d38b84921">&#9670;&nbsp;</a></span>undoMove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chess::undoMove </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>board</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>squares_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>moved_prior</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; pair&lt; bool, bool &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>enpassant_prior</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Undo a move if needed and restore the piece information on the new board representation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">board</td><td>The current board representation </td></tr>
+    <tr><td class="paramname">squares_prior</td><td>The previous board representation's element squares </td></tr>
+    <tr><td class="paramname">moved_prior</td><td>The previous board representation's element move information </td></tr>
+    <tr><td class="paramname">enpassant_prior</td><td>The previous board representation's element en-passant ability information</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Illegal move is made on the current board representation.</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>The stack of board positions is decremented by one position which represented the illegal move </dd></dl>
 
 </div>
 </div>

@@ -317,6 +317,22 @@ public:
      * On failure, an error message is printed and user is asked to retry.
      */
     void makeMove(int src, int dest, istream &in); 
+
+    /**
+     * @brief      Undo a move if needed and restore the piece information on the new board representation
+     *
+     * @param      board            The current board representation
+     * @param      squares_prior    The previous board representation's element squares
+     * @param      moved_prior      The previous board representation's element move information
+     * @param      enpassant_prior  The previous board representation's element en-passant ability information
+     * 
+     * \pre
+     * Illegal move is made on the current board representation.
+     * 
+     * \post
+     * The stack of board positions is decremented by one position which represented the illegal move
+     */
+    void undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior);
     
     /**
      * @brief      Decide if a move caused a checkmate according to 'check_type'
@@ -441,10 +457,6 @@ private:
     /**
      * @brief      After a move is made, can undo it if move was invalid and return to previous board state
      *
-     * @param      board            The current board representation
-     * @param      squares_prior    The previous board representation's element squares
-     * @param      moved_prior      The previous board representation's element move information
-     * @param      enpassant_prior  The previous board representation's element en-passant ability information
      * @param      king             The king that is being attacked currently
      * @param      piece            The piece that is attacking the king currently
      * @param[in]  check_type       The check type (single or double)
@@ -459,7 +471,7 @@ private:
      *             invalid, output warning message and undo the move. Else, False and continue the game
      *             without undoing the move.
      */
-    bool undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, Piece* king, Piece* piece, string check_type);
+    bool needUndoMove(Piece* king, Piece* piece, string check_type);
 
     /**
      * @brief      If in a single check, see if piece can defend the king, capture attacking piece,

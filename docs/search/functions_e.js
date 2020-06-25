@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rook_205',['Rook',['../class_rook.html#a0cce560130c640f82c99937ce5781ac1',1,'Rook::Rook()'],['../class_rook.html#a741becdfadb1ca917cc390b4ff4cfd6b',1,'Rook::Rook(int square, pieceType type, pieceColor color)']]]
+  ['queen_206',['Queen',['../class_queen.html#ae2314f4890c7fa7d5da670b3c0b6293b',1,'Queen::Queen()'],['../class_queen.html#acad3d51fea8fc951e5f7ac009ca8634d',1,'Queen::Queen(int square, pieceType type, pieceColor color)']]]
 ];

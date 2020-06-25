@@ -324,8 +324,11 @@ void Chess::makeMove(int src, int dest, istream &in)
             for(auto & elem : board)
             {    
                 // if the move failed, undo the board representation and do not set check_stack               
-                if(this->undoMove(board, squares_prior, moved_prior, enpassant_prior, king, elem, "double"))
+                if(this->needUndoMove(king, elem, "double"))
+                {
+                    this->undoMove(board, squares_prior, moved_prior, enpassant_prior);
                     return;
+                }
             }
 
             // if here, did not return so set the appropriate member variables
@@ -342,8 +345,11 @@ void Chess::makeMove(int src, int dest, istream &in)
             check_stack.pop();
 
             // if the move failed, undo the board representation and do not set check_stack               
-            if(this->undoMove(board, squares_prior, moved_prior, enpassant_prior, king, piece, "single"))
+            if(this->needUndoMove(king, piece, "single"))
+            {
+                this->undoMove(board, squares_prior, moved_prior, enpassant_prior); 
                 return;
+            }
 
             // if here, did not return so set the appropriate member variables
             this->setCheckStack(check_stack);
@@ -379,6 +385,27 @@ void Chess::makeMove(int src, int dest, istream &in)
         chessCAMO::printBoard(board);
         chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
     }
+}
+
+/**
+ * @brief      Undo a move if needed and restore the piece information on the new board representation
+ *
+ * @param      board            The current board representation
+ * @param      squares_prior    The previous board representation's element squares
+ * @param      moved_prior      The previous board representation's element move information
+ * @param      enpassant_prior  The previous board representation's element en-passant ability information
+ * 
+ * \pre
+ * Illegal move is made on the current board representation.
+ * 
+ * \post
+ * The stack of board positions is decremented by one position which represented the illegal move
+ */
+void Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior)
+{
+    this->setBoardPositions().pop();
+    board = this->getBoard();
+    this->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "restore");
 }
 
 /**
@@ -625,11 +652,7 @@ void Chess::handleStalemate()
 
 /**
  * @brief      After a move is made, can undo it if move was invalid and return to previous board state
- *
- * @param      board            The current board representation
- * @param      squares_prior    The previous board representation's element squares
- * @param      moved_prior      The previous board representation's element move information
- * @param      enpassant_prior  The previous board representation's element en-passant ability information
+ * 
  * @param      king             The king that is being attacked currently
  * @param      piece            The piece that is attacking the king currently
  * @param[in]  check_type       The check type (single or double)
@@ -644,14 +667,12 @@ void Chess::handleStalemate()
  *             invalid, output warning message and undo the move. Else, False and continue the game
  *             without undoing the move.
  */
-bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, Piece* king, Piece* piece, string check_type)
+bool Chess::needUndoMove(Piece* king, Piece* piece, string check_type)
 {
+    vector<Piece*> board = this->getBoard();
+
     if(piece->isPossibleMove(king->getPieceSquare(), this))
     {   
-        this->setBoardPositions().pop();
-        board = this->getBoard();
-        this->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "restore");
-
         // invalid move checking when a player is in check (single/double)
         if(check_type == "double")
         {
@@ -670,8 +691,8 @@ bool Chess::undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector
     {
         return false; // did not undo the move
     }
-}
-
+} 
+       
 /**
  * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
  *             or move the king out of check. Used in isCheckmate("single")
@@ -1490,15 +1511,15 @@ namespace chessCAMO
         char user_input, draw_reply;
         string message;
 
-        chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
+        chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw, u -> undo move] ", PINK);
         in >> user_input;
         in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
 
         // error check
-        while( std::tolower(user_input) != 'y' && std::tolower(user_input) != 'd' && std::tolower(user_input) != 'r' )
+        while( std::tolower(user_input) != 'y' && std::tolower(user_input) != 'd' && std::tolower(user_input) != 'r' && std::tolower(user_input) != 'u' )
         {
             chessCAMO::printMessage("Pick one of the choices... try again!", YELLOW);
-            chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw] ", PINK);
+            chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw, u -> undo move] ", PINK);
 
             in >> user_input; // get new input
             in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
@@ -1538,6 +1559,31 @@ namespace chessCAMO
                 chessCAMO::printMessage("\nDraw rejected. Game continues...\n", CYAN);
                 return;
             }
+        }
+        else if(std::tolower(user_input) == 'u')
+        {
+            vector<int> squares_prior(64);
+            vector<bool> moved_prior(64);
+            vector<pair<bool, bool>> enpassant_prior(64);
+            vector<Piece*> board = chess->getBoard();
+
+            // store relevant piece information
+            chess->storeOrRestore(board, squares_prior, moved_prior, enpassant_prior, "store");
+
+            // undo the move
+            chess->undoMove(board, squares_prior, moved_prior, enpassant_prior);
+
+            // switch turn back to same player
+            chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+
+            // re-print board and display move information
+            std::system("cls");
+
+            cout << "___________________________________________________" << endl;
+            chess->getTurn() == WHITE ? chessCAMO::printMessage("\n            White's move\n", CYAN)
+                                     : chessCAMO::printMessage("\n            Black's move\n", CYAN);
+
+            chessCAMO::printBoard(board);
         }
         else // player wants to continue
         {
