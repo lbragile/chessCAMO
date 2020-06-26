@@ -982,11 +982,11 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
 /**
-  * \note
-  * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
-  * en-passant, and promote.
-  *   
-  * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \note
+ * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
+ * en-passant, and promote.
+ *   
+ * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
  */
 bool Pawn::isPossibleMove(int dest, Chess *chess)
 {
@@ -995,15 +995,14 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
     bool legal = false;
     int src = this->getPieceSquare();
     int diff = this->isPieceWhite() ? src-dest : dest - src;
-    int sign = this->isPieceWhite() ? 1 : -1;
 
     // on attack it can move diagonally, first move can be 2 squares forward,
     // en-passant is possible for one move if conditions are met
     if(this->getPieceMoveInfo())
     {
         legal = (diff == 8 && board[dest]->isEmpty()) || 
-                ( ( diff == 7 && ( !board[dest]->isEmpty() || (board[src]->getEnPassantRight() && board[src+sign]->isPawn()) ) ) ||
-                  ( diff == 9 && ( !board[dest]->isEmpty() || (board[src]->getEnPassantLeft() && board[src-sign]->isPawn()) ) ) );
+                ( ( diff == 7 && ( !board[dest]->isEmpty() || board[src]->getEnPassantRight() ) ) ||
+                  ( diff == 9 && ( !board[dest]->isEmpty() || board[src]->getEnPassantLeft() ) ) );
     }
     else // cannot en-passant if you have not moved yet
     {
@@ -1015,7 +1014,7 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
 }
 
 /**
-    * \see virtual Piece::enPassantHandling(int dest, Chess *chess)
+ * \see virtual Piece::enPassantHandling(int dest, Chess *chess)
  */
 void Pawn::enPassantHandling(int src, Chess *chess)
 {
@@ -1046,7 +1045,7 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 }
 
 /**
-    * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
+ * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
  */
 void Pawn::promotePawn(int dest, Chess *chess, istream &in)
 {
@@ -1092,10 +1091,10 @@ void Pawn::promotePawn(int dest, Chess *chess, istream &in)
 /*                              KNIGHT CLASS - MEMBER FUNCTIONS                      */
 /*************************************************************************************/
 /**
-  * \note
-  * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
-  * 
-  * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \note
+ * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
+ * 
+ * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
  */
 bool Knight::isPossibleMove(int dest, Chess *chess)
 {
@@ -1177,8 +1176,8 @@ bool King::isPossibleMove(int dest, Chess *chess)
 }
 
  /**
- * \see virtual Piece::canCastle(int dest, Chess *chess)
- */
+  * \see virtual Piece::canCastle(int dest, Chess *chess)
+  */
 bool King::canCastle(int dest, Chess *chess)
 {
     int src = this->getPieceSquare();
@@ -1317,7 +1316,7 @@ namespace
         return std::abs(src/8 - dest/8) == std::abs(src%8 - dest%8); 
     }
 
-        /**
+    /**
      * @brief      Used to determine the coordinate of a pinned piece.
      *
      * @param[in]  src    The source square of pinning piece

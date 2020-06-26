@@ -354,34 +354,6 @@ TEST_F(ChessTest, queenCheckPieceDefends)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, queenCheckPieceDefends2)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/10-queenCheckPieceDefends2.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, queenCheckPieceDefends3)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/11-queenCheckPieceDefends3.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
 TEST_F(ChessTest, pawnPromotionQueenWhiteLow)
 {
     /* ------------------ Arrange ------------------ */
@@ -1087,34 +1059,6 @@ TEST_F(ChessTest, enpassantWithBlackPawn)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/51-enpassantWithBlackPawn.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, enpassantLeftBlack)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/52-enpassantLeftBlack.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, enpassantRightBlack)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/52-enpassantRightBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
