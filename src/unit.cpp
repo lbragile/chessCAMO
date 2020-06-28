@@ -1099,7 +1099,7 @@ string boardFenConverter(Chess * chess)
     string fen;
     char temp[15];
 
-    vector<Piece*> board = chess->getBoard();
+    vector<Piece*> board = chess->getTopBoard();
     for(auto elem : board)
     {
         // piece square handling

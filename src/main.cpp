@@ -78,7 +78,7 @@ int main()
         }
 
         // makes the corresponding move and updates the board state on the console after clearing it
-        std::system("cls");
+        // std::system("cls");
         chess->makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), cin);
 
         // prevent asking again after game is over

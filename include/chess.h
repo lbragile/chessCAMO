@@ -59,6 +59,7 @@
 #include <algorithm>    /* min, max */
 #include <fstream>
 #include <windows.h>    // for console text colors
+#include <functional>   // reference_wrapper
 
 using namespace std;
 
@@ -114,6 +115,7 @@ enum pieceColor
 
 // forward declaration
 class Piece; 
+class King;
 
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
@@ -137,9 +139,12 @@ public:
      * 
      * @param[in]  object  The object whose values will be copied
      * 
-     * \note Default
+     * \note
+     * This is needed to be able to stack different board representations in the board positions stack.
+     * Otherwise, since the vector<Piece*> contains pointers, any updates to the position will be reflected 
+     * in each layer.
      */
-    Chess(const Chess & object) = default; // copy constructor
+    Chess(const Chess & object);
 
     /**
      * @brief      Copy Assignment operator - assigns values of one object to another existing object
@@ -150,7 +155,7 @@ public:
      * 
      * \note Default
      */
-    Chess & operator =(const Chess & object) = default; // copy assignment
+    Chess & operator =(const Chess & object) = default;
     /************************************* END *************************************/
 
     /**
@@ -163,25 +168,28 @@ public:
     
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
-     * @brief      (Mutator) Sets the board positions stack.
-     *
-     * @return     A reference to the board positions stack, which can be modified as needed.
+     * @brief      (Mutator) Pops a board representation from the board representation stack.
      */
-    stack<vector<Piece*>> & setBoardPositions() {return board_positions;}
+    void popBoard() {board_positions.pop();}
 
     /**
-     * @brief      (Accessor) Gets the board representation.
+     * @brief      (Mutator) Pushes a board representation onto the stack.
+     */
+    void pushBoard(const vector<Piece*> & board) {board_positions.push(board);}
+
+    /**
+     * @brief      (Accessor) Gets the board representation at the top of the board positions stack.
      *
      * @return     The board with current piece positions in correct indicies.
      */
-    vector<Piece*> getBoard() const {return board_positions.top();}
+    vector<Piece*> getTopBoard() const {return board_positions.top();}
 
     /**
-     * @brief      (Mutator) Sets the board representation.
+     * @brief      (Mutator) Updates the board representation at the top of the board positions stack.
      *
      * @param[in]  board  The current board representation
      */
-    void setBoard(const vector<Piece*> & board) {board_positions.push(board);}
+    void setTopBoard(const vector<Piece*> & board) {board_positions.top() = board;}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
@@ -195,7 +203,7 @@ public:
      *
      * @param[in]  check_stack  The check stack which contains the board representations after each move
      */
-    void setCheckStack(const stack<Piece*> & check_stack) {this->check_stack = check_stack;}
+    void setCheckStack(stack<Piece*> check_stack) {this->check_stack = check_stack;}
 
     /**
      * @brief      (Accessor) Gets the check information.
@@ -282,24 +290,6 @@ public:
     void boardInit(); // Board intialization
 
     /**
-     * @brief      Stores relevant board representation information that is useful when "undoing" a move is required
-     *
-     * @param      board            The current board representation
-     * @param      squares_prior    The previous board representation's element square information
-     * @param      moved_prior      The previous board representation's element move information
-     * @param      enpassant_prior  The previous board representation's element en-passant ability information
-     * @param[in]  type             Either "store" or "restore", corresponding to storing information prior to a move
-     *                              being made or restoring information after the move was made and an undo was applied.
-     * 
-     * \pre 
-     * None
-     * 
-     * \post
-     * Updates the board and relevant information flags (square, has moved, en-passant ability).
-    */
-    void storeOrRestore(vector<Piece *> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior, string type);
-
-    /**
      * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
      *             for a legal move are met.
      *
@@ -318,22 +308,6 @@ public:
      */
     void makeMove(int src, int dest, istream &in); 
 
-    /**
-     * @brief      Undo a move if needed and restore the piece information on the new board representation
-     *
-     * @param      board            The current board representation
-     * @param      squares_prior    The previous board representation's element squares
-     * @param      moved_prior      The previous board representation's element move information
-     * @param      enpassant_prior  The previous board representation's element en-passant ability information
-     * 
-     * \pre
-     * Illegal move is made on the current board representation.
-     * 
-     * \post
-     * The stack of board positions is decremented by one position which represented the illegal move
-     */
-    void undoMove(vector<Piece*> & board, vector<int> & squares_prior, vector<bool> & moved_prior, vector<pair<bool, bool>> & enpassant_prior);
-    
     /**
      * @brief      Decide if a move caused a checkmate according to 'check_type'
      *
@@ -471,7 +445,7 @@ private:
      *             invalid, output warning message and undo the move. Else, False and continue the game
      *             without undoing the move.
      */
-    bool needUndoMove(Piece* king, Piece* piece, string check_type);
+    bool needUndoMove(Piece *king, Piece *piece, string check_type);
 
     /**
      * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
@@ -488,7 +462,7 @@ private:
      *
      * @return     True if no legal moves found (checkmate), else False and make the move
      */
-    bool singleCheckPieceIterator(Piece* piece, Piece* king); 
+    bool singleCheckPieceIterator(Piece *piece, Piece *king); 
     
     /**
      * @brief      If in a double check, see if the king can move out of check as this is the only
@@ -504,7 +478,7 @@ private:
      *
      * @return     True if no legal moves found (checkmate), else False and make the move
      */
-    bool doubleCheckPieceIterator(Piece* king);
+    bool doubleCheckPieceIterator(Piece *king);
 
     /**
      * @brief      Decides whose turn it is currently and updates the private member variable ('turn') accordingly
@@ -1239,7 +1213,7 @@ namespace chessCAMO
      * Each piece of the current board representation is printed to the
      * screen using a corresponding letter inside a formatted board
      */
-    void printBoard(const vector<Piece*> & board); // Print the current board position
+    void printBoard(const vector<Piece*> board); // Print the current board position
 
     /**
      * @brief      At any moment, the players can either continue, draw, or resign

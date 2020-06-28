@@ -5,11 +5,11 @@
 using namespace sf;
 using namespace std;
 
-void drawPieces(vector<Sprite> &pieces, const vector<Sprite> &pieceType, const vector<Piece *> &board)
+void drawPieces(vector<Sprite> & pieces, const vector<Sprite> & pieceType, const vector<Piece*> & board)
 {
     FloatRect shape;
     int i = 0;
-    for(const auto &elem : board)
+    for(const auto & elem : board)
     {
         if(elem->isRook())
             pieces[i] = elem->isPieceWhite() ? pieceType[1] : pieceType[7];
@@ -32,9 +32,9 @@ void drawPieces(vector<Sprite> &pieces, const vector<Sprite> &pieceType, const v
     }
 }
 
-void getLegalMoves(vector<int> &legalMoves, int src, Chess *chess)
+void getLegalMoves(vector<int> & legalMoves, int src, Chess *chess)
 {
-    vector<Piece *> board = chess->getBoard();
+    vector<Piece*> board = chess->getTopBoard();
 
     for(unsigned int dest = 0; dest < board.size(); dest++)
     {
@@ -52,13 +52,7 @@ int main()
     // Create 8x8 default board
     chess->boardInit();
 
-    stack<vector<Piece *>> board_positions;
-    vector<int> squares_prior(64);
-    vector<bool> moved_prior(64);
-    vector<pair<bool, bool>> enpassant_prior(64);
     vector<int> legalMoves;
-
-    board_positions.push(chess->getBoard());
 
     RenderWindow window(VideoMode(540, 540), "chessCAMO", Style::Titlebar | Style::Close);
 
@@ -84,7 +78,7 @@ int main()
     vector<Sprite> pieceType = {sBlank, sWr, sWn, sWb, sWq, sWk, sWp, sBr, sBn, sBb, sBq, sBk, sBp};
     vector<Sprite> pieces(64);
 
-    drawPieces(pieces, pieceType, chess->getBoard());
+    drawPieces(pieces, pieceType, chess->getTopBoard());
 
     Vector2f size_rect(60.0, 60.0);
     Vector2f lr_rect(size_rect.x / 2, size_rect.y);
@@ -99,7 +93,7 @@ int main()
     Color color_yellow(255, 255, 153, 255);
     Color color_orange(255, 204, 153, 255);
     Color color_red(255, 204, 204, 255);
-    bool clicked = false, getMoves = true;
+    bool clicked = false;
 
     while(window.isOpen())
     {
@@ -117,14 +111,15 @@ int main()
             {
                 if(e.type == sf::Event::KeyPressed)
                 {
-                    if(e.key.code == sf::Keyboard::U && board_positions.size() > 1)
+                    if(e.key.code == sf::Keyboard::U)  // && board_positions.size() > 1
                     {
-                        board_positions.pop();
-                        chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
-                        chess->setBoard(board_positions.top());
+                        // undo the move
+                        chess->popBoard();
 
-                        chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "restore");
-                        drawPieces(pieces, pieceType, chess->getBoard());
+                        // switch turn back to same player
+                        chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+
+                        drawPieces(pieces, pieceType, chess->getTopBoard());
                     }
 
                     if(e.key.code == sf::Keyboard::R)
@@ -149,11 +144,7 @@ int main()
                             }
                         }
 
-                        if(getMoves)
-                        {
-                            getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
-                            getMoves = false;
-                        }
+                        getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
                     }
                 }
 
@@ -162,19 +153,11 @@ int main()
                     if(e.mouseButton.button == Mouse::Left)
                     {
                         clicked = false;
-                        getMoves = true;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
-                        // here means that you pressed and released the mousebutton,
-                        // so can make a move
-                        chess->storeOrRestore(board_positions.top(), squares_prior, moved_prior, enpassant_prior, "store");
                         chess->makeMove(src, dest, cin);
 
-                        drawPieces(pieces, pieceType, chess->getBoard());
-
-                        // add new position to the stack
-                        if (chess->getBoard() != board_positions.top())
-                            board_positions.push(chess->getBoard());
+                        drawPieces(pieces, pieceType, chess->getTopBoard());
 
                         // clear all legal moves for next cycle
                         while(!legalMoves.empty())
@@ -285,7 +268,7 @@ int main()
 
                     // legal move highlighting
                     auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
-                    if(found != legalMoves.end() && chess->getBoard()[src]->getPieceColor() == chess->getTurn() && 
+                    if(found != legalMoves.end() && chess->getTopBoard()[src]->getPieceColor() == chess->getTurn() && 
                        i != 0 && j != 0 && i != 9 && j != 9)
                     {
                         rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
