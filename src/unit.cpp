@@ -354,10 +354,10 @@ TEST_F(ChessTest, queenCheckPieceDefends)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionQueenWhiteLow)
+TEST_F(ChessTest, pawnPromotionRookWhite)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/12-pawnPromotionQueenWhiteLow.txt");
+    ifstream myfile("tests/11-pawnPromotionRookWhite.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -368,10 +368,10 @@ TEST_F(ChessTest, pawnPromotionQueenWhiteLow)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionQueenWhiteUp)
+TEST_F(ChessTest, pawnPromotionRookBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/12-pawnPromotionQueenWhiteUp.txt");
+    ifstream myfile("tests/11-pawnPromotionRookBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -382,10 +382,10 @@ TEST_F(ChessTest, pawnPromotionQueenWhiteUp)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionKnightWhiteLow)
+TEST_F(ChessTest, pawnPromotionQueenWhite)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/13-pawnPromotionKnightWhiteLow.txt");
+    ifstream myfile("tests/12-pawnPromotionQueenWhite.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -396,10 +396,10 @@ TEST_F(ChessTest, pawnPromotionKnightWhiteLow)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionKnightWhiteUp)
+TEST_F(ChessTest, pawnPromotionQueenBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/13-pawnPromotionKnightWhiteUp.txt");
+    ifstream myfile("tests/12-pawnPromotionQueenBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -410,10 +410,10 @@ TEST_F(ChessTest, pawnPromotionKnightWhiteUp)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionBishopWhiteLow)
+TEST_F(ChessTest, pawnPromotionKnightWhite)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/14-pawnPromotionBishopWhiteLow.txt");
+    ifstream myfile("tests/13-pawnPromotionKnightWhite.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -424,10 +424,38 @@ TEST_F(ChessTest, pawnPromotionBishopWhiteLow)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionBishopWhiteUp)
+TEST_F(ChessTest, pawnPromotionKnightBlack)
 {
     /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/14-pawnPromotionBishopWhiteUp.txt");
+    ifstream myfile("tests/13-pawnPromotionKnightBlack.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pawnPromotionBishopWhite)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/14-pawnPromotionBishopWhite.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    // convert the final board position from a given test case file into a FEN string
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pawnPromotionBishopBlack)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/14-pawnPromotionBishopBlack.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -802,34 +830,6 @@ TEST_F(ChessTest, pinnedWithRook)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pawnPromotionRookWhiteLow)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/38-pawnPromotionRookWhiteLow.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionRookWhiteUp)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/38-pawnPromotionRookWhiteUp.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
 TEST_F(ChessTest, enPassantPawnRight)
 {
     /* ------------------ Arrange ------------------ */
@@ -848,119 +848,6 @@ TEST_F(ChessTest, enPassantPawnLeft)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/40-enPassantPawnRight.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionQueenBlackLow)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/41-pawnPromotionQueenBlackLow.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionQueenBlackUp)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/41-pawnPromotionQueenBlackUp.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionRookBlackLow)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/42-pawnPromotionRookBlackLow.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionRookBlackUp)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/42-pawnPromotionRookBlackUp.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-
-TEST_F(ChessTest, pawnPromotionBishopBlackLow)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/43-pawnPromotionBishopBlackLow.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionBishopBlackUp)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/43-pawnPromotionBishopBlackUp.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionKnightBlackLow)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/44-pawnPromotionKnightBlackLow.txt");
-    SetUp(myfile);
-
-    /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
-    fen_obtained = boardFenConverter(chess);
-
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
-
-TEST_F(ChessTest, pawnPromotionKnightBlackUp)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/44-pawnPromotionKnightBlackUp.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
@@ -1093,7 +980,7 @@ TEST_F(ChessTest, enpassantWithBlackPawn)
  * 
  * @return     The FEN string based on piece type and common FEN making rules
  */   
-string boardFenConverter(Chess * chess)
+string boardFenConverter(Chess *chess)
 {
     int elem_count = 0, empty_count = 0;
     string fen;

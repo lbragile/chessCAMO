@@ -180,6 +180,10 @@ Chess::Chess(const Chess & object)
             default:
                 new_board[i] = new Empty(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
         }
+
+        new_board[i]->setPieceMoveInfo(temp_board[i]->getPieceMoveInfo());
+        new_board[i]->setEnPassantLeft(temp_board[i]->getEnPassantLeft());
+        new_board[i]->setEnPassantRight(temp_board[i]->getEnPassantRight());
     }
 
     pushBoard(new_board); // calling object gets a new board
@@ -518,11 +522,11 @@ void Chess::makeMoveForType(int src, int dest)
         // delete the pawn that caused en-passant (make it an empty square)
         if(std::abs(src-dest) == 7)
         {
-            board[src+sign] = new Empty(src+sign, EMPTY, NEUTRAL);
+            *board[src+sign] = Empty(src+sign, EMPTY, NEUTRAL);
         }
         else // std::abs(src-dest) == 9
         {
-            board[src-sign] = new Empty(src-sign, EMPTY, NEUTRAL);
+            *board[src-sign] = Empty(src-sign, EMPTY, NEUTRAL);
         }
 
         // after the violating pawn is removed, can make the move
@@ -540,7 +544,7 @@ void Chess::makeMoveForType(int src, int dest)
 
         // Attacking Move
         if(!board[dest]->isEmpty())
-            board[src] = new Empty(src, EMPTY, NEUTRAL);
+            *board[src] = Empty(src, EMPTY, NEUTRAL);
     }
 
     setTopBoard(board);
@@ -1025,20 +1029,36 @@ void Pawn::promotePawn(int dest, Chess *chess, istream &in)
 
     char piece;
     int src = getPieceSquare();
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
-    cout << "\nWhich Piece: Q/q | R/r | B/b | N/n? " << endl;
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
 
-    in >> piece;
-    
-    if(piece == 'R' || piece == 'r')
-        board[src] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
-    else if(piece == 'B' || piece == 'b')
-        board[src] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
-    else if(piece == 'N' || piece == 'n')
-        board[src] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
-    else // piece == 'Q' || piece == 'q'
-        board[src] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
+    while(true)
+    {
+        chessCAMO::printMessage("\nWhich Piece: Q/q | R/r | B/b | N/n? ", PINK);
+
+        in >> piece;
+        
+        if(piece == 'Q' || piece == 'q')
+        {
+            *board[src] = white_turn ? Queen(dest, QUEEN, WHITE) : Queen(dest, QUEEN, BLACK);
+            break;
+        }
+        else if(piece == 'R' || piece == 'r')
+        {
+            *board[src] = white_turn ? Rook(dest, ROOK, WHITE) : Rook(dest, ROOK, BLACK);
+            break;
+        }
+        else if(piece == 'B' || piece == 'b')
+        {
+            *board[src] = white_turn ? Bishop(dest, BISHOP, WHITE) : Bishop(dest, BISHOP, BLACK);
+            break;
+        }
+        else if(piece == 'N' || piece == 'n')
+        {
+            *board[src] = white_turn ? Knight(dest, KNIGHT, WHITE) : Knight(dest, KNIGHT, BLACK);
+            break;
+        }
+        else
+            chessCAMO::printMessage("\nPick one of the choices\n", YELLOW);
+    }
 
     chess->setTopBoard(board);
 }

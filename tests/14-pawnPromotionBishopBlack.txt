@@ -1,4 +1,4 @@
-rnbqkbnr/ppppp1pp/7P/8/8/2N1n3/PPPPPP2/R1BQK1NR w KQkq
+rnbqkbnr/ppppp1pp/7P/8/8/2N5/PPPPPPb1/R1BQK1NR w KQkq
 55 39
 y
 13 29
@@ -19,7 +19,10 @@ y
 y
 54 61
 m
-N
+b
+u
+54 61
+B
 y
 57 42
 y
@@ -29,5 +32,5 @@ y
 y
 61 43
 y
-61 44
+61 54
 y
