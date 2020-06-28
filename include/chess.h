@@ -803,8 +803,6 @@ public:
 
     /**
      * @brief      Promotes the pawn if needed.
-     *
-     * @param[in]  dest   The destination square of the piece
      * @param      chess  The chess object
      * @param      in     input stream type (stdin or file)
      * 
@@ -814,7 +812,7 @@ public:
      * \post
      * Changes the piece (pawn) to a stronger piece according to user input
      */
-    virtual void promotePawn(int dest, Chess *chess, istream &in) {return;}
+    virtual void promotePawn(Chess *chess, istream &in) {return;}
 
     /**
      * @brief      Can the king <a href="https://bit.ly/2XQEXFr" target="__blank">castle</a>?
@@ -916,7 +914,7 @@ public:
     /**
      * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
      */
-    void promotePawn(int dest, Chess *chess, istream &in) override;
+    void promotePawn(Chess *chess, istream &in) override;
 
 private:
     /** * Can this pawn en-passant it's left rival currently? */

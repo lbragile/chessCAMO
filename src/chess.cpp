@@ -301,23 +301,19 @@ void Chess::boardInit()
  * On failure, an error message is printed and user is asked to retry.
  */
 void Chess::makeMove(int src, int dest, istream &in)
-{
+{    
     // create the new board representation which is completely separated from the previous one
     // note that this is local to the function scope and will be deleted at function end (stack, rather than heap)
     Chess temp_chess(*this); 
-    pushBoard(temp_chess.getTopBoard()); // update the "global" chess object
 
     vector<Piece*> board = getTopBoard(); 
     stack<Piece*> check_stack = getCheckStack();
     Piece *king, *piece;
-    
+
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == getTurn())
-    {   
-        // pawn promotion
-        if(dest/8 == 0 || dest/8 == 7)
-        {
-            board[src]->promotePawn(dest, this, in);
-        }
+    {  
+        // update the "global" chess object (avoids duplicates if illegal move was made)
+        pushBoard(temp_chess.getTopBoard()); 
 
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);
@@ -365,6 +361,12 @@ void Chess::makeMove(int src, int dest, istream &in)
 
         board = getTopBoard();
         board[dest]->enPassantHandling(src, this); // en-passant checking/updating
+
+        // pawn promotion
+        if(dest/8 == 0 || dest/8 == 7)
+        {
+            board[dest]->promotePawn(this, in);
+        }
 
         // did the move cause a check?
         if(board[src]->causeCheck(dest, this) && !board[src]->causeDoubleCheck(dest, this)) 
@@ -1020,15 +1022,15 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 }
 
 /**
- * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
+ * \see virtual Piece::promotePawn(Chess *chess, istream &in)
  */
-void Pawn::promotePawn(int dest, Chess *chess, istream &in)
+void Pawn::promotePawn(Chess *chess, istream &in)
 {
     vector<Piece*> board = chess->getTopBoard();
     bool white_turn = chess->getTurn() == WHITE;
 
     char piece;
-    int src = getPieceSquare();
+    int dest = getPieceSquare();
 
     while(true)
     {
@@ -1038,22 +1040,22 @@ void Pawn::promotePawn(int dest, Chess *chess, istream &in)
         
         if(piece == 'Q' || piece == 'q')
         {
-            *board[src] = white_turn ? Queen(dest, QUEEN, WHITE) : Queen(dest, QUEEN, BLACK);
+            *board[dest] = white_turn ? Queen(dest, QUEEN, WHITE) : Queen(dest, QUEEN, BLACK);
             break;
         }
         else if(piece == 'R' || piece == 'r')
         {
-            *board[src] = white_turn ? Rook(dest, ROOK, WHITE) : Rook(dest, ROOK, BLACK);
+            *board[dest] = white_turn ? Rook(dest, ROOK, WHITE) : Rook(dest, ROOK, BLACK);
             break;
         }
         else if(piece == 'B' || piece == 'b')
         {
-            *board[src] = white_turn ? Bishop(dest, BISHOP, WHITE) : Bishop(dest, BISHOP, BLACK);
+            *board[dest] = white_turn ? Bishop(dest, BISHOP, WHITE) : Bishop(dest, BISHOP, BLACK);
             break;
         }
         else if(piece == 'N' || piece == 'n')
         {
-            *board[src] = white_turn ? Knight(dest, KNIGHT, WHITE) : Knight(dest, KNIGHT, BLACK);
+            *board[dest] = white_turn ? Knight(dest, KNIGHT, WHITE) : Knight(dest, KNIGHT, BLACK);
             break;
         }
         else
