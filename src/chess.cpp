@@ -136,8 +136,10 @@ namespace
  */
 Chess::~Chess()
 {
-    while(!board_positions.empty())
+    while(!game_info->board_positions.empty())
         popBoard(); // does board_positions.pop();
+
+    delete game_info;
 }
 
 /**
@@ -152,6 +154,9 @@ Chess::~Chess()
  */
 Chess::Chess(const Chess & object)
 {
+    GameInfo *temp_info = new GameInfo;
+    setGameInfo(temp_info);
+
     vector<Piece*> temp_board = object.getTopBoard();
     vector<Piece*> new_board{temp_board.size()};
 
@@ -285,9 +290,9 @@ void Chess::makeMove(int src, int dest, istream &in)
     Piece *king, *piece;
 
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == getTurn())
-    {  
+    {
         // update the "global" chess object (avoids duplicates if illegal move was made)
-        pushBoard(temp_chess.getTopBoard()); 
+        pushBoard(temp_chess.getTopBoard());
 
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);

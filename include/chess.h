@@ -115,6 +115,14 @@ enum pieceColor
 // forward declaration
 class Piece; 
 
+struct GameInfo
+{
+    /** A stack that keeps the chess board representation with the pieces in correct spots,
+     * each layers corresponds to a move made on the board.
+     */
+    stack<vector<Piece*>> board_positions;
+};
+
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
@@ -162,32 +170,38 @@ public:
      * \note
      * Intentionally left blank.
      */
-    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE} {}
+    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE}
+    {
+        game_info = new GameInfo;
+    }
     
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     /**
      * @brief      (Mutator) Pops a board representation from the board representation stack.
      */
-    void popBoard() {board_positions.pop();}
+    void popBoard() {game_info->board_positions.pop();}
 
     /**
      * @brief      (Mutator) Pushes a board representation onto the stack.
      */
-    void pushBoard(const vector<Piece*> & board) {board_positions.push(board);}
+    void pushBoard(const vector<Piece*> & board) {game_info->board_positions.push(board);}
 
     /**
      * @brief      (Accessor) Gets the board representation at the top of the board positions stack.
      *
      * @return     The board with current piece positions in correct indicies.
      */
-    vector<Piece*> getTopBoard() const {return board_positions.top();}
+    vector<Piece*> getTopBoard() const {return game_info->board_positions.top();}
 
     /**
      * @brief      (Mutator) Updates the board representation at the top of the board positions stack.
      *
      * @param[in]  board  The current board representation
      */
-    void setTopBoard(const vector<Piece*> & board) {board_positions.top() = board;}
+    void setTopBoard(const vector<Piece*> & board) {game_info->board_positions.top() = board;}
+
+    GameInfo* getGameInfo() const {return game_info;}
+    void setGameInfo(GameInfo *info) {game_info = info;}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
@@ -334,10 +348,7 @@ public:
     bool isStalemate();
     
 private:
-    /** A stack that keeps the chess board representation with the pieces in correct spots,
-     * each layers corresponds to a move made on the board.
-     */
-    stack<vector<Piece*>> board_positions;
+    GameInfo *game_info;
 
     /** Stores the pieces involved in a checking scenario */   
     vector<Piece*> check_pieces; 
