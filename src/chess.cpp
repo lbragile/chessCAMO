@@ -211,64 +211,38 @@ void Chess::boardInit()
         if(i < board.size()/4)          // first 2 rows
         {
             if(i == 0 || i == 7)        // rook
-            {
                 board[i] = new Rook(i, ROOK, BLACK);
-            }
             else if(i == 1 || i == 6)   // knight
-            {
                 board[i] = new Knight(i, KNIGHT, BLACK); 
-            }
             else if(i == 2 || i == 5)   // bishop
-            {
                 board[i] = new Bishop(i, BISHOP, BLACK); 
-            }
             else if(i == 3)             // queen
-            {
                 board[i] = new Queen(i, QUEEN, BLACK);
-            }
             else if(i == 4)             // king
-            {
                 board[i] = new King(i, KING, BLACK);
-            }
             else                        // pawn
-            {
                 board[i] = new Pawn(i, PAWN, BLACK);
-            }
         }
 
         /********** NEUTRAL (EMPTY SQUARES) **********/
-        else if(i < board.size()*3/4) 
-        {   
+        else if(i < board.size()*3/4)    
             board[i] = new Empty(i, EMPTY, NEUTRAL); // middle 4 rows
-        }
 
         /***************** WHITE *******************/
         else                                // last 2 rows
         {
             if(i == 56 || i == 63)          // rook
-            {
                 board[i] = new Rook(i, ROOK, WHITE);
-            }
             else if(i == 57 || i == 62)     // knight
-            {
                 board[i] = new Knight(i, KNIGHT, WHITE); 
-            }
             else if(i == 58 || i == 61)     // bishop
-            {
                 board[i] = new Bishop(i, BISHOP, WHITE);
-            }
             else if(i == 59)                // queen
-            {
                 board[i] = new Queen(i, QUEEN, WHITE);
-            }
             else if(i == 60)                // king
-            {
                 board[i] = new King(i, KING, WHITE);
-            }
             else                            // pawn
-            {
                 board[i] = new Pawn(i, PAWN, WHITE);
-            }
         }
     }
 
@@ -307,7 +281,7 @@ void Chess::makeMove(int src, int dest, istream &in)
     Chess temp_chess(*this); 
 
     vector<Piece*> board = getTopBoard(); 
-    stack<Piece*> check_stack = getCheckStack();
+    vector<Piece*> check_pieces = getCheckingPieces();
     Piece *king, *piece;
 
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == getTurn())
@@ -321,12 +295,12 @@ void Chess::makeMove(int src, int dest, istream &in)
         // when in double check you must move the king
         if(getDoubleCheck())
         {      
-            king = check_stack.top();
-            check_stack.pop();
+            king = check_pieces[1];
+            check_pieces.clear();
 
             for(auto & elem : board)
             {    
-                // if the move failed, undo the board representation and do not set check_stack               
+                // if the move failed, undo the board representation and do not set check_pieces               
                 if(needUndoMove(king, elem, "double"))
                 {
                     popBoard();
@@ -335,19 +309,18 @@ void Chess::makeMove(int src, int dest, istream &in)
             }
 
             // if here, did not return so set the appropriate member variables
-            setCheckStack(check_stack);
+            setCheckingPieces(check_pieces);
             setDoubleCheck(false);
         }
 
         // when in single check you have three choices: move the king, defend the path, attack the checking piece
         else if(getCheck())
         {
-            piece = check_stack.top();
-            check_stack.pop();
-            king = check_stack.top();
-            check_stack.pop();
+            piece = check_pieces[0];
+            king = check_pieces[1];
+            check_pieces.clear();
 
-            // if the move failed, undo the board representation and do not set check_stack               
+            // if the move failed, undo the board representation and do not set check_pieces               
             if(needUndoMove(king, piece, "single"))
             {
                 popBoard();
@@ -355,7 +328,7 @@ void Chess::makeMove(int src, int dest, istream &in)
             }
 
             // if here, did not return so set the appropriate member variables
-            setCheckStack(check_stack);
+            setCheckingPieces(check_pieces);
             setCheck(false);
         }
 
@@ -410,15 +383,12 @@ void Chess::makeMove(int src, int dest, istream &in)
  */
 void Chess::isCheckmate(string check_type)
 {
-    stack<Piece*> check_stack = getCheckStack();
-    Piece *king, *piece;
+    vector<Piece*> check_pieces = getCheckingPieces();
     
     if(check_type == "double") // this type of check requires the king to move
     {
-        king = check_stack.top();
-
         // checkmate due to a double check
-        if(doubleCheckPieceIterator(king))
+        if(doubleCheckPieceIterator(check_pieces[1]))
             handleCheckmate();
         else // was not checkmate so can state that it is double check
             chessCAMO::printMessage("\n            Double Check!\n\n", CYAN); 
@@ -426,16 +396,11 @@ void Chess::isCheckmate(string check_type)
 
     else // check_type == "single"
     {
-        // will not be set, so next time this will be identical
-        piece = check_stack.top();
-        check_stack.pop();
-        king = check_stack.top();
-
         // checkmate due to a single piece
-        if(singleCheckPieceIterator(piece, king))
+        if(singleCheckPieceIterator(check_pieces[0], check_pieces[1]))
             handleCheckmate();
         else // was not checkmate so can state that it is check
-            chessCAMO::printMessage("\n                Check!\n\n", CYAN); 
+            chessCAMO::printMessage("\n                Check!\n\n", CYAN);
     }
 }
 
@@ -889,11 +854,11 @@ bool Piece::isLegalMove(int dest, Chess *chess)
  */
 bool Piece::causeCheck(int dest, Chess *chess)
 {
-    stack<Piece*> check_stack = chess->getCheckStack();
+    vector<Piece*> check_pieces = chess->getCheckingPieces();
     vector<Piece*> board = chess->getTopBoard();
     
     // was already in check before the move
-    if(!chess->getCheckStack().empty())
+    if(!chess->getCheckingPieces().empty())
     {
         return false;
     }
@@ -905,9 +870,9 @@ bool Piece::causeCheck(int dest, Chess *chess)
         {
             // push the king and checking piece onto the stack and set the corresponding 
             // object variables (checkStack and setCheck)
-            check_stack.push(board[king_pos]);
-            check_stack.push(board[dest]);
-            chess->setCheckStack(check_stack);
+            check_pieces.push_back(board[dest]);
+            check_pieces.push_back(board[king_pos]);
+            chess->setCheckingPieces(check_pieces);
             chess->setCheck(true);
         }
     } 
@@ -930,10 +895,11 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
 {
     int king_pos, checking_piece_counter = 0;
     vector<Piece*> board = chess->getTopBoard();
-    stack<Piece*> check_stack = chess->getCheckStack();
+    vector<Piece*> check_pieces = chess->getCheckingPieces();
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
-    check_stack.push(board[king_pos]); // make the king last in the stack
+    check_pieces.push_back(board[king_pos]); // make the king last in the stack
+    check_pieces.push_back(board[king_pos]); // match size of single check vector (push king again)
 
     // how many pieces are checking the king
     for(const auto & elem : board)
@@ -947,7 +913,7 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     // double check if 2 pieces are attacking the king
     if(checking_piece_counter == 2)
     {
-        chess->setCheckStack(check_stack);
+        chess->setCheckingPieces(check_pieces);
         chess->setDoubleCheck(true);
         return true;
     }
@@ -1162,7 +1128,6 @@ bool King::canCastle(int dest, Chess *chess)
     int increment = src > dest ? -1 : 1;
 
     vector<Piece*> board = chess->getTopBoard();
-    stack<Piece*> stack = chess->getCheckStack();
 
     if( getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess->getCheck() || !board[dest]->isRook() )
     {

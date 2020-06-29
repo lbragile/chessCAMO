@@ -59,7 +59,6 @@
 #include <algorithm>    /* min, max */
 #include <fstream>
 #include <windows.h>    // for console text colors
-#include <functional>   // reference_wrapper
 
 using namespace std;
 
@@ -115,7 +114,6 @@ enum pieceColor
 
 // forward declaration
 class Piece; 
-class King;
 
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
@@ -196,14 +194,14 @@ public:
      *
      * @return     The check stack after any given move.
      */
-    stack<Piece*> getCheckStack() const {return check_stack;}
+    vector<Piece*> getCheckingPieces() const {return check_pieces;}
 
     /**
      * @brief      (Mutator) Sets the check stack information.
      *
      * @param[in]  check_stack  The check stack which contains the board representations after each move
      */
-    void setCheckStack(stack<Piece*> check_stack) {this->check_stack = check_stack;}
+    void setCheckingPieces(vector<Piece*> check_pieces) {this->check_pieces = check_pieces;}
 
     /**
      * @brief      (Accessor) Gets the check information.
@@ -342,7 +340,7 @@ private:
     stack<vector<Piece*>> board_positions;
 
     /** Stores the pieces involved in a checking scenario */   
-    stack<Piece*> check_stack; 
+    vector<Piece*> check_pieces; 
 
     /** Flag which ends the game and prints winner */
     bool checkmate;  
