@@ -32,9 +32,9 @@ void drawPieces(vector<Sprite> & pieces, const vector<Sprite> & pieceType, const
     }
 }
 
-void getLegalMoves(vector<int> & legalMoves, int src, Chess *chess)
+void getLegalMoves(vector<int> & legalMoves, int src, Chess &chess)
 {
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
     for(unsigned int dest = 0; dest < board.size(); dest++)
     {
@@ -47,10 +47,10 @@ void getLegalMoves(vector<int> & legalMoves, int src, Chess *chess)
 
 int main()
 {
-    Chess *chess = new Chess;
+    Chess chess;
 
     // Create 8x8 default board
-    chess->boardInit();
+    chess.boardInit();
 
     vector<int> legalMoves;
 
@@ -78,7 +78,7 @@ int main()
     vector<Sprite> pieceType = {sBlank, sWr, sWn, sWb, sWq, sWk, sWp, sBr, sBn, sBb, sBq, sBk, sBp};
     vector<Sprite> pieces(64);
 
-    drawPieces(pieces, pieceType, chess->getTopBoard());
+    drawPieces(pieces, pieceType, chess.getBoard());
 
     Vector2f size_rect(60.0, 60.0);
     Vector2f lr_rect(size_rect.x / 2, size_rect.y);
@@ -107,27 +107,24 @@ int main()
             if(e.type == Event::Closed)
                 window.close();
 
-            if(!chess->getCheckmate() && !chess->getStalemate())
+            if(!chess.getCheckmate() && !chess.getStalemate())
             {
                 if(e.type == sf::Event::KeyPressed)
                 {
                     if(e.key.code == sf::Keyboard::U)  // && board_positions.size() > 1
                     {
                         // undo the move
-                        chess->popBoard();
+                        chess.popInfo();
 
-                        // switch turn back to same player
-                        chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
-
-                        drawPieces(pieces, pieceType, chess->getTopBoard());
+                        drawPieces(pieces, pieceType, chess.getBoard());
                     }
 
                     if(e.key.code == sf::Keyboard::R)
                     {
-                        string message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
+                        string message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
                                                                    : "\nBlack resigned -> White wins\n";
                         chessCAMO::printMessage(message, CYAN);
-                        chess->setCheckmate(true); // to end the game
+                        chess.setCheckmate(true); // to end the game
                     }
                 }
 
@@ -155,9 +152,9 @@ int main()
                         clicked = false;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
-                        chess->makeMove(src, dest, cin);
+                        chess.makeMove(src, dest, cin);
 
-                        drawPieces(pieces, pieceType, chess->getTopBoard());
+                        drawPieces(pieces, pieceType, chess.getBoard());
 
                         // clear all legal moves for next cycle
                         while(!legalMoves.empty())
@@ -268,7 +265,7 @@ int main()
 
                     // legal move highlighting
                     auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
-                    if(found != legalMoves.end() && chess->getTopBoard()[src]->getPieceColor() == chess->getTurn() && 
+                    if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && 
                        i != 0 && j != 0 && i != 9 && j != 9)
                     {
                         rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
@@ -298,7 +295,6 @@ int main()
         window.display();
     }
 
-    delete chess; // destroy the dynamic object to free its memory allocation
     cout.clear();
 
     return 0;

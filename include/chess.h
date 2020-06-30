@@ -113,14 +113,22 @@ enum pieceColor
 };
 
 // forward declaration
-class Piece; 
+class Piece;
+class Chess; 
 
 struct GameInfo
 {
     /** A stack that keeps the chess board representation with the pieces in correct spots,
      * each layers corresponds to a move made on the board.
      */
-    stack<vector<Piece*>> board_positions;
+    stack<vector<Piece*>> board;
+
+    /** Stores the pieces involved in a checking scenario */   
+    stack<vector<Piece*>> check_pieces; 
+
+    stack<vector<bool>> flags;
+
+    stack<pieceColor> turn;
 };
 
 /*************************************************************************************/
@@ -150,7 +158,7 @@ public:
      * Otherwise, since the vector<Piece*> contains pointers, any updates to the position will be reflected 
      * in each layer.
      */
-    Chess(const Chess & object);
+    Chess(const Chess &object);
 
     /**
      * @brief      Copy Assignment operator - assigns values of one object to another existing object
@@ -161,7 +169,7 @@ public:
      * 
      * \note Default
      */
-    Chess & operator =(const Chess & object) = default;
+    Chess & operator =(const Chess & object);
     /************************************* END *************************************/
 
     /**
@@ -170,122 +178,140 @@ public:
      * \note
      * Intentionally left blank.
      */
-    Chess() : checkmate{false}, stalemate{false}, check{false}, double_check{false}, turn{WHITE}
+    Chess() 
     {
+        vector<Piece*> temp_board(64);
+        vector<Piece*> temp_check(2);
+        vector<bool> temp_flags(4);
+
         game_info = new GameInfo;
+
+        pushInfo(temp_board, temp_check, temp_flags, WHITE);
     }
     
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
+    GameInfo* getGameInfo() const {return game_info;}
+    void setGameInfo(GameInfo *info) {game_info = info;}
+
     /**
      * @brief      (Mutator) Pops a board representation from the board representation stack.
      */
-    void popBoard() {game_info->board_positions.pop();}
+    void popInfo()
+    {
+        game_info->board.pop();
+        game_info->check_pieces.pop();
+        game_info->flags.pop();
+        game_info->turn.pop();
+    }
 
     /**
      * @brief      (Mutator) Pushes a board representation onto the stack.
      */
-    void pushBoard(const vector<Piece*> & board) {game_info->board_positions.push(board);}
+    void pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn)
+    {
+        game_info->board.push(board);
+        game_info->check_pieces.push(check_pieces);
+        game_info->flags.push(flags);
+        game_info->turn.push(turn);
+    }
 
     /**
      * @brief      (Accessor) Gets the board representation at the top of the board positions stack.
      *
      * @return     The board with current piece positions in correct indicies.
      */
-    vector<Piece*> getTopBoard() const {return game_info->board_positions.top();}
+    vector<Piece*> getBoard() const {return game_info->board.top();}
 
     /**
      * @brief      (Mutator) Updates the board representation at the top of the board positions stack.
      *
      * @param[in]  board  The current board representation
      */
-    void setTopBoard(const vector<Piece*> & board) {game_info->board_positions.top() = board;}
-
-    GameInfo* getGameInfo() const {return game_info;}
-    void setGameInfo(GameInfo *info) {game_info = info;}
+    void setBoard(const vector<Piece*> & board) {game_info->board.top() = board;}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
      *
      * @return     The check stack after any given move.
      */
-    vector<Piece*> getCheckingPieces() const {return check_pieces;}
+    vector<Piece*> getCheckPieces() const {return game_info->check_pieces.top();}
 
     /**
      * @brief      (Mutator) Sets the check stack information.
      *
      * @param[in]  check_stack  The check stack which contains the board representations after each move
      */
-    void setCheckingPieces(vector<Piece*> check_pieces) {this->check_pieces = check_pieces;}
+    void setCheckPieces(vector<Piece*> check_pieces) {game_info->check_pieces.top() = check_pieces;}
 
     /**
      * @brief      (Accessor) Gets the check information.
      *
      * @return     True if board representation has a check, False otherwise.
      */
-    bool getCheck() const {return check;}
+    bool getCheck() const {return game_info->flags.top()[0];}
 
     /**
      * @brief      (Mutator) Sets the check information.
      *
      * @param[in]  check  The check flag
      */
-    void setCheck(bool check) {this->check = check;}
+    void setCheck(bool check) {game_info->flags.top()[0] = check;}
 
     /**
      * @brief      (Accessor) Gets the double check information.
      *
      * @return     True if board representation has a double check, False otherwise.
      */
-    bool getDoubleCheck() const {return double_check;}
+    bool getDoubleCheck() const {return game_info->flags.top()[1];}
 
     /**
      * @brief      (Mutator) Sets the double check information.
      *
      * @param[in]  double_check  The double check flag
      */
-    void setDoubleCheck(bool double_check) {this->double_check = double_check;}
+    void setDoubleCheck(bool double_check) {game_info->flags.top()[1] = double_check;}
 
     /**
      * @brief      (Accessor) Gets the checkmate information.
      *
      * @return     True if board representation has a checkmate, False otherwise.
      */
-    bool getCheckmate() const {return checkmate;}
+    bool getCheckmate() const {return game_info->flags.top()[2];}
 
     /**
      * @brief      (Mutator) Sets the checkmate information.
      *
      * @param[in]  checkmate  The checkmate flag
      */
-    void setCheckmate(bool checkmate) {this->checkmate = checkmate;}
+    void setCheckmate(bool checkmate) {game_info->flags.top()[2] = checkmate;}
 
     /**
      * @brief      (Accessor) Gets the stalemate information.
      *
      * @return     True if board representation has a stalemate, False otherwise.
      */
-    bool getStalemate() const {return stalemate;}
+    bool getStalemate() const {return game_info->flags.top()[3];}
 
     /**
      * @brief      (Mutator) Sets the stalemate information.
      *
      * @param[in]  stalemate  The stalemate flag
      */
-    void setStalemate(bool stalemate) {this->stalemate = stalemate;}
+    void setStalemate(bool stalemate) {game_info->flags.top()[3] = stalemate;}
 
     /**
      * @brief      (Accessor) Gets the player's turn information.
      *
      * @return     The turn at any given moment (either white's or black's).
      */
-    pieceColor getTurn() const {return turn;}
+    pieceColor getTurn() const {return game_info->turn.top();}
 
     /**
      * @brief      (Mutator) Sets the player's turn information.
      *
      * @param[in]  turn  The turn
      */
-    void setTurn(pieceColor turn) {this->turn = turn;} // useful when moving a piece
+    void setTurn(pieceColor turn) {game_info->turn.top() = turn;}
     /************************************* END *************************************/
 
     /**
@@ -348,27 +374,7 @@ public:
     bool isStalemate();
     
 private:
-    GameInfo *game_info;
-
-    /** Stores the pieces involved in a checking scenario */   
-    vector<Piece*> check_pieces; 
-
-    /** Flag which ends the game and prints winner */
-    bool checkmate;  
-
-    /** Flag which ends the game and indicates that it is drawn */           
-    bool stalemate; 
-
-    /** Flag for single check detection */            
-    bool check;    
-
-    /** Flag for double check detection */             
-    bool double_check;  
-
-    /** Either WHITE or BLACK
-     * \note NEUTRAL is not considered here
-     */                                       
-    pieceColor turn;            
+    GameInfo *game_info;           
 
 	/*************************************************************************************/
 	/*                              PIECE CLASS - HELPER FUNCTIONS                       */
@@ -724,7 +730,7 @@ public:
      *
      * @return     True if source piece color matches destination piece color, False otherwise.
      */
-    bool isSameColor(int dest, Chess *chess);
+    bool isSameColor(int dest, Chess &chess);
     
     /**
      * @brief      Determines if a given piece is pinned to the king by opposing piece
@@ -735,7 +741,7 @@ public:
      * @return     True if piece is pinned to the king and moving to 'dest' will cause
      *             the path (pinning piece -> king from pinned piece side) to be free, False otherwise.
      */
-    bool isPinned(int dest, Chess *chess);
+    bool isPinned(int dest, Chess &chess);
 
     /**
      * @brief      Determines if the path from the piece to its destination is empty
@@ -745,7 +751,7 @@ public:
      *
      * @return     True if squares along the path (src, dest) are empty, False otherwise.
      */
-    bool isPathFree(int dest, Chess *chess);
+    bool isPathFree(int dest, Chess &chess);
 
     /**
      * @brief      Determines if a move is legal based on the rules of chess
@@ -758,7 +764,7 @@ public:
      * 
      * \note       A possible move, is not necessarily legal.
      */
-    bool isLegalMove(int dest, Chess *chess);
+    bool isLegalMove(int dest, Chess &chess);
 
     /**
      * @brief      Did the move cause a check?
@@ -769,7 +775,7 @@ public:
      * @return    True if moving the piece to 'dest' now threatens the opposing king.
      *            False otherwise.
      */
-    bool causeCheck(int dest, Chess *chess);
+    bool causeCheck(int dest, Chess &chess);
 
     /**
      * @brief      Did the move cause a double check?
@@ -782,7 +788,7 @@ public:
      *             opposing king.
      *             False otherwise.
      */
-    bool causeDoubleCheck(int dest, Chess *chess);
+    bool causeDoubleCheck(int dest, Chess &chess);
     
     /**
      * @brief      Determine if the piece has a possible move towards the destination square
@@ -793,7 +799,7 @@ public:
      * @return     True if moving the piece to 'dest' is possible since the path is free, or 
      *             the piece is capable of making the move. False otherwise.
      */
-    virtual bool isPossibleMove(int dest, Chess *chess) {return false;}
+    virtual bool isPossibleMove(int dest, Chess &chess) {return false;}
 
     /**
      * @brief      Pawn attacks opposing pawn with <a href="https://bit.ly/3cQj7G4" target="__blank">en-passant</a>
@@ -808,7 +814,7 @@ public:
      * En-passant private member is set to true if a pawn meets the criteria,
      * else all pawns have their en-passant abilities set to false. 
      */
-    virtual void enPassantHandling(int src, Chess *chess) {return;}
+    virtual void enPassantHandling(int src, Chess &chess) {return;}
 
     /**
      * @brief      Promotes the pawn if needed.
@@ -821,7 +827,7 @@ public:
      * \post
      * Changes the piece (pawn) to a stronger piece according to user input
      */
-    virtual void promotePawn(Chess *chess, istream &in) {return;}
+    virtual void promotePawn(Chess &chess, istream &in) {return;}
 
     /**
      * @brief      Can the king <a href="https://bit.ly/2XQEXFr" target="__blank">castle</a>?
@@ -831,7 +837,7 @@ public:
      *
      * @return     True if able to castle, False otherwise.
      */
-    virtual bool canCastle(int dest, Chess *chess) {return false;}
+    virtual bool canCastle(int dest, Chess &chess) {return false;}
 
     /**
      * @brief      Did the king move into check?
@@ -842,7 +848,7 @@ public:
      * @return     True if a king moves into a square that another opposing piece
      *             also move into. False otherwise.
      */
-    virtual bool movedIntoCheck(int dest, Chess *chess) {return false;}
+    virtual bool movedIntoCheck(int dest, Chess &chess) {return false;}
 
 private:
     /** position of the piece on the board [0, 63] -> [top left, bottom right] */
@@ -911,19 +917,19 @@ public:
       * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
       * en-passant, and promote.
       *   
-      * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+      * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 
     /**
-     * \see virtual Piece::enPassantHandling(int dest, Chess *chess)
+     * \see virtual Piece::enPassantHandling(int dest, Chess &chess)
      */
-    void enPassantHandling(int src, Chess *chess) override;
+    void enPassantHandling(int src, Chess &chess) override;
 
     /**
-     * \see virtual Piece::promotePawn(int dest, Chess *chess, istream &in)
+     * \see virtual Piece::promotePawn(int dest, Chess &chess, istream &in)
      */
-    void promotePawn(Chess *chess, istream &in) override;
+    void promotePawn(Chess &chess, istream &in) override;
 
 private:
     /** * Can this pawn en-passant it's left rival currently? */
@@ -968,9 +974,9 @@ public:
      * \note
      * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
      * 
-     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1008,9 +1014,9 @@ public:
      * \note
      * Can move diagonally any number of squares.
      * 
-     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1048,9 +1054,9 @@ public:
      * \note
      * Can move horizontally or vertically any number of squares.
      * 
-     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1088,9 +1094,9 @@ public:
      * \note
      * Combines rook and bishop moves.
      * 
-     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1128,19 +1134,19 @@ public:
      * \note
      * Combines rook and bishop moves but only 1 square
      * 
-     * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+     * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess *chess) override;
+    bool isPossibleMove(int dest, Chess &chess) override;
 
     /**
-     * \see virtual Piece::canCastle(int dest, Chess *chess)
+     * \see virtual Piece::canCastle(int dest, Chess &chess)
      */
-    bool canCastle(int dest, Chess *chess) override;
+    bool canCastle(int dest, Chess &chess) override;
 
     /**
-     * \see virtual Piece::movedIntoCheck(int dest, Chess *chess)
+     * \see virtual Piece::movedIntoCheck(int dest, Chess &chess)
      */
-    bool movedIntoCheck(int dest, Chess *chess) override;
+    bool movedIntoCheck(int dest, Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1235,7 +1241,7 @@ namespace chessCAMO
      *  Depending on the users choice, the program either continues
      * ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
      */
-    void drawOrResign(Chess *chess, istream &in); // resign or draw
+    void drawOrResign(Chess &chess, istream &in); // resign or draw
 
     /**
      * @brief      Prints the given message ('text') with a given 'color' to console

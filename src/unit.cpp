@@ -73,7 +73,7 @@ class ChessTest;
  * 
  * @return     The FEN string based on piece type and common FEN making rules
  */
-string boardFenConverter(Chess * chess);
+string boardFenConverter(Chess &chess);
 
 /**
  * @brief      Decides what type of character to append to the formed FEN string
@@ -103,7 +103,7 @@ class ChessTest : public ::testing::Test
 {
 protected:
     /// create the testing object
-    Chess *chess = new Chess;
+    Chess chess;
 
     /**
      * \brief The source square of the piece to-be-moved
@@ -136,7 +136,7 @@ protected:
     void SetUp(ifstream & myfile)
     {
         cout.setstate(std::ios_base::failbit); // surpress output
-        chess->boardInit();
+        chess.boardInit();
 
         /* -------------------- Act -------------------- */
         if(myfile.is_open()) //if the file is open
@@ -146,22 +146,22 @@ protected:
 
             // read in the moves of the given test case file one line at a time
             // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
-            while(!myfile.eof() && !chess->getCheckmate() && !chess->getStalemate())
+            while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate())
             {   
                 chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK); // for debugging purposes
                 myfile >> src >> dest;
 
                 cout << src << " " << dest << endl; // for debugging purposes
-                chess->makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), myfile);
+                chess.makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), myfile);
 
                 // prevent asking again after game is over
-                if(!chess->getCheckmate() && !chess->getStalemate())
+                if(!chess.getCheckmate() && !chess.getStalemate())
                 {
                     chessCAMO::drawOrResign(chess, myfile);
 
                     // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
                     // so if this happens break out of the while loop
-                    if(chess->getCheckmate())
+                    if(chess.getCheckmate())
                         break;
                 }
             }
@@ -181,7 +181,6 @@ protected:
     void TearDown() override
     {
         cout.clear(); // enable output again
-        delete chess;
     }
 };
 
@@ -980,13 +979,13 @@ TEST_F(ChessTest, enpassantWithBlackPawn)
  * 
  * @return     The FEN string based on piece type and common FEN making rules
  */   
-string boardFenConverter(Chess *chess)
+string boardFenConverter(Chess &chess)
 {
     int elem_count = 0, empty_count = 0;
     string fen;
     char temp[15];
 
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
     for(auto elem : board)
     {
         // piece square handling
@@ -1020,7 +1019,7 @@ string boardFenConverter(Chess *chess)
     }
 
     // player turn handling
-    fen.append(chess->getTurn() == WHITE ? " w " : " b ");
+    fen.append(chess.getTurn() == WHITE ? " w " : " b ");
 
     // castle handling (for both sides)
     /***** White player *****/

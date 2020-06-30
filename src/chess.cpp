@@ -101,7 +101,7 @@ namespace
      *             else, return -1 to indicate that there is either no piece or multiple
      *             pieces in the path.
      */
-    int squareOfPieceInPath(int src, int dest, Chess *chess);
+    int squareOfPieceInPath(int src, int dest, Chess &chess);
 
     /**
      * @brief      Used to determine the increment to use when moving a piece from 'src' to 'dest'.
@@ -125,7 +125,7 @@ namespace
      * @return     Returns the coordinate position of the king, based on the current board
      *             representation and color determined by 'enemy'.
      */
-    int findKingPos(int src, Chess *chess, bool enemy); 
+    int findKingPos(int src, Chess &chess, bool enemy); 
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
@@ -136,8 +136,8 @@ namespace
  */
 Chess::~Chess()
 {
-    while(!game_info->board_positions.empty())
-        popBoard(); // does board_positions.pop();
+    while(!game_info->board.empty())
+        popInfo();
 
     delete game_info;
 }
@@ -152,46 +152,92 @@ Chess::~Chess()
  * Otherwise, since the vector<Piece*> contains pointers, any updates to the position will be reflected 
  * in each layer.
  */
-Chess::Chess(const Chess & object)
+Chess::Chess(const Chess &chess_object)
 {
-    GameInfo *temp_info = new GameInfo;
-    setGameInfo(temp_info);
+    vector<Piece*> temp_board(64);
+    vector<Piece*> temp_check(2);
+    vector<bool> temp_flags(4);
 
-    vector<Piece*> temp_board = object.getTopBoard();
-    vector<Piece*> new_board{temp_board.size()};
+    game_info = new GameInfo;
+    pushInfo(temp_board, temp_check, temp_flags, WHITE);
+
+    *this = chess_object;
+}
+
+Chess & Chess::operator =(const Chess & object)
+{
+    vector<Piece*> temp_board = object.getBoard();
+    vector<Piece*> board = getBoard();
 
     for(unsigned int i = 0; i < temp_board.size(); i++)
     {
         switch(temp_board[i]->getPieceType())
         {
             case PAWN:
-                new_board[i] = new Pawn(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Pawn(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             case KNIGHT:
-                new_board[i] = new Knight(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Knight(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             case BISHOP:
-                new_board[i] = new Bishop(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Bishop(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             case ROOK:
-                new_board[i] = new Rook(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Rook(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             case QUEEN:
-                new_board[i] = new Queen(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Queen(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             case KING:
-                new_board[i] = new King(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new King(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
                 break;
             default:
-                new_board[i] = new Empty(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
+                board[i] = new Empty(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
         }
 
-        new_board[i]->setPieceMoveInfo(temp_board[i]->getPieceMoveInfo());
-        new_board[i]->setEnPassantLeft(temp_board[i]->getEnPassantLeft());
-        new_board[i]->setEnPassantRight(temp_board[i]->getEnPassantRight());
+        board[i]->setPieceMoveInfo(temp_board[i]->getPieceMoveInfo());
+        board[i]->setEnPassantLeft(temp_board[i]->getEnPassantLeft());
+        board[i]->setEnPassantRight(temp_board[i]->getEnPassantRight());
     }
 
-    pushBoard(new_board); // calling object gets a new board
+    vector<Piece*> temp_check_pieces = object.getCheckPieces();
+    vector<Piece*> check_pieces = getCheckPieces();
+
+    // check pieces don't get set until a check occurs
+    if(check_pieces[0] != nullptr)
+    {
+        for(unsigned int i = 0; i < temp_check_pieces.size(); i++)
+        {
+            switch(temp_check_pieces[i]->getPieceType())
+            {
+                case PAWN:
+                    check_pieces[i] = new Pawn(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
+                    break;
+                case KNIGHT:
+                    check_pieces[i] = new Knight(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
+                    break;
+                case BISHOP:
+                    check_pieces[i] = new Bishop(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
+                    break;
+                case ROOK:
+                    check_pieces[i] = new Rook(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
+                    break;
+                default:
+                    check_pieces[i] = new Queen(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
+            }
+        }
+    }
+
+    setBoard(board);
+    setCheckPieces(check_pieces);
+    setCheck(object.getCheck());
+    setDoubleCheck(object.getDoubleCheck());
+    setCheckmate(object.getCheckmate());
+    setStalemate(object.getStalemate());
+    setTurn(object.getTurn());
+
+    cout << getCheck() << " " << getDoubleCheck() << " " << getCheckmate() << " " << getStalemate() << endl;
+    return *this;
 }
 
 /**
@@ -252,11 +298,11 @@ void Chess::boardInit()
     }
 
     // add this board representation to the board positions stack
-    pushBoard(board);
+    setBoard(board);
 
     // printing the board and letting user know whose turn it is
     // white always starts first in chess!
-    chessCAMO::printBoard(board);
+    chessCAMO::printBoard(getBoard());
     cout << "___________________________________________________" << endl;
     chessCAMO::printMessage("\n            White's move\n", CYAN);
 }
@@ -285,14 +331,17 @@ void Chess::makeMove(int src, int dest, istream &in)
     // note that this is local to the function scope and will be deleted at function end (stack, rather than heap)
     Chess temp_chess(*this); 
 
-    vector<Piece*> board = getTopBoard(); 
-    vector<Piece*> check_pieces = getCheckingPieces();
+    vector<Piece*> board = getBoard(); 
+    vector<Piece*> check_pieces = getCheckPieces();
     Piece *king, *piece;
 
-    if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, this) && board[src]->getPieceColor() == getTurn())
+    if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
         // update the "global" chess object (avoids duplicates if illegal move was made)
-        pushBoard(temp_chess.getTopBoard());
+        pushInfo( temp_chess.getBoard(), 
+                  temp_chess.getCheckPieces(),
+                  {temp_chess.getCheck(), temp_chess.getDoubleCheck(), temp_chess.getCheckmate(), temp_chess.getStalemate()},
+                  temp_chess.getTurn() );
 
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);
@@ -308,13 +357,13 @@ void Chess::makeMove(int src, int dest, istream &in)
                 // if the move failed, undo the board representation and do not set check_pieces               
                 if(needUndoMove(king, elem, "double"))
                 {
-                    popBoard();
+                    popInfo();
                     return;
                 }
             }
 
             // if here, did not return so set the appropriate member variables
-            setCheckingPieces(check_pieces);
+            setCheckPieces(check_pieces);
             setDoubleCheck(false);
         }
 
@@ -328,41 +377,33 @@ void Chess::makeMove(int src, int dest, istream &in)
             // if the move failed, undo the board representation and do not set check_pieces               
             if(needUndoMove(king, piece, "single"))
             {
-                popBoard();
+                popInfo();
                 return;
             }
 
             // if here, did not return so set the appropriate member variables
-            setCheckingPieces(check_pieces);
+            setCheckPieces(check_pieces);
             setCheck(false);
         }
 
-        board = getTopBoard();
-        board[dest]->enPassantHandling(src, this); // en-passant checking/updating
+        board = getBoard();
+        board[dest]->enPassantHandling(src, *this); // en-passant checking/updating
 
         // pawn promotion
         if(dest/8 == 0 || dest/8 == 7)
-        {
-            board[dest]->promotePawn(this, in);
-        }
+            board[dest]->promotePawn(*this, in);
 
         // did the move cause a check?
-        if(board[src]->causeCheck(dest, this) && !board[src]->causeDoubleCheck(dest, this)) 
-        {
+        if(board[src]->causeCheck(dest, *this) && !board[src]->causeDoubleCheck(dest, *this)) 
             isCheckmate("single"); // check for checkmates
-        }
 
         // did the move cause a double check?
-        if(board[src]->causeDoubleCheck(dest, this)) 
-        {
+        if(board[src]->causeDoubleCheck(dest, *this)) 
             isCheckmate("double"); // check for checkmates
-        }
 
         // check for stalemate
         if(isStalemate()) 
-        {
             handleStalemate();
-        }
 
         // after a move was made and all the above checks passed, can finally change the turn
         handleChangeTurn();
@@ -388,7 +429,7 @@ void Chess::makeMove(int src, int dest, istream &in)
  */
 void Chess::isCheckmate(string check_type)
 {
-    vector<Piece*> check_pieces = getCheckingPieces();
+    vector<Piece*> check_pieces = getCheckPieces();
     
     if(check_type == "double") // this type of check requires the king to move
     {
@@ -421,7 +462,7 @@ void Chess::isCheckmate(string check_type)
  */
 bool Chess::isStalemate()
 {
-    vector<Piece*> board = getTopBoard();
+    vector<Piece*> board = getBoard();
 
     // this is a list of all the possible increments (moves) a piece on the board could have
     int possible_moves[22] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18,
@@ -433,8 +474,8 @@ bool Chess::isStalemate()
         {
             for(int move : possible_moves)
             {
-                if( elem->isLegalMove(elem->getPieceSquare() + move, this) ||
-                    elem->isLegalMove(elem->getPieceSquare() - move, this) )
+                if( elem->isLegalMove(elem->getPieceSquare() + move, *this) ||
+                    elem->isLegalMove(elem->getPieceSquare() - move, *this) )
                 {
                     return false; // at least one piece could move on the board
                 }
@@ -464,10 +505,10 @@ bool Chess::isStalemate()
  */
 void Chess::makeMoveForType(int src, int dest)
 {
-    vector<Piece*> board = getTopBoard();
+    vector<Piece*> board = getBoard();
 
     // castling move
-    if(board[src]->canCastle(dest, this))
+    if(board[src]->canCastle(dest, *this))
     {
         // note that the pieces are moved
         board[src]->setPieceMoveInfo(true);
@@ -493,13 +534,9 @@ void Chess::makeMoveForType(int src, int dest)
 
         // delete the pawn that caused en-passant (make it an empty square)
         if(std::abs(src-dest) == 7)
-        {
             *board[src+sign] = Empty(src+sign, EMPTY, NEUTRAL);
-        }
         else // std::abs(src-dest) == 9
-        {
             *board[src-sign] = Empty(src-sign, EMPTY, NEUTRAL);
-        }
 
         // after the violating pawn is removed, can make the move
         pieceSwap(src, dest, board);
@@ -519,7 +556,7 @@ void Chess::makeMoveForType(int src, int dest)
             *board[src] = Empty(src, EMPTY, NEUTRAL);
     }
 
-    setTopBoard(board);
+    setBoard(board);
 }
 
 /**
@@ -555,7 +592,7 @@ void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
 void Chess::handleChangeTurn()
 {
     setTurn(switchTurn());
-    chessCAMO::printBoard(getTopBoard());
+    chessCAMO::printBoard(getBoard());
     if(!getCheckmate() && !getStalemate())
     {
         cout << "___________________________________________________" << endl;
@@ -616,21 +653,15 @@ void Chess::handleStalemate()
  */
 bool Chess::needUndoMove(Piece *king, Piece *piece, string check_type)
 {
-    vector<Piece*> board = getTopBoard();
+    vector<Piece*> board = getBoard();
 
-    if(piece->isPossibleMove(king->getPieceSquare(), this))
+    if(piece->isPossibleMove(king->getPieceSquare(), *this))
     {   
+        chessCAMO::printBoard(board);
+
         // invalid move checking when a player is in check (single/double)
-        if(check_type == "double")
-        {
-            chessCAMO::printBoard(board);
-            chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
-        }
-        else // check_type == "single"
-        {
-            chessCAMO::printBoard(board);
-            chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
-        }
+        check_type == "double" ? chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW)
+                               : chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
         
         return true; 
     }
@@ -657,7 +688,7 @@ bool Chess::needUndoMove(Piece *king, Piece *piece, string check_type)
  */
 bool Chess::singleCheckPieceIterator(Piece *piece, Piece *king)
 {
-    vector<Piece*> board = getTopBoard();
+    vector<Piece*> board = getBoard();
     int increment, src = piece->getPieceSquare(), dest = king->getPieceSquare();
 
     // can a piece defend the king from check?
@@ -666,27 +697,17 @@ bool Chess::singleCheckPieceIterator(Piece *piece, Piece *king)
         increment = src > dest ? -1*incrementChoice(src, dest) : incrementChoice(src, dest);
         for(const auto & elem : board)
         {
-            if(elem->isSameColor(dest, this) && !elem->isKing())
-            {
-                for(int pos = src; pos != dest; pos += increment)
-                {   
-                    if(elem->isPossibleMove(pos, this))
-                    {
+            if(elem->isSameColor(dest, *this) && !elem->isKing())
+                for(int pos = src; pos != dest; pos += increment)   
+                    if(elem->isPossibleMove(pos, *this))
                         return false;
-                    }
-                }
-            }
         }
     }
     else // for a Knight check, to defend the king a piece must take the knight
     {
         for(const auto & elem : board)
-        {
-            if(!elem->isKing() && elem->isSameColor(dest, this) && elem->isPossibleMove(src, this))
-            {
+            if(!elem->isKing() && elem->isSameColor(dest, *this) && elem->isPossibleMove(src, *this))
                 return false;
-            }
-        }
     }
 
     // can king move out of check?
@@ -715,10 +736,8 @@ bool Chess::doubleCheckPieceIterator(Piece *king)
     // can king move out of check?
     for(auto move : king_moves)
     {
-        if(king->isLegalMove(src + move, this) || king->isLegalMove(src - move, this))
-        {
+        if(king->isLegalMove(src + move, *this) || king->isLegalMove(src - move, *this))
             return false;
-        }
     }
         
     return true; // no legal moves found ? true : false
@@ -751,10 +770,10 @@ pieceColor Chess::switchTurn()
  *
  * @return     True if source piece color matches destination piece color, False otherwise.
  */
-bool Piece::isSameColor(int dest, Chess *chess)
+bool Piece::isSameColor(int dest, Chess &chess)
 {
 
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
     // cannot use getPieceColor() here since the board might be updated
     return board[getPieceSquare()]->getPieceColor() == board[dest]->getPieceColor();
@@ -769,10 +788,10 @@ bool Piece::isSameColor(int dest, Chess *chess)
  * @return     True if piece is pinned to the king and moving to 'dest' will cause
  *             the path (pinning piece -> king from pinned piece side) to be free, False otherwise.
  */
-bool Piece::isPinned(int dest, Chess *chess)
+bool Piece::isPinned(int dest, Chess &chess)
 {
     int king_pos, src = getPieceSquare();
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
     if(!isKing())
     {
@@ -800,16 +819,13 @@ bool Piece::isPinned(int dest, Chess *chess)
  *
  * @return     True if squares along the path (src, dest) are empty, False otherwise.
  */
-bool Piece::isPathFree(int dest, Chess *chess)
+bool Piece::isPathFree(int dest, Chess &chess)
 {
     int increment, src = getPieceSquare();
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
     // knight can skip over pieces so it's path is always free
-    if(isKnight())
-    {
-        return true;
-    }
+    if(isKnight()) { return true; }
     else
     {
         // get the increment value for the path and see if the squares in (src, dest) are empty
@@ -824,10 +840,7 @@ bool Piece::isPathFree(int dest, Chess *chess)
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+        else { return false; }
     } 
 }
 
@@ -842,7 +855,7 @@ bool Piece::isPathFree(int dest, Chess *chess)
  * 
  * \note       A possible move, is not necessarily legal.
  */
-bool Piece::isLegalMove(int dest, Chess *chess)
+bool Piece::isLegalMove(int dest, Chess &chess)
 {
     return 0 <= dest && dest <= 63 && getPieceSquare() != dest && 
            isPossibleMove(dest, chess) && !isPinned(dest, chess) && !movedIntoCheck(dest, chess);
@@ -857,16 +870,13 @@ bool Piece::isLegalMove(int dest, Chess *chess)
  * @return    True if moving the piece to 'dest' now threatens the opposing king.
  *            False otherwise.
  */
-bool Piece::causeCheck(int dest, Chess *chess)
+bool Piece::causeCheck(int dest, Chess &chess)
 {
-    vector<Piece*> check_pieces = chess->getCheckingPieces();
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> check_pieces = chess.getCheckPieces();
+    vector<Piece*> board = chess.getBoard();
     
     // was already in check before the move
-    if(!chess->getCheckingPieces().empty())
-    {
-        return false;
-    }
+    if(!chess.getCheckPieces().empty()) { return false; }
     else
     {
         int king_pos = findKingPos(dest, chess, true); // opposite color king position
@@ -877,12 +887,12 @@ bool Piece::causeCheck(int dest, Chess *chess)
             // object variables (checkStack and setCheck)
             check_pieces.push_back(board[dest]);
             check_pieces.push_back(board[king_pos]);
-            chess->setCheckingPieces(check_pieces);
-            chess->setCheck(true);
+            chess.setCheckPieces(check_pieces);
+            chess.setCheck(true);
         }
     } 
 
-    return chess->getCheck();
+    return chess.getCheck();
 }
 
 /**
@@ -896,11 +906,11 @@ bool Piece::causeCheck(int dest, Chess *chess)
  *             opposing king.
  *             False otherwise.
  */
-bool Piece::causeDoubleCheck(int dest, Chess *chess)
+bool Piece::causeDoubleCheck(int dest, Chess &chess)
 {
     int king_pos, checking_piece_counter = 0;
-    vector<Piece*> board = chess->getTopBoard();
-    vector<Piece*> check_pieces = chess->getCheckingPieces();
+    vector<Piece*> board = chess.getBoard();
+    vector<Piece*> check_pieces = chess.getCheckPieces();
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
     check_pieces.push_back(board[king_pos]); // make the king last in the stack
@@ -910,20 +920,18 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
     for(const auto & elem : board)
     {
         if(elem->isLegalMove(king_pos, chess))
-        {
             checking_piece_counter++;
-        }
     }
 
     // double check if 2 pieces are attacking the king
     if(checking_piece_counter == 2)
     {
-        chess->setCheckingPieces(check_pieces);
-        chess->setDoubleCheck(true);
+        chess.setCheckPieces(check_pieces);
+        chess.setDoubleCheck(true);
         return true;
     }
 
-    return chess->getDoubleCheck();
+    return chess.getDoubleCheck();
 }
 
 /*************************************************************************************/
@@ -934,11 +942,11 @@ bool Piece::causeDoubleCheck(int dest, Chess *chess)
  * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
  * en-passant, and promote.
  *   
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool Pawn::isPossibleMove(int dest, Chess *chess)
+bool Pawn::isPossibleMove(int dest, Chess &chess)
 {
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
     bool legal = false;
     int src = getPieceSquare();
@@ -962,11 +970,11 @@ bool Pawn::isPossibleMove(int dest, Chess *chess)
 }
 
 /**
- * \see virtual Piece::enPassantHandling(int dest, Chess *chess)
+ * \see virtual Piece::enPassantHandling(int dest, Chess &chess)
  */
-void Pawn::enPassantHandling(int src, Chess *chess)
+void Pawn::enPassantHandling(int src, Chess &chess)
 {
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
     int dest = getPieceSquare();
     int sign = isPieceWhite() ? 1 : -1;
 
@@ -993,12 +1001,12 @@ void Pawn::enPassantHandling(int src, Chess *chess)
 }
 
 /**
- * \see virtual Piece::promotePawn(Chess *chess, istream &in)
+ * \see virtual Piece::promotePawn(Chess &chess, istream &in)
  */
-void Pawn::promotePawn(Chess *chess, istream &in)
+void Pawn::promotePawn(Chess &chess, istream &in)
 {
-    vector<Piece*> board = chess->getTopBoard();
-    bool white_turn = chess->getTurn() == WHITE;
+    vector<Piece*> board = chess.getBoard();
+    bool white_turn = chess.getTurn() == WHITE;
 
     char piece;
     int dest = getPieceSquare();
@@ -1033,7 +1041,7 @@ void Pawn::promotePawn(Chess *chess, istream &in)
             chessCAMO::printMessage("\nPick one of the choices\n", YELLOW);
     }
 
-    chess->setTopBoard(board);
+    chess.setBoard(board);
 }
 
 /*************************************************************************************/
@@ -1043,9 +1051,9 @@ void Pawn::promotePawn(Chess *chess, istream &in)
  * \note
  * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
  * 
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool Knight::isPossibleMove(int dest, Chess *chess)
+bool Knight::isPossibleMove(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1062,9 +1070,9 @@ bool Knight::isPossibleMove(int dest, Chess *chess)
  * \note
  * Can move diagonally any number of squares
  * 
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool Bishop::isPossibleMove(int dest, Chess *chess)
+bool Bishop::isPossibleMove(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1079,9 +1087,9 @@ bool Bishop::isPossibleMove(int dest, Chess *chess)
  * \note
  * Can move horizontally or vertically any number of squares.
  * 
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool Rook::isPossibleMove(int dest, Chess *chess)
+bool Rook::isPossibleMove(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     return ( sameRow(src, dest) || sameCol(src, dest) ) &&
@@ -1095,9 +1103,9 @@ bool Rook::isPossibleMove(int dest, Chess *chess)
  * \note
  * Combines rook and bishop moves.
  * 
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool Queen::isPossibleMove(int dest, Chess *chess)
+bool Queen::isPossibleMove(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1113,9 +1121,9 @@ bool Queen::isPossibleMove(int dest, Chess *chess)
  * \note
  * Combines rook and bishop moves but only 1 square
  * 
- * \see virtual Piece::isPossibleMove(int dest, Chess *chess)
+ * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
  */
-bool King::isPossibleMove(int dest, Chess *chess)
+bool King::isPossibleMove(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1125,19 +1133,16 @@ bool King::isPossibleMove(int dest, Chess *chess)
 }
 
  /**
-  * \see virtual Piece::canCastle(int dest, Chess *chess)
+  * \see virtual Piece::canCastle(int dest, Chess &chess)
   */
-bool King::canCastle(int dest, Chess *chess)
+bool King::canCastle(int dest, Chess &chess)
 {
     int src = getPieceSquare();
     int increment = src > dest ? -1 : 1;
 
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
 
-    if( getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess->getCheck() || !board[dest]->isRook() )
-    {
-        return false;
-    }
+    if( getPieceMoveInfo() || board[dest]->getPieceMoveInfo() || chess.getCheck() || !board[dest]->isRook() )  { return false; }
     else
     {
         for(const auto & elem : board)
@@ -1145,13 +1150,9 @@ bool King::canCastle(int dest, Chess *chess)
             if(!elem->isEmpty() && !elem->isSameColor(src, chess))
             {
                 // king only moves 2 squares regardless of castle direction
-                for(int square = src+increment; square != src+(2*increment); square += increment) 
-                {   
+                for(int square = src+increment; square != src+(2*increment); square += increment)    
                     if(elem->isPossibleMove(square, chess))
-                    {
                         return false;
-                    }
-                }
             }
         }
 
@@ -1160,11 +1161,11 @@ bool King::canCastle(int dest, Chess *chess)
 }
 
 /**
- * \see virtual Piece::movedIntoCheck(int dest, Chess *chess)
+ * \see virtual Piece::movedIntoCheck(int dest, Chess &chess)
  */
-bool King::movedIntoCheck(int dest, Chess *chess)
+bool King::movedIntoCheck(int dest, Chess &chess)
 {
-    vector<Piece*> board = chess->getTopBoard();
+    vector<Piece*> board = chess.getBoard();
     int src, sign;
 
     pieceColor original_color = board[dest]->getPieceColor();
@@ -1275,10 +1276,10 @@ namespace
      *             else, return -1 to indicate that there is either no piece or multiple
      *             pieces in the path.
      */
-    int squareOfPieceInPath(int src, int dest, Chess *chess)
+    int squareOfPieceInPath(int src, int dest, Chess &chess)
     {
         int increment;
-        vector<Piece*> board = chess->getTopBoard();
+        vector<Piece*> board = chess.getBoard();
         vector<int> pieces_in_path;
 
         // determine the increment along the path from 'src' to 'dest'
@@ -1287,12 +1288,8 @@ namespace
         if(increment > 0)
         {
             for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i += increment)
-            {
                 if(!board[i]->isEmpty())
-                {
                     pieces_in_path.push_back(i);
-                }
-            }
         }
 
         // only 1 piece ? return its square : return -1 (equivalent to false)
@@ -1312,21 +1309,13 @@ namespace
     int incrementChoice(int src, int dest)
     {
         if(sameRow(src, dest)) // row path
-        {
             return 1;
-        }
         else if(sameCol(src, dest)) // column path
-        {
             return 8;
-        }
         else if(sameDiag(src, dest)) // diagonal path
-        {
             return std::abs(src - dest) % 7 == 0 ? 7 : 9;
-        }
         else
-        {
             return 0;
-        }
     }
 
     /**
@@ -1339,11 +1328,11 @@ namespace
      * @return     Returns the coordinate position of the king, based on the current board
      *             representation and color determined by 'enemy'.
      */
-    int findKingPos(int src, Chess *chess, bool enemy)
+    int findKingPos(int src, Chess &chess, bool enemy)
     {
         Piece *temp;
 
-        for(const auto & elem : chess->getTopBoard())
+        for(const auto & elem : chess.getBoard())
         {
             if( (enemy && elem->isKing() && !elem->isSameColor(src, chess) ) ||
                 ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
@@ -1381,15 +1370,10 @@ namespace chessCAMO
         for(const auto & elem : board)
         {
             if(count == 0)
-            {
                 cout << "    A   B   C   D   E   F   G   H" << endl;
-            }
 
             if(count % 8 == 0)
-            {
-                cout << "  +---+---+---+---+---+---+---+---+" << endl;
-                cout << ranks[count/8] << " | ";
-            }
+                cout << "  +---+---+---+---+---+---+---+---+\n" << ranks[count/8] << " | ";
 
             switch(elem->getPieceType())
             {
@@ -1416,17 +1400,9 @@ namespace chessCAMO
             }
 
             if(!islower(piece_char)) // WHITE
-            {
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
-                cout << std::left << std::setw(2) << piece_char;
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-            }
+                chessCAMO::printMessage(string(1, piece_char) + " ", GREEN);
             else // BLACK
-            {
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
-                cout << std::left << std::setw(2) << piece_char;
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
-            }
+                chessCAMO::printMessage(string(1, piece_char) + " ", RED);
             
             cout << "| ";
 
@@ -1434,10 +1410,7 @@ namespace chessCAMO
             if(count % 8 == 7)
                 cout << ranks[count/8] << endl;
             if(count == 63)
-            {
-                cout << "  +---+---+---+---+---+---+---+---+" << endl;
-                cout << "    A   B   C   D   E   F   G   H" << endl;
-            }
+                cout << "  +---+---+---+---+---+---+---+---+\n     A   B   C   D   E   F   G   H\n";
             count++;
         }
     }
@@ -1455,7 +1428,7 @@ namespace chessCAMO
      *  Depending on the users choice, the program either continues
      * ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
      */
-    void drawOrResign(Chess *chess, istream &in)
+    void drawOrResign(Chess &chess, istream &in)
     {
         char user_input, draw_reply;
         string message;
@@ -1476,10 +1449,10 @@ namespace chessCAMO
 
         if(std::tolower(user_input) == 'r')
         {
-            message = chess->getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
+            message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
                                                 : "\nBlack resigned -> White wins\n";
             chessCAMO::printMessage(message, CYAN);
-            chess->setCheckmate(true); // to end the game
+            chess.setCheckmate(true); // to end the game
             return;
         }
         else if(std::tolower(user_input) == 'd')
@@ -1500,7 +1473,7 @@ namespace chessCAMO
             if(std::tolower(draw_reply) == 'y')
             {
                 chessCAMO::printMessage("\nGame drawn by agreement\n", CYAN);
-                chess->setCheckmate(true); // to end the game
+                chess.setCheckmate(true); // to end the game
                 return;
             }
             else // std::tolower(draw_reply) == 'n'
@@ -1512,19 +1485,16 @@ namespace chessCAMO
         else if(std::tolower(user_input) == 'u')
         {
             // undo the move
-            chess->popBoard();
-
-            // switch turn back to same player
-            chess->setTurn(chess->getTurn() == WHITE ? BLACK : WHITE);
+            chess.popInfo();
 
             // re-print board and display move information
             cout << "___________________________________________________" << endl;
-            if(chess->getTurn() == WHITE)
+            if(chess.getTurn() == WHITE)
                 chessCAMO::printMessage("\n            White's move\n", CYAN);
             else
                 chessCAMO::printMessage("\n            Black's move\n", CYAN);
 
-            chessCAMO::printBoard(chess->getTopBoard());
+            chessCAMO::printBoard(chess.getBoard());
         }
         else // player wants to continue
         {
