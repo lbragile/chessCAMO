@@ -51,12 +51,9 @@
 #define CHESS_H
 
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include <stack>
 #include <string>
-#include <stdlib.h>     /* abs, system */
-#include <algorithm>    /* min, max */
 #include <fstream>
 #include <windows.h>    // for console text colors
 
@@ -142,6 +139,14 @@ struct GameInfo
 class Chess
 {
 public:
+    /**
+     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+     *             
+     * \note
+     * Intentionally left blank.
+     */
+    Chess();
+
     /*********************************** BIG THREE *********************************/
     /**
      * @brief      Destructor - destroys the objects.
@@ -172,49 +177,33 @@ public:
     Chess & operator =(const Chess & object);
     /************************************* END *************************************/
 
-    /**
-     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
-     *             
-     * \note
-     * Intentionally left blank.
-     */
-    Chess() 
-    {
-        vector<Piece*> temp_board(64);
-        vector<Piece*> temp_check(2);
-        vector<bool> temp_flags(4);
-
-        game_info = new GameInfo;
-
-        pushInfo(temp_board, temp_check, temp_flags, WHITE);
-    }
-    
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     GameInfo* getGameInfo() const {return game_info;}
+
     void setGameInfo(GameInfo *info) {game_info = info;}
 
     /**
      * @brief      (Mutator) Pops a board representation from the board representation stack.
+     * 
+     * \pre
+     * A move must have been made beyond initial position
+     * 
+     * \post
+     * Each stack in the game_info struct is reduced by 1 layer
      */
-    void popInfo()
-    {
-        game_info->board.pop();
-        game_info->check_pieces.pop();
-        game_info->flags.pop();
-        game_info->turn.pop();
-    }
+    void popInfo();
 
     /**
      * @brief      (Mutator) Pushes a board representation onto the stack.
+     * 
+     * \pre
+     * The game_info struct was allocated memory (is pointing at something)
+     * 
+     * \post
+     * Each stack in the game_info struct is increased by 1 layer
      */
-    void pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn)
-    {
-        game_info->board.push(board);
-        game_info->check_pieces.push(check_pieces);
-        game_info->flags.push(flags);
-        game_info->turn.push(turn);
-    }
-
+    void pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn);
+    
     /**
      * @brief      (Accessor) Gets the board representation at the top of the board positions stack.
      *

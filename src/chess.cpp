@@ -132,12 +132,33 @@ namespace
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
 /**
+ * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
+ *             
+ * \note
+ * Intentionally left blank.
+ */
+Chess::Chess() 
+{
+    vector<Piece*> temp_board(64);
+    vector<Piece*> temp_check(2);
+    vector<bool> temp_flags(4);
+
+    game_info = new GameInfo;
+
+    pushInfo(temp_board, temp_check, temp_flags, WHITE);
+}
+
+/**
  * @brief      Destructor - destroys the objects.
  */
 Chess::~Chess()
 {
+    // delete only those elements that allocated memory dynamically (using 'new')
     while(!game_info->board.empty())
-        popInfo();
+    {
+        game_info->board.pop();
+        game_info->check_pieces.pop();
+    }
 
     delete game_info;
 }
@@ -238,6 +259,49 @@ Chess & Chess::operator =(const Chess & object)
 
     cout << getCheck() << " " << getDoubleCheck() << " " << getCheckmate() << " " << getStalemate() << endl;
     return *this;
+}
+
+/**
+ * @brief      (Mutator) Pops a board representation from the board representation stack.
+ * 
+ * \pre
+ * A move must have been made beyond initial position
+ * 
+ * \post
+ * Each stack in the game_info struct is reduced by 1 layer
+ */
+void Chess::popInfo()
+{
+    // only pop if a move was made
+    if(game_info->board.size() > 1)
+    {
+        game_info->board.pop();
+        game_info->check_pieces.pop();
+        game_info->flags.pop();
+        game_info->turn.pop();
+    }
+    else {return ;} // do nothing
+}
+
+/**
+ * @brief      (Mutator) Pushes a board representation onto the stack.
+ * 
+ * \pre
+ * The game_info struct was allocated memory (is pointing at something)
+ * 
+ * \post
+ * Each stack in the game_info struct is increased by 1 layer
+ */
+void Chess::pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn)
+{
+    if(game_info != nullptr)
+    {
+        game_info->board.push(board);
+        game_info->check_pieces.push(check_pieces);
+        game_info->flags.push(flags);
+        game_info->turn.push(turn);
+    }
+    else {return ;} // do nothing
 }
 
 /**
