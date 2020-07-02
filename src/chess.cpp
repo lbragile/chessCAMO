@@ -51,8 +51,16 @@ ostream & operator << (ostream &out, const Chess &chess_object)
 
 istream & operator >> (istream &in, Chess &chess_object)
 {
-    vector<Piece*> board(64);
-    vector<Piece*> check_pieces(2);
+    // delete the allocated memory and restore new data
+    vector<Piece*> board = chess_object.getBoard();
+    for(unsigned int i = 0; i < board.size(); i++)
+        delete board[i];
+    // board.clear();
+
+    vector<Piece*> check_pieces = chess_object.getCheckPieces();
+    delete check_pieces[0];
+    delete check_pieces[1];
+    // check_pieces.clear();
 
     string input;
     for(auto & elem : board)
@@ -328,16 +336,9 @@ void Chess::makeMove(int src, int dest, istream &in)
 {    
     vector<Piece*> board = getBoard(); 
     vector<Piece*> check_pieces = getCheckPieces();
-    Piece *king, *piece;
 
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
-        // delete the allocated memory and restore new data
-        for(unsigned int i = 0; i < board.size(); i++)
-            delete board[i];
-        board.clear();
-        setBoard(board);
-
         chessCAMO::restoreObject(getNumMoves(), *this);
 
         // make the appropriate move from 'src' to 'dest'
@@ -346,13 +347,10 @@ void Chess::makeMove(int src, int dest, istream &in)
         // when in double check you must move the king
         if(getDoubleCheck())
         {      
-            king = check_pieces[1];
-            check_pieces.clear();
-
             for(auto & elem : board)
             {    
                 // if the move failed, undo the board representation and do not set check_pieces               
-                if(needUndoMove(king, elem, "double"))
+                if(needUndoMove(check_pieces[1], elem, "double"))
                 {
                     // restore previous object
                     chessCAMO::restoreObject(getNumMoves(), *this);
@@ -361,6 +359,11 @@ void Chess::makeMove(int src, int dest, istream &in)
             }
 
             // if here, did not return so set the appropriate member variables
+            delete check_pieces[0];
+            delete check_pieces[1];
+            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
+            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
+
             setCheckPieces(check_pieces);
             setDoubleCheck(false);
         }
@@ -368,12 +371,8 @@ void Chess::makeMove(int src, int dest, istream &in)
         // when in single check you have three choices: move the king, defend the path, attack the checking piece
         else if(getCheck())
         {
-            piece = check_pieces[0];
-            king = check_pieces[1];
-            check_pieces.clear();
-
             // if the move failed, undo the board representation and do not set check_pieces               
-            if(needUndoMove(king, piece, "single"))
+            if(needUndoMove(check_pieces[1], check_pieces[0], "single"))
             {
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
@@ -381,6 +380,11 @@ void Chess::makeMove(int src, int dest, istream &in)
             }
 
             // if here, did not return so set the appropriate member variables
+            delete check_pieces[0];
+            delete check_pieces[1];
+            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
+            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
+
             setCheckPieces(check_pieces);
             setCheck(false);
         }
@@ -895,6 +899,8 @@ bool Piece::causeCheck(int dest, Chess &chess)
     {
         // push the king and checking piece onto the stack and set the corresponding 
         // object variables (checkStack and setCheck)
+        delete check_pieces[0];
+        delete check_pieces[1];
         check_pieces[0] = board[dest];
         check_pieces[1] = board[king_pos];
         chess.setCheckPieces(check_pieces);
@@ -922,8 +928,7 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
     vector<Piece*> check_pieces = chess.getCheckPieces();
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
-    check_pieces[0] = board[king_pos]; // make the king last in the stack
-    check_pieces[0] = board[king_pos]; // match size of single check vector (push king again)
+    
 
     // how many pieces are checking the king
     for(const auto & elem : board)
@@ -935,6 +940,11 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
     // double check if 2 pieces are attacking the king
     if(checking_piece_counter == 2)
     {
+        delete check_pieces[0];
+        delete check_pieces[1];
+        check_pieces[0] = new King(king_pos, KING, board[king_pos]->getPieceColor()); // make the king last in the stack
+        check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor()); // match size of single check vector (push king again)
+
         chess.setCheckPieces(check_pieces);
         chess.setDoubleCheck(true);
         return true;
@@ -1006,7 +1016,6 @@ void Pawn::enPassantHandling(int src, Chess &chess)
         if(board[dest+sign]->isPawn() && !board[dest+sign]->isSameColor(dest, chess))
             board[dest+sign]->setEnPassantRight(true);
     }
-    
 }
 
 /**
@@ -1028,21 +1037,25 @@ void Pawn::promotePawn(Chess &chess, istream &in)
         
         if(piece == 'Q' || piece == 'q')
         {
+            delete board[dest];
             board[dest] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
         else if(piece == 'R' || piece == 'r')
         {
+            delete board[dest];
             board[dest] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
         else if(piece == 'B' || piece == 'b')
         {
+            delete board[dest];
             board[dest] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
         else if(piece == 'N' || piece == 'n')
         {
+            delete board[dest];
             board[dest] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
             break;
         }
@@ -1435,7 +1448,7 @@ namespace chessCAMO
      * 
      * \post
      *  Depending on the users choice, the program either continues
-     * ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
+     * ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
      */
     void drawOrResign(Chess &chess, istream &in)
     {
@@ -1495,7 +1508,6 @@ namespace chessCAMO
         {
             // decrement move counter by 1 since an illegal move was made 
             chess.setNumMoves(chess.getNumMoves()-1);
-            cout << chess.getNumMoves() << endl;
 
             // restore previous object
             chessCAMO::restoreObject(chess.getNumMoves(), chess);
@@ -1537,7 +1549,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1545,7 +1557,7 @@ namespace chessCAMO
     
     void restoreObject(int num_moves, Chess & chess_object)
     {
-        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
         ifstream in(filename);
         in >> chess_object;
         in.close();
