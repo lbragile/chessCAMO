@@ -95,9 +95,10 @@ void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
 /*                              TEST FIXTURE SETUP                                   */
 /*************************************************************************************/
 /**
- * @brief      This class describes a chess test for string or integer source and destination squares.
- *             It is used as a fixture to quickly set up tests without duplicating the code,
- *             by utilizing the overriden SetUp and TearDown functions.
+ * @brief      This class describes a chess test for string or integer source
+ *             and destination squares. It is used as a fixture to quickly set
+ *             up tests without duplicating the code, by utilizing the overriden
+ *             SetUp and TearDown functions.
  */ 
 class ChessTest : public ::testing::Test
 {
@@ -106,19 +107,19 @@ protected:
     Chess chess;
 
     /**
-     * \brief The source square of the piece to-be-moved
-     * 
-     * \note 
-     * Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top right
+     * @brief      The source square of the piece to-be-moved
+     *
+     * @note       Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top
+     *             right
      */
     string src;
 
      /**
-     * \brief The destination square of the piece to-be-moved
-      * 
-     * \note 
-     * Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top right
-     */
+      * @brief      The destination square of the piece to-be-moved
+      *
+      * @note       Coordinates are in [A1, H8] -> A1 is bottom left, H8 is top
+      *             right
+      */
     string dest;
 
     /// Expected FEN string for a given board representation before moves are made for it
@@ -128,8 +129,10 @@ protected:
     string fen_obtained;
 
     /**
-     * @brief      Before a given test is executed, this sets up everything and initializes the variables
-     *             Additionally, this performs the actual gameplay moves needed to obtain the final board representation
+     * @brief      Before a given test is executed, this sets up everything and
+     *             initializes the variables Additionally, this performs the
+     *             actual gameplay moves needed to obtain the final board
+     *             representation
      *
      * @param      myfile  The file to read moves from
      */
@@ -145,7 +148,8 @@ protected:
             getline(myfile, fen_expected);
 
             // read in the moves of the given test case file one line at a time
-            // while the end of file is NOT reached and game is NOT finished (checkmate, stalemate, draw, resign)
+            // while the end of file is NOT reached and game is NOT finished
+            // (checkmate, stalemate, draw, resign)
             while(!myfile.eof() && !chess.getCheckmate() && !chess.getStalemate())
             {   
                 chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK); // for debugging purposes
@@ -159,8 +163,8 @@ protected:
                 {
                     chessCAMO::drawOrResign(chess, myfile);
 
-                    // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
-                    // so if this happens break out of the while loop
+                    // drawOrResign can set the checkmate flag to true if player chooses
+                    // to resign or draw so if this happens break out of the while loop
                     if(chess.getCheckmate())
                         break;
                 }
@@ -174,14 +178,11 @@ protected:
     }
 
     /**
-     * @brief      After a given test is completed, free the memory made by dynamic allocation.
-     *             This ensures that the following test can dynamically allocate memory without
-     *             causing a memory leak. 
+     * @brief      After a given test is completed, free the memory made by
+     *             dynamic allocation. This ensures that the following test can
+     *             dynamically allocate memory without causing a memory leak.
      */
-    void TearDown() override
-    {
-        cout.clear(); // enable output again
-    }
+    void TearDown() override { cout.clear(); } // enable output again
 };
 
 
@@ -206,7 +207,6 @@ TEST_F(ChessTest, stringInputsResignForCoverage)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -220,7 +220,6 @@ TEST_F(ChessTest, stringInputsNDrawFeaturesForCoverage)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -234,7 +233,6 @@ TEST_F(ChessTest, castleAfterKingMoved)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -248,7 +246,6 @@ TEST_F(ChessTest, castleAfterKingSideRookMoved)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -262,7 +259,6 @@ TEST_F(ChessTest, castleAfterQueenSideRookMoved)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -276,7 +272,6 @@ TEST_F(ChessTest, castleKingSide)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -290,7 +285,6 @@ TEST_F(ChessTest, castleQueenSide)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -304,7 +298,6 @@ TEST_F(ChessTest, kingMoveIntoCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -318,7 +311,6 @@ TEST_F(ChessTest, queenMate)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -332,7 +324,6 @@ TEST_F(ChessTest, queenCheckKingMoves)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -346,7 +337,6 @@ TEST_F(ChessTest, queenCheckPieceDefends)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -360,7 +350,6 @@ TEST_F(ChessTest, pawnPromotionRookWhite)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -374,7 +363,6 @@ TEST_F(ChessTest, pawnPromotionRookBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -388,7 +376,6 @@ TEST_F(ChessTest, pawnPromotionQueenWhite)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -402,7 +389,6 @@ TEST_F(ChessTest, pawnPromotionQueenBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -416,7 +402,6 @@ TEST_F(ChessTest, pawnPromotionKnightWhite)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -430,7 +415,6 @@ TEST_F(ChessTest, pawnPromotionKnightBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -444,7 +428,6 @@ TEST_F(ChessTest, pawnPromotionBishopWhite)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -458,7 +441,6 @@ TEST_F(ChessTest, pawnPromotionBishopBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -472,7 +454,6 @@ TEST_F(ChessTest, trickyCastle)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -486,7 +467,6 @@ TEST_F(ChessTest, castleWhenInCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -500,7 +480,6 @@ TEST_F(ChessTest, castleThroughCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -514,7 +493,6 @@ TEST_F(ChessTest, castleIntoCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -528,7 +506,6 @@ TEST_F(ChessTest, enPassantTakeRight)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -542,7 +519,6 @@ TEST_F(ChessTest, enPassantTakeLeft)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -556,7 +532,6 @@ TEST_F(ChessTest, enPassantWithoutCapture)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -570,7 +545,6 @@ TEST_F(ChessTest, knightCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -584,7 +558,6 @@ TEST_F(ChessTest, knightCheckKingMoves)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -598,7 +571,6 @@ TEST_F(ChessTest, knightMate)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -612,7 +584,6 @@ TEST_F(ChessTest, pinnedPieceBishop)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -626,7 +597,6 @@ TEST_F(ChessTest, pinnedPieceQueen)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -640,7 +610,6 @@ TEST_F(ChessTest, pinnedPiecePawnCanCapture)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -654,7 +623,6 @@ TEST_F(ChessTest, moveIntoKnightCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -668,7 +636,6 @@ TEST_F(ChessTest, moveIntoPawnCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -682,7 +649,6 @@ TEST_F(ChessTest, stalemate)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -696,7 +662,6 @@ TEST_F(ChessTest, doubleCheckWithKnight)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -710,7 +675,6 @@ TEST_F(ChessTest, doubleCheckwithBishop)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -724,7 +688,6 @@ TEST_F(ChessTest, doubleCheckmateKnight)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -738,7 +701,6 @@ TEST_F(ChessTest, doubleCheckmateBishop)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -752,7 +714,6 @@ TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -766,7 +727,6 @@ TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -780,7 +740,6 @@ TEST_F(ChessTest, doubleCheckPawnKingMustTake)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -794,7 +753,6 @@ TEST_F(ChessTest, pinnedWithBishop)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -808,7 +766,6 @@ TEST_F(ChessTest, pinnedWithQueen)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -822,7 +779,6 @@ TEST_F(ChessTest, pinnedWithRook)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -836,7 +792,6 @@ TEST_F(ChessTest, enPassantPawnRight)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -850,7 +805,6 @@ TEST_F(ChessTest, enPassantPawnLeft)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -864,7 +818,6 @@ TEST_F(ChessTest, checkmateQueenBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -878,7 +831,6 @@ TEST_F(ChessTest, stalemateBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -892,7 +844,6 @@ TEST_F(ChessTest, resignBlack)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -906,7 +857,6 @@ TEST_F(ChessTest, scholarMate)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -920,7 +870,6 @@ TEST_F(ChessTest, enpassantDeniedPawnMoves)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -933,8 +882,7 @@ TEST_F(ChessTest, scholarAttemptWithJustQueen)
     ifstream myfile("tests/50-scholarAttemptWithJustQueen.txt");
     SetUp(myfile);
 
-    // -------------------- Act -------------------- 
-    // convert the final board position from a given test case file into a FEN string
+    /* -------------------- Act -------------------- */
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -948,7 +896,6 @@ TEST_F(ChessTest, enpassantWithBlackPawn)
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */
-    // convert the final board position from a given test case file into a FEN string
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */

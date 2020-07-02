@@ -132,7 +132,14 @@ public:
     Chess() : board(64), check_pieces(2), flags(4), turn{WHITE}, num_moves{0} {}
 
     /*********************************** BIG THREE *********************************/
+    /**
+     * @brief      Destroys the object and frees any dynamically allocated
+     *             memory ('new') to avoid memory leaks.
+     *
+     * @note       Only Piece object pointers are deleted, so this can be empty
+     */
     ~Chess() = default;
+
     /**
      * @brief      Copy constructor - Constructs a new instance and copies the
      *             calling object's values to it.
@@ -261,8 +268,18 @@ public:
      */
     void setTurn(pieceColor turn) {this->turn = turn;}
 
+    /**
+     * @brief      Gets the number of moves made.
+     *
+     * @return     The number of moves.
+     */
     int getNumMoves() { return num_moves;}
 
+    /**
+     * @brief      Sets the number of moves made on the board.
+     *
+     * @param[in]  num_moves  The number of moves made
+     */
     void setNumMoves(int num_moves) {this->num_moves = num_moves;}
     /************************************* END *************************************/
 
@@ -277,8 +294,6 @@ public:
      *             the global object's board variable
      */  
     void boardInit();
-
-	void initFromPosition(int num_moves);
 
     /**
      * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
@@ -325,8 +340,24 @@ public:
      */
     bool isStalemate();
     
-
+    /**
+	 * @brief      Overloaded extraction operator
+	 *
+	 * @param      out           The output type (ex. ofstream or cout)
+	 * @param[in]  chess_object  The chess object
+	 *
+	 * @return     The output stream type
+	 */
     friend ostream & operator << (ostream &out, const Chess &chess_object);
+
+    /**
+	 * @brief      Overlaoded insertion operator
+	 *
+	 * @param      in            The input type (ex. ifstream or cin)
+	 * @param      chess_object  The chess object
+	 *
+	 * @return     The input stream type
+	 */
     friend istream & operator >> (istream &in, Chess &chess_object);
 
 private:
@@ -723,10 +754,10 @@ public:
      * @param[in]  dest   The destination square of the piece
      * @param      chess  The chess object
      *
-     * @return     True if moving the piece to 'dest' is legal from any type 
-     *             of move and piece, False otherwise.
-     * 
-     * \note       A possible move, is not necessarily legal.
+     * @return     True if moving the piece to 'dest' is legal from any type of
+     *             move and piece, False otherwise.
+     *
+     * @note       A possible move, is not necessarily legal.
      */
     bool isLegalMove(int dest, Chess &chess);
 
@@ -824,12 +855,12 @@ private:
     bool moved; 
 
     /** PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, OR EMPTY
-     * \see pieceType
+     * @see        pieceType
      */       
     pieceType type;
 
     /** BLACK, NEUTRAL, OR WHITE
-     * \see pieceColor
+     * @see        pieceColor
      */     
     pieceColor color;   
 };
@@ -838,7 +869,8 @@ private:
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
 /**
- * @brief      This class describes a pawn and provides functions related to pawn movements.
+ * @brief      This class describes a pawn and provides functions related to
+ *             pawn movements.
  */
 class Pawn : public Piece
 {
@@ -853,7 +885,7 @@ public:
 	  *
 	  * @note       Intentionally left blank. Has en-passant initialization.
 	  */
-    Pawn() : Piece(), en_passant_left{false}, en_passant_right{false} {} // intentionally blank
+    Pawn() : Piece(), en_passant_left{false}, en_passant_right{false} {}
 
     // constructor with valid piece information initialization
     
@@ -868,7 +900,8 @@ public:
      *
      * @note       Intentionally left blank. Has en-passant initialization.
      */
-    Pawn(int square, pieceType type, pieceColor color) : Piece(square, type, color), en_passant_left{false}, en_passant_right{false} {}
+    Pawn(int square, pieceType type, pieceColor color)
+     : Piece(square, type, color), en_passant_left{false}, en_passant_right{false} {}
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
     // En-passant ability information (LEFT)
@@ -881,21 +914,38 @@ public:
     /************************************* END *************************************/
 
     /**
-      * \note
-      * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
-      * en-passant, and promote.
-      *   
-      * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+     * @note       Can move 1 or 2 square (if not moved yet) forwards, attack
+     *             diagonally 1 square, en-passant, and promote.
+     *
+     * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+     *
+     * @brief      Determines if possible move.
+     *
+     * @param[in]  dest   The piece's destination square
+     * @param      chess  The chess object
+     *
+     * @return     True if possible move, False otherwise.
      */
     bool isPossibleMove(int dest, Chess &chess) override;
 
     /**
-     * \see virtual Piece::enPassantHandling(int dest, Chess &chess)
+     * @see        virtual Piece::enPassantHandling(int dest, Chess &chess)
+     *
+     * @brief      Captures the violating pawn if an en-passant move it made.
+     *
+     * @param[in]  src    The piece's source square
+     * @param      chess  The chess object
      */
     void enPassantHandling(int src, Chess &chess) override;
 
     /**
-     * \see virtual Piece::promotePawn(int dest, Chess &chess, istream &in)
+     * @see        virtual Piece::promotePawn(int dest, Chess &chess, istream
+     *             &in)
+     *
+     * @brief      Promotes the pawn to a piece depending on the user's choice.
+     *
+     * @param      chess  The chess object
+     * @param      in     The input stream type (ex. ifstream or cin)
      */
     void promotePawn(Chess &chess, istream &in) override;
 
@@ -911,7 +961,8 @@ private:
 /*                              KNIGHT CLASS - MEMBER FUNCTIONS                      */
 /*************************************************************************************/
 /**
- * @brief      This class describes a knight and provides functions related to knight movements.
+ * @brief      This class describes a knight and provides functions related to
+ *             knight movements.
  */
 class Knight : public Piece
 {
@@ -1261,7 +1312,7 @@ namespace chessCAMO
      * @pre        None
      *
      * @post       Depending on the users choice, the program either continues
-     *             ('y' || 'd' + 'n') or terminates ('d' + 'y' || 'r')
+     *             ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
      */
     void drawOrResign(Chess &chess, istream &in); // resign or draw
 

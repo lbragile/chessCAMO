@@ -85,6 +85,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ad94333a56dd7f21f61ca8e3ec3c4de8d"><td class="memItemLeft" align="right" valign="top">ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="chess_8cpp.html#ad94333a56dd7f21f61ca8e3ec3c4de8d">operator&lt;&lt;</a> (ostream &amp;out, const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:ad94333a56dd7f21f61ca8e3ec3c4de8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overloaded extraction operator.  <a href="chess_8cpp.html#ad94333a56dd7f21f61ca8e3ec3c4de8d">More...</a><br /></td></tr>
+<tr class="separator:ad94333a56dd7f21f61ca8e3ec3c4de8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af65c9944fe90cf3170728f7c4026349e"><td class="memItemLeft" align="right" valign="top">istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="chess_8cpp.html#af65c9944fe90cf3170728f7c4026349e">operator&gt;&gt;</a> (istream &amp;in, <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:af65c9944fe90cf3170728f7c4026349e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overlaoded insertion operator.  <a href="chess_8cpp.html#af65c9944fe90cf3170728f7c4026349e">More...</a><br /></td></tr>
+<tr class="separator:af65c9944fe90cf3170728f7c4026349e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f1974d53bb57b31a6957f9803c1a520"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a1f1974d53bb57b31a6957f9803c1a520">anonymous_namespace{chess.cpp}::destNotInPinPath</a> (int src, int dest, int pin)</td></tr>
 <tr class="memdesc:a1f1974d53bb57b31a6957f9803c1a520"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a destination square is in the pinning path as sometimes you can simply move the pinned piece closer to the pinning piece.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a1f1974d53bb57b31a6957f9803c1a520">More...</a><br /></td></tr>
 <tr class="separator:a1f1974d53bb57b31a6957f9803c1a520"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -97,25 +103,106 @@ Functions</h2></td></tr>
 <tr class="memitem:a7c18dbe517b955c8f8c1695803d907c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a7c18dbe517b955c8f8c1695803d907c6">anonymous_namespace{chess.cpp}::sameDiag</a> (int src, int dest)</td></tr>
 <tr class="memdesc:a7c18dbe517b955c8f8c1695803d907c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the source and destination squares are in the same diagonal.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a7c18dbe517b955c8f8c1695803d907c6">More...</a><br /></td></tr>
 <tr class="separator:a7c18dbe517b955c8f8c1695803d907c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a679f5b5242b918a3f4a28fe86326ffa1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a679f5b5242b918a3f4a28fe86326ffa1">anonymous_namespace{chess.cpp}::squareOfPieceInPath</a> (int src, int dest, <a class="el" href="class_chess.html">Chess</a> *chess)</td></tr>
-<tr class="memdesc:a679f5b5242b918a3f4a28fe86326ffa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine the coordinate of a pinned piece.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a679f5b5242b918a3f4a28fe86326ffa1">More...</a><br /></td></tr>
-<tr class="separator:a679f5b5242b918a3f4a28fe86326ffa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22a816c17174dd9c8863894cc61c0617"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a22a816c17174dd9c8863894cc61c0617">anonymous_namespace{chess.cpp}::squareOfPieceInPath</a> (int src, int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
+<tr class="memdesc:a22a816c17174dd9c8863894cc61c0617"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine the coordinate of a pinned piece.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a22a816c17174dd9c8863894cc61c0617">More...</a><br /></td></tr>
+<tr class="separator:a22a816c17174dd9c8863894cc61c0617"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b87d5419a3cb365abc6bb567e212207"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a0b87d5419a3cb365abc6bb567e212207">anonymous_namespace{chess.cpp}::incrementChoice</a> (int src, int dest)</td></tr>
 <tr class="memdesc:a0b87d5419a3cb365abc6bb567e212207"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine the increment to use when moving a piece from 'src' to 'dest'.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a0b87d5419a3cb365abc6bb567e212207">More...</a><br /></td></tr>
 <tr class="separator:a0b87d5419a3cb365abc6bb567e212207"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a442bad3768ead332dc60d445e2a9b07b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#a442bad3768ead332dc60d445e2a9b07b">anonymous_namespace{chess.cpp}::findKingPos</a> (int src, <a class="el" href="class_chess.html">Chess</a> *chess, bool enemy)</td></tr>
-<tr class="memdesc:a442bad3768ead332dc60d445e2a9b07b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine the coordinate of a pinned piece.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#a442bad3768ead332dc60d445e2a9b07b">More...</a><br /></td></tr>
-<tr class="separator:a442bad3768ead332dc60d445e2a9b07b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a639e125cd734b4dd09cef6dd1cfeafbf">chessCAMO::printBoard</a> (const vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;board)</td></tr>
-<tr class="memdesc:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterates through the pieces on a current board representation to produce the board on the console screen.  <a href="namespacechess_c_a_m_o.html#a639e125cd734b4dd09cef6dd1cfeafbf">More...</a><br /></td></tr>
-<tr class="separator:a639e125cd734b4dd09cef6dd1cfeafbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b71caa3f868c1d52e85af443b2e7943"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a2b71caa3f868c1d52e85af443b2e7943">chessCAMO::drawOrResign</a> (<a class="el" href="class_chess.html">Chess</a> *chess, istream &amp;in)</td></tr>
-<tr class="memdesc:a2b71caa3f868c1d52e85af443b2e7943"><td class="mdescLeft">&#160;</td><td class="mdescRight">At any moment, the players can either continue, draw, or resign.  <a href="namespacechess_c_a_m_o.html#a2b71caa3f868c1d52e85af443b2e7943">More...</a><br /></td></tr>
-<tr class="separator:a2b71caa3f868c1d52e85af443b2e7943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3825a6d4edda90f0caa6e044b1b2dac"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceanonymous__namespace_02chess_8cpp_03.html#aa3825a6d4edda90f0caa6e044b1b2dac">anonymous_namespace{chess.cpp}::findKingPos</a> (int src, <a class="el" href="class_chess.html">Chess</a> &amp;chess, bool enemy)</td></tr>
+<tr class="memdesc:aa3825a6d4edda90f0caa6e044b1b2dac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine the coordinate of a pinned piece.  <a href="namespaceanonymous__namespace_02chess_8cpp_03.html#aa3825a6d4edda90f0caa6e044b1b2dac">More...</a><br /></td></tr>
+<tr class="separator:aa3825a6d4edda90f0caa6e044b1b2dac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaf539421e4d22c645b7c764b3dc286e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#acaf539421e4d22c645b7c764b3dc286e">chessCAMO::printBoard</a> (vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; board)</td></tr>
+<tr class="memdesc:acaf539421e4d22c645b7c764b3dc286e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterates through the pieces on a current board representation to produce the board on the console screen.  <a href="namespacechess_c_a_m_o.html#acaf539421e4d22c645b7c764b3dc286e">More...</a><br /></td></tr>
+<tr class="separator:acaf539421e4d22c645b7c764b3dc286e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0664c9c0acddeb8c4902f558bf872a11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a0664c9c0acddeb8c4902f558bf872a11">chessCAMO::drawOrResign</a> (<a class="el" href="class_chess.html">Chess</a> &amp;chess, istream &amp;in)</td></tr>
+<tr class="memdesc:a0664c9c0acddeb8c4902f558bf872a11"><td class="mdescLeft">&#160;</td><td class="mdescRight">At any moment, the players can either continue, draw, or resign.  <a href="namespacechess_c_a_m_o.html#a0664c9c0acddeb8c4902f558bf872a11">More...</a><br /></td></tr>
+<tr class="separator:a0664c9c0acddeb8c4902f558bf872a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af39e7057e0eb51f78ea1466ec4d1e678"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#af39e7057e0eb51f78ea1466ec4d1e678">chessCAMO::printMessage</a> (string text, int color)</td></tr>
 <tr class="memdesc:af39e7057e0eb51f78ea1466ec4d1e678"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the given message ('text') with a given 'color' to console.  <a href="namespacechess_c_a_m_o.html#af39e7057e0eb51f78ea1466ec4d1e678">More...</a><br /></td></tr>
 <tr class="separator:af39e7057e0eb51f78ea1466ec4d1e678"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d42b92096548fcf02d7d339c9458cfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a7d42b92096548fcf02d7d339c9458cfc">chessCAMO::saveObject</a> (int num_moves, const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="separator:a7d42b92096548fcf02d7d339c9458cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d15651e7c46a46a9cfaec9a2226afbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a2d15651e7c46a46a9cfaec9a2226afbb">chessCAMO::restoreObject</a> (int num_moves, <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="separator:a2d15651e7c46a46a9cfaec9a2226afbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ad94333a56dd7f21f61ca8e3ec3c4de8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad94333a56dd7f21f61ca8e3ec3c4de8d">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">ostream &amp;&#160;</td>
+          <td class="paramname"><em>out</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
+          <td class="paramname"><em>chess_object</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overloaded extraction operator. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">out</td><td>The output type (ex. ofstream or cout) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">chess_object</td><td>The chess object</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output stream type </dd></dl>
+
+</div>
+</div>
+<a id="af65c9944fe90cf3170728f7c4026349e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af65c9944fe90cf3170728f7c4026349e">&#9670;&nbsp;</a></span>operator&gt;&gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">istream&amp; operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype">istream &amp;&#160;</td>
+          <td class="paramname"><em>in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
+          <td class="paramname"><em>chess_object</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overlaoded insertion operator. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">in</td><td>The input type (ex. ifstream or cin) </td></tr>
+    <tr><td class="paramname">chess_object</td><td>The chess object</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The input stream type </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

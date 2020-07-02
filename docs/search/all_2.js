@@ -1,18 +1,16 @@
 var searchData=
 [
-  ['cancastle_7',['canCastle',['../class_piece.html#a5f5192176e3a04e7c60f31694d6cbd84',1,'Piece::canCastle()'],['../class_king.html#a82ea2723df34f8dbcbbba9cffd12c513',1,'King::canCastle()']]],
-  ['causecheck_8',['causeCheck',['../class_piece.html#a101ff01625a81941f219499ca09b99ab',1,'Piece']]],
-  ['causedoublecheck_9',['causeDoubleCheck',['../class_piece.html#a22ce3767f265ea27503d618207d2a2d9',1,'Piece']]],
-  ['check_10',['check',['../class_chess.html#a9805134df65a99fa13629f4cce725117',1,'Chess']]],
-  ['check_5fstack_11',['check_stack',['../class_chess.html#a1bea6f68b3978eebfeae2ed248073a4a',1,'Chess']]],
-  ['checkmate_12',['checkmate',['../class_chess.html#a6d5ec257f6aa4011b2159fe8eccd4a86',1,'Chess']]],
-  ['chess_13',['Chess',['../class_chess.html',1,'Chess'],['../class_chess_test.html#a8a2cd354c20df2ece2d5d5319e55541f',1,'ChessTest::chess()'],['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../chess.html',1,'(Global Namespace)']]],
-  ['chess_2ecpp_14',['chess.cpp',['../chess_8cpp.html',1,'']]],
-  ['chess_2eh_15',['chess.h',['../chess_8h.html',1,'']]],
-  ['chesscamo_16',['chessCAMO',['../namespacechess_c_a_m_o.html',1,'']]],
-  ['chess_20header_20file_20_28functions_20_26_20todo_20list_29_17',['Chess Header File (Functions &amp; Todo List)',['../chessheader.html',1,'']]],
-  ['chesstest_18',['ChessTest',['../class_chess_test.html',1,'']]],
-  ['color_19',['color',['../class_piece.html#a7dbcb06a7738adf4db8310eefd699759',1,'Piece']]],
-  ['cyan_20',['CYAN',['../chess_8h.html#ad243f93c16bc4c1d3e0a13b84421d760',1,'chess.h']]],
-  ['chesscamo_21',['chessCAMO',['../index.html',1,'']]]
+  ['cancastle_7',['canCastle',['../class_piece.html#a87ab91b6263e5445c104f8e32d8e1bcb',1,'Piece::canCastle()'],['../class_king.html#a4db3c9ba57cc4be7ba7fbc178890c89c',1,'King::canCastle()']]],
+  ['causecheck_8',['causeCheck',['../class_piece.html#ae0b21149be8db025b5af1e158ac58aba',1,'Piece']]],
+  ['causedoublecheck_9',['causeDoubleCheck',['../class_piece.html#aae6fb7bf2fe4ede5d90fd447f54d4fd4',1,'Piece']]],
+  ['check_5fpieces_10',['check_pieces',['../class_chess.html#a154e5064761da26c3e99d6deacc6cf49',1,'Chess']]],
+  ['chess_11',['Chess',['../class_chess.html',1,'Chess'],['../class_chess_test.html#a4aa8bd9e50aca118f234a95262dbeb3f',1,'ChessTest::chess()'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../chess.html',1,'(Global Namespace)']]],
+  ['chess_2ecpp_12',['chess.cpp',['../chess_8cpp.html',1,'']]],
+  ['chess_2eh_13',['chess.h',['../chess_8h.html',1,'']]],
+  ['chesscamo_14',['chessCAMO',['../namespacechess_c_a_m_o.html',1,'']]],
+  ['chess_20header_20file_20_28functions_20_26_20todo_20list_29_15',['Chess Header File (Functions &amp; Todo List)',['../chessheader.html',1,'']]],
+  ['chesstest_16',['ChessTest',['../class_chess_test.html',1,'']]],
+  ['color_17',['color',['../class_piece.html#a7dbcb06a7738adf4db8310eefd699759',1,'Piece']]],
+  ['cyan_18',['CYAN',['../chess_8h.html#ad243f93c16bc4c1d3e0a13b84421d760',1,'chess.h']]],
+  ['chesscamo_19',['chessCAMO',['../index.html',1,'']]]
 ];

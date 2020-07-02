@@ -33,6 +33,17 @@
 using namespace std;
 using namespace chessCAMO; 
 
+/*************************************************************************************/
+/*                              LOCAL FUNCTIONS / OBJECTS                            */
+/*************************************************************************************/
+/**
+ * @brief      Overloaded extraction operator
+ *
+ * @param      out           The output type (ex. ofstream or cout)
+ * @param[in]  chess_object  The chess object
+ *
+ * @return     The output stream type
+ */
 ostream & operator << (ostream &out, const Chess &chess_object)
 {
     for(const auto & elem : chess_object.getBoard())
@@ -46,6 +57,14 @@ ostream & operator << (ostream &out, const Chess &chess_object)
     return out;
 }
 
+/**
+ * @brief      Overlaoded insertion operator
+ *
+ * @param      in            The input type (ex. ifstream or cin)
+ * @param      chess_object  The chess object
+ *
+ * @return     The input stream type
+ */
 istream & operator >> (istream &in, Chess &chess_object)
 {
     // delete the allocated memory and restore new data
@@ -111,10 +130,6 @@ istream & operator >> (istream &in, Chess &chess_object)
     return in;
 }
 
-
-/*************************************************************************************/
-/*                              LOCAL FUNCTIONS / OBJECTS                            */
-/*************************************************************************************/
 /**
  * @brief      This anonymous namespace contains the local functions related to
  *             chessCAMO which are mainly used as helper functions to determine
@@ -216,7 +231,6 @@ namespace
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
-
 /**
  * @brief      Places the pieces on the board at their correct starting
  *             positions
@@ -920,8 +934,8 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
  *
  * @brief      Determines if possible move.
  *
- * @param[in]  dest   The destination
- * @param      chess  The chess
+ * @param[in]  dest   The piece's destination square
+ * @param      chess  The chess object
  *
  * @return     True if possible move, False otherwise.
  */
@@ -953,10 +967,10 @@ bool Pawn::isPossibleMove(int dest, Chess &chess)
 /**
  * @see        virtual Piece::enPassantHandling(int dest, Chess &chess)
  *
- * @brief      Makes an en-passant move and correctly removes the captured pawn
+ * @brief      Captures the violating pawn if an en-passant move it made.
  *
- * @param[in]  src    The source
- * @param      chess  The chess
+ * @param[in]  src    The piece's source square
+ * @param      chess  The chess object
  */
 void Pawn::enPassantHandling(int src, Chess &chess)
 {
@@ -986,12 +1000,13 @@ void Pawn::enPassantHandling(int src, Chess &chess)
 }
 
 /**
- * @see        virtual Piece::promotePawn(Chess &chess, istream &in)
+ * @see        virtual Piece::promotePawn(int dest, Chess &chess, istream
+ *             &in)
  *
- * @brief      Promotes the pawn.
+ * @brief      Promotes the pawn to a piece depending on the user's choice.
  *
- * @param      chess  The chess
- * @param      in     Input stream type (file or std cin)
+ * @param      chess  The chess object
+ * @param      in     The input stream type (ex. ifstream or cin)
  */
 void Pawn::promotePawn(Chess &chess, istream &in)
 {
@@ -1195,12 +1210,13 @@ bool King::canCastle(int dest, Chess &chess)
 /**
  * @see        virtual Piece::movedIntoCheck(int dest, Chess &chess)
  *
- * @brief      { function_description }
+ * @brief      Determines if a king moved into check after a move was made
  *
  * @param[in]  dest   The destination
  * @param      chess  The chess
  *
- * @return     { description_of_the_return_value }
+ * @return     True if a piece attacks the king after the move was made,
+ *             False otherwise.
  */
 bool King::movedIntoCheck(int dest, Chess &chess)
 {
