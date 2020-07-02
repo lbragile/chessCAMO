@@ -111,7 +111,7 @@ int main()
             {
                 if(e.type == sf::Event::KeyPressed)
                 {
-                    if(e.key.code == sf::Keyboard::U)  // && board_positions.size() > 1
+                    if(e.key.code == sf::Keyboard::U) 
                     {
                         // decrement move counter by 1 since an illegal move was made 
                         chess.setNumMoves(chess.getNumMoves()-1);

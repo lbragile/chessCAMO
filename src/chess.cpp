@@ -39,9 +39,6 @@ ostream & operator << (ostream &out, const Chess &chess_object)
         out << elem->getPieceType() << endl << elem->getPieceSquare() << endl << elem->getPieceColor() << endl
             << elem->getPieceMoveInfo() << endl << elem->getEnPassantLeft() << endl << elem->getEnPassantRight() << endl;
 
-    for(const auto & elem : chess_object.getCheckPieces())
-        out << elem->getPieceSquare() << endl << elem->getPieceType() << endl << elem->getPieceColor() << endl;
-
     out << chess_object.getCheck() << endl << chess_object.getDoubleCheck() << endl << chess_object.getCheckmate() << endl << chess_object.getStalemate() << endl;
 
     out << chess_object.getTurn() << endl;
@@ -56,11 +53,6 @@ istream & operator >> (istream &in, Chess &chess_object)
     for(unsigned int i = 0; i < board.size(); i++)
         delete board[i];
     // board.clear();
-
-    vector<Piece*> check_pieces = chess_object.getCheckPieces();
-    delete check_pieces[0];
-    delete check_pieces[1];
-    // check_pieces.clear();
 
     string input;
     for(auto & elem : board)
@@ -104,35 +96,6 @@ istream & operator >> (istream &in, Chess &chess_object)
 
     chess_object.setBoard(board);
 
-    for(auto & elem : check_pieces)
-    {
-        in >> input;
-        switch(input[0] - '0')
-        {
-            case 0:
-                elem = new Pawn(0, PAWN, NEUTRAL);
-                break;
-            case 1:
-                elem = new Knight(0, KNIGHT, NEUTRAL);
-                break;
-            case 2:
-                elem = new Bishop(0, BISHOP, NEUTRAL);
-                break;
-            case 3:
-                elem = new Rook(0, ROOK, NEUTRAL);
-                break;
-            default:
-                elem = new Queen(0, QUEEN, NEUTRAL);  
-        }
-
-        in >> input;
-        elem->setPieceSquare(stoi(input));
-        in >> input;
-        elem->setPieceColor((pieceColor) (input[0] - '0'));
-    }
-
-    chess_object.setCheckPieces(check_pieces);
-
     in >> input;
     chess_object.setCheck(input == "1");
     in >> input;
@@ -153,31 +116,32 @@ istream & operator >> (istream &in, Chess &chess_object)
 /*                              LOCAL FUNCTIONS / OBJECTS                            */
 /*************************************************************************************/
 /**
- * @brief   This anonymous namespace contains the local functions related to chessCAMO which 
- *          are mainly used as helper functions to determine critical information regarding
- *          a given move choice.
+ * @brief      This anonymous namespace contains the local functions related to
+ *             chessCAMO which are mainly used as helper functions to determine
+ *             critical information regarding a given move choice.
  */
 namespace
 {
     /**
-     * @brief      Determines if a destination square is in the pinning path
-     *             as sometimes you can simply move the pinned piece closer to the 
+     * @brief      Determines if a destination square is in the pinning path as
+     *             sometimes you can simply move the pinned piece closer to the
      *             pinning piece.
      *
      * @param[in]  src   The source square of pinned piece
      * @param[in]  dest  The destination square of pinned piece
      * @param[in]  pin   Source square of pinning piece
      *
-     * @return     Allows the move (returns false) if piece can move closer to pinning
-     *             piece, else move is invalid (returns true)
+     * @return     Allows the move (returns false) if piece can move closer to
+     *             pinning piece, else move is invalid (returns true)
      */
     bool destNotInPinPath(int src, int dest, int pin);
 
     /**
-     * @brief      Determines if the source and destination squares are in the same column
+     * @brief      Determines if the source and destination squares are in the
+     *             same column
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
      * @return     True if the source and destination are in the same column,
      *             else False.
@@ -185,21 +149,23 @@ namespace
     bool sameCol(int src, int dest);
 
     /**
-     * @brief      Determines if the source and destination squares are in the same row
+     * @brief      Determines if the source and destination squares are in the
+     *             same row
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
-     * @return     True if the source and destination are in the same row,
-     *             else False.
+     * @return     True if the source and destination are in the same row, else
+     *             False.
      */
     bool sameRow(int src, int dest);
 
     /**
-     * @brief      Determines if the source and destination squares are in the same diagonal
+     * @brief      Determines if the source and destination squares are in the
+     *             same diagonal
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
      * @return     True if the source and destination are in the same diagonal,
      *             else False.
@@ -213,21 +179,23 @@ namespace
      * @param[in]  dest   The destination square of pinning piece
      * @param      chess  The chess object is created
      *
-     * @return     If only 1 piece is in the path from 'src' to 'dest', return its coordinates
-     *             else, return -1 to indicate that there is either no piece or multiple
-     *             pieces in the path.
+     * @return     If only 1 piece is in the path from 'src' to 'dest', return
+     *             its coordinates else, return -1 to indicate that there is
+     *             either no piece or multiple pieces in the path.
      */
     int squareOfPieceInPath(int src, int dest, Chess &chess);
 
     /**
-     * @brief      Used to determine the increment to use when moving a piece from 'src' to 'dest'.
+     * @brief      Used to determine the increment to use when moving a piece
+     *             from 'src' to 'dest'.
      *
      * @param[in]  src   The source square of piece
      * @param[in]  dest  The destination square of piece
      *
-     * @return     Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
-     *             8 if moving in same column, 9 if moving in diagonal to the left. If move does 
-     *             not correspond to one of the pieces, returns 0.
+     * @return     Returns either 1 if moving in same row, 7 if moving in
+     *             diagonal to the right, 8 if moving in same column, 9 if
+     *             moving in diagonal to the left. If move does not correspond
+     *             to one of the pieces, returns 0.
      */
     int incrementChoice(int src, int dest);
 
@@ -236,10 +204,11 @@ namespace
      *
      * @param[in]  src    The source square of pinning piece
      * @param      chess  The chess object is created
-     * @param[in]  enemy  True if king color differs from piece color, else false
+     * @param[in]  enemy  True if king color differs from piece color, else
+     *                    false
      *
-     * @return     Returns the coordinate position of the king, based on the current board
-     *             representation and color determined by 'enemy'.
+     * @return     Returns the coordinate position of the king, based on the
+     *             current board representation and color determined by 'enemy'.
      */
     int findKingPos(int src, Chess &chess, bool enemy); 
 } // unnamed namespace (makes these functions local to this implementation file)
@@ -249,15 +218,14 @@ namespace
 /*************************************************************************************/
 
 /**
- * @brief      Places the pieces on the board at their correct starting positions
+ * @brief      Places the pieces on the board at their correct starting
+ *             positions
  *
- * \pre
- * The chess object is intialized
- * 
- * \post 
- * Instantiates new objects corresponding to the pieces, places them
- * in the corresponding index of the board vector and set the global
- * object's board variable
+ * @pre        The chess object is intialized
+ *
+ * @post       Instantiates new objects corresponding to the pieces, places them
+ *             in the corresponding index of the board vector and set the global
+ *             object's board variable
  */  
 void Chess::boardInit()
 {
@@ -316,21 +284,19 @@ void Chess::boardInit()
 }
 
 /**
- * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
- *             for a legal move are met.
+ * @brief      Moves a piece on the board from 'src' to 'dest' if conditions for
+ *             a legal move are met.
  *
  * @param[in]  src   The source square (piece's current location)
  * @param[in]  dest  The destination square (piece's ending location)
  * @param      in    input stream type (stdin or file)
- * 
- * \pre
- * The chess object is created.
- * 
- * \post
- * The pieces at 'src' and 'dest' positions are swapped.
- * If needed (attacking, castling, etc.) an empty square is made.
- * The board's state is updated to indicate that the move occured.
- * On failure, an error message is printed and user is asked to retry.
+ *
+ * @pre        The chess object is created.
+ *
+ * @post       The pieces at 'src' and 'dest' positions are swapped. If needed
+ *             (attacking, castling, etc.) an empty square is made. The board's
+ *             state is updated to indicate that the move occured. On failure,
+ *             an error message is printed and user is asked to retry.
  */
 void Chess::makeMove(int src, int dest, istream &in)
 {    
@@ -354,17 +320,14 @@ void Chess::makeMove(int src, int dest, istream &in)
                 {
                     // restore previous object
                     chessCAMO::restoreObject(getNumMoves(), *this);
+
+                    chessCAMO::printBoard(getBoard());
+                    chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
                     return;
                 }
             }
 
             // if here, did not return so set the appropriate member variables
-            delete check_pieces[0];
-            delete check_pieces[1];
-            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
-            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
-
-            setCheckPieces(check_pieces);
             setDoubleCheck(false);
         }
 
@@ -376,16 +339,13 @@ void Chess::makeMove(int src, int dest, istream &in)
             {
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
+
+                chessCAMO::printBoard(getBoard());
+                chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
                 return;
             }
 
             // if here, did not return so set the appropriate member variables
-            delete check_pieces[0];
-            delete check_pieces[1];
-            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
-            check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
-
-            setCheckPieces(check_pieces);
             setCheck(false);
         }
 
@@ -427,14 +387,14 @@ void Chess::makeMove(int src, int dest, istream &in)
 /**
  * @brief      Decide if a move caused a checkmate according to 'check_type'
  *
- * @param[in]  check_type  Either "single" or "double" corresponding to the check on the board
- * 
- * \pre
- * The chess object is created.
- * 
- * \post
- * If board's state is in checkmate, calls handleCheckmate() to print messages
- * to console indicating the winner. Else, game continues as usual.
+ * @param[in]  check_type  Either "single" or "double" corresponding to the
+ *                         check on the board
+ *
+ * @pre        The chess object is created.
+ *
+ * @post       If board's state is in checkmate, calls handleCheckmate() to
+ *             print messages to console indicating the winner. Else, game
+ *             continues as usual.
  */
 void Chess::isCheckmate(string check_type)
 {
@@ -461,13 +421,14 @@ void Chess::isCheckmate(string check_type)
 
 /**
  * @brief      Decide if a move caused a stalemate
- * \pre
- * The chess object is created.
  * 
- * \post
- * Calls Chess::handleStalemate() to print messages to console indicating that game is drawn, if needed.
- * 
- * @return     True if board's state is in stalemate, else False and game continues as usual.
+ * @pre        The chess object is created.
+ *
+ * @post       Calls Chess::handleStalemate() to print messages to console
+ *             indicating that game is drawn, if needed.
+ *
+ * @return     True if board's state is in stalemate, else False and game
+ *             continues as usual.
  */
 bool Chess::isStalemate()
 {
@@ -502,15 +463,14 @@ bool Chess::isStalemate()
  * @brief      A move can be one of: attack, castle, en-passant, regular
  *
  * @param[in]  src   The source square of piece
- * @param[in]  dest  The destination square of piece 
- * 
- * \pre
- * The chess object is created 
- * 
- * \post
- * Swaps the pieces on the board according to 'src' and 'dest' and proper
- * chess rules, using pieceSwap(.). If a new empty square must be created,
- * this is handled. Returns board representation with the made move.
+ * @param[in]  dest  The destination square of piece
+ *
+ * @pre        The chess object is created
+ *
+ * @post       Swaps the pieces on the board according to 'src' and 'dest' and
+ *             proper chess rules, using pieceSwap(.). If a new empty square
+ *             must be created, this is handled. Returns board representation
+ *             with the made move.
  */
 void Chess::makeMoveForType(int src, int dest)
 {
@@ -580,15 +540,13 @@ void Chess::makeMoveForType(int src, int dest)
 /**
  * @brief      Used in makeMoveForType(.) to swap pieces on the board
  *
- * @param[in]  src   The source square of piece
- * @param[in]  dest  The destination square of piece 
+ * @param[in]  src    The source square of piece
+ * @param[in]  dest   The destination square of piece
  * @param      board  The current board representation
- * 
- * \pre 
- * The chess object is created
- * 
- * \post
- * Swaps the pieces on the board according to 'src' and 'dest'.
+ *
+ * @pre        The chess object is created
+ *
+ * @post       Swaps the pieces on the board according to 'src' and 'dest'.
  */
 void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
 {
@@ -599,13 +557,11 @@ void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
 
 /**
  * @brief      Indicates who will move next via a message to console
- * 
- * \pre 
- * The chess object is created
- * 
- * \post
- * Player turn is switched, board is printed, and message is displayed
- * if game is not over to indicate whose turn it is.
+ *
+ * @pre        The chess object is created
+ *
+ * @post       Player turn is switched, board is printed, and message is
+ *             displayed if game is not over to indicate whose turn it is.
  */
 void Chess::handleChangeTurn()
 {
@@ -623,12 +579,11 @@ void Chess::handleChangeTurn()
 
 /**
  * @brief      Indicates which player won by checkmate via a message to console
- * 
- * \pre 
- * The chess object is created. A move was made (cannot checkmate in less than 2 moves in theory).
- * 
- * \post
- * Object's checkmate state is set to true (to end the algorithm)
+ *
+ * @pre        The chess object is created. A move was made (cannot checkmate in
+ *             less than 2 moves in theory).
+ *
+ * @post       Object's checkmate state is set to true (to end the algorithm)
  */
 void Chess::handleCheckmate()
 {
@@ -639,11 +594,9 @@ void Chess::handleCheckmate()
 
 /**
  * @brief      Indicates the game is drawn via a message to console
- * \pre 
- * The chess object is created. A move was made.
- * 
- * \post
- * Object's stalemate state is set to true (to end the algorithm)
+ * @pre        The chess object is created. A move was made.
+ *
+ * @post       Object's stalemate state is set to true (to end the algorithm)
  */
 void Chess::handleStalemate()
 {
@@ -653,56 +606,45 @@ void Chess::handleStalemate()
 }
 
 /**
- * @brief      After a move is made, can undo it if move was invalid and return to previous board state
- * 
- * @param      king             The king that is being attacked currently
- * @param      piece            The piece that is attacking the king currently
- * @param[in]  check_type       The check type (single or double)
- * 
- * \pre 
- * The chess object is created. A move was made.
- * 
- * \post
- * None
+ * @brief      After a move is made, can undo it if move was invalid and return
+ *             to previous board state
  *
- * @return     True if after move, the 'king' is still in check (single or double) or the move was
- *             invalid, output warning message and undo the move. Else, False and continue the game
- *             without undoing the move.
+ * @param      king        The king that is being attacked currently
+ * @param      piece       The piece that is attacking the king currently
+ * @param[in]  check_type  The check type (single or double)
+ *
+ * @pre        The chess object is created. A move was made.
+ *
+ * @post       None
+ *
+ * @return     True if after move, the 'king' is still in check (single or
+ *             double) or the move was invalid, output warning message and undo
+ *             the move. Else, False and continue the game without undoing the
+ *             move.
  */
 bool Chess::needUndoMove(Piece *king, Piece *piece, string check_type)
 {
-    vector<Piece*> board = getBoard();
-
-    if(piece->isPossibleMove(king->getPieceSquare(), *this))
-    {   
-        chessCAMO::printBoard(board);
-
-        // invalid move checking when a player is in check (single/double)
-        check_type == "double" ? chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW)
-                               : chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
-        
-        return true; 
-    }
-    else
-    {
-        return false; // did not undo the move
-    }
+    // move was already made, so check if the piece can still attack the king
+    // while making sure that the king did not move to the piece (its square
+    // will be empty if so)
+    return getBoard()[piece->getPieceSquare()]->isPossibleMove(king->getPieceSquare(), *this) &&
+           !getBoard()[king->getPieceSquare()]->isEmpty();
 } 
        
 /**
- * @brief      If in a single check, see if piece can defend the king, capture attacking piece,
- *             or move the king out of check. Used in isCheckmate("single")
+ * @brief      If in a single check, see if piece can defend the king, capture
+ *             attacking piece, or move the king out of check. Used in
+ *             isCheckmate("single")
  *
  * @param      piece  The piece that is attacking the king currently
  * @param      king   The king that is being attacked currently
  *
- * \pre 
- * The chess object is created. A move was made.
- * 
- * \post
- * None
+ * @pre        The chess object is created. A move was made.
  *
- * @return     True if no legal moves found (checkmate), else False and make the move
+ * @post       None
+ *
+ * @return     True if no legal moves found (checkmate), else False and make the
+ *             move
  */
 bool Chess::singleCheckPieceIterator(Piece *piece, Piece *king)
 {
@@ -733,18 +675,18 @@ bool Chess::singleCheckPieceIterator(Piece *piece, Piece *king)
 }
 
 /**
- * @brief      If in a double check, see if the king can move out of check as this is the only
- *             valid move option. Used in isCheckmate("double").
+ * @brief      If in a double check, see if the king can move out of check as
+ *             this is the only valid move option. Used in
+ *             isCheckmate("double").
  *
  * @param      king  The king that is being attacked currently
  *
- * \pre 
- * The chess object is created.
- * 
- * \post
- * None
+ * @pre        The chess object is created.
  *
- * @return     True if no legal moves found (checkmate), else False and make the move
+ * @post       None
+ *
+ * @return     True if no legal moves found (checkmate), else False and make the
+ *             move
  */
 bool Chess::doubleCheckPieceIterator(Piece *king)
 {
@@ -762,20 +704,16 @@ bool Chess::doubleCheckPieceIterator(Piece *king)
 }
 
 /**
- * @brief      Decides whose turn it is currently and updates the private member variable ('turn') accordingly
+ * @brief      Decides whose turn it is currently and updates the private member
+ *             variable ('turn') accordingly
  *
- * \pre 
- * The chess object is created.
- * 
- * \post
- * None
+ * @pre        The chess object is created.
+ *
+ * @post       None
  *
  * @return     'chess.turn' is set to the correct player
  */
-pieceColor Chess::switchTurn()
-{
-    return getTurn() == WHITE ? BLACK : WHITE;
-}
+pieceColor Chess::switchTurn() { return getTurn() == WHITE ? BLACK : WHITE; }
 
 /*************************************************************************************/
 /*                              PIECE CLASS - MEMBER FUNCTIONS                       */
@@ -786,7 +724,8 @@ pieceColor Chess::switchTurn()
  * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return     True if source piece color matches destination piece color, False otherwise.
+ * @return     True if source piece color matches destination piece color, False
+ *             otherwise.
  */
 bool Piece::isSameColor(int dest, Chess &chess)
 {
@@ -798,13 +737,15 @@ bool Piece::isSameColor(int dest, Chess &chess)
 }
 
 /**
- * @brief      Determines if a given piece is pinned to the king by opposing piece
+ * @brief      Determines if a given piece is pinned to the king by opposing
+ *             piece
  *
- * @param[in]  dest   The destination square of the piece  
+ * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return     True if piece is pinned to the king and moving to 'dest' will cause
- *             the path (pinning piece -> king from pinned piece side) to be free, False otherwise.
+ * @return     True if piece is pinned to the king and moving to 'dest' will
+ *             cause the path (pinning piece -> king from pinned piece side) to
+ *             be free, False otherwise.
  */
 bool Piece::isPinned(int dest, Chess &chess)
 {
@@ -835,7 +776,8 @@ bool Piece::isPinned(int dest, Chess &chess)
  * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return     True if squares along the path (src, dest) are empty, False otherwise.
+ * @return     True if squares along the path (src, dest) are empty, False
+ *             otherwise.
  */
 bool Piece::isPathFree(int dest, Chess &chess)
 {
@@ -868,10 +810,10 @@ bool Piece::isPathFree(int dest, Chess &chess)
  * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return     True if moving the piece to 'dest' is legal from any type 
- *             of move and piece, False otherwise.
- * 
- * \note       A possible move, is not necessarily legal.
+ * @return     True if moving the piece to 'dest' is legal from any type of move
+ *             and piece, False otherwise.
+ *
+ * @note       A possible move, is not necessarily legal.
  */
 bool Piece::isLegalMove(int dest, Chess &chess)
 {
@@ -885,8 +827,8 @@ bool Piece::isLegalMove(int dest, Chess &chess)
  * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return    True if moving the piece to 'dest' now threatens the opposing king.
- *            False otherwise.
+ * @return     True if moving the piece to 'dest' now threatens the opposing
+ *             king. False otherwise.
  */
 bool Piece::causeCheck(int dest, Chess &chess)
 {
@@ -901,8 +843,26 @@ bool Piece::causeCheck(int dest, Chess &chess)
         // object variables (checkStack and setCheck)
         delete check_pieces[0];
         delete check_pieces[1];
-        check_pieces[0] = board[dest];
-        check_pieces[1] = board[king_pos];
+
+        switch(board[dest]->getPieceType())
+        {
+            case 0:
+                check_pieces[0] = new Pawn(dest, PAWN, board[dest]->getPieceColor());
+                break;
+            case 1:
+                check_pieces[0] = new Knight(dest, KNIGHT, board[dest]->getPieceColor());
+                break;
+            case 2:
+                check_pieces[0] = new Bishop(dest, BISHOP, board[dest]->getPieceColor());
+                break;
+            case 3:
+                check_pieces[0] = new Rook(dest, ROOK, board[dest]->getPieceColor());
+                break;
+            default:
+                check_pieces[0] = new Queen(dest, QUEEN, board[dest]->getPieceColor());
+        }
+
+        check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor());
         chess.setCheckPieces(check_pieces);
         chess.setCheck(true);
     } 
@@ -916,10 +876,9 @@ bool Piece::causeCheck(int dest, Chess &chess)
  * @param[in]  dest   The destination square of the piece
  * @param      chess  The chess object
  *
- * @return     True if moving the piece to 'dest' now threatens the opposing king,
- *             and an additional piece from the same side also has a legal move towards the 
- *             opposing king.
- *             False otherwise.
+ * @return     True if moving the piece to 'dest' now threatens the opposing
+ *             king, and an additional piece from the same side also has a legal
+ *             move towards the opposing king. False otherwise.
  */
 bool Piece::causeDoubleCheck(int dest, Chess &chess)
 {
@@ -929,7 +888,6 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
     
-
     // how many pieces are checking the king
     for(const auto & elem : board)
     {
@@ -957,11 +915,17 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
 /*                              PAWN CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
 /**
- * \note
- * Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square,
- * en-passant, and promote.
- *   
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Can move 1 or 2 square (if not moved yet) forwards, attack
+ *             diagonally 1 square, en-passant, and promote.
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool Pawn::isPossibleMove(int dest, Chess &chess)
 {
@@ -989,7 +953,12 @@ bool Pawn::isPossibleMove(int dest, Chess &chess)
 }
 
 /**
- * \see virtual Piece::enPassantHandling(int dest, Chess &chess)
+ * @see        virtual Piece::enPassantHandling(int dest, Chess &chess)
+ *
+ * @brief      Makes an en-passant move and correctly removes the captured pawn
+ *
+ * @param[in]  src    The source
+ * @param      chess  The chess
  */
 void Pawn::enPassantHandling(int src, Chess &chess)
 {
@@ -997,8 +966,8 @@ void Pawn::enPassantHandling(int src, Chess &chess)
     int dest = getPieceSquare();
     int sign = isPieceWhite() ? 1 : -1;
 
-    // First, cancel en-passant abilities of all pawns.
-    // Then determine which pawn can have en-passant abilities
+    // First, cancel en-passant abilities of all pawns. Then determine which
+    // pawn can have en-passant abilities
     for(const auto & elem : board) 
     {
         elem->setEnPassantLeft(false);
@@ -1019,7 +988,12 @@ void Pawn::enPassantHandling(int src, Chess &chess)
 }
 
 /**
- * \see virtual Piece::promotePawn(Chess &chess, istream &in)
+ * @see        virtual Piece::promotePawn(Chess &chess, istream &in)
+ *
+ * @brief      Promotes the pawn.
+ *
+ * @param      chess  The chess
+ * @param      in     Input stream type (file or std cin)
  */
 void Pawn::promotePawn(Chess &chess, istream &in)
 {
@@ -1070,10 +1044,17 @@ void Pawn::promotePawn(Chess &chess, istream &in)
 /*                              KNIGHT CLASS - MEMBER FUNCTIONS                      */
 /*************************************************************************************/
 /**
- * \note
- * Can move (2 up/down or 2 left/right) and (1 left/right or 1 up/down), can jump over pieces.
- * 
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Can move (2 up/down or 2 left/right) and (1 left/right or 1
+ *             up/down), can jump over pieces.
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool Knight::isPossibleMove(int dest, Chess &chess)
 {
@@ -1089,10 +1070,16 @@ bool Knight::isPossibleMove(int dest, Chess &chess)
 /*************************************************************************************/
 
 /**
- * \note
- * Can move diagonally any number of squares
- * 
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Can move diagonally any number of squares
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool Bishop::isPossibleMove(int dest, Chess &chess)
 {
@@ -1106,10 +1093,16 @@ bool Bishop::isPossibleMove(int dest, Chess &chess)
 /*                              ROOK CLASS - MEMBER FUNCTIONS                        */
 /*************************************************************************************/
 /**
- * \note
- * Can move horizontally or vertically any number of squares.
- * 
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Can move horizontally or vertically any number of squares.
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool Rook::isPossibleMove(int dest, Chess &chess)
 {
@@ -1122,10 +1115,16 @@ bool Rook::isPossibleMove(int dest, Chess &chess)
 /*                              QUEEN CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
 /**
- * \note
- * Combines rook and bishop moves.
- * 
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Combines rook and bishop moves.
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool Queen::isPossibleMove(int dest, Chess &chess)
 {
@@ -1140,10 +1139,16 @@ bool Queen::isPossibleMove(int dest, Chess &chess)
 /*                             KING CLASS - MEMBER FUNCTIONS                         */
 /*************************************************************************************/
 /**
- * \note
- * Combines rook and bishop moves but only 1 square
- * 
- * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
+ * @note       Combines rook and bishop moves but only 1 square
+ *
+ * @see        virtual Piece::isPossibleMove(int dest, Chess &chess)
+ *
+ * @brief      Determines if possible move.
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     True if possible move, False otherwise.
  */
 bool King::isPossibleMove(int dest, Chess &chess)
 {
@@ -1155,7 +1160,14 @@ bool King::isPossibleMove(int dest, Chess &chess)
 }
 
  /**
-  * \see virtual Piece::canCastle(int dest, Chess &chess)
+  * @see        virtual Piece::canCastle(int dest, Chess &chess)
+  *
+  * @brief      Determines ability to castle.
+  *
+  * @param[in]  dest   The destination
+  * @param      chess  The chess
+  *
+  * @return     True if able to castle, False otherwise.
   */
 bool King::canCastle(int dest, Chess &chess)
 {
@@ -1183,7 +1195,14 @@ bool King::canCastle(int dest, Chess &chess)
 }
 
 /**
- * \see virtual Piece::movedIntoCheck(int dest, Chess &chess)
+ * @see        virtual Piece::movedIntoCheck(int dest, Chess &chess)
+ *
+ * @brief      { function_description }
+ *
+ * @param[in]  dest   The destination
+ * @param      chess  The chess
+ *
+ * @return     { description_of_the_return_value }
  */
 bool King::movedIntoCheck(int dest, Chess &chess)
 {
@@ -1199,14 +1218,16 @@ bool King::movedIntoCheck(int dest, Chess &chess)
         sign = elem->isPieceWhite() ? 1 : -1;
 
         // change the color of the attacking piece so that if it is supported,
-        // one can check if the supporting piece can move into that square (in which case
-        // the king cannot capture the attacker)
+        // one can check if the supporting piece can move into that square (in
+        // which case the king cannot capture the attacker)
         board[dest]->setPieceColor(NEUTRAL);
 
-        // pawn can only attack sideways, but the board isn't updated yet so it will always be invalid move
-        // checking dest-increment and increment since if a piece is only 1 square away dest-increment gives src=dest.
-        // However, since move isn't made it is possible that a piece of same color causes isPossibleMove(dest, chess)
-        // to be false, see 48-scholarMate.txt
+        // pawn can only attack sideways, but the board isn't updated yet so it
+        // will always be invalid move checking dest-increment and increment
+        // since if a piece is only 1 square away dest-increment gives src=dest.
+        // However, since move isn't made it is possible that a piece of same
+        // color causes isPossibleMove(dest, chess) to be false, see
+        // 48-scholarMate.txt
         if( !elem->isEmpty() && !isSameColor(src, chess) && 
             ( ( !elem->isPawn() && elem->isPossibleMove(dest, chess) ) ||
               ( elem->isPawn() && (sign*(src - dest) == 9 || sign*(src - dest) == 7) ) ))
@@ -1226,16 +1247,16 @@ bool King::movedIntoCheck(int dest, Chess &chess)
 namespace
 {
     /**
-     * @brief      Determines if a destination square is in the pinning path
-     *             as sometimes you can simply move the pinned piece closer to the 
+     * @brief      Determines if a destination square is in the pinning path as
+     *             sometimes you can simply move the pinned piece closer to the
      *             pinning piece.
      *
      * @param[in]  src   The source square of pinned piece
      * @param[in]  dest  The destination square of pinned piece
      * @param[in]  pin   Source square of pinning piece
      *
-     * @return     Allows the move (returns false) if piece can move closer to pinning
-     *             piece, else move is invalid (returns true)
+     * @return     Allows the move (returns false) if piece can move closer to
+     *             pinning piece, else move is invalid (returns true)
      */
     bool destNotInPinPath(int src, int dest, int pin)
     {
@@ -1246,10 +1267,11 @@ namespace
     }
 
     /**
-     * @brief      Determines if the source and destination squares are in the same column
+     * @brief      Determines if the source and destination squares are in the
+     *             same column
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
      * @return     True if the source and destination are in the same column,
      *             else False.
@@ -1260,13 +1282,14 @@ namespace
     }
 
     /**
-     * @brief      Determines if the source and destination squares are in the same row
+     * @brief      Determines if the source and destination squares are in the
+     *             same row
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
-     * @return     True if the source and destination are in the same row,
-     *             else False.
+     * @return     True if the source and destination are in the same row, else
+     *             False.
      */
     bool sameRow(int src, int dest)
     {
@@ -1274,10 +1297,11 @@ namespace
     }
 
     /**
-     * @brief      Determines if the source and destination squares are in the same diagonal
+     * @brief      Determines if the source and destination squares are in the
+     *             same diagonal
      *
      * @param[in]  src   The source square of piece
-     * @param[in]  dest  The destination square of piece 
+     * @param[in]  dest  The destination square of piece
      *
      * @return     True if the source and destination are in the same diagonal,
      *             else False.
@@ -1294,9 +1318,9 @@ namespace
      * @param[in]  dest   The destination square of pinning piece
      * @param      chess  The chess object is created
      *
-     * @return     If only 1 piece is in the path from 'src' to 'dest', return its coordinates
-     *             else, return -1 to indicate that there is either no piece or multiple
-     *             pieces in the path.
+     * @return     If only 1 piece is in the path from 'src' to 'dest', return
+     *             its coordinates else, return -1 to indicate that there is
+     *             either no piece or multiple pieces in the path.
      */
     int squareOfPieceInPath(int src, int dest, Chess &chess)
     {
@@ -1304,8 +1328,8 @@ namespace
         vector<Piece*> board = chess.getBoard();
         vector<int> pieces_in_path;
 
-        // determine the increment along the path from 'src' to 'dest'
-        // and store all non empty squares in 'pieces_in_path'
+        // determine the increment along the path from 'src' to 'dest' and store
+        // all non empty squares in 'pieces_in_path'
         increment = incrementChoice(src, dest);
         if(increment > 0)
         {
@@ -1319,14 +1343,16 @@ namespace
     }
 
     /**
-     * @brief      Used to determine the increment to use when moving a piece from 'src' to 'dest'.
+     * @brief      Used to determine the increment to use when moving a piece
+     *             from 'src' to 'dest'.
      *
      * @param[in]  src   The source square of piece
      * @param[in]  dest  The destination square of piece
      *
-     * @return     Returns either 1 if moving in same row, 7 if moving in diagonal to the right,
-     *             8 if moving in same column, 9 if moving in diagonal to the left. If move does 
-     *             not correspond to one of the pieces, returns 0.
+     * @return     Returns either 1 if moving in same row, 7 if moving in
+     *             diagonal to the right, 8 if moving in same column, 9 if
+     *             moving in diagonal to the left. If move does not correspond
+     *             to one of the pieces, returns 0.
      */
     int incrementChoice(int src, int dest)
     {
@@ -1345,10 +1371,11 @@ namespace
      *
      * @param[in]  src    The source square of pinning piece
      * @param      chess  The chess object is created
-     * @param[in]  enemy  True if king color differs from piece color, else false
+     * @param[in]  enemy  True if king color differs from piece color, else
+     *                    false
      *
-     * @return     Returns the coordinate position of the king, based on the current board
-     *             representation and color determined by 'enemy'.
+     * @return     Returns the coordinate position of the king, based on the
+     *             current board representation and color determined by 'enemy'.
      */
     int findKingPos(int src, Chess &chess, bool enemy)
     {
@@ -1374,14 +1401,14 @@ namespace
 namespace chessCAMO
 {
     /**
-     * @brief      Iterates through the pieces on a current board representation to 
-     *             produce the board on the console screen
+     * @brief      Iterates through the pieces on a current board representation
+     *             to produce the board on the console screen
      *
      * @param[in]  board  The board representation
-     * 
-     * \post
-     * Each piece of the current board representation is printed to the
-     * screen using a corresponding letter inside a formatted board
+     *
+     * @post       Each piece of the current board representation is printed to
+     *             the screen using a corresponding letter inside a formatted
+     *             board
      */
     void printBoard(vector<Piece*> board)
     {
@@ -1438,17 +1465,16 @@ namespace chessCAMO
     }
 
     /**
-     * @brief      At any moment, the players can either continue, draw, or resign
+     * @brief      At any moment, the players can either continue, draw, or
+     *             resign
      *
      * @param      chess  The chess object is created
      * @param      in     Input stream is selected (stdin or file)
-     * 
-     * \pre
-     * None
-     * 
-     * \post
-     *  Depending on the users choice, the program either continues
-     * ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
+     *
+     * @pre        None
+     *
+     * @post       Depending on the users choice, the program either continues
+     *             ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
      */
     void drawOrResign(Chess &chess, istream &in)
     {
@@ -1528,17 +1554,16 @@ namespace chessCAMO
     }
 
     /**
-     * @brief      Prints the given message ('text') with a given 'color' to console
+     * @brief      Prints the given message ('text') with a given 'color' to
+     *             console
      *
      * @param[in]  text   The text message to be created
      * @param[in]  color  One of the defined values at the top of the file
-     * 
-     * \pre
-     * None
-     * 
-     * \post
-     * The message is printed to the screen with color chosen and then
-     * the color is changed back to default prior to return
+     *
+     * @pre        None
+     *
+     * @post       The message is printed to the screen with color chosen and
+     *             then the color is changed back to default prior to return
      */
     void printMessage(string text, int color)
     {
@@ -1557,9 +1582,15 @@ namespace chessCAMO
     
     void restoreObject(int num_moves, Chess & chess_object)
     {
-        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
-        ifstream in(filename);
-        in >> chess_object;
-        in.close();
+        // only undo if a move was made
+        if(chess_object.getNumMoves() >= 0)
+        {
+            string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
+            ifstream in(filename);
+            in >> chess_object;
+            in.close(); 
+        }
+        // if undo was asked multiple times after 0, set number of moves to 0 and do nothing
+        else { chess_object.setNumMoves(0); }
     }
 }
