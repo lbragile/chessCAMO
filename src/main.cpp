@@ -56,7 +56,7 @@ int main()
 
     // create the object dynamically to control when it is destroyed
     Chess chess;
-
+    
     // Create 8x8 default board
     chess.boardInit();
 

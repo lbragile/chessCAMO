@@ -113,8 +113,11 @@ int main()
                 {
                     if(e.key.code == sf::Keyboard::U)  // && board_positions.size() > 1
                     {
-                        // undo the move
-                        chess.popInfo();
+                        // decrement move counter by 1 since an illegal move was made 
+                        chess.setNumMoves(chess.getNumMoves()-1);
+
+                        // restore previous object
+                        chessCAMO::restoreObject(chess.getNumMoves(), chess);
 
                         drawPieces(pieces, pieceType, chess.getBoard());
                     }

@@ -111,22 +111,6 @@ enum pieceColor
 
 // forward declaration
 class Piece;
-class Chess; 
-
-struct GameInfo
-{
-    /** A stack that keeps the chess board representation with the pieces in correct spots,
-     * each layers corresponds to a move made on the board.
-     */
-    stack<vector<Piece*>> board;
-
-    /** Stores the pieces involved in a checking scenario */   
-    stack<vector<Piece*>> check_pieces; 
-
-    stack<vector<bool>> flags;
-
-    stack<pieceColor> turn;
-};
 
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
@@ -145,13 +129,13 @@ public:
      * \note
      * Intentionally left blank.
      */
-    Chess();
+    Chess() : flags(4), turn{WHITE}, num_moves{0} {}
 
     /*********************************** BIG THREE *********************************/
     /**
      * @brief      Destructor - destroys the objects.
      */
-    ~Chess();
+    ~Chess() = default;
 
     /**
      * @brief      Copy constructor - Constructs a new instance and copies the calling object's values to it.
@@ -163,7 +147,7 @@ public:
      * Otherwise, since the vector<Piece*> contains pointers, any updates to the position will be reflected 
      * in each layer.
      */
-    Chess(const Chess &object);
+    Chess(const Chess &object) = default;
 
     /**
      * @brief      Copy Assignment operator - assigns values of one object to another existing object
@@ -174,133 +158,111 @@ public:
      * 
      * \note Default
      */
-    Chess & operator =(const Chess & object);
+    Chess & operator =(const Chess & object) = default;
     /************************************* END *************************************/
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
-    GameInfo* getGameInfo() const {return game_info;}
-
-    void setGameInfo(GameInfo *info) {game_info = info;}
-
-    /**
-     * @brief      (Mutator) Pops a board representation from the board representation stack.
-     * 
-     * \pre
-     * A move must have been made beyond initial position
-     * 
-     * \post
-     * Each stack in the game_info struct is reduced by 1 layer
-     */
-    void popInfo();
-
-    /**
-     * @brief      (Mutator) Pushes a board representation onto the stack.
-     * 
-     * \pre
-     * The game_info struct was allocated memory (is pointing at something)
-     * 
-     * \post
-     * Each stack in the game_info struct is increased by 1 layer
-     */
-    void pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn);
-    
     /**
      * @brief      (Accessor) Gets the board representation at the top of the board positions stack.
      *
      * @return     The board with current piece positions in correct indicies.
      */
-    vector<Piece*> getBoard() const {return game_info->board.top();}
+    vector<Piece*> getBoard() const {return board;}
 
     /**
      * @brief      (Mutator) Updates the board representation at the top of the board positions stack.
      *
      * @param[in]  board  The current board representation
      */
-    void setBoard(const vector<Piece*> & board) {game_info->board.top() = board;}
+    void setBoard(const vector<Piece*> & board) {this->board = board;}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
      *
      * @return     The check stack after any given move.
      */
-    vector<Piece*> getCheckPieces() const {return game_info->check_pieces.top();}
+    vector<Piece*> getCheckPieces() const {return check_pieces;}
 
     /**
      * @brief      (Mutator) Sets the check stack information.
      *
      * @param[in]  check_stack  The check stack which contains the board representations after each move
      */
-    void setCheckPieces(vector<Piece*> check_pieces) {game_info->check_pieces.top() = check_pieces;}
+    void setCheckPieces(vector<Piece*> check_pieces) {this->check_pieces = check_pieces;}
 
     /**
      * @brief      (Accessor) Gets the check information.
      *
      * @return     True if board representation has a check, False otherwise.
      */
-    bool getCheck() const {return game_info->flags.top()[0];}
+    bool getCheck() const {return flags[0];}
 
     /**
      * @brief      (Mutator) Sets the check information.
      *
      * @param[in]  check  The check flag
      */
-    void setCheck(bool check) {game_info->flags.top()[0] = check;}
+    void setCheck(bool check) {flags[0] = check;}
 
     /**
      * @brief      (Accessor) Gets the double check information.
      *
      * @return     True if board representation has a double check, False otherwise.
      */
-    bool getDoubleCheck() const {return game_info->flags.top()[1];}
+    bool getDoubleCheck() const {return flags[1];}
 
     /**
      * @brief      (Mutator) Sets the double check information.
      *
      * @param[in]  double_check  The double check flag
      */
-    void setDoubleCheck(bool double_check) {game_info->flags.top()[1] = double_check;}
+    void setDoubleCheck(bool double_check) {flags[1] = double_check;}
 
     /**
      * @brief      (Accessor) Gets the checkmate information.
      *
      * @return     True if board representation has a checkmate, False otherwise.
      */
-    bool getCheckmate() const {return game_info->flags.top()[2];}
+    bool getCheckmate() const {return flags[2];}
 
     /**
      * @brief      (Mutator) Sets the checkmate information.
      *
      * @param[in]  checkmate  The checkmate flag
      */
-    void setCheckmate(bool checkmate) {game_info->flags.top()[2] = checkmate;}
+    void setCheckmate(bool checkmate) {flags[2] = checkmate;}
 
     /**
      * @brief      (Accessor) Gets the stalemate information.
      *
      * @return     True if board representation has a stalemate, False otherwise.
      */
-    bool getStalemate() const {return game_info->flags.top()[3];}
+    bool getStalemate() const {return flags[3];}
 
     /**
      * @brief      (Mutator) Sets the stalemate information.
      *
      * @param[in]  stalemate  The stalemate flag
      */
-    void setStalemate(bool stalemate) {game_info->flags.top()[3] = stalemate;}
+    void setStalemate(bool stalemate) {flags[3] = stalemate;}
 
     /**
      * @brief      (Accessor) Gets the player's turn information.
      *
      * @return     The turn at any given moment (either white's or black's).
      */
-    pieceColor getTurn() const {return game_info->turn.top();}
+    pieceColor getTurn() const {return turn;}
 
     /**
      * @brief      (Mutator) Sets the player's turn information.
      *
      * @param[in]  turn  The turn
      */
-    void setTurn(pieceColor turn) {game_info->turn.top() = turn;}
+    void setTurn(pieceColor turn) {this->turn = turn;}
+
+    int getNumMoves() { return num_moves;}
+
+    void setNumMoves(int num_moves) {this->num_moves = num_moves;}
     /************************************* END *************************************/
 
     /**
@@ -362,8 +324,16 @@ public:
      */
     bool isStalemate();
     
+
+    friend ostream & operator << (ostream &out, const Chess &chess_object);
+    friend istream & operator >> (istream &in, Chess &chess_object);
+
 private:
-    GameInfo *game_info;           
+    vector<Piece*> board;
+    vector<Piece*> check_pieces;
+    vector<bool> flags;
+    pieceColor turn;
+    int num_moves;          
 
 	/*************************************************************************************/
 	/*                              PIECE CLASS - HELPER FUNCTIONS                       */
@@ -1246,6 +1216,9 @@ namespace chessCAMO
      * the color is changed back to default prior to return
      */
     void printMessage(string text, int color);
+
+    void saveObject(int num_moves, const Chess & chess_object);
+    void restoreObject(int num_moves, Chess & chess_object);
 } // end namespace chessCAMO
 
 #endif // CHESS_H

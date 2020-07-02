@@ -33,6 +33,67 @@
 using namespace std;
 using namespace chessCAMO; 
 
+ostream & operator << (ostream &out, const Chess &chess_object)
+{
+    for(const auto & elem : chess_object.getBoard())
+        out << elem->getPieceSquare() << endl << elem->getPieceType() << endl << elem->getPieceColor() << endl
+            << elem->getPieceMoveInfo() << endl << elem->getEnPassantLeft() << endl << elem->getEnPassantRight() << endl;
+
+    for(const auto & elem : chess_object.getCheckPieces())
+        out << elem->getPieceSquare() << endl << elem->getPieceType() << endl << elem->getPieceColor() << endl;
+
+    out << chess_object.getCheck() << endl << chess_object.getDoubleCheck() << endl << chess_object.getCheckmate() << endl << chess_object.getStalemate() << endl;
+
+    out << chess_object.getTurn() << endl;
+
+    return out;
+}
+
+istream & operator >> (istream &in, Chess &chess_object)
+{
+    string input;
+    for(const auto & elem : chess_object.getBoard())
+    {
+        in >> input;
+        elem->setPieceSquare(stoi(input));
+        in >> input;
+        elem->setPieceType((pieceType) (input[0] - '0'));
+        in >> input;
+        elem->setPieceColor((pieceColor) (input[0] - '0'));
+        in >> input;
+        elem->setPieceMoveInfo(input == "1");
+        in >> input;
+        elem->setEnPassantLeft(input == "1");
+        in >> input;
+        elem->setEnPassantRight(input == "1");
+    }
+
+    for(const auto & elem : chess_object.getCheckPieces())
+    {
+        in >> input;
+        elem->setPieceSquare(stoi(input));
+        in >> input;
+        elem->setPieceType((pieceType) (input[0] - '0'));
+        in >> input;
+        elem->setPieceColor((pieceColor) (input[0] - '0'));
+    }
+
+    in >> input;
+    chess_object.setCheck(input == "1");
+    in >> input;
+    chess_object.setDoubleCheck(input == "1");
+    in >> input;
+    chess_object.setCheckmate(input == "1");
+    in >> input;
+    chess_object.setStalemate(input == "1");
+
+    in >> input;
+    chess_object.setTurn((pieceColor) (input[0] - '0'));
+
+    return in;
+}
+
+
 /*************************************************************************************/
 /*                              LOCAL FUNCTIONS / OBJECTS                            */
 /*************************************************************************************/
@@ -132,179 +193,6 @@ namespace
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
 /**
- * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
- *             
- * \note
- * Intentionally left blank.
- */
-Chess::Chess() 
-{
-    vector<Piece*> temp_board(64);
-    vector<Piece*> temp_check(2);
-    vector<bool> temp_flags(4);
-
-    game_info = new GameInfo;
-
-    pushInfo(temp_board, temp_check, temp_flags, WHITE);
-}
-
-/**
- * @brief      Destructor - destroys the objects.
- */
-Chess::~Chess()
-{
-    // delete only those elements that allocated memory dynamically (using 'new')
-    while(!game_info->board.empty())
-    {
-        game_info->board.pop();
-        game_info->check_pieces.pop();
-    }
-
-    delete game_info;
-}
-
-/**
- * @brief      Copy constructor - Constructs a new instance and copies the calling object's values to it.
- * 
- * @param[in]  object  The object whose values will be copied
- * 
- * \note
- * This is needed to be able to stack different board representations in the board positions stack.
- * Otherwise, since the vector<Piece*> contains pointers, any updates to the position will be reflected 
- * in each layer.
- */
-Chess::Chess(const Chess &chess_object)
-{
-    vector<Piece*> temp_board(64);
-    vector<Piece*> temp_check(2);
-    vector<bool> temp_flags(4);
-
-    game_info = new GameInfo;
-    pushInfo(temp_board, temp_check, temp_flags, WHITE);
-
-    *this = chess_object;
-}
-
-Chess & Chess::operator =(const Chess & object)
-{
-    vector<Piece*> temp_board = object.getBoard();
-    vector<Piece*> board = getBoard();
-
-    for(unsigned int i = 0; i < temp_board.size(); i++)
-    {
-        switch(temp_board[i]->getPieceType())
-        {
-            case PAWN:
-                board[i] = new Pawn(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            case KNIGHT:
-                board[i] = new Knight(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            case BISHOP:
-                board[i] = new Bishop(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            case ROOK:
-                board[i] = new Rook(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            case QUEEN:
-                board[i] = new Queen(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            case KING:
-                board[i] = new King(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-                break;
-            default:
-                board[i] = new Empty(temp_board[i]->getPieceSquare(), temp_board[i]->getPieceType(), temp_board[i]->getPieceColor());
-        }
-
-        board[i]->setPieceMoveInfo(temp_board[i]->getPieceMoveInfo());
-        board[i]->setEnPassantLeft(temp_board[i]->getEnPassantLeft());
-        board[i]->setEnPassantRight(temp_board[i]->getEnPassantRight());
-    }
-
-    vector<Piece*> temp_check_pieces = object.getCheckPieces();
-    vector<Piece*> check_pieces = getCheckPieces();
-
-    // check pieces don't get set until a check occurs
-    if(check_pieces[0] != nullptr)
-    {
-        for(unsigned int i = 0; i < temp_check_pieces.size(); i++)
-        {
-            switch(temp_check_pieces[i]->getPieceType())
-            {
-                case PAWN:
-                    check_pieces[i] = new Pawn(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
-                    break;
-                case KNIGHT:
-                    check_pieces[i] = new Knight(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
-                    break;
-                case BISHOP:
-                    check_pieces[i] = new Bishop(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
-                    break;
-                case ROOK:
-                    check_pieces[i] = new Rook(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
-                    break;
-                default:
-                    check_pieces[i] = new Queen(temp_check_pieces[i]->getPieceSquare(), temp_check_pieces[i]->getPieceType(), temp_check_pieces[i]->getPieceColor());
-            }
-        }
-    }
-
-    setBoard(board);
-    setCheckPieces(check_pieces);
-    setCheck(object.getCheck());
-    setDoubleCheck(object.getDoubleCheck());
-    setCheckmate(object.getCheckmate());
-    setStalemate(object.getStalemate());
-    setTurn(object.getTurn());
-
-    cout << getCheck() << " " << getDoubleCheck() << " " << getCheckmate() << " " << getStalemate() << endl;
-    return *this;
-}
-
-/**
- * @brief      (Mutator) Pops a board representation from the board representation stack.
- * 
- * \pre
- * A move must have been made beyond initial position
- * 
- * \post
- * Each stack in the game_info struct is reduced by 1 layer
- */
-void Chess::popInfo()
-{
-    // only pop if a move was made
-    if(game_info->board.size() > 1)
-    {
-        game_info->board.pop();
-        game_info->check_pieces.pop();
-        game_info->flags.pop();
-        game_info->turn.pop();
-    }
-    else {return ;} // do nothing
-}
-
-/**
- * @brief      (Mutator) Pushes a board representation onto the stack.
- * 
- * \pre
- * The game_info struct was allocated memory (is pointing at something)
- * 
- * \post
- * Each stack in the game_info struct is increased by 1 layer
- */
-void Chess::pushInfo(const vector<Piece*> & board, const vector<Piece*> & check_pieces, const vector<bool> & flags, pieceColor turn)
-{
-    if(game_info != nullptr)
-    {
-        game_info->board.push(board);
-        game_info->check_pieces.push(check_pieces);
-        game_info->flags.push(flags);
-        game_info->turn.push(turn);
-    }
-    else {return ;} // do nothing
-}
-
-/**
  * @brief      Places the pieces on the board at their correct starting positions
  *
  * \pre
@@ -369,6 +257,8 @@ void Chess::boardInit()
     chessCAMO::printBoard(getBoard());
     cout << "___________________________________________________" << endl;
     chessCAMO::printMessage("\n            White's move\n", CYAN);
+
+    chessCAMO::saveObject(getNumMoves(), *this);
 }
 
 
@@ -391,22 +281,12 @@ void Chess::boardInit()
  */
 void Chess::makeMove(int src, int dest, istream &in)
 {    
-    // create the new board representation which is completely separated from the previous one
-    // note that this is local to the function scope and will be deleted at function end (stack, rather than heap)
-    Chess temp_chess(*this); 
-
     vector<Piece*> board = getBoard(); 
     vector<Piece*> check_pieces = getCheckPieces();
     Piece *king, *piece;
 
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
-        // update the "global" chess object (avoids duplicates if illegal move was made)
-        pushInfo( temp_chess.getBoard(), 
-                  temp_chess.getCheckPieces(),
-                  {temp_chess.getCheck(), temp_chess.getDoubleCheck(), temp_chess.getCheckmate(), temp_chess.getStalemate()},
-                  temp_chess.getTurn() );
-
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);
 
@@ -421,7 +301,11 @@ void Chess::makeMove(int src, int dest, istream &in)
                 // if the move failed, undo the board representation and do not set check_pieces               
                 if(needUndoMove(king, elem, "double"))
                 {
-                    popInfo();
+                    // decrement move counter by 1 since an illegal move was made 
+                    setNumMoves(getNumMoves()-1);
+
+                    // restore previous object
+                    chessCAMO::restoreObject(getNumMoves(), *this);
                     return;
                 }
             }
@@ -441,7 +325,11 @@ void Chess::makeMove(int src, int dest, istream &in)
             // if the move failed, undo the board representation and do not set check_pieces               
             if(needUndoMove(king, piece, "single"))
             {
-                popInfo();
+                // decrement move counter by 1 since an illegal move was made 
+                setNumMoves(getNumMoves()-1);
+
+                // restore previous object
+                chessCAMO::restoreObject(getNumMoves(), *this);
                 return;
             }
 
@@ -471,6 +359,12 @@ void Chess::makeMove(int src, int dest, istream &in)
 
         // after a move was made and all the above checks passed, can finally change the turn
         handleChangeTurn();
+
+        // increment move counter by 1 since a move was made 
+        setNumMoves(getNumMoves()+1);
+
+        // save the object in the corresponding file
+        chessCAMO::saveObject(getNumMoves(), *this);
     }
     else
     {
@@ -1548,8 +1442,12 @@ namespace chessCAMO
         }
         else if(std::tolower(user_input) == 'u')
         {
-            // undo the move
-            chess.popInfo();
+            // decrement move counter by 1 since an illegal move was made 
+            chess.setNumMoves(chess.getNumMoves()-1);
+            cout << chess.getNumMoves() << endl;
+
+            // restore previous object
+            chessCAMO::restoreObject(chess.getNumMoves(), chess);
 
             // re-print board and display move information
             cout << "___________________________________________________" << endl;
@@ -1584,5 +1482,21 @@ namespace chessCAMO
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
         cout << text;
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
+    }
+
+    void saveObject(int num_moves, const Chess & chess_object)
+    {
+        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        ofstream out(filename, ios::trunc);
+        out << chess_object;
+        out.close();
+    }
+    
+    void restoreObject(int num_moves, Chess & chess_object)
+    {
+        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        ifstream in(filename);
+        in >> chess_object;
+        in.close();
     }
 }
