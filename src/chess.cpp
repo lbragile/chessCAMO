@@ -36,7 +36,7 @@ using namespace chessCAMO;
 ostream & operator << (ostream &out, const Chess &chess_object)
 {
     for(const auto & elem : chess_object.getBoard())
-        out << elem->getPieceSquare() << endl << elem->getPieceType() << endl << elem->getPieceColor() << endl
+        out << elem->getPieceType() << endl << elem->getPieceSquare() << endl << elem->getPieceColor() << endl
             << elem->getPieceMoveInfo() << endl << elem->getEnPassantLeft() << endl << elem->getEnPassantRight() << endl;
 
     for(const auto & elem : chess_object.getCheckPieces())
@@ -51,13 +51,39 @@ ostream & operator << (ostream &out, const Chess &chess_object)
 
 istream & operator >> (istream &in, Chess &chess_object)
 {
+    vector<Piece*> board(64);
+    vector<Piece*> check_pieces(2);
+
     string input;
-    for(const auto & elem : chess_object.getBoard())
+    for(auto & elem : board)
     {
         in >> input;
-        elem->setPieceSquare(stoi(input));
+        switch(input[0] - '0')
+        {
+            case 0:
+                elem = new Pawn(0, PAWN, NEUTRAL);
+                break;
+            case 1:
+                elem = new Knight(0, KNIGHT, NEUTRAL);
+                break;
+            case 2:
+                elem = new Bishop(0, BISHOP, NEUTRAL);
+                break;
+            case 3:
+                elem = new Rook(0, ROOK, NEUTRAL);
+                break;
+            case 4:
+                elem = new Queen(0, QUEEN, NEUTRAL);
+                break;
+            case 5:
+                elem = new King(0, KING, NEUTRAL);
+                break;
+            default:
+                elem = new Empty(0, EMPTY, NEUTRAL);    
+        }
+
         in >> input;
-        elem->setPieceType((pieceType) (input[0] - '0'));
+        elem->setPieceSquare(stoi(input));
         in >> input;
         elem->setPieceColor((pieceColor) (input[0] - '0'));
         in >> input;
@@ -68,15 +94,36 @@ istream & operator >> (istream &in, Chess &chess_object)
         elem->setEnPassantRight(input == "1");
     }
 
-    for(const auto & elem : chess_object.getCheckPieces())
+    chess_object.setBoard(board);
+
+    for(auto & elem : check_pieces)
     {
+        in >> input;
+        switch(input[0] - '0')
+        {
+            case 0:
+                elem = new Pawn(0, PAWN, NEUTRAL);
+                break;
+            case 1:
+                elem = new Knight(0, KNIGHT, NEUTRAL);
+                break;
+            case 2:
+                elem = new Bishop(0, BISHOP, NEUTRAL);
+                break;
+            case 3:
+                elem = new Rook(0, ROOK, NEUTRAL);
+                break;
+            default:
+                elem = new Queen(0, QUEEN, NEUTRAL);  
+        }
+
         in >> input;
         elem->setPieceSquare(stoi(input));
         in >> input;
-        elem->setPieceType((pieceType) (input[0] - '0'));
-        in >> input;
         elem->setPieceColor((pieceColor) (input[0] - '0'));
     }
+
+    chess_object.setCheckPieces(check_pieces);
 
     in >> input;
     chess_object.setCheck(input == "1");
@@ -192,6 +239,7 @@ namespace
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+
 /**
  * @brief      Places the pieces on the board at their correct starting positions
  *
@@ -205,8 +253,6 @@ namespace
  */  
 void Chess::boardInit()
 {
-    vector<Piece*> board(64);
-
     // initialize the board
     for(unsigned int i = 0; i < board.size(); i++)
     {
@@ -249,8 +295,8 @@ void Chess::boardInit()
         }
     }
 
-    // add this board representation to the board positions stack
-    setBoard(board);
+    check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
+    check_pieces[1] = new Empty(0, EMPTY, NEUTRAL);
 
     // printing the board and letting user know whose turn it is
     // white always starts first in chess!
@@ -260,7 +306,6 @@ void Chess::boardInit()
 
     chessCAMO::saveObject(getNumMoves(), *this);
 }
-
 
 /**
  * @brief      Moves a piece on the board from 'src' to 'dest' if conditions
@@ -287,6 +332,14 @@ void Chess::makeMove(int src, int dest, istream &in)
 
     if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
+        // delete the allocated memory and restore new data
+        for(unsigned int i = 0; i < board.size(); i++)
+            delete board[i];
+        board.clear();
+        setBoard(board);
+
+        chessCAMO::restoreObject(getNumMoves(), *this);
+
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);
 
@@ -301,9 +354,6 @@ void Chess::makeMove(int src, int dest, istream &in)
                 // if the move failed, undo the board representation and do not set check_pieces               
                 if(needUndoMove(king, elem, "double"))
                 {
-                    // decrement move counter by 1 since an illegal move was made 
-                    setNumMoves(getNumMoves()-1);
-
                     // restore previous object
                     chessCAMO::restoreObject(getNumMoves(), *this);
                     return;
@@ -325,9 +375,6 @@ void Chess::makeMove(int src, int dest, istream &in)
             // if the move failed, undo the board representation and do not set check_pieces               
             if(needUndoMove(king, piece, "single"))
             {
-                // decrement move counter by 1 since an illegal move was made 
-                setNumMoves(getNumMoves()-1);
-
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
                 return;
@@ -492,9 +539,15 @@ void Chess::makeMoveForType(int src, int dest)
 
         // delete the pawn that caused en-passant (make it an empty square)
         if(std::abs(src-dest) == 7)
-            *board[src+sign] = Empty(src+sign, EMPTY, NEUTRAL);
+        {
+            delete board[src+sign];
+            board[src+sign] = new Empty(src+sign, EMPTY, NEUTRAL);
+        }
         else // std::abs(src-dest) == 9
-            *board[src-sign] = Empty(src-sign, EMPTY, NEUTRAL);
+        {
+            delete board[src-sign];
+            board[src-sign] = new Empty(src-sign, EMPTY, NEUTRAL);
+        }
 
         // after the violating pawn is removed, can make the move
         pieceSwap(src, dest, board);
@@ -511,7 +564,10 @@ void Chess::makeMoveForType(int src, int dest)
 
         // Attacking Move
         if(!board[dest]->isEmpty())
-            *board[src] = Empty(src, EMPTY, NEUTRAL);
+        {
+            delete board[src];
+            board[src] = new Empty(src, EMPTY, NEUTRAL);
+        }
     }
 
     setBoard(board);
@@ -833,21 +889,16 @@ bool Piece::causeCheck(int dest, Chess &chess)
     vector<Piece*> check_pieces = chess.getCheckPieces();
     vector<Piece*> board = chess.getBoard();
     
-    // was already in check before the move
-    if(!chess.getCheckPieces().empty()) { return false; }
-    else
-    {
-        int king_pos = findKingPos(dest, chess, true); // opposite color king position
+    int king_pos = findKingPos(dest, chess, true); // opposite color king position
 
-        if(board[dest]->isPathFree(king_pos, chess) && board[dest]->isPossibleMove(king_pos, chess))
-        {
-            // push the king and checking piece onto the stack and set the corresponding 
-            // object variables (checkStack and setCheck)
-            check_pieces.push_back(board[dest]);
-            check_pieces.push_back(board[king_pos]);
-            chess.setCheckPieces(check_pieces);
-            chess.setCheck(true);
-        }
+    if(board[dest]->isPathFree(king_pos, chess) && board[dest]->isPossibleMove(king_pos, chess))
+    {
+        // push the king and checking piece onto the stack and set the corresponding 
+        // object variables (checkStack and setCheck)
+        check_pieces[0] = board[dest];
+        check_pieces[1] = board[king_pos];
+        chess.setCheckPieces(check_pieces);
+        chess.setCheck(true);
     } 
 
     return chess.getCheck();
@@ -871,8 +922,8 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
     vector<Piece*> check_pieces = chess.getCheckPieces();
 
     king_pos = findKingPos(dest, chess, true); // opposite color king position
-    check_pieces.push_back(board[king_pos]); // make the king last in the stack
-    check_pieces.push_back(board[king_pos]); // match size of single check vector (push king again)
+    check_pieces[0] = board[king_pos]; // make the king last in the stack
+    check_pieces[0] = board[king_pos]; // match size of single check vector (push king again)
 
     // how many pieces are checking the king
     for(const auto & elem : board)
@@ -977,22 +1028,22 @@ void Pawn::promotePawn(Chess &chess, istream &in)
         
         if(piece == 'Q' || piece == 'q')
         {
-            *board[dest] = white_turn ? Queen(dest, QUEEN, WHITE) : Queen(dest, QUEEN, BLACK);
+            board[dest] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
         else if(piece == 'R' || piece == 'r')
         {
-            *board[dest] = white_turn ? Rook(dest, ROOK, WHITE) : Rook(dest, ROOK, BLACK);
+            board[dest] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
         else if(piece == 'B' || piece == 'b')
         {
-            *board[dest] = white_turn ? Bishop(dest, BISHOP, WHITE) : Bishop(dest, BISHOP, BLACK);
+            board[dest] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
         else if(piece == 'N' || piece == 'n')
         {
-            *board[dest] = white_turn ? Knight(dest, KNIGHT, WHITE) : Knight(dest, KNIGHT, BLACK);
+            board[dest] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
             break;
         }
         else
