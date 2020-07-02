@@ -312,19 +312,16 @@ void Chess::makeMove(int src, int dest, istream &in)
 
         // when in double check you must move the king
         if(getDoubleCheck())
-        {      
-            for(auto & elem : board)
-            {    
-                // if the move failed, undo the board representation and do not set check_pieces               
-                if(needUndoMove(check_pieces[1], elem, "double"))
-                {
-                    // restore previous object
-                    chessCAMO::restoreObject(getNumMoves(), *this);
+        {          
+            // if the move failed, undo the board representation and do not set check_pieces               
+            if(!board[src]->isKing() || doubleCheckPieceIterator(check_pieces[1]))
+            {
+                // restore previous object
+                chessCAMO::restoreObject(getNumMoves(), *this);
 
-                    chessCAMO::printBoard(getBoard());
-                    chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
-                    return;
-                }
+                chessCAMO::printBoard(getBoard());
+                chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
+                return;
             }
 
             // if here, did not return so set the appropriate member variables
@@ -335,7 +332,7 @@ void Chess::makeMove(int src, int dest, istream &in)
         else if(getCheck())
         {
             // if the move failed, undo the board representation and do not set check_pieces               
-            if(needUndoMove(check_pieces[1], check_pieces[0], "single"))
+            if(needUndoMove(check_pieces[1], check_pieces[0]))
             {
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
@@ -611,7 +608,6 @@ void Chess::handleStalemate()
  *
  * @param      king        The king that is being attacked currently
  * @param      piece       The piece that is attacking the king currently
- * @param[in]  check_type  The check type (single or double)
  *
  * @pre        The chess object is created. A move was made.
  *
@@ -622,7 +618,7 @@ void Chess::handleStalemate()
  *             the move. Else, False and continue the game without undoing the
  *             move.
  */
-bool Chess::needUndoMove(Piece *king, Piece *piece, string check_type)
+bool Chess::needUndoMove(Piece *king, Piece *piece)
 {
     // move was already made, so check if the piece can still attack the king
     // while making sure that the king did not move to the piece (its square
@@ -900,8 +896,10 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
     {
         delete check_pieces[0];
         delete check_pieces[1];
-        check_pieces[0] = new King(king_pos, KING, board[king_pos]->getPieceColor()); // make the king last in the stack
-        check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor()); // match size of single check vector (push king again)
+
+        // make the king last in the vector with both pieces being identical
+        check_pieces[0] = new King(king_pos, KING, board[king_pos]->getPieceColor()); 
+        check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor()); 
 
         chess.setCheckPieces(check_pieces);
         chess.setDoubleCheck(true);

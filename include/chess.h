@@ -405,7 +405,6 @@ private:
      *
      * @param      king        The king that is being attacked currently
      * @param      piece       The piece that is attacking the king currently
-     * @param[in]  check_type  The check type (single or double)
      *
      * @pre        The chess object is created. A move was made.
      *
@@ -416,7 +415,7 @@ private:
      *             undo the move. Else, False and continue the game without
      *             undoing the move.
      */
-    bool needUndoMove(Piece *king, Piece *piece, string check_type);
+    bool needUndoMove(Piece *king, Piece *piece);
 
     /**
      * @brief      If in a single check, see if piece can defend the king,
