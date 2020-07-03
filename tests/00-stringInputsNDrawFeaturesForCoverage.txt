@@ -1,5 +1,9 @@
 rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq
 E2 E4
+u
+x x
+u
+E2 E4
 x
 d
 x

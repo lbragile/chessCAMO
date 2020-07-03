@@ -225,6 +225,28 @@ namespace
      *             current board representation and color determined by 'enemy'.
      */
     int findKingPos(int src, Chess &chess, bool enemy); 
+
+    /**
+     * @brief      Gets the path to the object_states folder.
+     *
+     * @param[in]  num_moves  The number of moves made on the board
+     *
+     * @return     The path to the object_states folder.
+     *
+     * @note       The return value depends on target of the global makefile
+     */
+    string getPath(int num_moves)
+    {
+        const unsigned long maxDir = 260;
+        char currentDir[maxDir];
+        GetCurrentDirectory(maxDir, currentDir);
+
+        if(string(currentDir).find("GUI") != string::npos)
+            return "object_states/move" + to_string(num_moves) + ".txt";
+        else
+            return "GUI/object_states/move" + to_string(num_moves) + ".txt";
+    }
+    
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
@@ -357,8 +379,12 @@ void Chess::makeMove(int src, int dest, istream &in)
                 chessCAMO::restoreObject(getNumMoves(), *this);
                 
                 chessCAMO::printBoard(getBoard());
-                getCheck() ? chessCAMO::printMessage("You are in check! Try again...\n", YELLOW)
-                           : chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
+
+                if(getCheck())
+                    chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
+                else
+                    chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
+
                 return;
             }
 
@@ -547,12 +573,9 @@ void Chess::makeMoveForType(int src, int dest)
         // Regular Move
         pieceSwap(src, dest, board);
 
-        // Attacking Move
-        if(!board[dest]->isEmpty())
-        {
-            delete board[src];
-            board[src] = new Empty(src, EMPTY, NEUTRAL);
-        }
+        // Both regular and attacking move
+        delete board[src];
+        board[src] = new Empty(src, EMPTY, NEUTRAL);
     }
 
     setBoard(board);
@@ -1609,13 +1632,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        const unsigned long maxDir = 260;
-        char currentDir[maxDir];
-        GetCurrentDirectory(maxDir, currentDir);
-
-        string filename = string(currentDir).find("GUI") != string::npos ?
-                          "object_states/move" + to_string(num_moves) + ".txt" :
-                          "GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = getPath(num_moves);
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1626,13 +1643,7 @@ namespace chessCAMO
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            const unsigned long maxDir = 260;
-            char currentDir[maxDir];
-            GetCurrentDirectory(maxDir, currentDir);
-        
-            string filename = string(currentDir).find("GUI") != string::npos ?
-                              "object_states/move" + to_string(num_moves) + ".txt" :
-                              "GUI/object_states/move" + to_string(num_moves) + ".txt";
+            string filename = getPath(num_moves);
             ifstream in(filename);
             in >> chess_object;
             in.close(); 
