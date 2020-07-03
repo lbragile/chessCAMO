@@ -324,40 +324,25 @@ void Chess::makeMove(int src, int dest, istream &in)
         // make the appropriate move from 'src' to 'dest'
         makeMoveForType(src, dest);
 
-        // when in double check you must move the king
-        if(getDoubleCheck())
-        {          
-            // if the move failed, undo the board representation and do not set check_pieces               
-            if(!board[src]->isKing() || doubleCheckPieceIterator(check_pieces[1]))
+        if(getDoubleCheck() || getCheck())
+        {    
+            // When in double check you must move the king. When in single check
+            // you have three choices: move the king, defend the path, attack
+            // the checking piece. If the move failed, undo the board
+            // representation and do not set check_pieces
+            if( ( getDoubleCheck() && ( !board[src]->isKing() || doubleCheckPieceIterator(check_pieces[1]) ) ) ||
+                ( getCheck() && needUndoMove(check_pieces[1], check_pieces[0]) ) )
             {
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
-
-                chessCAMO::printBoard(getBoard());
-                chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
-                return;
-            }
-
-            // if here, did not return so set the appropriate member variables
-            setDoubleCheck(false);
-            setCheck(false);
-        }
-
-        // when in single check you have three choices: move the king, defend the path, attack the checking piece
-        else if(getCheck())
-        {
-            // if the move failed, undo the board representation and do not set check_pieces               
-            if(needUndoMove(check_pieces[1], check_pieces[0]))
-            {
-                // restore previous object
-                chessCAMO::restoreObject(getNumMoves(), *this);
-
+                
                 chessCAMO::printBoard(getBoard());
                 chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
                 return;
             }
 
-            // if here, did not return so set the appropriate member variables
+            // did not return so set the appropriate member variables
+            setDoubleCheck(false);
             setCheck(false);
         }
 
