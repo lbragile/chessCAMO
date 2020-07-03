@@ -1577,7 +1577,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1588,7 +1588,7 @@ namespace chessCAMO
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
+            string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
             ifstream in(filename);
             in >> chess_object;
             in.close(); 
