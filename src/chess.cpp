@@ -587,7 +587,8 @@ void Chess::handleChangeTurn()
  */
 void Chess::handleCheckmate()
 {
-    string message = getTurn() == WHITE ? "\n      White won by Checkmate!\n\n" : "\n      Black won by Checkmate!\n\n";
+    string message = getTurn() == WHITE ? "\n      White won by Checkmate!\n\n"
+                                        : "\n      Black won by Checkmate!\n\n";
     chessCAMO::printMessage(message, CYAN);
     setCheckmate(true);
 }
@@ -600,7 +601,8 @@ void Chess::handleCheckmate()
  */
 void Chess::handleStalemate()
 {
-    string message = switchTurn() == WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n" : "\nBlack has no moves -> Game is Drawn!\n\n";
+    string message = switchTurn() == WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n"   
+                                           : "\nBlack has no moves -> Game is Drawn!\n\n";
     chessCAMO::printMessage(message, CYAN);
     setStalemate(true);
 }
@@ -1282,10 +1284,7 @@ namespace
      * @return     True if the source and destination are in the same column,
      *             else False.
      */
-    bool sameCol(int src, int dest)
-    {
-        return src % 8 == dest % 8;
-    }
+    bool sameCol(int src, int dest) { return src % 8 == dest % 8; }
 
     /**
      * @brief      Determines if the source and destination squares are in the
@@ -1297,10 +1296,7 @@ namespace
      * @return     True if the source and destination are in the same row, else
      *             False.
      */
-    bool sameRow(int src, int dest)
-    {
-        return src / 8 == dest / 8;
-    }
+    bool sameRow(int src, int dest) { return src / 8 == dest / 8; }
 
     /**
      * @brief      Determines if the source and destination squares are in the
@@ -1312,10 +1308,7 @@ namespace
      * @return     True if the source and destination are in the same diagonal,
      *             else False.
      */
-    bool sameDiag(int src, int dest)
-    {
-        return std::abs(src/8 - dest/8) == std::abs(src%8 - dest%8); 
-    }
+    bool sameDiag(int src, int dest) { return std::abs(src/8 - dest/8) == std::abs(src%8 - dest%8); }
 
     /**
      * @brief      Used to determine the coordinate of a pinned piece.
@@ -1457,9 +1450,9 @@ namespace chessCAMO
                     piece_char = ' ';
             }
 
-            if(!islower(piece_char)) // WHITE
+            if(!islower(piece_char))    // WHITE
                 chessCAMO::printMessage(string(1, piece_char) + " ", GREEN);
-            else // BLACK
+            else                        // BLACK
                 chessCAMO::printMessage(string(1, piece_char) + " ", RED);
             
             cout << "| ";
@@ -1495,7 +1488,8 @@ namespace chessCAMO
         in.ignore(100, '\n'); // ignore rest of the previous input (if invalid input was entered)
 
         // error check
-        while( std::tolower(user_input) != 'y' && std::tolower(user_input) != 'd' && std::tolower(user_input) != 'r' && std::tolower(user_input) != 'u' )
+        while( std::tolower(user_input) != 'y' && std::tolower(user_input) != 'd' &&
+               std::tolower(user_input) != 'r' && std::tolower(user_input) != 'u' )
         {
             chessCAMO::printMessage("Pick one of the choices... try again!", YELLOW);
             chessCAMO::printMessage("\nContinue? [y -> yes, r -> resign, d -> offer draw, u -> undo move] ", PINK);

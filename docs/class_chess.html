@@ -134,10 +134,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa14266c2293dda5038b0741c7df74382"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the player's turn information.  <a href="class_chess.html#aa14266c2293dda5038b0741c7df74382">More...</a><br /></td></tr>
 <tr class="separator:aa14266c2293dda5038b0741c7df74382"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26a49175588c8c62cc73e6db926d5de7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a26a49175588c8c62cc73e6db926d5de7">getNumMoves</a> ()</td></tr>
-<tr class="memdesc:a26a49175588c8c62cc73e6db926d5de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of moves made.  <a href="class_chess.html#a26a49175588c8c62cc73e6db926d5de7">More...</a><br /></td></tr>
+<tr class="memdesc:a26a49175588c8c62cc73e6db926d5de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the number of moves made.  <a href="class_chess.html#a26a49175588c8c62cc73e6db926d5de7">More...</a><br /></td></tr>
 <tr class="separator:a26a49175588c8c62cc73e6db926d5de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a86771533b592cf5bca840fa1a8335e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a2a86771533b592cf5bca840fa1a8335e">setNumMoves</a> (int <a class="el" href="class_chess.html#ade396b905cebe6d95888abe8d0de7863">num_moves</a>)</td></tr>
-<tr class="memdesc:a2a86771533b592cf5bca840fa1a8335e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the number of moves made on the board.  <a href="class_chess.html#a2a86771533b592cf5bca840fa1a8335e">More...</a><br /></td></tr>
+<tr class="memdesc:a2a86771533b592cf5bca840fa1a8335e"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the number of moves made on the board.  <a href="class_chess.html#a2a86771533b592cf5bca840fa1a8335e">More...</a><br /></td></tr>
 <tr class="separator:a2a86771533b592cf5bca840fa1a8335e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab64de78c01967188afa372f417a2325d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab64de78c01967188afa372f417a2325d">boardInit</a> ()</td></tr>
 <tr class="memdesc:ab64de78c01967188afa372f417a2325d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the pieces on the board at their correct starting positions.  <a href="class_chess.html#ab64de78c01967188afa372f417a2325d">More...</a><br /></td></tr>
@@ -792,7 +792,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets the number of moves made. </p>
+<p>(Accessor) Gets the number of moves made. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of moves. </dd></dl>
 
 </div>
@@ -821,7 +821,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the number of moves made on the board. </p>
+<p>(Mutator) Sets the number of moves made on the board. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">num_moves</td><td>The number of moves made </td></tr>
@@ -1415,6 +1415,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>The current board representation of the pieces in the correct positions </p>
 
 </div>
 </div>
@@ -1437,6 +1438,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>The pieces involved in a check </p>
 
 </div>
 </div>
@@ -1459,6 +1461,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Check, Double Check, Checkmate, Stalemate flags </p>
 
 </div>
 </div>
@@ -1481,6 +1484,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>For deciding whose turn it is to make a move for a given board representation </p>
 
 </div>
 </div>
@@ -1503,6 +1507,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>The number of moves made already </p>
 
 </div>
 </div>
