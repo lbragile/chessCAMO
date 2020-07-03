@@ -1,0 +1,28 @@
+rnb2knr/pp1p1ppp/2q5/2p5/8/8/PPP1PPPP/RNBQKBNR w KQ
+51 35
+y
+10 18
+y
+35 27
+y
+3 10
+y
+27 19
+y
+18 26
+y
+19 12
+y
+10 18
+y
+12 5
+q
+y
+4 3
+y
+4 12
+y
+8 16
+y
+4 5
+y

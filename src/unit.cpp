@@ -915,6 +915,19 @@ TEST_F(ChessTest, pinWithWrongPiece)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
+TEST_F(ChessTest, promotionWithCheckKingMoves)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/53-promotionWithCheckKingMoves.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
 // -lgtest_main does this for you automatically to avoid writing main
 // int main(int argc, char **argv)
 // {

@@ -362,19 +362,22 @@ void Chess::makeMove(int src, int dest, istream &in)
         }
 
         board = getBoard();
-        board[dest]->enPassantHandling(src, *this); // en-passant checking/updating
+
+        // en-passant checking/updating
+        board[dest]->enPassantHandling(src, *this); 
 
         // pawn promotion
         if(dest/8 == 0 || dest/8 == 7)
             board[dest]->promotePawn(*this, in);
 
+        // check for checkmates..
         // did the move cause a check?
         if(board[src]->causeCheck(dest, *this) && !board[src]->causeDoubleCheck(dest, *this)) 
-            isCheckmate("single"); // check for checkmates
+            isCheckmate("single");
 
         // did the move cause a double check?
-        if(board[src]->causeDoubleCheck(dest, *this)) 
-            isCheckmate("double"); // check for checkmates
+        else if(board[src]->causeDoubleCheck(dest, *this)) 
+            isCheckmate("double");
 
         // check for stalemate
         if(isStalemate()) 
@@ -636,10 +639,13 @@ void Chess::handleStalemate()
 bool Chess::needUndoMove(Piece *king, Piece *piece)
 {
     // move was already made, so check if the piece can still attack the king
-    // while making sure that the king did not move to the piece (its square
-    // will be empty if so)
-    return getBoard()[piece->getPieceSquare()]->isPossibleMove(king->getPieceSquare(), *this) &&
-           !getBoard()[king->getPieceSquare()]->isEmpty();
+    // while making sure that the king did not move to or away from the piece
+    // (its square will be empty if so)
+    vector<Piece*> board = getBoard();
+    int piece_sqr = piece->getPieceSquare();
+    int king_pos = findKingPos(piece_sqr, *this, true);
+
+    return (switchTurn() == board[piece_sqr]->getPieceColor()) && board[piece_sqr]->isPossibleMove(king_pos, *this);
 } 
        
 /**
@@ -848,7 +854,7 @@ bool Piece::causeCheck(int dest, Chess &chess)
     
     int king_pos = findKingPos(dest, chess, true); // opposite color king position
 
-    if(board[dest]->isPathFree(king_pos, chess) && board[dest]->isPossibleMove(king_pos, chess))
+    if(board[dest]->isPossibleMove(king_pos, chess))
     {
         // push the king and checking piece onto the stack and set the corresponding 
         // object variables (checkStack and setCheck)
@@ -1592,7 +1598,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1603,7 +1609,7 @@ namespace chessCAMO
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+            string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
             ifstream in(filename);
             in >> chess_object;
             in.close(); 
