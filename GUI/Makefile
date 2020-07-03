@@ -1,7 +1,7 @@
-CC = g++
+CXX = g++
 
-CFLAGS  = -g -c -Wall
-AFLAGS = -g -Wall
+# CXXFLAGS  = -g -c -Wall
+CXXFLAGS = -g -Wall
 
 SFML_CFLAGS = -I ../../SFML/include/ -I ../include/ -I ../src/ -L ../../SFML/lib/
 SFML_LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -mwindows
@@ -13,4 +13,4 @@ all: gui
 
 .PHONY: gui
 gui: gui.cpp chess.cpp
-	$(CC) $(AFLAGS) $(SFML_CFLAGS) $^ -o chessCAMO $(SFML_LFLAGS)
+	$(CXX) $(CXXFLAGS) $(SFML_CFLAGS) $^ -o chessCAMO $(SFML_LFLAGS)

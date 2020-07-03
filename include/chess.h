@@ -81,9 +81,8 @@ using namespace std;
 
 /**
  * @brief      Piece's Type
- * 
- * \note
- * EMPTY corresponds to a square with no piece in it
+ *
+ * @note       EMPTY corresponds to a square with no piece in it
  */
 enum pieceType 
 {
@@ -98,9 +97,8 @@ enum pieceType
 
 /**
  * @brief      Piece's Color
- * 
- * \note
- * NEUTRAL corresponds to an empty square
+ *
+ * @note       NEUTRAL corresponds to an empty square
  */
 enum pieceColor 
 {
@@ -395,7 +393,8 @@ private:
     void makeMoveForType(int src, int dest);
 
     /**
-     * @brief      Used in makeMoveForType(.) to swap pieces on the board
+     * @brief      Used in Chess::makeMoveForType(int src, int dest) to swap
+     *             pieces on the board
      *
      * @param[in]  src    The source square of piece
      * @param[in]  dest   The destination square of piece
@@ -443,8 +442,7 @@ private:
      * @brief      After a move is made, can undo it if move was invalid and
      *             return to previous board state
      *
-     * @param      king        The king that is being attacked currently
-     * @param      piece       The piece that is attacking the king currently
+     * @param      piece  The piece that is attacking the king currently
      *
      * @pre        The chess object is created. A move was made.
      *
@@ -455,7 +453,7 @@ private:
      *             undo the move. Else, False and continue the game without
      *             undoing the move.
      */
-    bool needUndoMove(Piece *king, Piece *piece);
+    bool needUndoMove(Piece *piece);
 
     /**
      * @brief      If in a single check, see if piece can defend the king,

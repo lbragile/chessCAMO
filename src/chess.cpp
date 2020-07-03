@@ -246,6 +246,8 @@ void Chess::boardInit()
     // initialize the board
     for(unsigned int i = 0; i < board.size(); i++)
     {
+        delete board[i];
+
         /******************* BLACK *******************/
         if(i < board.size()/4)          // first 2 rows
         {
@@ -285,6 +287,8 @@ void Chess::boardInit()
         }
     }
 
+    delete check_pieces[0];
+    delete check_pieces[1];
     check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
     check_pieces[1] = new Empty(0, EMPTY, NEUTRAL);
 
@@ -330,14 +334,14 @@ void Chess::makeMove(int src, int dest, istream &in)
             // you have three choices: move the king, defend the path, attack
             // the checking piece. If the move failed, undo the board
             // representation and do not set check_pieces
-            if( ( getDoubleCheck() && ( !board[src]->isKing() || doubleCheckPieceIterator(check_pieces[1]) ) ) ||
-                ( getCheck() && needUndoMove(check_pieces[1], check_pieces[0]) ) )
+            if( needUndoMove(check_pieces[0]) )
             {
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
                 
                 chessCAMO::printBoard(getBoard());
-                chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
+                getCheck() ? chessCAMO::printMessage("You are in check! Try again...\n", YELLOW)
+                           : chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
                 return;
             }
 
@@ -356,13 +360,13 @@ void Chess::makeMove(int src, int dest, istream &in)
             board[dest]->promotePawn(*this, in);
 
         // check for checkmates..
-        // did the move cause a check?
-        if(board[src]->causeCheck(dest, *this) && !board[src]->causeDoubleCheck(dest, *this)) 
-            isCheckmate("single");
-
         // did the move cause a double check?
-        else if(board[src]->causeDoubleCheck(dest, *this)) 
+        if(board[src]->causeDoubleCheck(dest, *this)) 
             isCheckmate("double");
+
+        // did the move cause a check?
+        else if(board[src]->causeCheck(dest, *this)) 
+            isCheckmate("single");
 
         // check for stalemate
         if(isStalemate()) 
@@ -611,8 +615,7 @@ void Chess::handleStalemate()
  * @brief      After a move is made, can undo it if move was invalid and return
  *             to previous board state
  *
- * @param      king        The king that is being attacked currently
- * @param      piece       The piece that is attacking the king currently
+ * @param      piece  The piece that is attacking the king currently
  *
  * @pre        The chess object is created. A move was made.
  *
@@ -623,16 +626,28 @@ void Chess::handleStalemate()
  *             the move. Else, False and continue the game without undoing the
  *             move.
  */
-bool Chess::needUndoMove(Piece *king, Piece *piece)
+bool Chess::needUndoMove(Piece *piece)
 {
     // move was already made, so check if the piece can still attack the king
     // while making sure that the king did not move to or away from the piece
     // (its square will be empty if so)
     vector<Piece*> board = getBoard();
-    int piece_sqr = piece->getPieceSquare();
-    int king_pos = findKingPos(piece_sqr, *this, true);
 
-    return (switchTurn() == board[piece_sqr]->getPieceColor()) && board[piece_sqr]->isPossibleMove(king_pos, *this);
+    int king_pos_single = findKingPos(piece->getPieceSquare(), *this, true);  // opposite color
+    int king_pos_double = findKingPos(piece->getPieceSquare(), *this, false); // same color
+
+    if(getCheck())
+        return (switchTurn() == piece->getPieceColor()) && piece->isPossibleMove(king_pos_single, *this);
+    else // getDoubleCheck()
+    {
+        for(const auto & elem : board)
+        {
+            if(elem->isPossibleMove(king_pos_double, *this))
+                return true;
+        }
+
+        return false;
+    }
 } 
        
 /**
@@ -1577,7 +1592,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "object_states/move" + to_string(num_moves) + ".txt";
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1588,7 +1603,7 @@ namespace chessCAMO
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
+            string filename = "object_states/move" + to_string(num_moves) + ".txt";
             ifstream in(filename);
             in >> chess_object;
             in.close(); 

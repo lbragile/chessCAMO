@@ -177,11 +177,7 @@ protected:
         }
     }
 
-    /**
-     * @brief      After a given test is completed, free the memory made by
-     *             dynamic allocation. This ensures that the following test can
-     *             dynamically allocate memory without causing a memory leak.
-     */
+    /** @brief      Post test operations are performed here */
     void TearDown() override { cout.clear(); } // enable output again
 };
 
