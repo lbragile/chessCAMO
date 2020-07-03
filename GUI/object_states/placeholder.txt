@@ -1,0 +1,2 @@
+This is just here to let git consider this folder as "non_empty" :)
+You can safely ignore this file.
