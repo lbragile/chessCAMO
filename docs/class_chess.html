@@ -82,9 +82,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8b493f742d0ceced6f853fa30d3c05a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8">Chess</a> ()</td></tr>
 <tr class="memdesc:a8b493f742d0ceced6f853fa30d3c05a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor with default board parameter initialization - Constructs a new instance.  <a href="class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8">More...</a><br /></td></tr>
 <tr class="separator:a8b493f742d0ceced6f853fa30d3c05a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4a930d9536191d6d6f1936b7d2c78ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#af4a930d9536191d6d6f1936b7d2c78ae">~Chess</a> ()=default</td></tr>
-<tr class="memdesc:af4a930d9536191d6d6f1936b7d2c78ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the object and frees any dynamically allocated memory ('new') to avoid memory leaks.  <a href="class_chess.html#af4a930d9536191d6d6f1936b7d2c78ae">More...</a><br /></td></tr>
-<tr class="separator:af4a930d9536191d6d6f1936b7d2c78ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8">~Chess</a> ()</td></tr>
+<tr class="memdesc:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the object and frees any dynamically allocated memory ('new') to avoid memory leaks.  <a href="class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8">More...</a><br /></td></tr>
+<tr class="separator:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e31b96a929e21c1502f7c11a0033ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a85e31b96a929e21c1502f7c11a0033ee">Chess</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;object)=default</td></tr>
 <tr class="memdesc:a85e31b96a929e21c1502f7c11a0033ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor - Constructs a new instance and copies the calling object's values to it.  <a href="class_chess.html#a85e31b96a929e21c1502f7c11a0033ee">More...</a><br /></td></tr>
 <tr class="separator:a85e31b96a929e21c1502f7c11a0033ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,7 +158,7 @@ Private Member Functions</h2></td></tr>
 <tr class="memdesc:a9e4d4b34ec9b3da12d834499515dc463"><td class="mdescLeft">&#160;</td><td class="mdescRight">A move can be one of: attack, castle, en-passant, regular.  <a href="class_chess.html#a9e4d4b34ec9b3da12d834499515dc463">More...</a><br /></td></tr>
 <tr class="separator:a9e4d4b34ec9b3da12d834499515dc463"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">pieceSwap</a> (int src, int dest, vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt; &amp;<a class="el" href="class_chess.html#a980bd65812f24a84c25ccd46770e6a29">board</a>)</td></tr>
-<tr class="memdesc:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used in makeMoveForType(.) to swap pieces on the board.  <a href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">More...</a><br /></td></tr>
+<tr class="memdesc:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used in <a class="el" href="class_chess.html#a9e4d4b34ec9b3da12d834499515dc463" title="A move can be one of: attack, castle, en-passant, regular.">Chess::makeMoveForType(int src, int dest)</a> to swap pieces on the board.  <a href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91">More...</a><br /></td></tr>
 <tr class="separator:a5cbb878d6f40a142d40f1bcddbde9c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb0e6941c0f1bedfad490df9649045d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#afb0e6941c0f1bedfad490df9649045d4">handleChangeTurn</a> ()</td></tr>
 <tr class="memdesc:afb0e6941c0f1bedfad490df9649045d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates who will move next via a message to console.  <a href="class_chess.html#afb0e6941c0f1bedfad490df9649045d4">More...</a><br /></td></tr>
@@ -169,9 +169,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">handleStalemate</a> ()</td></tr>
 <tr class="memdesc:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates the game is drawn via a message to console.  <a href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">More...</a><br /></td></tr>
 <tr class="separator:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8ef4963f5dfd077c31a78112afe1f80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab8ef4963f5dfd077c31a78112afe1f80">needUndoMove</a> (<a class="el" href="class_piece.html">Piece</a> *king, <a class="el" href="class_piece.html">Piece</a> *piece)</td></tr>
-<tr class="memdesc:ab8ef4963f5dfd077c31a78112afe1f80"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#ab8ef4963f5dfd077c31a78112afe1f80">More...</a><br /></td></tr>
-<tr class="separator:ab8ef4963f5dfd077c31a78112afe1f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a03dc9cc3449fdc28d9bb6654bf9e4225">needUndoMove</a> (<a class="el" href="class_piece.html">Piece</a> *piece)</td></tr>
+<tr class="memdesc:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#a03dc9cc3449fdc28d9bb6654bf9e4225">More...</a><br /></td></tr>
+<tr class="separator:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">singleCheckPieceIterator</a> (<a class="el" href="class_piece.html">Piece</a> *piece, <a class="el" href="class_piece.html">Piece</a> *king)</td></tr>
 <tr class="memdesc:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in isCheckmate("single")  <a href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">More...</a><br /></td></tr>
 <tr class="separator:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -235,14 +235,11 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="af4a930d9536191d6d6f1936b7d2c78ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4a930d9536191d6d6f1936b7d2c78ae">&#9670;&nbsp;</a></span>~Chess()</h2>
+<a id="aa9717ab5263bc4fbb844e78bbe5587a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9717ab5263bc4fbb844e78bbe5587a8">&#9670;&nbsp;</a></span>~Chess()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Chess::~Chess </td>
@@ -251,15 +248,10 @@ Friends</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Destroys the object and frees any dynamically allocated memory ('new') to avoid memory leaks. </p>
-<dl class="section note"><dt>Note</dt><dd>Only <a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> object pointers are deleted, so this can be empty </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This is needed since a game can end before a corresponding checkmate/stalemate flag is reached and thus 'board' and 'check_pieces' will have dynamically allocated memory that isn't freed. </dd></dl>
 
 </div>
 </div>
@@ -1038,7 +1030,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Used in makeMoveForType(.) to swap pieces on the board. </p>
+<p>Used in <a class="el" href="class_chess.html#a9e4d4b34ec9b3da12d834499515dc463" title="A move can be one of: attack, castle, en-passant, regular.">Chess::makeMoveForType(int src, int dest)</a> to swap pieces on the board. </p>
+<p>Used in makeMoveForType(.) to swap pieces on the board.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The source square of piece </td></tr>
@@ -1139,8 +1132,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ab8ef4963f5dfd077c31a78112afe1f80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8ef4963f5dfd077c31a78112afe1f80">&#9670;&nbsp;</a></span>needUndoMove()</h2>
+<a id="a03dc9cc3449fdc28d9bb6654bf9e4225"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03dc9cc3449fdc28d9bb6654bf9e4225">&#9670;&nbsp;</a></span>needUndoMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1152,18 +1145,8 @@ Friends</h2></td></tr>
           <td class="memname">bool Chess::needUndoMove </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
-          <td class="paramname"><em>king</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>piece</em></td><td>)</td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
-          <td class="paramname"><em>piece</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1176,7 +1159,6 @@ Friends</h2></td></tr>
 <p>After a move is made, can undo it if move was invalid and return to previous board state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">king</td><td>The king that is being attacked currently </td></tr>
     <tr><td class="paramname">piece</td><td>The piece that is attacking the king currently</td></tr>
   </table>
   </dd>

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['_7ebishop_244',['~Bishop',['../class_bishop.html#a3705b4537a39d09a59143fe01a62442f',1,'Bishop']]],
-  ['_7echess_245',['~Chess',['../class_chess.html#af4a930d9536191d6d6f1936b7d2c78ae',1,'Chess']]],
+  ['_7echess_245',['~Chess',['../class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8',1,'Chess']]],
   ['_7eempty_246',['~Empty',['../class_empty.html#a5c87c102e196019db639f8905a864ea0',1,'Empty']]],
   ['_7eking_247',['~King',['../class_king.html#aac368ce96e2b12f62e3608d27262e941',1,'King']]],
   ['_7eknight_248',['~Knight',['../class_knight.html#a2754123d6876babe915f4da8f761361b',1,'Knight']]],

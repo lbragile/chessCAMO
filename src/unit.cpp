@@ -177,7 +177,10 @@ protected:
         }
     }
 
-    /** @brief      Post test operations are performed here */
+    /**
+     * @brief      Post test operations are performed here, such as freeing
+     *             dynamically allocated memory and clearing the cout flags
+     */
     void TearDown() override { cout.clear(); } // enable output again
 };
 

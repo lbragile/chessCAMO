@@ -69,9 +69,8 @@ istream & operator >> (istream &in, Chess &chess_object)
 {
     // delete the allocated memory and restore new data
     vector<Piece*> board = chess_object.getBoard();
-    for(unsigned int i = 0; i < board.size(); i++)
-        delete board[i];
-    // board.clear();
+    for(auto & elem : board)
+        delete elem;
 
     string input;
     for(auto & elem : board)
@@ -231,6 +230,24 @@ namespace
 /*************************************************************************************/
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
+/**
+ * @brief      Destroys the object and frees any dynamically allocated
+ *             memory ('new') to avoid memory leaks.
+ *
+ * @note       This is needed since a game can end before a corresponding
+ *             checkmate/stalemate flag is reached and thus 'board' and
+ *             'check_pieces' will have dynamically allocated memory that
+ *             isn't freed.
+ */
+Chess::~Chess()
+{
+    for(auto & elem : board)
+        delete elem;
+
+    for(auto & elem : check_pieces)
+        delete elem;
+}
+
 /**
  * @brief      Places the pieces on the board at their correct starting
  *             positions

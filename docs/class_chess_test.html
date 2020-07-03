@@ -85,7 +85,7 @@ Protected Member Functions</h2></td></tr>
 <tr class="memdesc:ac12dd0fca1f6659df424a94f5828cff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Before a given test is executed, this sets up everything and initializes the variables Additionally, this performs the actual gameplay moves needed to obtain the final board representation.  <a href="class_chess_test.html#ac12dd0fca1f6659df424a94f5828cff8">More...</a><br /></td></tr>
 <tr class="separator:ac12dd0fca1f6659df424a94f5828cff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18382b02a1f652338f852320f67cdbd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess_test.html#a18382b02a1f652338f852320f67cdbd5">TearDown</a> () override</td></tr>
-<tr class="memdesc:a18382b02a1f652338f852320f67cdbd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a given test is completed, free the memory made by dynamic allocation. This ensures that the following test can dynamically allocate memory without causing a memory leak.  <a href="class_chess_test.html#a18382b02a1f652338f852320f67cdbd5">More...</a><br /></td></tr>
+<tr class="memdesc:a18382b02a1f652338f852320f67cdbd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post test operations are performed here, such as freeing dynamically allocated memory and clearing the cout flags.  <a href="class_chess_test.html#a18382b02a1f652338f852320f67cdbd5">More...</a><br /></td></tr>
 <tr class="separator:a18382b02a1f652338f852320f67cdbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -166,7 +166,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>After a given test is completed, free the memory made by dynamic allocation. This ensures that the following test can dynamically allocate memory without causing a memory leak. </p>
+<p>Post test operations are performed here, such as freeing dynamically allocated memory and clearing the cout flags. </p>
 
 </div>
 </div>

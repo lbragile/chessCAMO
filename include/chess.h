@@ -134,9 +134,12 @@ public:
      * @brief      Destroys the object and frees any dynamically allocated
      *             memory ('new') to avoid memory leaks.
      *
-     * @note       Only Piece object pointers are deleted, so this can be empty
+     * @note       This is needed since a game can end before a corresponding
+     *             checkmate/stalemate flag is reached and thus 'board' and
+     *             'check_pieces' will have dynamically allocated memory that
+     *             isn't freed.
      */
-    ~Chess() = default;
+    ~Chess();
 
     /**
      * @brief      Copy constructor - Constructs a new instance and copies the
