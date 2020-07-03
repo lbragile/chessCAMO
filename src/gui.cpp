@@ -109,9 +109,9 @@ int main()
 
             if(!chess.getCheckmate() && !chess.getStalemate())
             {
-                if(e.type == sf::Event::KeyPressed)
+                if(e.type == Event::KeyPressed)
                 {
-                    if(e.key.code == sf::Keyboard::U) 
+                    if(e.key.code == Keyboard::U) 
                     {
                         // decrement move counter by 1 since an illegal move was made 
                         chess.setNumMoves(chess.getNumMoves()-1);
@@ -122,13 +122,24 @@ int main()
                         drawPieces(pieces, pieceType, chess.getBoard());
                     }
 
-                    if(e.key.code == sf::Keyboard::R)
+                    else if(e.key.code == Keyboard::Escape)
                     {
                         string message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
                                                                    : "\nBlack resigned -> White wins\n";
                         chessCAMO::printMessage(message, CYAN);
                         chess.setCheckmate(true); // to end the game
                     }
+
+                    ofstream outFile("../GUI/object_states/promotion.txt", ios::trunc);
+                    if(e.key.code == Keyboard::R)
+                        outFile << 'r' << endl;
+                    else if(e.key.code == Keyboard::B)
+                        outFile << 'b' << endl;
+                    else if(e.key.code == Keyboard::N)
+                        outFile << 'n' << endl;
+                    else // e.key.code == Keyboard::Q
+                        outFile << 'q' << endl;
+                    outFile.close();
                 }
 
                 if(e.type == Event::MouseButtonPressed)
@@ -155,7 +166,9 @@ int main()
                         clicked = false;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
-                        chess.makeMove(src, dest, cin);
+                        ifstream in("../GUI/object_states/promotion.txt");
+                        chess.makeMove(src, dest, in);
+                        in.close();
 
                         drawPieces(pieces, pieceType, chess.getBoard());
 

@@ -269,14 +269,14 @@ public:
     void setTurn(pieceColor turn) {this->turn = turn;}
 
     /**
-     * @brief      Gets the number of moves made.
+     * @brief      (Accessor) Gets the number of moves made.
      *
      * @return     The number of moves.
      */
     int getNumMoves() { return num_moves;}
 
     /**
-     * @brief      Sets the number of moves made on the board.
+     * @brief      (Mutator) Sets the number of moves made on the board.
      *
      * @param[in]  num_moves  The number of moves made
      */
@@ -361,10 +361,19 @@ public:
     friend istream & operator >> (istream &in, Chess &chess_object);
 
 private:
+	/** The current board representation of the pieces in the correct positions */
     vector<Piece*> board;
+
+	/** The pieces involved in a check */
     vector<Piece*> check_pieces;
+
+	/** Check, Double Check, Checkmate, Stalemate flags */
     vector<bool> flags;
+
+	/** For deciding whose turn it is to make a move for a given board representation */
     pieceColor turn;
+
+	/** The number of moves made already */
     int num_moves;          
 
 	/*************************************************************************************/

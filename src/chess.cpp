@@ -58,7 +58,7 @@ ostream & operator << (ostream &out, const Chess &chess_object)
 }
 
 /**
- * @brief      Overlaoded insertion operator
+ * @brief      Overloaded insertion operator
  *
  * @param      in            The input type (ex. ifstream or cin)
  * @param      chess_object  The chess object
@@ -340,6 +340,7 @@ void Chess::makeMove(int src, int dest, istream &in)
 
             // if here, did not return so set the appropriate member variables
             setDoubleCheck(false);
+            setCheck(false);
         }
 
         // when in single check you have three choices: move the king, defend the path, attack the checking piece
@@ -704,7 +705,7 @@ bool Chess::doubleCheckPieceIterator(Piece *king)
     int king_moves[4] = {1, 7, 8, 9}; // possible king moves (absolute values here)
 
     // can king move out of check?
-    for(auto move : king_moves)
+    for(int move : king_moves)
     {
         if(king->isLegalMove(src + move, *this) || king->isLegalMove(src - move, *this))
             return false;
@@ -1345,13 +1346,16 @@ namespace
         // determine the increment along the path from 'src' to 'dest' and store
         // all non empty squares in 'pieces_in_path'
         increment = incrementChoice(src, dest);
-        if(increment > 0)
+        if( (board[src]->isRook() && (increment == 1 || increment == 8)) ||
+            (board[src]->isBishop() && (increment == 7 || increment == 9)) ||
+            (board[src]->isQueen() && increment > 0) )
         {
             for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i += increment)
                 if(!board[i]->isEmpty())
                     pieces_in_path.push_back(i);
         }
-
+        
+        
         // only 1 piece ? return its square : return -1 (equivalent to false)
         return pieces_in_path.size() == 1 ? pieces_in_path[0] : -1;
     }
@@ -1588,7 +1592,7 @@ namespace chessCAMO
 
     void saveObject(int num_moves, const Chess & chess_object)
     {
-        string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
+        string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
@@ -1599,7 +1603,7 @@ namespace chessCAMO
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            string filename = "GUI/object_states/move" + to_string(num_moves) + ".txt";
+            string filename = "../GUI/object_states/move" + to_string(num_moves) + ".txt";
             ifstream in(filename);
             in >> chess_object;
             in.close(); 
