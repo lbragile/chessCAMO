@@ -322,9 +322,9 @@ public:
      *
      * @pre        The chess object is created.
      *
-     * @post       If board's state is in checkmate, calls handleCheckmate() to
-     *             print messages to console indicating the winner. Else, game
-     *             continues as usual.
+     * @post       If board's state is in checkmate, calls
+     *             Chess::handleCheckmate() to print messages to console
+     *             indicating the winner. Else, game continues as usual.
      */
     void isCheckmate(string check_type);
               
@@ -333,7 +333,7 @@ public:
      *
      * @pre        The chess object is created.
      *
-     * @post       Calls handleStalemate() to print messages to console
+     * @post       Calls Chess::handleStalemate() to print messages to console
      *             indicating that game is drawn, if needed.
      *
      * @return     True if board's state is in stalemate, else False and game
@@ -389,9 +389,10 @@ private:
      * @pre        The chess object is created
      *
      * @post       Swaps the pieces on the board according to 'src' and 'dest'
-     *             and proper chess rules, using pieceSwap(.). If a new empty
-     *             square must be created, this is handled. Returns board
-     *             representation with the made move.
+     *             and proper chess rules, using Chess::pieceSwap(int src, int
+     *             dest, vector<Piece*> & board). If a new empty square must be
+     *             created, this is handled. Returns board representation with
+     *             the made move.
      */
     void makeMoveForType(int src, int dest);
 
@@ -1313,18 +1314,27 @@ namespace chessCAMO
     void printBoard(const vector<Piece*> board); // Print the current board position
 
     /**
+     * @brief      Prints the footer message before each move indicating whose
+     *             move it is for the current board representation.
+     *
+     * @param      chess  The chess object
+     */
+    void printFooterMessage(const Chess &chess);
+
+    /**
      * @brief      At any moment, the players can either continue, draw, or
      *             resign
      *
-     * @param      chess  The chess object is created
-     * @param      in     Input stream is selected (stdin or file)
+     * @param[in]  clear_screen  Whether the screen should be cleared
+     * @param      chess         The chess object is created
+     * @param      in            Input stream is selected (stdin or file)
      *
      * @pre        None
      *
      * @post       Depending on the users choice, the program either continues
      *             ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
      */
-    void drawOrResign(Chess &chess, istream &in); // resign or draw
+    void drawOrResign(bool clear_screen, Chess &chess, istream &in);
 
     /**
      * @brief      Prints the given message ('text') with a given 'color' to
@@ -1340,7 +1350,31 @@ namespace chessCAMO
      */
     void printMessage(string text, int color);
 
+    /**
+     * @brief      Clears the screen of the console window using a special
+     *             string instead of a platform specific command
+     *
+     * @param[in]  apply  Whether to in fact clear or not
+     */
+    void clearScreen(bool apply);
+
+    /**
+     * @brief      Saves an object by serializing its member fields to a text
+     *             file, allowing it to later be reset.
+     *
+     * @param[in]  num_moves     The number of moves made
+     * @param[in]  chess_object  The chess object
+     */
     void saveObject(int num_moves, const Chess & chess_object);
+
+    /**
+     * @brief      De-serializes an object from a file based on the number of
+     *             moves made, essentially restoring the object's saved
+     *             properties (in the file).
+     *
+     * @param[in]  num_moves     The number of moves made
+     * @param      chess_object  The chess object
+     */
     void restoreObject(int num_moves, Chess & chess_object);
 } // end namespace chessCAMO
 

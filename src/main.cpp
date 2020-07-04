@@ -78,13 +78,13 @@ int main()
         }
 
         // makes the corresponding move and updates the board state on the console after clearing it
-        std::system("cls");
+        chessCAMO::clearScreen(true);
         chess.makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), cin);
 
         // prevent asking again after game is over
         if(!chess.getCheckmate() && !chess.getStalemate())
         {
-            chessCAMO::drawOrResign(chess, cin);
+            chessCAMO::drawOrResign(true, chess, cin);
             
             // drawOrResign can set the checkmate flag to true if player chooses to resign or draw
             // so if this happens break out of the while loop

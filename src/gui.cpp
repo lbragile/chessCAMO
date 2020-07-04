@@ -98,6 +98,7 @@ int main()
     Color color_red(255, 204, 204, 255);
     bool clicked = false, move = false;
     string filename = "../GUI/object_states/promotion.txt";
+    string filename_status = "../GUI/object_states/status.txt";
 
     // default promotion is Queen (always, even if program ends after another
     // piece is set)
@@ -114,7 +115,7 @@ int main()
         Event e;
 
         Cursor cursor;
-        if(((30 < pos.x && pos.x < 510) || 540 < pos.x) && ((30 < pos.y && pos.y < 510) || pos.y < 0) && cursor.loadFromSystem(sf::Cursor::Hand))
+        if( ( (( (30 < pos.x && pos.x < 510)) && ( (30 < pos.y && pos.y < 510) )) || (540 < pos.x && pos.y < 0) ) && cursor.loadFromSystem(sf::Cursor::Hand) )
             window.setMouseCursor(cursor);
         else if(cursor.loadFromSystem(sf::Cursor::NotAllowed))
             window.setMouseCursor(cursor);
@@ -141,8 +142,8 @@ int main()
 
                     else if(e.key.code == Keyboard::Escape)
                     {
-                        string message = chess.getTurn() == WHITE ? "\n      White won by Checkmate!\n\n"
-                                                                  : "\n      Black won by Checkmate!\n\n";
+                        string message = chess.getTurn() == WHITE ? "White won by Checkmate!"
+                                                                  : "Black won by Checkmate!";
                         chessCAMO::printMessage(message, CYAN);
                         chess.setCheckmate(true);
                     }
@@ -187,7 +188,7 @@ int main()
                         clicked = false;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
-                        ofstream messageOut("../GUI/object_states/messages.txt", ios::trunc);
+                        ofstream messageOut(filename_status, ios::trunc);
                         streambuf *coutbuf = cout.rdbuf();
                         cout.rdbuf(messageOut.rdbuf());
 
@@ -216,10 +217,6 @@ int main()
         // board
         if(font.loadFromFile("font/arial.ttf"))
         {
-            // center the text inside it's bounding box
-            FloatRect textRect = text.getLocalBounds();
-            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
-
             // -------- side & bottom panels -------- //
             // // background
             // bottom_rect.setPosition(0, 540);
@@ -232,26 +229,18 @@ int main()
             // window.draw(bottom_rect);
 
             // text
-            textRect = text_side.getLocalBounds();
-            text_side.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
-
-            textRect = text_bottom.getLocalBounds();
-            text_bottom.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
-
             text_bottom.setCharacterSize(20);
             text_bottom.setFont(font);
             text_bottom.setFillColor(Color::Yellow);
 
-            ifstream messageIn("../GUI/object_states/messages.txt");
-            string first_message, second_message = chess.getTurn() == WHITE ? "White's move" : "Black's move";
-            getline(messageIn, first_message, '\n');
-            getline(messageIn, first_message, '\n');
+            ifstream messageIn(filename_status);
+            string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
 
-            for(int i = 0; i < 23; i++)
+            for(int i = 0; i < 21; i++)
                getline(messageIn, second_message, '\n'); 
 
-            text_bottom.setPosition(160, 570);
-            text_bottom.setString("Status:" + first_message + "    " + second_message);
+            text_bottom.setPosition(40, 560);
+            text_bottom.setString("Status:  " + first_message + "    " + second_message);
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);
             messageIn.close();
@@ -260,7 +249,7 @@ int main()
             text_side.setFont(font);
             text_side.setFillColor(Color::White);
 
-            text_side.setPosition(600, 100);
+            text_side.setPosition(555, 50);
             text_side.setString("To promote, first type \none of the following \ncharacters, then make \nthe move:\n\n"
                                 "1. 'Q' (or 'q') => Queen \n\n"
                                 "2. 'R' (or 'r') => Rook\n\n"
@@ -269,14 +258,14 @@ int main()
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(600, 450);
+            text_side.setPosition(555, 400);
             text_side.setString("Resign:\n\n"
                                 "Offer draw:\n\n"
                                 "Undo Move:\n\n");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(720, 450);
+            text_side.setPosition(670, 400);
             text_side.setString("Escape\n\n"
                                 "'D' (or 'd')\n\n"
                                 "'U' (or 'u')\n\n");
@@ -284,6 +273,10 @@ int main()
             window.draw(text_side);            
 
             // -------------- main grid -------------- //
+            // center the text inside it's bounding box
+            FloatRect textRect = text.getLocalBounds();
+            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
+
             text.setCharacterSize(20);
             text.setFont(font);
             text.setFillColor(Color::Black);

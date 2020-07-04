@@ -11,4 +11,7 @@ n
 E7 E5
 x
 d
+n
+x x
+d
 y

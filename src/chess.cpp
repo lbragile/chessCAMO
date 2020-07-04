@@ -235,20 +235,7 @@ namespace
      *
      * @note       The return value depends on target of the global makefile
      */
-    string getPath(int num_moves)
-    {
-        const unsigned long maxDir = 260;
-        char currentDir[maxDir];
-        GetCurrentDirectory(maxDir, currentDir);
-
-        // GCOVR_EXCL_START
-        if(string(currentDir).find("GUI") != string::npos)
-            return "object_states/move" + to_string(num_moves) + ".txt";
-        else
-            return "GUI/object_states/move" + to_string(num_moves) + ".txt";
-        // GCOVR_EXCL_STOP
-    }
-    
+    string getPath(int num_moves);    
 } // unnamed namespace (makes these functions local to this implementation file)
 
 /*************************************************************************************/
@@ -336,9 +323,9 @@ void Chess::boardInit()
     // printing the board and letting user know whose turn it is
     // white always starts first in chess!
     chessCAMO::printBoard(getBoard());
-    cout << "___________________________________________________" << endl;
-    chessCAMO::printMessage("\n            White's move\n", CYAN);
+    chessCAMO::printFooterMessage(*this);
 
+    // serializing the object to a file for later re-use
     chessCAMO::saveObject(getNumMoves(), *this);
 }
 
@@ -429,7 +416,7 @@ void Chess::makeMove(int src, int dest, istream &in)
     else
     {
         chessCAMO::printBoard(board);
-        chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
+        chessCAMO::printMessage("Invalid move! Try again...\n", YELLOW);
     }
 }
 
@@ -441,30 +428,27 @@ void Chess::makeMove(int src, int dest, istream &in)
  *
  * @pre        The chess object is created.
  *
- * @post       If board's state is in checkmate, calls handleCheckmate() to
- *             print messages to console indicating the winner. Else, game
+ * @post       If board's state is in checkmate, calls Chess::handleCheckmate()
+ *             to print messages to console indicating the winner. Else, game
  *             continues as usual.
  */
 void Chess::isCheckmate(string check_type)
 {
     vector<Piece*> check_pieces = getCheckPieces();
     
-    if(check_type == "double") // this type of check requires the king to move
-    {
-        // checkmate due to a double check
-        if(doubleCheckPieceIterator(check_pieces[1]))
-            handleCheckmate();
-        else // was not checkmate so can state that it is double check
-            chessCAMO::printMessage("\n            Double Check!\n\n", CYAN); 
+    if( (check_type == "double" && doubleCheckPieceIterator(check_pieces[1])) ||
+        (check_type == "single" && singleCheckPieceIterator(check_pieces[0], check_pieces[1])) )
+    { 
+        handleCheckmate();
     }   
-
-    else // check_type == "single"
+    else
     {
-        // checkmate due to a single piece
-        if(singleCheckPieceIterator(check_pieces[0], check_pieces[1]))
-            handleCheckmate();
-        else // was not checkmate so can state that it is check
-            chessCAMO::printMessage("\n                Check!\n\n", CYAN);
+        chessCAMO::printBoard(getBoard());
+
+        if(getCheck())
+            chessCAMO::printMessage("\nCheck!\n", CYAN);
+        else
+            chessCAMO::printMessage("\nDouble Check!\n", CYAN);
     }
 }
 
@@ -517,9 +501,9 @@ bool Chess::isStalemate()
  * @pre        The chess object is created
  *
  * @post       Swaps the pieces on the board according to 'src' and 'dest' and
- *             proper chess rules, using pieceSwap(.). If a new empty square
- *             must be created, this is handled. Returns board representation
- *             with the made move.
+ *             proper chess rules, using Chess::pieceSwap(int src, int dest,
+ *             vector<Piece*> & board). If a new empty square must be created,
+ *             this is handled. Returns board representation with the made move.
  */
 void Chess::makeMoveForType(int src, int dest)
 {
@@ -612,15 +596,12 @@ void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
 void Chess::handleChangeTurn()
 {
     setTurn(switchTurn());
-    chessCAMO::printBoard(getBoard());
+
+    if(!getCheck() && !getDoubleCheck())
+        chessCAMO::printBoard(getBoard());
+
     if(!getCheckmate() && !getStalemate())
-    {
-        cout << "___________________________________________________" << endl;
-        if(getTurn() == WHITE)
-            chessCAMO::printMessage("\n            White's move\n", CYAN);
-        else
-            chessCAMO::printMessage("\n            Black's move\n", CYAN);
-    }
+        chessCAMO::printFooterMessage(*this);
 }
 
 /**
@@ -633,8 +614,10 @@ void Chess::handleChangeTurn()
  */
 void Chess::handleCheckmate()
 {
-    string message = getTurn() == WHITE ? "\n      White won by Checkmate!\n\n"
-                                        : "\n      Black won by Checkmate!\n\n";
+    chessCAMO::printBoard(getBoard());
+    cout << "___________________________________________________" << endl;
+    string message = getTurn() == WHITE ? "White won by Checkmate!\n"
+                                        : "Black won by Checkmate!\n";
     chessCAMO::printMessage(message, CYAN);
     setCheckmate(true);
 }
@@ -647,8 +630,10 @@ void Chess::handleCheckmate()
  */
 void Chess::handleStalemate()
 {
-    string message = switchTurn() == WHITE ? "\nWhite has no moves -> Game is Drawn!\n\n"   
-                                           : "\nBlack has no moves -> Game is Drawn!\n\n";
+    chessCAMO::printBoard(getBoard());
+    cout << "___________________________________________________" << endl;
+    string message = switchTurn() == WHITE ? "White has no moves -> Game is Drawn!\n"   
+                                           : "Black has no moves -> Game is Drawn!\n";
     chessCAMO::printMessage(message, CYAN);
     setStalemate(true);
 }
@@ -698,7 +683,7 @@ bool Chess::needUndoMove(Piece *piece)
 /**
  * @brief      If in a single check, see if piece can defend the king, capture
  *             attacking piece, or move the king out of check. Used in
- *             isCheckmate("single")
+ *             Chess::isCheckmate("single")
  *
  * @param      piece  The piece that is attacking the king currently
  * @param      king   The king that is being attacked currently
@@ -741,7 +726,7 @@ bool Chess::singleCheckPieceIterator(Piece *piece, Piece *king)
 /**
  * @brief      If in a double check, see if the king can move out of check as
  *             this is the only valid move option. Used in
- *             isCheckmate("double").
+ *             Chess::isCheckmate("double").
  *
  * @param      king  The king that is being attacked currently
  *
@@ -1450,6 +1435,27 @@ namespace
 
         return temp->getPieceSquare();
     }
+
+    /**
+     * @brief      Gets the path to the object_states folder.
+     *
+     * @param[in]  num_moves  The number of moves made on the board
+     *
+     * @return     The path to the object_states folder.
+     *
+     * @note       The return value depends on target of the global makefile
+     */
+    // GCOVR_EXCL_START
+    string getPath(int num_moves)
+    {
+        const unsigned long maxDir = 260;
+        char currentDir[maxDir];
+        GetCurrentDirectory(maxDir, currentDir);
+
+        return string(currentDir).find("GUI") != string::npos ? "object_states/move" + to_string(num_moves) + ".txt" 
+                                                              : "GUI/object_states/move" + to_string(num_moves) + ".txt"; 
+    }
+    // GCOVR_EXCL_STOP
 } // unnamed namespace
 
 /*************************************************************************************/
@@ -1522,18 +1528,33 @@ namespace chessCAMO
     }
 
     /**
+     * @brief      Prints the footer message before each move indicating whose
+     *             move it is for the current board representation.
+     *
+     * @param      chess  The chess object
+     */
+    void printFooterMessage(const Chess &chess)
+    {
+        cout << "___________________________________________________" << endl;
+        string message = chess.getTurn() == WHITE ? "White's move" 
+                                                  : "Black's move";
+        chessCAMO::printMessage(message, CYAN);
+    }
+
+    /**
      * @brief      At any moment, the players can either continue, draw, or
      *             resign
      *
-     * @param      chess  The chess object is created
-     * @param      in     Input stream is selected (stdin or file)
+     * @param[in]  clear_screen  Whether the screen should be cleared
+     * @param      chess         The chess object is created
+     * @param      in            Input stream is selected (stdin or file)
      *
      * @pre        None
      *
      * @post       Depending on the users choice, the program either continues
      *             ('y' || 'd' + 'n' || 'u') or terminates ('d' + 'y' || 'r')
      */
-    void drawOrResign(Chess &chess, istream &in)
+    void drawOrResign(bool clear_screen, Chess &chess, istream &in)
     {
         char user_input, draw_reply;
         string message;
@@ -1555,14 +1576,16 @@ namespace chessCAMO
 
         if(std::tolower(user_input) == 'r')
         {
-            message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
-                                                : "\nBlack resigned -> White wins\n";
+            message = chess.getTurn() == WHITE ? "White resigned -> Black wins\n" 
+                                               : "Black resigned -> White wins\n";
             chessCAMO::printMessage(message, CYAN);
             chess.setCheckmate(true); // to end the game
             return;
         }
         else if(std::tolower(user_input) == 'd')
         {
+            chessCAMO::clearScreen(clear_screen);
+            chessCAMO::printBoard(chess.getBoard());
             chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
             in >> draw_reply;
             in.ignore(100, '\n'); // ignore rest of the previous input
@@ -1576,15 +1599,20 @@ namespace chessCAMO
                 in.ignore(100, '\n'); // ignore rest of the previous input
             }
 
+            chessCAMO::clearScreen(clear_screen);
+            chessCAMO::printBoard(chess.getBoard());
+
             if(std::tolower(draw_reply) == 'y')
             {
-                chessCAMO::printMessage("\nGame drawn by agreement\n", CYAN);
+                
+                chessCAMO::printMessage("\nGame drawn by agreement", CYAN);
                 chess.setCheckmate(true); // to end the game
                 return;
             }
             else // std::tolower(draw_reply) == 'n'
             {
                 chessCAMO::printMessage("\nDraw rejected. Game continues...\n", CYAN);
+                chessCAMO::printFooterMessage(chess);
                 return;
             }
         }
@@ -1597,19 +1625,25 @@ namespace chessCAMO
             chessCAMO::restoreObject(chess.getNumMoves(), chess);
 
             // re-print board and display move information
-            cout << "___________________________________________________" << endl;
-            if(chess.getTurn() == WHITE)
-                chessCAMO::printMessage("\n            White's move\n", CYAN);
-            else
-                chessCAMO::printMessage("\n            Black's move\n", CYAN);
-
+            chessCAMO::clearScreen(clear_screen);
             chessCAMO::printBoard(chess.getBoard());
+            chessCAMO::printFooterMessage(chess);
         }
         else // player wants to continue
         {
             return ; // do nothing
         }
     }
+
+    /**
+     * @brief      Clears the screen of the console window using a special
+     *             string instead of a platform specific command
+     *
+     * @param[in]  apply  Whether to in fact clear or not
+     */
+    // GCOV_EXCL_START
+    void clearScreen(bool apply) { cout << (apply ? "\033[2J\033[1;1H" : ""); }
+    // GCOV_EXCL_STOP
 
     /**
      * @brief      Prints the given message ('text') with a given 'color' to

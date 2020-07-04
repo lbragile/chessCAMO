@@ -914,7 +914,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created.</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>If board's state is in checkmate, calls <a class="el" href="class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72" title="Indicates which player won by checkmate via a message to console.">handleCheckmate()</a> to print messages to console indicating the winner. Else, game continues as usual. </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>If board's state is in checkmate, calls <a class="el" href="class_chess.html#a0b8ebc04dfe372d1a0a84cc1f2f98a72" title="Indicates which player won by checkmate via a message to console.">Chess::handleCheckmate()</a> to print messages to console indicating the winner. Else, game continues as usual. </dd></dl>
 
 </div>
 </div>
@@ -934,9 +934,6 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Decide if a move caused a stalemate. </p>
-<dl class="section pre"><dt>Precondition</dt><dd>The chess object is created.</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>Calls <a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9" title="Indicates the game is drawn via a message to console.">handleStalemate()</a> to print messages to console indicating that game is drawn, if needed.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>True if board's state is in stalemate, else False and game continues as usual.</dd></dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created.</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>Calls <a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9" title="Indicates the game is drawn via a message to console.">Chess::handleStalemate()</a> to print messages to console indicating that game is drawn, if needed.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>True if board's state is in stalemate, else False and game continues as usual. </dd></dl>
@@ -986,7 +983,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>Swaps the pieces on the board according to 'src' and 'dest' and proper chess rules, using pieceSwap(.). If a new empty square must be created, this is handled. Returns board representation with the made move. </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>Swaps the pieces on the board according to 'src' and 'dest' and proper chess rules, using <a class="el" href="class_chess.html#a5cbb878d6f40a142d40f1bcddbde9c91" title="Used in Chess::makeMoveForType(int src, int dest) to swap pieces on the board.">Chess::pieceSwap</a>(int src, int dest, vector&lt;Piece*&gt; &amp; board). If a new empty square must be created, this is handled. Returns board representation with the made move. </dd></dl>
 
 </div>
 </div>
@@ -1204,6 +1201,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 
 <p>If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in isCheckmate("single") </p>
+<p>If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in <a class="el" href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0" title="Decide if a move caused a checkmate according to &#39;check_type&#39;.">Chess::isCheckmate</a>("single")</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">piece</td><td>The piece that is attacking the king currently </td></tr>
@@ -1242,6 +1240,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 
 <p>If in a double check, see if the king can move out of check as this is the only valid move option. Used in isCheckmate("double"). </p>
+<p>If in a double check, see if the king can move out of check as this is the only valid move option. Used in <a class="el" href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0" title="Decide if a move caused a checkmate according to &#39;check_type&#39;.">Chess::isCheckmate</a>("double").</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">king</td><td>The king that is being attacked currently</td></tr>

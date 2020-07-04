@@ -10,7 +10,8 @@ var searchData=
   ['chesscamo_14',['chessCAMO',['../namespacechess_c_a_m_o.html',1,'']]],
   ['chess_20header_20file_20_28functions_20_26_20todo_20list_29_15',['Chess Header File (Functions &amp; Todo List)',['../chessheader.html',1,'']]],
   ['chesstest_16',['ChessTest',['../class_chess_test.html',1,'']]],
-  ['color_17',['color',['../class_piece.html#a7dbcb06a7738adf4db8310eefd699759',1,'Piece']]],
-  ['cyan_18',['CYAN',['../chess_8h.html#ad243f93c16bc4c1d3e0a13b84421d760',1,'chess.h']]],
-  ['chesscamo_19',['chessCAMO',['../index.html',1,'']]]
+  ['clearscreen_17',['clearScreen',['../namespacechess_c_a_m_o.html#add24cc279c4902b0dbe57445a79e77c3',1,'chessCAMO']]],
+  ['color_18',['color',['../class_piece.html#a7dbcb06a7738adf4db8310eefd699759',1,'Piece']]],
+  ['cyan_19',['CYAN',['../chess_8h.html#ad243f93c16bc4c1d3e0a13b84421d760',1,'chess.h']]],
+  ['chesscamo_20',['chessCAMO',['../index.html',1,'']]]
 ];

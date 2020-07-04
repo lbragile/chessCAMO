@@ -161,7 +161,7 @@ protected:
                 // prevent asking again after game is over
                 if(!chess.getCheckmate() && !chess.getStalemate())
                 {
-                    chessCAMO::drawOrResign(chess, myfile);
+                    chessCAMO::drawOrResign(false, chess, myfile);
 
                     // drawOrResign can set the checkmate flag to true if player chooses
                     // to resign or draw so if this happens break out of the while loop
