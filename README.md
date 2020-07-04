@@ -8,21 +8,40 @@
 
 The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
 
-[![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits) [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO) [![Active Development](https://img.shields.io/badge/maintenance-active-brightgreen.svg)](https://github.com/lbragile/chessCAMO) [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
+[![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions) [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits) [![Issues](https://img.shields.io/github/issues/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/issues) [![Forks](https://img.shields.io/github/forks/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Stars](https://img.shields.io/github/stars/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO) [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/) [![contributions welcome](https://img.shields.io/badge/contrib-welcome-brightgreen.svg?style=flat)](https://github.com/lbragile/chessCAMO) [![Active Development](https://img.shields.io/badge/maint-active-brightgreen.svg)](https://github.com/lbragile/chessCAMO) [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
+
+<img src="docs/gui.gif" alt="checkmate" style="float: left; zoom:100%;" />
 
 <img src="docs/gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
 
 ## Installation :arrow_down:
 
-### Compiler
+### Graphical User Interface (GUI) :clinking_glasses:
 
-- A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
+#### Compiler
 
-### Clone
+- Can be used **without** any pre-requests besides the files found in this repository :smiley:
+
+#### Clone
 
 - `git clone https://github.com/lbragile/chessCAMO.git`
 
-### Run
+#### Run
+
+- `cd chessCAMO/GUI/`
+- `chessCAMO`
+
+### Console (Windows) :+1:
+
+#### Compiler
+
+- A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
+
+#### Clone
+
+- `git clone https://github.com/lbragile/chessCAMO.git`
+
+#### Run
 
 - `cd chessCAMO`
 - `mingw32-make all_main`
@@ -46,8 +65,8 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 #### Regular Chess: :smirk:
 
 - [ ] Three move repetition (draw) & 50 move rule.
-- [ ] Board representation undo (use queue?).
-- [ ] GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
+- [x] Board representation undo ~~(use queue?)~~ - used serialization.
+- [x] GUI - ~~nice to be able to move pieces with mouse rather than inputting coordinates.~~ in progress (more details for user in the interface will be added).
 
 #### ChessCAMO: :grin:
 

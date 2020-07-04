@@ -8,11 +8,12 @@ var searchData=
   ['getenpassantleft_38',['getEnPassantLeft',['../class_piece.html#a65b29eb2418099c342492bb79279db9d',1,'Piece::getEnPassantLeft()'],['../class_pawn.html#ad8fd028164e4d9928941e0606dbed6cb',1,'Pawn::getEnPassantLeft()']]],
   ['getenpassantright_39',['getEnPassantRight',['../class_piece.html#aa594ec6edfc2de27de78bc8b137ee67f',1,'Piece::getEnPassantRight()'],['../class_pawn.html#a7898f828cbc66fd0767c75be525ce941',1,'Pawn::getEnPassantRight()']]],
   ['getnummoves_40',['getNumMoves',['../class_chess.html#a26a49175588c8c62cc73e6db926d5de7',1,'Chess']]],
-  ['getpiececolor_41',['getPieceColor',['../class_piece.html#a6316c0de84d59b0fb0e11bd12f221fab',1,'Piece']]],
-  ['getpiecemoveinfo_42',['getPieceMoveInfo',['../class_piece.html#aa45de19aea4558aae6b01b2afdb0c0d4',1,'Piece']]],
-  ['getpiecesquare_43',['getPieceSquare',['../class_piece.html#a54ab52846d2b14464743440063aae2c0',1,'Piece']]],
-  ['getpiecetype_44',['getPieceType',['../class_piece.html#ab161779a45e32e9c8a78b08c328f89b8',1,'Piece']]],
-  ['getstalemate_45',['getStalemate',['../class_chess.html#a40a09e12dfa1e412d6de7a4febe1b086',1,'Chess']]],
-  ['getturn_46',['getTurn',['../class_chess.html#a1422b5b3614df52ab63bfbacb4badb6e',1,'Chess']]],
-  ['green_47',['GREEN',['../chess_8h.html#acfbc006ea433ad708fdee3e82996e721',1,'chess.h']]]
+  ['getpath_41',['getPath',['../namespaceanonymous__namespace_02chess_8cpp_03.html#aaef489db0edfd346606c091e745a74a2',1,'anonymous_namespace{chess.cpp}']]],
+  ['getpiececolor_42',['getPieceColor',['../class_piece.html#a6316c0de84d59b0fb0e11bd12f221fab',1,'Piece']]],
+  ['getpiecemoveinfo_43',['getPieceMoveInfo',['../class_piece.html#aa45de19aea4558aae6b01b2afdb0c0d4',1,'Piece']]],
+  ['getpiecesquare_44',['getPieceSquare',['../class_piece.html#a54ab52846d2b14464743440063aae2c0',1,'Piece']]],
+  ['getpiecetype_45',['getPieceType',['../class_piece.html#ab161779a45e32e9c8a78b08c328f89b8',1,'Piece']]],
+  ['getstalemate_46',['getStalemate',['../class_chess.html#a40a09e12dfa1e412d6de7a4febe1b086',1,'Chess']]],
+  ['getturn_47',['getTurn',['../class_chess.html#a1422b5b3614df52ab63bfbacb4badb6e',1,'Chess']]],
+  ['green_48',['GREEN',['../chess_8h.html#acfbc006ea433ad708fdee3e82996e721',1,'chess.h']]]
 ];
