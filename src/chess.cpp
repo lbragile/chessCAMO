@@ -369,6 +369,7 @@ void Chess::makeMove(int src, int dest, istream &in)
                 
                 chessCAMO::printBoard(getBoard());
 
+                cout << "___________________________________________________" << endl;
                 if(getCheck())
                     chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
                 else

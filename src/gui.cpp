@@ -106,6 +106,11 @@ int main()
     outFile << 'q' << endl;
     outFile.close();
 
+    // clear warning file
+    ofstream messageOut(filename_status, ios::trunc);
+    messageOut << "";
+    messageOut.close();
+
     while(window.isOpen())
     {
         Vector2i pos = Mouse::getPosition(window);
@@ -129,6 +134,9 @@ int main()
             {
                 if(e.type == Event::KeyPressed)
                 {
+                    streambuf *coutbuf = cout.rdbuf();
+                    cout.rdbuf(messageOut.rdbuf());
+
                     if(e.key.code == Keyboard::U) 
                     {
                         // decrement move counter by 1 since an illegal move was made 
@@ -142,22 +150,50 @@ int main()
 
                     else if(e.key.code == Keyboard::Escape)
                     {
-                        string message = chess.getTurn() == WHITE ? "White won by Checkmate!"
-                                                                  : "Black won by Checkmate!";
-                        chessCAMO::printMessage(message, CYAN);
+                        string message = chess.getTurn() == WHITE ? "White resigned -> Black wins\n"
+                                                                  : "Black resigned -> White wins\n";
+                        cout << message;
                         chess.setCheckmate(true);
                     }
 
-                    ofstream outFile(filename, ios::trunc);
-                    if(e.key.code == Keyboard::R)
+                    // else if(e.key.code == Keyboard::D)
+                    // {
+                    //     ofstream outFile(filename, ios::trunc);
+                    //     outFile << 'd' << endl;
+                    //     outFile << 'n' << endl;
+                    //     outFile.close();
+
+                    //     ifstream inFile(filename);
+                    //     chessCAMO::drawOrResign(false, chess, inFile);
+                    //     inFile.close();
+                    // }
+
+                    else if(e.key.code == Keyboard::R)
+                    {
+                        ofstream outFile(filename, ios::trunc);
                         outFile << 'r' << endl;
+                        outFile.close();
+                    }
                     else if(e.key.code == Keyboard::B)
+                    {
+                        ofstream outFile(filename, ios::trunc);
                         outFile << 'b' << endl;
+                        outFile.close();
+                    }
                     else if(e.key.code == Keyboard::N)
+                    {
+                        ofstream outFile(filename, ios::trunc);
                         outFile << 'n' << endl;
-                    else // e.key.code == Keyboard::Q
+                        outFile.close();
+                    }
+                    else if(e.key.code == Keyboard::Q)
+                    {
+                        ofstream outFile(filename, ios::trunc);
                         outFile << 'q' << endl;
-                    outFile.close();
+                        outFile.close();
+                    }
+
+                    cout.rdbuf(coutbuf);
                 }
 
                 if(e.type == Event::MouseButtonPressed)
@@ -231,19 +267,44 @@ int main()
             // text
             text_bottom.setCharacterSize(20);
             text_bottom.setFont(font);
-            text_bottom.setFillColor(Color::Yellow);
 
-            ifstream messageIn(filename_status);
-            string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
-
-            for(int i = 0; i < 21; i++)
-               getline(messageIn, second_message, '\n'); 
-
-            text_bottom.setPosition(40, 560);
-            text_bottom.setString("Status:  " + first_message + "    " + second_message);
+            text_bottom.setFillColor(Color::Green);
+            text_bottom.setPosition(30, 560);
+            text_bottom.setString("Status:  ");
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);
+
+            string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
+            
+            text_bottom.setFillColor(Color::Cyan);
+            text_bottom.setPosition(120, 560);
+            text_bottom.setString(first_message);
+            text_bottom.setStyle(Text::Regular);
+            window.draw(text_bottom);
+
+            ifstream messageIn(filename_status);
+            // warning and status update messages are always on line 21
+            for(int i = 0; i < 21; i++)
+               getline(messageIn, second_message, '\n');
             messageIn.close();
+
+            // only print warning if it is one of the following
+            string possible_warnings[] = {"White won by Checkmate!", "Black won by Checkmate!",
+                                          "White has no moves -> Game is Drawn!", "Black has no moves -> Game is Drawn!", 
+                                          "Game drawn by agreement", "Draw rejected. Game continues...",
+                                          "You are in check! Try again...", "You are in double check! Try again...",
+                                          "Check!", "Double Check!"};
+            for(auto warning : possible_warnings)
+            {
+                if(warning == second_message)
+                {
+                    text_bottom.setFillColor(Color::Yellow);
+                    text_bottom.setPosition(260, 560);
+                    text_bottom.setString(second_message);
+                    text_bottom.setStyle(Text::Regular);
+                    window.draw(text_bottom);
+                }
+            }
 
             text_side.setCharacterSize(20);
             text_side.setFont(font);
@@ -251,10 +312,18 @@ int main()
 
             text_side.setPosition(555, 50);
             text_side.setString("To promote, first type \none of the following \ncharacters, then make \nthe move:\n\n"
-                                "1. 'Q' (or 'q') => Queen \n\n"
-                                "2. 'R' (or 'r') => Rook\n\n"
-                                "3. 'N' (or 'n') => Knight\n\n"
-                                "4. 'B' (or 'b') => Bishop");
+                                "1. Q (or q)\n\n"
+                                "2. R (or r)\n\n"
+                                "3. N (or n)\n\n"
+                                "4. B (or b)\n\n");
+            text_side.setStyle(Text::Regular);
+            window.draw(text_side);
+
+            text_side.setPosition(655, 165);
+            text_side.setString("=> Queen\n\n"
+                                "=> Rook\n\n"
+                                "=> Knight\n\n"
+                                "=> Bishop");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
@@ -265,10 +334,10 @@ int main()
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(670, 400);
+            text_side.setPosition(680, 400);
             text_side.setString("Escape\n\n"
-                                "'D' (or 'd')\n\n"
-                                "'U' (or 'u')\n\n");
+                                "D (or d)\n\n"
+                                "U (or u)\n\n");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);            
 
