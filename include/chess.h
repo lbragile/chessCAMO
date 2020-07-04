@@ -1403,20 +1403,37 @@ namespace chessCAMO
  * [![Active Development](https://img.shields.io/badge/maintenance-active-brightgreen.svg)](https://github.com/lbragile/chessCAMO)
  * [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
  * 
+ * <img src="gui.gif" alt="checkmate" style="float: left; zoom:100%;" />
+ * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+ * 
  * <img src="gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
  * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  * 
  * # Installation
  * <hr style="border: 1px solid #EAECEF;">
- * ## Compiler
- * - A GCC/G++ <a href="https://www.ics.uci.edu/ngw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
- * ## Clone
+ * ## Graphical User Interface (GUI)
+ * ### Compiler
+ * - Can be used **without** any pre-requests besides the files found in this repository
+ * 
+ * ### Clone
  * - <span style="background-color:#F3F4F4;">git clone https://github.com/lbragile/chessCAMO.git</span>
- * ## Run
+ * 
+ * ### Run
+ * - <span style="background-color:#F3F4F4;">cd chessCAMO/GUI/</span>
+ * - <span style="background-color:#F3F4F4;">chessCAMO</span>
+ * 
+ * ## Console (Windows)
+ * ### Compiler
+ * - A GCC/G++ <a href="https://www.ics.uci.edu/~pattis/common/handouts/mingweclipse/mingw.html" target="__blank" style="text-decoration: none;">compiler</a> is required!
+ * 
+ * ### Clone
+ * - <span style="background-color:#F3F4F4;">git clone https://github.com/lbragile/chessCAMO.git</span>
+ * 
+ * ### Run
  * - <span style="background-color:#F3F4F4;">cd chessCAMO</span>
  * - <span style="background-color:#F3F4F4;">mingw32-make all_main</span>
  * - <span style="background-color:#F3F4F4;">main</span>
- * 
+ *
  * # Variant's Rules
  * <hr style="border: 1px solid #EAECEF;">
  * 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
@@ -1435,9 +1452,9 @@ namespace chessCAMO
  * <hr style="border: 1px solid #EAECEF;">
  * ### Regular Chess: 
  * - [ ] Three move repetition (draw) & 50 move rule.
- * - [ ] Board representation undo (use queue?).
- * - [ ] Input as PGN rather than two integers (template) - working currently but not really a template.
- * - [ ] GUI - nice to be able to move pieces with mouse rather than inputting coordinates.
+ * - [x] Board representation undo <strike>(use queue?)</strike> - used serialization.
+ * - [x] Input as PGN rather than two integers (template).
+ * - [x] GUI - <strike>nice to be able to move pieces with mouse rather than inputting coordinates.</strike> in progress (more details for user in the interface will be added).
  * 
  * ### ChessCAMO:
  * - [ ] Make piece reservoir (stack).

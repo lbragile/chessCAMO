@@ -66,6 +66,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 - [ ] Three move repetition (draw) & 50 move rule.
 - [x] Board representation undo ~~(use queue?)~~ - used serialization.
+- [x] Input as PGN rather than two integers (template).
 - [x] GUI - ~~nice to be able to move pieces with mouse rather than inputting coordinates.~~ in progress (more details for user in the interface will be added).
 
 #### ChessCAMO: :grin:
