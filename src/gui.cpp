@@ -37,12 +37,8 @@ void getLegalMoves(vector<int> & legalMoves, int src, Chess &chess)
     vector<Piece*> board = chess.getBoard();
 
     for(unsigned int dest = 0; dest < board.size(); dest++)
-    {
         if(board[src]->isLegalMove(dest, chess))
-        {
             legalMoves.push_back(dest);
-        }
-    }
 }
 
 int main()
@@ -54,7 +50,7 @@ int main()
 
     vector<int> legalMoves;
 
-    RenderWindow window(VideoMode(540, 540), "chessCAMO", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(780, 600), "chessCAMO", Style::Titlebar | Style::Close);
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -80,20 +76,34 @@ int main()
 
     drawPieces(pieces, pieceType, chess.getBoard());
 
-    Vector2f size_rect(60.0, 60.0);
-    Vector2f lr_rect(size_rect.x / 2, size_rect.y);
-    Vector2f tb_rect(size_rect.x, size_rect.y / 2);
+    Vector2f size_rect(60.0, 60.0); // main squares
+    Vector2f lr_rect(size_rect.x / 2, size_rect.y); // left and right columns
+    Vector2f tb_rect(size_rect.x, size_rect.y / 2); // top and bottom rows
+
+    Vector2f size_side(240.0, 540.0); // side panel
+    Vector2f size_bottom(780.0, 60.0); // bottom panel
+
     RectangleShape rect(size_rect);
-    Text text;
+    RectangleShape side_rect(size_side);
+    RectangleShape bottom_rect(size_bottom);
+
+    Text text, text_side, text_bottom;
     Font font;
     const int numRows = 10;
     const int numCols = 10;
-    const int distance = 60; //distance between squuares
+    const int distance = 60; //distance between squares
     Color color_dark(211, 211, 211, 255);
     Color color_yellow(255, 255, 153, 255);
     Color color_orange(255, 204, 153, 255);
     Color color_red(255, 204, 204, 255);
-    bool clicked = false;
+    bool clicked = false, move = false;
+    string filename = "../GUI/object_states/promotion.txt";
+
+    // default promotion is Queen (always, even if program ends after another
+    // piece is set)
+    ofstream outFile(filename, ios::trunc);
+    outFile << 'q' << endl;
+    outFile.close();
 
     while(window.isOpen())
     {
@@ -102,6 +112,13 @@ int main()
         vector<Sprite>::const_iterator iter;
 
         Event e;
+
+        Cursor cursor;
+        if(((30 < pos.x && pos.x < 510) || 540 < pos.x) && ((30 < pos.y && pos.y < 510) || pos.y < 0) && cursor.loadFromSystem(sf::Cursor::Hand))
+            window.setMouseCursor(cursor);
+        else if(cursor.loadFromSystem(sf::Cursor::NotAllowed))
+            window.setMouseCursor(cursor);
+
         while(window.pollEvent(e))
         {
             if(e.type == Event::Closed)
@@ -124,13 +141,13 @@ int main()
 
                     else if(e.key.code == Keyboard::Escape)
                     {
-                        string message = chess.getTurn() == WHITE ? "\nWhite resigned -> Black wins\n" 
-                                                                   : "\nBlack resigned -> White wins\n";
+                        string message = chess.getTurn() == WHITE ? "\n      White won by Checkmate!\n\n"
+                                                                  : "\n      Black won by Checkmate!\n\n";
                         chessCAMO::printMessage(message, CYAN);
-                        chess.setCheckmate(true); // to end the game
+                        chess.setCheckmate(true);
                     }
 
-                    ofstream outFile("../GUI/object_states/promotion.txt", ios::trunc);
+                    ofstream outFile(filename, ios::trunc);
                     if(e.key.code == Keyboard::R)
                         outFile << 'r' << endl;
                     else if(e.key.code == Keyboard::B)
@@ -144,31 +161,42 @@ int main()
 
                 if(e.type == Event::MouseButtonPressed)
                 {
-                    if(e.mouseButton.button == Mouse::Left)
+                    if(e.mouseButton.button == Mouse::Left && 30 < pos.x && pos.x < 510 && 30 < pos.y && pos.y < 510)
                     {
                         clicked = true;
                         for(iter = pieces.begin(); iter != pieces.end(); iter++)
-                        {
                             if(iter->getGlobalBounds().contains(pos.x, pos.y))
-                            {
                                 src = iter - pieces.begin();
-                            }
-                        }
 
-                        getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                        if(0 > src || 63 < src)
+                        {
+                            move = false;
+                        }
+                        else
+                        {
+                            move = true;
+                            getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                        }
                     }
                 }
 
                 if(e.type == Event::MouseButtonReleased)
                 {
-                    if(e.mouseButton.button == Mouse::Left)
+                    if(e.mouseButton.button == Mouse::Left && move)
                     {
                         clicked = false;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
 
-                        ifstream in("../GUI/object_states/promotion.txt");
+                        ofstream messageOut("../GUI/object_states/messages.txt", ios::trunc);
+                        streambuf *coutbuf = cout.rdbuf();
+                        cout.rdbuf(messageOut.rdbuf());
+
+                        ifstream in(filename);
                         chess.makeMove(src, dest, in);
                         in.close();
+
+                        cout.rdbuf(coutbuf);
+                        messageOut.close();
 
                         drawPieces(pieces, pieceType, chess.getBoard());
 
@@ -188,13 +216,77 @@ int main()
         // board
         if(font.loadFromFile("font/arial.ttf"))
         {
+            // center the text inside it's bounding box
+            FloatRect textRect = text.getLocalBounds();
+            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
+
+            // -------- side & bottom panels -------- //
+            // // background
+            // bottom_rect.setPosition(0, 540);
+            // bottom_rect.setFillColor(Color(204, 255, 255));
+
+            // side_rect.setPosition(540, 0);
+            // side_rect.setFillColor(Color(204, 255, 204));
+
+            // window.draw(side_rect);
+            // window.draw(bottom_rect);
+
+            // text
+            textRect = text_side.getLocalBounds();
+            text_side.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
+
+            textRect = text_bottom.getLocalBounds();
+            text_bottom.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
+
+            text_bottom.setCharacterSize(20);
+            text_bottom.setFont(font);
+            text_bottom.setFillColor(Color::Yellow);
+
+            ifstream messageIn("../GUI/object_states/messages.txt");
+            string first_message, second_message = chess.getTurn() == WHITE ? "White's move" : "Black's move";
+            getline(messageIn, first_message, '\n');
+            getline(messageIn, first_message, '\n');
+
+            for(int i = 0; i < 23; i++)
+               getline(messageIn, second_message, '\n'); 
+
+            text_bottom.setPosition(160, 570);
+            text_bottom.setString("Status:" + first_message + "    " + second_message);
+            text_bottom.setStyle(Text::Regular);
+            window.draw(text_bottom);
+            messageIn.close();
+
+            text_side.setCharacterSize(20);
+            text_side.setFont(font);
+            text_side.setFillColor(Color::White);
+
+            text_side.setPosition(600, 100);
+            text_side.setString("To promote, first type \none of the following \ncharacters, then make \nthe move:\n\n"
+                                "1. 'Q' (or 'q') => Queen \n\n"
+                                "2. 'R' (or 'r') => Rook\n\n"
+                                "3. 'N' (or 'n') => Knight\n\n"
+                                "4. 'B' (or 'b') => Bishop");
+            text_side.setStyle(Text::Regular);
+            window.draw(text_side);
+
+            text_side.setPosition(600, 450);
+            text_side.setString("Resign:\n\n"
+                                "Offer draw:\n\n"
+                                "Undo Move:\n\n");
+            text_side.setStyle(Text::Regular);
+            window.draw(text_side);
+
+            text_side.setPosition(720, 450);
+            text_side.setString("Escape\n\n"
+                                "'D' (or 'd')\n\n"
+                                "'U' (or 'u')\n\n");
+            text_side.setStyle(Text::Regular);
+            window.draw(text_side);            
+
+            // -------------- main grid -------------- //
             text.setCharacterSize(20);
             text.setFont(font);
             text.setFillColor(Color::Black);
-
-            // center the text inside it's bounding box
-            FloatRect textRect = text.getLocalBounds();
-            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top  + textRect.height/2.0);
 
             string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
             string piece_rank[8] = {"8", "7", "6", "5", "4", "3", "2", "1"};
@@ -251,21 +343,13 @@ int main()
                     else if((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
                     {
                         if(i == 0 && j == 0)
-                        {
                             rect.setPosition(j * distance, i * distance);
-                        }
                         else if(i == 0 && j == 9)
-                        {
                             rect.setPosition(j * distance - size_rect.x/2, i * distance);
-                        }
                         else if(i == 9 && j == 0)
-                        {
                             rect.setPosition(j * distance, i * distance - size_rect.y/2);
-                        }
                         else if(i == 9 && j == 9)
-                        {
                             rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
-                        }
 
                         rect.setSize(Vector2f(size_rect.x/2, size_rect.y/2));
                         rect.setFillColor(color_red);
