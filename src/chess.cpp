@@ -70,7 +70,7 @@ istream & operator >> (istream &in, Chess &chess_object)
     // delete the allocated memory and restore new data
     vector<Piece*> board = chess_object.getBoard();
     for(auto & elem : board)
-        delete elem;
+        delete elem; // GCOVR_EXCL_LINE
 
     string input;
     for(auto & elem : board)
@@ -241,10 +241,12 @@ namespace
         char currentDir[maxDir];
         GetCurrentDirectory(maxDir, currentDir);
 
+        // GCOVR_EXCL_START
         if(string(currentDir).find("GUI") != string::npos)
             return "object_states/move" + to_string(num_moves) + ".txt";
         else
             return "GUI/object_states/move" + to_string(num_moves) + ".txt";
+        // GCOVR_EXCL_STOP
     }
     
 } // unnamed namespace (makes these functions local to this implementation file)
@@ -264,10 +266,10 @@ namespace
 Chess::~Chess()
 {
     for(auto & elem : board)
-        delete elem;
+        delete elem; // GCOVR_EXCL_LINE
 
     for(auto & elem : check_pieces)
-        delete elem;
+        delete elem; // GCOVR_EXCL_LINE
 }
 
 /**
@@ -285,7 +287,7 @@ void Chess::boardInit()
     // initialize the board
     for(unsigned int i = 0; i < board.size(); i++)
     {
-        delete board[i];
+        delete board[i]; // GCOVR_EXCL_LINE
 
         /******************* BLACK *******************/
         if(i < board.size()/4)          // first 2 rows
@@ -326,8 +328,8 @@ void Chess::boardInit()
         }
     }
 
-    delete check_pieces[0];
-    delete check_pieces[1];
+    delete check_pieces[0]; // GCOVR_EXCL_LINE
+    delete check_pieces[1]; // GCOVR_EXCL_LINE
     check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
     check_pieces[1] = new Empty(0, EMPTY, NEUTRAL);
 
@@ -551,12 +553,12 @@ void Chess::makeMoveForType(int src, int dest)
         // delete the pawn that caused en-passant (make it an empty square)
         if(std::abs(src-dest) == 7)
         {
-            delete board[src+sign];
+            delete board[src+sign]; // GCOVR_EXCL_LINE
             board[src+sign] = new Empty(src+sign, EMPTY, NEUTRAL);
         }
         else // std::abs(src-dest) == 9
         {
-            delete board[src-sign];
+            delete board[src-sign]; // GCOVR_EXCL_LINE
             board[src-sign] = new Empty(src-sign, EMPTY, NEUTRAL);
         }
 
@@ -574,7 +576,7 @@ void Chess::makeMoveForType(int src, int dest)
         pieceSwap(src, dest, board);
 
         // Both regular and attacking move
-        delete board[src];
+        delete board[src]; // GCOVR_EXCL_LINE
         board[src] = new Empty(src, EMPTY, NEUTRAL);
     }
 
@@ -677,7 +679,10 @@ bool Chess::needUndoMove(Piece *piece)
     int king_pos_double = findKingPos(piece->getPieceSquare(), *this, false); // same color
 
     if(getCheck())
-        return (switchTurn() == piece->getPieceColor()) && piece->isPossibleMove(king_pos_single, *this);
+    {
+        switchTurn(); // player turn was not switched yet even though move was made
+        return piece->isPossibleMove(king_pos_single, *this);
+    }
     else // getDoubleCheck()
     {
         for(const auto & elem : board)
@@ -843,24 +848,19 @@ bool Piece::isPathFree(int dest, Chess &chess)
     int increment, src = getPieceSquare();
     vector<Piece*> board = chess.getBoard();
 
-    // knight can skip over pieces so it's path is always free
-    if(isKnight()) { return true; }
-    else
+    // get the increment value for the path and see if the squares in (src, dest) are empty
+    increment = incrementChoice(src, dest);
+    if(increment > 0)
     {
-        // get the increment value for the path and see if the squares in (src, dest) are empty
-        increment = incrementChoice(src, dest);
-        if(increment > 0)
+        for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i+=increment)
         {
-            for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i+=increment)
-            {
-                if(!board[i]->isEmpty())
-                    return false;
-            }
-
-            return true;
+            if(!board[i]->isEmpty())
+                return false;
         }
-        else { return false; }
-    } 
+
+        return true;
+    }
+    else { return false; }
 }
 
 /**
@@ -900,8 +900,8 @@ bool Piece::causeCheck(int dest, Chess &chess)
     {
         // push the king and checking piece onto the stack and set the corresponding 
         // object variables (checkStack and setCheck)
-        delete check_pieces[0];
-        delete check_pieces[1];
+        delete check_pieces[0]; // GCOVR_EXCL_LINE
+        delete check_pieces[1]; // GCOVR_EXCL_LINE
 
         switch(board[dest]->getPieceType())
         {
@@ -957,8 +957,8 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
     // double check if 2 pieces are attacking the king
     if(checking_piece_counter == 2)
     {
-        delete check_pieces[0];
-        delete check_pieces[1];
+        delete check_pieces[0]; // GCOVR_EXCL_LINE
+        delete check_pieces[1]; // GCOVR_EXCL_LINE
 
         // make the king last in the vector with both pieces being identical
         check_pieces[0] = new King(king_pos, KING, board[king_pos]->getPieceColor()); 
@@ -1073,25 +1073,25 @@ void Pawn::promotePawn(Chess &chess, istream &in)
         
         if(piece == 'Q' || piece == 'q')
         {
-            delete board[dest];
+            delete board[dest]; // GCOVR_EXCL_LINE
             board[dest] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
         else if(piece == 'R' || piece == 'r')
         {
-            delete board[dest];
+            delete board[dest]; // GCOVR_EXCL_LINE  
             board[dest] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
         else if(piece == 'B' || piece == 'b')
         {
-            delete board[dest];
+            delete board[dest]; // GCOVR_EXCL_LINE 
             board[dest] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
         else if(piece == 'N' || piece == 'n')
         {
-            delete board[dest];
+            delete board[dest]; // GCOVR_EXCL_LINE
             board[dest] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
             break;
         }
