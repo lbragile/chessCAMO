@@ -91,7 +91,7 @@ int main()
     Color color_yellow(255, 255, 153, 255);
     Color color_orange(255, 204, 153, 255);
     Color color_red(255, 204, 204, 255);
-    bool clicked = false; // moved = false;
+    bool clicked = false, draw = false, resign = false; // moved = false;
     string filename = "../GUI/object_states/promotion.txt";
     string filename_status = "../GUI/object_states/status.txt";
 
@@ -125,15 +125,38 @@ int main()
             if(e.type == Event::Closed)
                 window.close();
 
+            // // reset the game
+            // if(e.type == Event::KeyPressed && e.key.code == Keyboard::S)
+            // {
+            //     ofstream messageOut(filename_status, ios::trunc);
+
+            //     // fill up the first 20 lines with junk (status line reads 21st line)
+            //     for(int i = 0; i < 20; i++)
+            //     {
+            //         messageOut << "temp" << endl;
+            //     }
+            //     messageOut << "New Game Started, Good Luck!" << endl;
+                
+            //     messageOut.close();
+
+            //     // restore and print the board
+            //     chessCAMO::restoreObject(0, chess);
+            //     drawPieces(pieces, pieceType, chess.getBoard());
+            // }
+
             if(!chess.getCheckmate() && !chess.getStalemate())
             {
                 if(e.type == Event::KeyPressed)
                 {
-                    streambuf *coutbuf = cout.rdbuf();
-                    cout.rdbuf(messageOut.rdbuf());
-
                     if(e.key.code == Keyboard::U) 
-                    {
+                    {   
+                        ofstream messageOut(filename_status, ios::trunc);
+                        // fill up the first 20 lines with junk (status line reads 21st line)
+                        for(int i = 0; i < 20; i++)
+                            messageOut << "temp" << endl;
+                        messageOut << "Undo move applied" << endl;
+                        messageOut.close();
+
                         // decrement move counter by 1 since an illegal move was made 
                         chess.setNumMoves(chess.getNumMoves()-1);
 
@@ -145,23 +168,40 @@ int main()
 
                     else if(e.key.code == Keyboard::Escape)
                     {
-                        string message = chess.getTurn() == WHITE ? "White resigned -> Black wins\n"
-                                                                  : "Black resigned -> White wins\n";
-                        cout << message;
-                        chess.setCheckmate(true);
+                        ofstream messageOut(filename_status, ios::trunc);
+                        ifstream messageIn(filename_status);
+
+                        streambuf *coutbuf = cout.rdbuf();
+                        cout.rdbuf(messageOut.rdbuf());
+
+                        messageOut << 'r' << endl;
+                        chessCAMO::drawOrResign(false, chess, messageIn);
+
+                        cout.rdbuf(coutbuf);
+                        messageIn.close();
+                        messageOut.close();
+
+                        resign = true;
                     }
 
-                    // else if(e.key.code == Keyboard::D)
-                    // {
-                    //     ofstream outFile(filename, ios::trunc);
-                    //     outFile << 'd' << endl;
-                    //     outFile << 'n' << endl;
-                    //     outFile.close();
+                    else if(e.key.code == Keyboard::D)
+                    {
+                        ofstream messageOut(filename_status, ios::trunc);
+                        ifstream messageIn(filename_status);
 
-                    //     ifstream inFile(filename);
-                    //     chessCAMO::drawOrResign(false, chess, inFile);
-                    //     inFile.close();
-                    // }
+                        streambuf *coutbuf = cout.rdbuf();
+                        cout.rdbuf(messageOut.rdbuf());
+
+                        messageOut << 'd' << endl;
+                        messageOut << 'n' << endl;
+                        chessCAMO::drawOrResign(false, chess, messageIn);
+
+                        cout.rdbuf(coutbuf);
+                        messageIn.close();
+                        messageOut.close();
+
+                        draw = true;
+                    }
 
                     else if(e.key.code == Keyboard::R)
                     {
@@ -187,8 +227,6 @@ int main()
                         outFile << 'q' << endl;
                         outFile.close();
                     }
-
-                    cout.rdbuf(coutbuf);
                 }
 
                 if(e.type == Event::MouseButtonPressed)
@@ -196,6 +234,7 @@ int main()
                     if(e.mouseButton.button == Mouse::Left && 30 < pos.x && pos.x < 510 && 30 < pos.y && pos.y < 510)
                     {
                         clicked = true;
+                        draw = false;
                         for(iter = pieces.begin(); iter != pieces.end(); iter++)
                             if(iter->getGlobalBounds().contains(pos.x, pos.y))
                                 src = iter - pieces.begin();
@@ -257,11 +296,20 @@ int main()
             text_bottom.setPosition(120, 560);
             text_bottom.setString(first_message);
             text_bottom.setStyle(Text::Regular);
-            window.draw(text_bottom);
+            window.draw(text_bottom);               
 
             ifstream messageIn(filename_status);
-            // warning and status update messages are always on line 21
-            for(int i = 0; i < 21; i++)
+            // warning and status update messages are always on line 21 (or line
+            // 23 for resign / line 44 for draw)
+            int line_num;
+            if(draw)
+                line_num = 44;
+            else if(resign)
+                line_num = 23;
+            else
+                line_num = 21;
+
+            for(int i = 0; i < line_num; i++)
                getline(messageIn, second_message, '\n');
             messageIn.close();
 
@@ -270,7 +318,9 @@ int main()
                                           "White has no moves -> Game is Drawn!", "Black has no moves -> Game is Drawn!", 
                                           "Game drawn by agreement", "Draw rejected. Game continues...",
                                           "You are in check! Try again...", "You are in double check! Try again...",
-                                          "Check!", "Double Check!", "Invalid move! Try again..."};
+                                          "Check!", "Double Check!",
+                                          "Invalid move! Try again...", "Undo move applied",
+                                          "White resigned => Black wins", "Black resigned => White wins"};
             for(auto warning : possible_warnings)
             {
                 if(warning == second_message)

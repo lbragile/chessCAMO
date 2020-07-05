@@ -1582,11 +1582,12 @@ namespace chessCAMO
 
         if(std::tolower(user_input) == 'r')
         {
-            message = chess.getTurn() == WHITE ? "White resigned -> Black wins\n" 
-                                               : "Black resigned -> White wins\n";
+            chessCAMO::clearScreen(clear_screen);
+            chessCAMO::printBoard(chess.getBoard());
+            message = chess.getTurn() == WHITE ? "\nWhite resigned => Black wins\n" 
+                                               : "\nBlack resigned => White wins\n";
             chessCAMO::printMessage(message, CYAN);
             chess.setCheckmate(true); // to end the game
-            return;
         }
         else if(std::tolower(user_input) == 'd')
         {
@@ -1610,16 +1611,13 @@ namespace chessCAMO
 
             if(std::tolower(draw_reply) == 'y')
             {
-                
                 chessCAMO::printMessage("\nGame drawn by agreement", CYAN);
                 chess.setCheckmate(true); // to end the game
-                return;
             }
             else // std::tolower(draw_reply) == 'n'
             {
                 chessCAMO::printMessage("\nDraw rejected. Game continues...\n", CYAN);
                 chessCAMO::printFooterMessage(chess);
-                return;
             }
         }
         else if(std::tolower(user_input) == 'u')
@@ -1635,10 +1633,7 @@ namespace chessCAMO
             chessCAMO::printBoard(chess.getBoard());
             chessCAMO::printFooterMessage(chess);
         }
-        else // player wants to continue
-        {
-            return ; // do nothing
-        }
+        else { return ; } // do nothing, player wants to continue
     }
 
     /**
