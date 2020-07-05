@@ -318,7 +318,7 @@ int main()
                                           "White has no moves -> Game is Drawn!", "Black has no moves -> Game is Drawn!", 
                                           "Game drawn by agreement", "Draw rejected. Game continues...",
                                           "You are in check! Try again...", "You are in double check! Try again...",
-                                          "Check!", "Double Check!",
+                                          "Check!", "Double Check!", "You must move your king!", 
                                           "Invalid move! Try again...", "Undo move applied",
                                           "White resigned => Black wins", "Black resigned => White wins"};
             for(auto warning : possible_warnings)

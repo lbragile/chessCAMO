@@ -419,7 +419,10 @@ bool Chess::makeMove(int src, int dest, istream &in)
     else
     {
         chessCAMO::printBoard(board);
-        chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
+        if(getDoubleCheck())
+            chessCAMO::printMessage("\nYou must move your king!\n", YELLOW);
+        else
+            chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
         chessCAMO::printFooterMessage("'s move", *this);
         return false;
     }
@@ -860,8 +863,11 @@ bool Piece::isPathFree(int dest, const Chess &chess)
  */
 bool Piece::isLegalMove(int dest, Chess &chess)
 {
-    return 0 <= dest && dest <= 63 && getPieceSquare() != dest && 
-           isPossibleMove(dest, chess) && !isPinned(dest, chess) && !movedIntoCheck(dest, chess);
+    if(chess.getDoubleCheck() && !isKing())
+        return false;
+    else
+        return 0 <= dest && dest <= 63 && getPieceSquare() != dest && 
+               isPossibleMove(dest, chess) && !isPinned(dest, chess) && !movedIntoCheck(dest, chess);
 }
 
 /**
