@@ -197,7 +197,7 @@ namespace
      *             its coordinates else, return -1 to indicate that there is
      *             either no piece or multiple pieces in the path.
      */
-    int squareOfPieceInPath(int src, int dest, Chess &chess);
+    int squareOfPieceInPath(int src, int dest, const Chess &chess);
 
     /**
      * @brief      Used to determine the increment to use when moving a piece
@@ -224,7 +224,7 @@ namespace
      * @return     Returns the coordinate position of the king, based on the
      *             current board representation and color determined by 'enemy'.
      */
-    int findKingPos(int src, Chess &chess, bool enemy); 
+    int findKingPos(int src, const Chess &chess, bool enemy); 
 
     /**
      * @brief      Gets the path to the object_states folder.
@@ -323,7 +323,7 @@ void Chess::boardInit()
     // printing the board and letting user know whose turn it is
     // white always starts first in chess!
     chessCAMO::printBoard(getBoard());
-    chessCAMO::printFooterMessage(*this);
+    chessCAMO::printFooterMessage("'s move", *this);
 
     // serializing the object to a file for later re-use
     chessCAMO::saveObject(getNumMoves(), *this);
@@ -394,14 +394,13 @@ bool Chess::makeMove(int src, int dest, istream &in)
         if(dest/8 == 0 || dest/8 == 7)
             board[dest]->promotePawn(*this, in);
 
-        // check for checkmates..
         // did the move cause a double check?
         if(board[src]->causeDoubleCheck(dest, *this)) 
-            isCheckmate("double");
+            isCheckmate("double"); // .. and for checkmate
 
         // did the move cause a check?
         else if(board[src]->causeCheck(dest, *this)) 
-            isCheckmate("single");
+            isCheckmate("single"); // .. and for checkmate
 
         // check for stalemate
         if(isStalemate()) 
@@ -421,7 +420,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
     {
         chessCAMO::printBoard(board);
         chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
-        chessCAMO::printFooterMessage(*this);
+        chessCAMO::printFooterMessage("'s move", *this);
         return false;
     }
 }
@@ -584,7 +583,7 @@ void Chess::makeMoveForType(int src, int dest)
  *
  * @post       Swaps the pieces on the board according to 'src' and 'dest'.
  */
-void Chess::pieceSwap(int src, int dest, vector<Piece*> & board)
+void Chess::pieceSwap(int src, int dest, vector<Piece*> &board)
 {
     board[src]->setPieceSquare(dest);
     board[dest]->setPieceSquare(src);
@@ -607,7 +606,7 @@ void Chess::handleChangeTurn()
         chessCAMO::printBoard(getBoard());
 
     if(!getCheckmate() && !getStalemate())
-        chessCAMO::printFooterMessage(*this);
+        chessCAMO::printFooterMessage("'s move", *this);
 }
 
 /**
@@ -621,10 +620,7 @@ void Chess::handleChangeTurn()
 void Chess::handleCheckmate()
 {
     chessCAMO::printBoard(getBoard());
-    cout << "___________________________________________________" << endl;
-    string message = getTurn() == WHITE ? "White won by Checkmate!\n"
-                                        : "Black won by Checkmate!\n";
-    chessCAMO::printMessage(message, CYAN);
+    chessCAMO::printFooterMessage(" won by Checkmate!\n", *this);
     setCheckmate(true);
 }
 
@@ -637,10 +633,7 @@ void Chess::handleCheckmate()
 void Chess::handleStalemate()
 {
     chessCAMO::printBoard(getBoard());
-    cout << "___________________________________________________" << endl;
-    string message = switchTurn() == WHITE ? "White has no moves -> Game is Drawn!\n"   
-                                           : "Black has no moves -> Game is Drawn!\n";
-    chessCAMO::printMessage(message, CYAN);
+    chessCAMO::printFooterMessage(" won by Checkmate!\n", *this);
     setStalemate(true);
 }
 
@@ -782,7 +775,7 @@ pieceColor Chess::switchTurn() { return getTurn() == WHITE ? BLACK : WHITE; }
  * @return     True if source piece color matches destination piece color, False
  *             otherwise.
  */
-bool Piece::isSameColor(int dest, Chess &chess)
+bool Piece::isSameColor(int dest, const Chess &chess)
 {
 
     vector<Piece*> board = chess.getBoard();
@@ -802,7 +795,7 @@ bool Piece::isSameColor(int dest, Chess &chess)
  *             cause the path (pinning piece -> king from pinned piece side) to
  *             be free, False otherwise.
  */
-bool Piece::isPinned(int dest, Chess &chess)
+bool Piece::isPinned(int dest, const Chess &chess)
 {
     int king_pos, src = getPieceSquare();
     vector<Piece*> board = chess.getBoard();
@@ -834,7 +827,7 @@ bool Piece::isPinned(int dest, Chess &chess)
  * @return     True if squares along the path (src, dest) are empty, False
  *             otherwise.
  */
-bool Piece::isPathFree(int dest, Chess &chess)
+bool Piece::isPathFree(int dest, const Chess &chess)
 {
     int increment, src = getPieceSquare();
     vector<Piece*> board = chess.getBoard();
@@ -979,7 +972,7 @@ bool Piece::causeDoubleCheck(int dest, Chess &chess)
  *
  * @return     True if possible move, False otherwise.
  */
-bool Pawn::isPossibleMove(int dest, Chess &chess)
+bool Pawn::isPossibleMove(int dest, const Chess &chess)
 {
     vector<Piece*> board = chess.getBoard();
 
@@ -1058,7 +1051,7 @@ void Pawn::promotePawn(Chess &chess, istream &in)
 
     while(true)
     {
-        chessCAMO::printMessage("\nWhich Piece: Q/q | R/r | B/b | N/n? ", PINK);
+        chessCAMO::printMessage("Which Piece: Q/q | R/r | B/b | N/n? ", PINK);
 
         in >> piece;
         
@@ -1109,7 +1102,7 @@ void Pawn::promotePawn(Chess &chess, istream &in)
  *
  * @return     True if possible move, False otherwise.
  */
-bool Knight::isPossibleMove(int dest, Chess &chess)
+bool Knight::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1134,7 +1127,7 @@ bool Knight::isPossibleMove(int dest, Chess &chess)
  *
  * @return     True if possible move, False otherwise.
  */
-bool Bishop::isPossibleMove(int dest, Chess &chess)
+bool Bishop::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1157,7 +1150,7 @@ bool Bishop::isPossibleMove(int dest, Chess &chess)
  *
  * @return     True if possible move, False otherwise.
  */
-bool Rook::isPossibleMove(int dest, Chess &chess)
+bool Rook::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     return ( sameRow(src, dest) || sameCol(src, dest) ) &&
@@ -1179,7 +1172,7 @@ bool Rook::isPossibleMove(int dest, Chess &chess)
  *
  * @return     True if possible move, False otherwise.
  */
-bool Queen::isPossibleMove(int dest, Chess &chess)
+bool Queen::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1203,7 +1196,7 @@ bool Queen::isPossibleMove(int dest, Chess &chess)
  *
  * @return     True if possible move, False otherwise.
  */
-bool King::isPossibleMove(int dest, Chess &chess)
+bool King::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
@@ -1222,7 +1215,7 @@ bool King::isPossibleMove(int dest, Chess &chess)
   *
   * @return     True if able to castle, False otherwise.
   */
-bool King::canCastle(int dest, Chess &chess)
+bool King::canCastle(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int increment = src > dest ? -1 : 1;
@@ -1367,7 +1360,7 @@ namespace
      *             its coordinates else, return -1 to indicate that there is
      *             either no piece or multiple pieces in the path.
      */
-    int squareOfPieceInPath(int src, int dest, Chess &chess)
+    int squareOfPieceInPath(int src, int dest, const Chess &chess)
     {
         int increment;
         vector<Piece*> board = chess.getBoard();
@@ -1425,7 +1418,7 @@ namespace
      * @return     Returns the coordinate position of the king, based on the
      *             current board representation and color determined by 'enemy'.
      */
-    int findKingPos(int src, Chess &chess, bool enemy)
+    int findKingPos(int src, const Chess &chess, bool enemy)
     {
         Piece *temp;
 
@@ -1479,7 +1472,7 @@ namespace chessCAMO
      *             the screen using a corresponding letter inside a formatted
      *             board
      */
-    void printBoard(vector<Piece*> board)
+    void printBoard(const vector<Piece*> &board)
     {
         char piece_char;
         char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
@@ -1537,14 +1530,14 @@ namespace chessCAMO
      * @brief      Prints the footer message before each move indicating whose
      *             move it is for the current board representation.
      *
-     * @param      chess  The chess object
+     * @param[in]  input_message  The input message that will be appended to the final message
+     * @param      chess          The chess object
      */
-    void printFooterMessage(const Chess &chess)
+    void printFooterMessage(string input_message, const Chess &chess)
     {
         cout << "___________________________________________________" << endl;
-        string message = chess.getTurn() == WHITE ? "White's move" 
-                                                  : "Black's move";
-        chessCAMO::printMessage(message, CYAN);
+        string final_message = chess.getTurn() == WHITE ? "White" + input_message : "Black" + input_message;
+        chessCAMO::printMessage(final_message, CYAN);
     }
 
     /**
@@ -1617,7 +1610,7 @@ namespace chessCAMO
             else // std::tolower(draw_reply) == 'n'
             {
                 chessCAMO::printMessage("\nDraw rejected. Game continues...\n", CYAN);
-                chessCAMO::printFooterMessage(chess);
+                chessCAMO::printFooterMessage("'s move", chess);
             }
         }
         else if(std::tolower(user_input) == 'u')
@@ -1631,7 +1624,7 @@ namespace chessCAMO
             // re-print board and display move information
             chessCAMO::clearScreen(clear_screen);
             chessCAMO::printBoard(chess.getBoard());
-            chessCAMO::printFooterMessage(chess);
+            chessCAMO::printFooterMessage("'s move", chess);
         }
         else { return ; } // do nothing, player wants to continue
     }
@@ -1665,7 +1658,7 @@ namespace chessCAMO
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
     }
 
-    void saveObject(int num_moves, const Chess & chess_object)
+    void saveObject(int num_moves, const Chess &chess_object)
     {
         string filename = getPath(num_moves);
         ofstream out(filename, ios::trunc);
@@ -1673,7 +1666,7 @@ namespace chessCAMO
         out.close();
     }
     
-    void restoreObject(int num_moves, Chess & chess_object)
+    void restoreObject(int num_moves, Chess &chess_object)
     {
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)

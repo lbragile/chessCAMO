@@ -164,7 +164,7 @@ public:
      *
      * @note       Default
      */
-    Chess & operator =(const Chess & object) = default;
+    Chess & operator =(const Chess &object) = default;
     /************************************* END *************************************/
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/
@@ -182,7 +182,7 @@ public:
      *
      * @param[in]  board  The current board representation
      */
-    void setBoard(const vector<Piece*> & board) {this->board = board;}
+    void setBoard(const vector<Piece*> &board) {this->board = board;}
 
     /**
      * @brief      (Accessor) Gets the check stack information.
@@ -197,7 +197,7 @@ public:
      * @param[in]  check_pieces  The check stack which contains the board
      *                           representations after each move
      */
-    void setCheckPieces(vector<Piece*> check_pieces) {this->check_pieces = check_pieces;}
+    void setCheckPieces(const vector<Piece*> &check_pieces) {this->check_pieces = check_pieces;}
 
     /**
      * @brief      (Accessor) Gets the check information.
@@ -410,7 +410,7 @@ private:
      *
      * @post       Swaps the pieces on the board according to 'src' and 'dest'.
      */
-    void pieceSwap(int src, int dest, vector<Piece*> & board);
+    void pieceSwap(int src, int dest, vector<Piece*> &board);
 
     /**
      * @brief      Indicates who will move next via a message to console
@@ -734,7 +734,7 @@ public:
      * @return     True if source piece color matches destination piece color,
      *             False otherwise.
      */
-    bool isSameColor(int dest, Chess &chess);
+    bool isSameColor(int dest, const Chess &chess);
     
     /**
      * @brief      Determines if a given piece is pinned to the king by opposing
@@ -747,7 +747,7 @@ public:
      *             cause the path (pinning piece -> king from pinned piece side)
      *             to be free, False otherwise.
      */
-    bool isPinned(int dest, Chess &chess);
+    bool isPinned(int dest, const Chess &chess);
 
     /**
      * @brief      Determines if the path from the piece to its destination is
@@ -759,7 +759,7 @@ public:
      * @return     True if squares along the path (src, dest) are empty, False
      *             otherwise.
      */
-    bool isPathFree(int dest, Chess &chess);
+    bool isPathFree(int dest, const Chess &chess);
 
     /**
      * @brief      Determines if a move is legal based on the rules of chess
@@ -808,7 +808,7 @@ public:
      *             is free, or the piece is capable of making the move. False
      *             otherwise.
      */
-    virtual bool isPossibleMove(int dest, Chess &chess) {return false;}
+    virtual bool isPossibleMove(int dest, const Chess &chess) {return false;}
 
     /**
      * @brief      Pawn attacks opposing pawn with <a
@@ -847,7 +847,7 @@ public:
      *
      * @return     True if able to castle, False otherwise.
      */
-    virtual bool canCastle(int dest, Chess &chess) {return false;}
+    virtual bool canCastle(int dest, const Chess &chess) {return false;}
 
     /**
      * @brief      Did the king move into check?
@@ -939,7 +939,7 @@ public:
      *
      * @return     True if possible move, False otherwise.
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 
     /**
      * @see        virtual Piece::enPassantHandling(int dest, Chess &chess)
@@ -1017,7 +1017,7 @@ public:
      *
      * @return     True if possible move, False otherwise.
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1060,7 +1060,7 @@ public:
      * 
      * \see virtual Piece::isPossibleMove(int dest, Chess &chess)
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1108,7 +1108,7 @@ public:
      *
      * @return     True if possible move, False otherwise.
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1156,7 +1156,7 @@ public:
      *
      * @return     True if possible move, False otherwise.
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 };
 
 /*************************************************************************************/
@@ -1205,7 +1205,7 @@ public:
      *
      * @return     True if possible move, False otherwise.
      */
-    bool isPossibleMove(int dest, Chess &chess) override;
+    bool isPossibleMove(int dest, const Chess &chess) override;
 
     /**
      * @see        virtual Piece::canCastle(int dest, Chess &chess)
@@ -1217,7 +1217,7 @@ public:
      *
      * @return     True if able to castle, False otherwise.
      */
-    bool canCastle(int dest, Chess &chess) override;
+    bool canCastle(int dest, const Chess &chess) override;
 
     /**
      * @see        virtual Piece::movedIntoCheck(int dest, Chess &chess)
@@ -1313,15 +1313,16 @@ namespace chessCAMO
      *             the screen using a corresponding letter inside a formatted
      *             board
      */
-    void printBoard(const vector<Piece*> board); // Print the current board position
+    void printBoard(const vector<Piece*> & board);
 
     /**
      * @brief      Prints the footer message before each move indicating whose
      *             move it is for the current board representation.
      *
-     * @param      chess  The chess object
+     * @param[in]  input_message  The input message that will be appended to the final message
+     * @param      chess          The chess object
      */
-    void printFooterMessage(const Chess &chess);
+    void printFooterMessage(string input_message, const Chess &chess);
 
     /**
      * @brief      At any moment, the players can either continue, draw, or
@@ -1367,7 +1368,7 @@ namespace chessCAMO
      * @param[in]  num_moves     The number of moves made
      * @param[in]  chess_object  The chess object
      */
-    void saveObject(int num_moves, const Chess & chess_object);
+    void saveObject(int num_moves, const Chess &chess_object);
 
     /**
      * @brief      De-serializes an object from a file based on the number of
@@ -1377,7 +1378,7 @@ namespace chessCAMO
      * @param[in]  num_moves     The number of moves made
      * @param      chess_object  The chess object
      */
-    void restoreObject(int num_moves, Chess & chess_object);
+    void restoreObject(int num_moves, Chess &chess_object);
 } // end namespace chessCAMO
 
 #endif // CHESS_H

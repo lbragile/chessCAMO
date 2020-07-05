@@ -106,9 +106,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0da5b792740207e943493b6a559fc6e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pawn.html#a0da5b792740207e943493b6a559fc6e5">setEnPassantRight</a> (bool <a class="el" href="class_pawn.html#ada11e7b38be10d544d44e3f78f319a33">en_passant_right</a>) override</td></tr>
 <tr class="memdesc:a0da5b792740207e943493b6a559fc6e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the piece en-passant ability information for right side.  <a href="class_pawn.html#a0da5b792740207e943493b6a559fc6e5">More...</a><br /></td></tr>
 <tr class="separator:a0da5b792740207e943493b6a559fc6e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3c7b8dd8b141b4d4abe12dc1ca1b352"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pawn.html#ae3c7b8dd8b141b4d4abe12dc1ca1b352">isPossibleMove</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess) override</td></tr>
-<tr class="memdesc:ae3c7b8dd8b141b4d4abe12dc1ca1b352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if possible move.  <a href="class_pawn.html#ae3c7b8dd8b141b4d4abe12dc1ca1b352">More...</a><br /></td></tr>
-<tr class="separator:ae3c7b8dd8b141b4d4abe12dc1ca1b352"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb70488b31c5100d364857f6a8a928b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pawn.html#abb70488b31c5100d364857f6a8a928b4">isPossibleMove</a> (int dest, const <a class="el" href="class_chess.html">Chess</a> &amp;chess) override</td></tr>
+<tr class="memdesc:abb70488b31c5100d364857f6a8a928b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if possible move.  <a href="class_pawn.html#abb70488b31c5100d364857f6a8a928b4">More...</a><br /></td></tr>
+<tr class="separator:abb70488b31c5100d364857f6a8a928b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa65450175814d3c810249e0148db13ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pawn.html#aa65450175814d3c810249e0148db13ed">enPassantHandling</a> (int src, <a class="el" href="class_chess.html">Chess</a> &amp;chess) override</td></tr>
 <tr class="memdesc:aa65450175814d3c810249e0148db13ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the violating pawn if an en-passant move it made.  <a href="class_pawn.html#aa65450175814d3c810249e0148db13ed">More...</a><br /></td></tr>
 <tr class="separator:aa65450175814d3c810249e0148db13ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,15 +175,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac5dd668873cdd154a9ad380dac33e22b inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#ac5dd668873cdd154a9ad380dac33e22b">isPieceBlack</a> ()</td></tr>
 <tr class="memdesc:ac5dd668873cdd154a9ad380dac33e22b inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the piece is black.  <a href="class_piece.html#ac5dd668873cdd154a9ad380dac33e22b">More...</a><br /></td></tr>
 <tr class="separator:ac5dd668873cdd154a9ad380dac33e22b inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7906974cadee8888f19888f9510b7816 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a7906974cadee8888f19888f9510b7816">isSameColor</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
-<tr class="memdesc:a7906974cadee8888f19888f9510b7816 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if 2 pieces have the same color.  <a href="class_piece.html#a7906974cadee8888f19888f9510b7816">More...</a><br /></td></tr>
-<tr class="separator:a7906974cadee8888f19888f9510b7816 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a474c1e8a36696c63dd8ca389a864c7b2 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a474c1e8a36696c63dd8ca389a864c7b2">isPinned</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
-<tr class="memdesc:a474c1e8a36696c63dd8ca389a864c7b2 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given piece is pinned to the king by opposing piece.  <a href="class_piece.html#a474c1e8a36696c63dd8ca389a864c7b2">More...</a><br /></td></tr>
-<tr class="separator:a474c1e8a36696c63dd8ca389a864c7b2 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00abd85c89e4eace3a653c78db795457 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a00abd85c89e4eace3a653c78db795457">isPathFree</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
-<tr class="memdesc:a00abd85c89e4eace3a653c78db795457 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the path from the piece to its destination is empty.  <a href="class_piece.html#a00abd85c89e4eace3a653c78db795457">More...</a><br /></td></tr>
-<tr class="separator:a00abd85c89e4eace3a653c78db795457 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafdc3c41b482660f1d9703a34b86fe34 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#aafdc3c41b482660f1d9703a34b86fe34">isSameColor</a> (int dest, const <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
+<tr class="memdesc:aafdc3c41b482660f1d9703a34b86fe34 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if 2 pieces have the same color.  <a href="class_piece.html#aafdc3c41b482660f1d9703a34b86fe34">More...</a><br /></td></tr>
+<tr class="separator:aafdc3c41b482660f1d9703a34b86fe34 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b2903a085b6e2813b32b74b7ee4f955 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a5b2903a085b6e2813b32b74b7ee4f955">isPinned</a> (int dest, const <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
+<tr class="memdesc:a5b2903a085b6e2813b32b74b7ee4f955 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given piece is pinned to the king by opposing piece.  <a href="class_piece.html#a5b2903a085b6e2813b32b74b7ee4f955">More...</a><br /></td></tr>
+<tr class="separator:a5b2903a085b6e2813b32b74b7ee4f955 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a760fa1544e89fc212bc81b61d0e7d0 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a2a760fa1544e89fc212bc81b61d0e7d0">isPathFree</a> (int dest, const <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
+<tr class="memdesc:a2a760fa1544e89fc212bc81b61d0e7d0 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the path from the piece to its destination is empty.  <a href="class_piece.html#a2a760fa1544e89fc212bc81b61d0e7d0">More...</a><br /></td></tr>
+<tr class="separator:a2a760fa1544e89fc212bc81b61d0e7d0 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecc79244aabc066c69447c72fa7e2b22 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#aecc79244aabc066c69447c72fa7e2b22">isLegalMove</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
 <tr class="memdesc:aecc79244aabc066c69447c72fa7e2b22 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a move is legal based on the rules of chess.  <a href="class_piece.html#aecc79244aabc066c69447c72fa7e2b22">More...</a><br /></td></tr>
 <tr class="separator:aecc79244aabc066c69447c72fa7e2b22 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,9 +193,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aae6fb7bf2fe4ede5d90fd447f54d4fd4 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#aae6fb7bf2fe4ede5d90fd447f54d4fd4">causeDoubleCheck</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
 <tr class="memdesc:aae6fb7bf2fe4ede5d90fd447f54d4fd4 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did the move cause a double check?  <a href="class_piece.html#aae6fb7bf2fe4ede5d90fd447f54d4fd4">More...</a><br /></td></tr>
 <tr class="separator:aae6fb7bf2fe4ede5d90fd447f54d4fd4 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87ab91b6263e5445c104f8e32d8e1bcb inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a87ab91b6263e5445c104f8e32d8e1bcb">canCastle</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
-<tr class="memdesc:a87ab91b6263e5445c104f8e32d8e1bcb inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can the king <a href="https://bit.ly/2XQEXFr" target="__blank">castle</a>?  <a href="class_piece.html#a87ab91b6263e5445c104f8e32d8e1bcb">More...</a><br /></td></tr>
-<tr class="separator:a87ab91b6263e5445c104f8e32d8e1bcb inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52e0a62fceb14e421b2b4c71f096d15d inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#a52e0a62fceb14e421b2b4c71f096d15d">canCastle</a> (int dest, const <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
+<tr class="memdesc:a52e0a62fceb14e421b2b4c71f096d15d inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can the king <a href="https://bit.ly/2XQEXFr" target="__blank">castle</a>?  <a href="class_piece.html#a52e0a62fceb14e421b2b4c71f096d15d">More...</a><br /></td></tr>
+<tr class="separator:a52e0a62fceb14e421b2b4c71f096d15d inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4b66dc7f31adbcb4e902aab5fe71302 inherit pub_methods_class_piece"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_piece.html#ac4b66dc7f31adbcb4e902aab5fe71302">movedIntoCheck</a> (int dest, <a class="el" href="class_chess.html">Chess</a> &amp;chess)</td></tr>
 <tr class="memdesc:ac4b66dc7f31adbcb4e902aab5fe71302 inherit pub_methods_class_piece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did the king move into check?  <a href="class_piece.html#ac4b66dc7f31adbcb4e902aab5fe71302">More...</a><br /></td></tr>
 <tr class="separator:ac4b66dc7f31adbcb4e902aab5fe71302 inherit pub_methods_class_piece"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -451,8 +451,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae3c7b8dd8b141b4d4abe12dc1ca1b352"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3c7b8dd8b141b4d4abe12dc1ca1b352">&#9670;&nbsp;</a></span>isPossibleMove()</h2>
+<a id="abb70488b31c5100d364857f6a8a928b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb70488b31c5100d364857f6a8a928b4">&#9670;&nbsp;</a></span>isPossibleMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,7 +469,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
           <td class="paramname"><em>chess</em>&#160;</td>
         </tr>
         <tr>
@@ -487,7 +487,7 @@ Private Attributes</h2></td></tr>
 
 <p>Determines if possible move. </p>
 <dl class="section note"><dt>Note</dt><dd>Can move 1 or 2 square (if not moved yet) forwards, attack diagonally 1 square, en-passant, and promote.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>virtual <a class="el" href="class_piece.html#a730e03364df92ea313cf2426207c05bb" title="Determine if the piece has a possible move towards the destination square.">Piece::isPossibleMove(int dest, Chess &amp;chess)</a></dd></dl>
+<dl class="section see"><dt>See also</dt><dd>virtual Piece::isPossibleMove(int dest, Chess &amp;chess)</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">dest</td><td>The piece's destination square </td></tr>
@@ -497,7 +497,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if possible move, False otherwise. </dd></dl>
 
-<p>Reimplemented from <a class="el" href="class_piece.html#a730e03364df92ea313cf2426207c05bb">Piece</a>.</p>
+<p>Reimplemented from <a class="el" href="class_piece.html#aae57d85f8ff2f07ee6eb005d5e2ab8f8">Piece</a>.</p>
 
 </div>
 </div>

@@ -7,7 +7,7 @@ var searchData=
   ['setboard_231',['setBoard',['../class_chess.html#a2679734ba5315a4f2136bad327d23167',1,'Chess']]],
   ['setcheck_232',['setCheck',['../class_chess.html#a3f1a3cceef830ccfe3a87d9922f0f134',1,'Chess']]],
   ['setcheckmate_233',['setCheckmate',['../class_chess.html#a13d1c4de3670e50b7b94d0e99e34e5a3',1,'Chess']]],
-  ['setcheckpieces_234',['setCheckPieces',['../class_chess.html#a768a7a389ec33b3513d223baf5948402',1,'Chess']]],
+  ['setcheckpieces_234',['setCheckPieces',['../class_chess.html#a126fc4fef1d8c2dcb3a8b4e1190062fb',1,'Chess']]],
   ['setdoublecheck_235',['setDoubleCheck',['../class_chess.html#a665f7ac16f6b642b99631c618216f08f',1,'Chess']]],
   ['setenpassantleft_236',['setEnPassantLeft',['../class_piece.html#afc63ffa09bdedc0284bea726ff8ddba1',1,'Piece::setEnPassantLeft()'],['../class_pawn.html#a309323c2f26e2619ad3b7a8f06f82bc1',1,'Pawn::setEnPassantLeft()']]],
   ['setenpassantright_237',['setEnPassantRight',['../class_piece.html#a2dd8fee345cfc99d9a1f9f7ee3e07349',1,'Piece::setEnPassantRight()'],['../class_pawn.html#a0da5b792740207e943493b6a559fc6e5',1,'Pawn::setEnPassantRight()']]],
@@ -20,6 +20,6 @@ var searchData=
   ['setturn_244',['setTurn',['../class_chess.html#aa14266c2293dda5038b0741c7df74382',1,'Chess']]],
   ['setup_245',['SetUp',['../class_chess_test.html#ac12dd0fca1f6659df424a94f5828cff8',1,'ChessTest']]],
   ['singlecheckpieceiterator_246',['singleCheckPieceIterator',['../class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1',1,'Chess']]],
-  ['squareofpieceinpath_247',['squareOfPieceInPath',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a22a816c17174dd9c8863894cc61c0617',1,'anonymous_namespace{chess.cpp}']]],
+  ['squareofpieceinpath_247',['squareOfPieceInPath',['../namespaceanonymous__namespace_02chess_8cpp_03.html#ad8862350923935b225b8801d2ee4eb17',1,'anonymous_namespace{chess.cpp}']]],
   ['switchturn_248',['switchTurn',['../class_chess.html#aebac8aa746ad9e6994fa0c43831f4251',1,'Chess']]]
 ];

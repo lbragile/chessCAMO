@@ -7,8 +7,8 @@ var searchData=
   ['piecetype_88',['pieceType',['../chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549',1,'chess.h']]],
   ['pink_89',['PINK',['../chess_8h.html#ada419fe3b48fcf19daed7cc57ccf1174',1,'chess.h']]],
   ['preprocessinput_90',['preProcessInput',['../namespacechess_c_a_m_o.html#a011d5021afd7d9ab7cfc0e15f15d2f23',1,'chessCAMO']]],
-  ['printboard_91',['printBoard',['../namespacechess_c_a_m_o.html#ae858fc0be7d53897800f510c8cdcb912',1,'chessCAMO::printBoard(const vector&lt; Piece * &gt; board)'],['../namespacechess_c_a_m_o.html#acaf539421e4d22c645b7c764b3dc286e',1,'chessCAMO::printBoard(vector&lt; Piece * &gt; board)']]],
-  ['printfootermessage_92',['printFooterMessage',['../namespacechess_c_a_m_o.html#a2756a3f89fc36e2d6ace5962f8c7a18b',1,'chessCAMO']]],
+  ['printboard_91',['printBoard',['../namespacechess_c_a_m_o.html#a639e125cd734b4dd09cef6dd1cfeafbf',1,'chessCAMO']]],
+  ['printfootermessage_92',['printFooterMessage',['../namespacechess_c_a_m_o.html#a0af30612683f72baaf0838a0d6653e7f',1,'chessCAMO']]],
   ['printmessage_93',['printMessage',['../namespacechess_c_a_m_o.html#af39e7057e0eb51f78ea1466ec4d1e678',1,'chessCAMO']]],
   ['promotepawn_94',['promotePawn',['../class_piece.html#ac7c04156b0d4bd8d9bdc682ebf7a1b61',1,'Piece::promotePawn()'],['../class_pawn.html#a347bf5d82282cb8eed1ed7f2b2a5b467',1,'Pawn::promotePawn()']]]
 ];
