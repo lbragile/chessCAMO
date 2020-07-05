@@ -142,9 +142,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab64de78c01967188afa372f417a2325d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab64de78c01967188afa372f417a2325d">boardInit</a> ()</td></tr>
 <tr class="memdesc:ab64de78c01967188afa372f417a2325d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the pieces on the board at their correct starting positions.  <a href="class_chess.html#ab64de78c01967188afa372f417a2325d">More...</a><br /></td></tr>
 <tr class="separator:ab64de78c01967188afa372f417a2325d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac149ff524cf6e5409652a6263570008a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ac149ff524cf6e5409652a6263570008a">makeMove</a> (int src, int dest, istream &amp;in)</td></tr>
-<tr class="memdesc:ac149ff524cf6e5409652a6263570008a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a piece on the board from 'src' to 'dest' if conditions for a legal move are met.  <a href="class_chess.html#ac149ff524cf6e5409652a6263570008a">More...</a><br /></td></tr>
-<tr class="separator:ac149ff524cf6e5409652a6263570008a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2fad7a99614db0b4c45982879e68197"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#af2fad7a99614db0b4c45982879e68197">makeMove</a> (int src, int dest, istream &amp;in)</td></tr>
+<tr class="memdesc:af2fad7a99614db0b4c45982879e68197"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a piece on the board from 'src' to 'dest' if conditions for a legal move are met.  <a href="class_chess.html#af2fad7a99614db0b4c45982879e68197">More...</a><br /></td></tr>
+<tr class="separator:af2fad7a99614db0b4c45982879e68197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb419f9d3c34d47519ff38b3180747a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0">isCheckmate</a> (string check_type)</td></tr>
 <tr class="memdesc:aeb419f9d3c34d47519ff38b3180747a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decide if a move caused a checkmate according to 'check_type'.  <a href="class_chess.html#aeb419f9d3c34d47519ff38b3180747a0">More...</a><br /></td></tr>
 <tr class="separator:aeb419f9d3c34d47519ff38b3180747a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -844,14 +844,14 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ac149ff524cf6e5409652a6263570008a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac149ff524cf6e5409652a6263570008a">&#9670;&nbsp;</a></span>makeMove()</h2>
+<a id="af2fad7a99614db0b4c45982879e68197"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2fad7a99614db0b4c45982879e68197">&#9670;&nbsp;</a></span>makeMove()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Chess::makeMove </td>
+          <td class="memname">bool Chess::makeMove </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>src</em>, </td>
@@ -886,7 +886,8 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created.</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>The pieces at 'src' and 'dest' positions are swapped. If needed (attacking, castling, etc.) an empty square is made. The board's state is updated to indicate that the move occured. On failure, an error message is printed and user is asked to retry. </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>The pieces at 'src' and 'dest' positions are swapped. If needed (attacking, castling, etc.) an empty square is made. The board's state is updated to indicate that the move occured. On failure, an error message is printed and user is asked to retry.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if move was made, False otherwise. </dd></dl>
 
 </div>
 </div>

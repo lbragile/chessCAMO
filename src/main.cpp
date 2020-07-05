@@ -79,7 +79,7 @@ int main()
 
         // makes the corresponding move and updates the board state on the console after clearing it
         chessCAMO::clearScreen(true);
-        chess.makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), cin);
+        chess.makeMove(chessCAMO::preProcessInput(src), chessCAMO::preProcessInput(dest), cin); // return value isn't used
 
         // prevent asking again after game is over
         if(!chess.getCheckmate() && !chess.getStalemate())

@@ -311,8 +311,10 @@ public:
      *             The board's state is updated to indicate that the move
      *             occured. On failure, an error message is printed and user is
      *             asked to retry.
+     *
+     * @return     True if move was made, False otherwise.
      */
-    void makeMove(int src, int dest, istream &in); 
+    bool makeMove(int src, int dest, istream &in); 
 
     /**
      * @brief      Decide if a move caused a checkmate according to 'check_type'

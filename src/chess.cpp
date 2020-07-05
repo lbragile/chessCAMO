@@ -343,8 +343,10 @@ void Chess::boardInit()
  *             (attacking, castling, etc.) an empty square is made. The board's
  *             state is updated to indicate that the move occured. On failure,
  *             an error message is printed and user is asked to retry.
+ *             
+ * @return     True if move was made, False otherwise.
  */
-void Chess::makeMove(int src, int dest, istream &in)
+bool Chess::makeMove(int src, int dest, istream &in)
 {    
     vector<Piece*> board = getBoard(); 
     vector<Piece*> check_pieces = getCheckPieces();
@@ -375,7 +377,7 @@ void Chess::makeMove(int src, int dest, istream &in)
                 else
                     chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
 
-                return;
+                return false;
             }
 
             // did not return so set the appropriate member variables
@@ -413,11 +415,14 @@ void Chess::makeMove(int src, int dest, istream &in)
 
         // save the object in the corresponding file
         chessCAMO::saveObject(getNumMoves(), *this);
+        return true;
     }
     else
     {
         chessCAMO::printBoard(board);
-        chessCAMO::printMessage("Invalid move! Try again...\n", YELLOW);
+        chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
+        chessCAMO::printFooterMessage(*this);
+        return false;
     }
 }
 

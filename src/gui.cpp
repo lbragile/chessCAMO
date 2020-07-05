@@ -80,12 +80,7 @@ int main()
     Vector2f lr_rect(size_rect.x / 2, size_rect.y); // left and right columns
     Vector2f tb_rect(size_rect.x, size_rect.y / 2); // top and bottom rows
 
-    Vector2f size_side(240.0, 540.0); // side panel
-    Vector2f size_bottom(780.0, 60.0); // bottom panel
-
     RectangleShape rect(size_rect);
-    RectangleShape side_rect(size_side);
-    RectangleShape bottom_rect(size_bottom);
 
     Text text, text_side, text_bottom;
     Font font;
@@ -96,7 +91,7 @@ int main()
     Color color_yellow(255, 255, 153, 255);
     Color color_orange(255, 204, 153, 255);
     Color color_red(255, 204, 204, 255);
-    bool clicked = false, move = false;
+    bool clicked = false; // moved = false;
     string filename = "../GUI/object_states/promotion.txt";
     string filename_status = "../GUI/object_states/status.txt";
 
@@ -205,21 +200,13 @@ int main()
                             if(iter->getGlobalBounds().contains(pos.x, pos.y))
                                 src = iter - pieces.begin();
 
-                        if(0 > src || 63 < src)
-                        {
-                            move = false;
-                        }
-                        else
-                        {
-                            move = true;
-                            getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
-                        }
+                        getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
                     }
                 }
 
                 if(e.type == Event::MouseButtonReleased)
                 {
-                    if(e.mouseButton.button == Mouse::Left && move)
+                    if(e.mouseButton.button == Mouse::Left)
                     {
                         clicked = false;
                         dest = int((pos.x / size_rect.x) - 0.5) + 8 * int((pos.y / size_rect.y) - 0.5);
@@ -254,16 +241,6 @@ int main()
         if(font.loadFromFile("font/arial.ttf"))
         {
             // -------- side & bottom panels -------- //
-            // // background
-            // bottom_rect.setPosition(0, 540);
-            // bottom_rect.setFillColor(Color(204, 255, 255));
-
-            // side_rect.setPosition(540, 0);
-            // side_rect.setFillColor(Color(204, 255, 204));
-
-            // window.draw(side_rect);
-            // window.draw(bottom_rect);
-
             // text
             text_bottom.setCharacterSize(20);
             text_bottom.setFont(font);
@@ -293,7 +270,7 @@ int main()
                                           "White has no moves -> Game is Drawn!", "Black has no moves -> Game is Drawn!", 
                                           "Game drawn by agreement", "Draw rejected. Game continues...",
                                           "You are in check! Try again...", "You are in double check! Try again...",
-                                          "Check!", "Double Check!"};
+                                          "Check!", "Double Check!", "Invalid move! Try again..."};
             for(auto warning : possible_warnings)
             {
                 if(warning == second_message)
