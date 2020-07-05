@@ -1406,7 +1406,7 @@ namespace chessCAMO
  * [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
  * 
  * <img src="gui.gif" alt="checkmate" style="float: left; zoom:100%;" />
- * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+ * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  * 
  * <img src="gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
  * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
