@@ -40,8 +40,8 @@ unit.exe:
 .PHONY: gcov
 gcov: chess.cpp
 	gcov $<
-	gcovr -r . --exclude-throw-branches --html-details -o coverage.html
-	gcovr -r . --exclude-throw-branches --xml -o coverage.xml
+	gcovr -r . --exclude-throw-branches --exclude-unreachable-branches --html-details -o coverage.html
+	gcovr -r . --exclude-throw-branches --exclude-unreachable-branches --xml -o coverage.xml
 	
 	mkdir -p "gcov"
 	mv *.html *.xml "gcov"

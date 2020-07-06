@@ -32,6 +32,30 @@ void drawPieces(vector<Sprite> & pieces, const vector<Sprite> & pieceType, const
     }
 }
 
+void drawReservoir(vector<Sprite> & reservoir, const vector<Sprite> & pieceType)
+{
+    FloatRect shape;
+
+    reservoir[8] = pieceType[1];  // Wr
+    reservoir[6] = pieceType[2];  // Wn
+    reservoir[7] = pieceType[3];  // Wb
+    reservoir[9] = pieceType[4];  // Wq
+    reservoir[5] = pieceType[6];  // Wp
+    reservoir[3] = pieceType[7];  // Br
+    reservoir[1] = pieceType[8];  // Bn
+    reservoir[2] = pieceType[9];  // Bb
+    reservoir[4] = pieceType[10]; // Bq
+    reservoir[0] = pieceType[12]; // Bp
+
+    for(int i = 0; i < 10; i++)
+    {
+        shape = reservoir[i].getGlobalBounds();
+        reservoir[i].setPosition(545, shape.height/2 + (shape.height-12) * i);
+        reservoir[i].setScale((shape.width-12)/shape.width, (shape.height-12)/shape.height);
+    } 
+}
+
+
 void getLegalMoves(vector<int> & legalMoves, int src, Chess &chess)
 {
     vector<Piece*> board = chess.getBoard();
@@ -50,7 +74,7 @@ int main()
 
     vector<int> legalMoves;
 
-    RenderWindow window(VideoMode(780, 600), "chessCAMO", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(840, 600), "chessCAMO", Style::Titlebar | Style::Close);
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -73,7 +97,9 @@ int main()
 
     vector<Sprite> pieceType = {sBlank, sWr, sWn, sWb, sWq, sWk, sWp, sBr, sBn, sBb, sBq, sBk, sBp};
     vector<Sprite> pieces(64);
+    vector<Sprite> reservoir(10);
 
+    drawReservoir(reservoir, pieceType);
     drawPieces(pieces, pieceType, chess.getBoard());
 
     Vector2f size_rect(60.0, 60.0); // main squares
@@ -82,7 +108,7 @@ int main()
 
     RectangleShape rect(size_rect);
 
-    Text text, text_side, text_bottom;
+    Text text, text_side, text_bottom, text_reservoir;
     Font font;
     const int numRows = 10;
     const int numCols = 10;
@@ -337,7 +363,7 @@ int main()
             text_side.setFont(font);
             text_side.setFillColor(Color::White);
 
-            text_side.setPosition(555, 50);
+            text_side.setPosition(615, 50);
             text_side.setString("To promote, first type \none of the following \ncharacters, then make \nthe move:\n\n"
                                 "1. Q (or q)\n\n"
                                 "2. R (or r)\n\n"
@@ -346,7 +372,7 @@ int main()
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(655, 165);
+            text_side.setPosition(715, 165);
             text_side.setString("=> Queen\n\n"
                                 "=> Rook\n\n"
                                 "=> Knight\n\n"
@@ -354,14 +380,14 @@ int main()
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(555, 400);
+            text_side.setPosition(615, 400);
             text_side.setString("Resign:\n\n"
                                 "Offer draw:\n\n"
                                 "Undo Move:\n\n");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(680, 400);
+            text_side.setPosition(740, 400);
             text_side.setString("Escape\n\n"
                                 "D (or d)\n\n"
                                 "U (or u)\n\n");
@@ -471,6 +497,37 @@ int main()
                     window.draw(text);
                 }
             }
+
+            // reservoir rects
+            for(int k = 0; k <= 11; k++)
+            {
+                if(k == 0 || k == 11)
+                {
+                    rect.setSize(Vector2f(size_rect.x, size_rect.y/2));
+                    k == 0 ? rect.setPosition(540, 0) : rect.setPosition(540, 510);
+                    rect.setFillColor(Color(204, 255, 204));
+                }
+                else
+                {
+                    rect.setSize(Vector2f(size_rect.x, size_rect.y-12));
+                    k > 5 ? rect.setFillColor(Color(255, 255, 255)) : rect.setFillColor(Color(224, 224, 224));
+                    rect.setPosition(540, size_rect.x/2 + (k-1) * (distance-12));
+                }
+
+                window.draw(rect);
+
+                if(k == 0)
+                {
+                    text_reservoir.setString("RSVR");
+                    text_reservoir.setCharacterSize(20);
+                    text_reservoir.setFont(font);
+                    text_reservoir.setFillColor(Color::Black);
+                    text_reservoir.setStyle(Text::Bold);
+                    text_reservoir.setPosition(541, 5);
+
+                    window.draw(text_reservoir);
+                }
+            }
         }
         else
         {
@@ -478,7 +535,11 @@ int main()
         }
 
         // pieces
-        for (const auto &piece : pieces)
+        for (const auto & piece : pieces)
+            window.draw(piece);
+
+        // reservoir
+        for (const auto & piece : reservoir)
             window.draw(piece);
 
         window.display();

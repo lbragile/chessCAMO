@@ -543,40 +543,33 @@ void Chess::makeMoveForType(int src, int dest)
         int sign = board[src]->isPieceWhite() ? 1 : -1;
 
         // delete the pawn that caused en-passant (make it an empty square)
-        if(std::abs(src-dest) == 7)
+        if(std::abs(src-dest) == 7 && board[src]->getEnPassantRight())
         {
             delete board[src+sign]; // GCOVR_EXCL_LINE
             board[src+sign] = new Empty(src+sign, EMPTY, NEUTRAL);
         }
-        else // std::abs(src-dest) == 9
+        else if(std::abs(src-dest) == 9 && board[src]->getEnPassantLeft())
         {
             delete board[src-sign]; // GCOVR_EXCL_LINE
             board[src-sign] = new Empty(src-sign, EMPTY, NEUTRAL);
         }
-
-        // after the violating pawn is removed, can make the move
-        pieceSwap(src, dest, board);
     }
 
     // regular or attacking
-    else
-    {
-        // note that the piece moved
-        board[src]->setPieceMoveInfo(true);
+    else { board[src]->setPieceMoveInfo(true); } // note that the piece moved
 
-        // Regular Move
-        pieceSwap(src, dest, board);
-
-        // Both regular and attacking move
-        delete board[src]; // GCOVR_EXCL_LINE
-        board[src] = new Empty(src, EMPTY, NEUTRAL);
-    }
+    // make the move, delete the source square in case have not made
+    // en-passant move (since can choose not to take with en-passant)
+    pieceSwap(src, dest, board);
+    delete board[src]; // GCOVR_EXCL_LINE
+    board[src] = new Empty(src, EMPTY, NEUTRAL);
 
     setBoard(board);
 }
 
 /**
- * @brief      Used in makeMoveForType(.) to swap pieces on the board
+ * @brief      Used in Chess::makeMoveForType(int src, int dest) to swap pieces
+ *             on the board
  *
  * @param[in]  src    The source square of piece
  * @param[in]  dest   The destination square of piece
@@ -1377,7 +1370,7 @@ namespace
         increment = incrementChoice(src, dest);
         if( (board[src]->isRook() && (increment == 1 || increment == 8)) ||
             (board[src]->isBishop() && (increment == 7 || increment == 9)) ||
-            (board[src]->isQueen() && increment > 0) )
+            (board[src]->isQueen() && increment != 0) )
         {
             for(int i = std::min(src, dest)+increment; i < std::max(src, dest); i += increment)
                 if(!board[i]->isEmpty())
@@ -1403,11 +1396,11 @@ namespace
      */
     int incrementChoice(int src, int dest)
     {
-        if(sameRow(src, dest)) // row path
+        if(sameRow(src, dest))          // row path
             return 1;
-        else if(sameCol(src, dest)) // column path
+        else if(sameCol(src, dest))     // column path
             return 8;
-        else if(sameDiag(src, dest)) // diagonal path
+        else if(sameDiag(src, dest))    // diagonal path
             return std::abs(src - dest) % 7 == 0 ? 7 : 9;
         else
             return 0;
