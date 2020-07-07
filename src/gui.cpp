@@ -74,7 +74,7 @@ int main()
 
     vector<int> legalMoves;
 
-    RenderWindow window(VideoMode(840, 600), "chessCAMO", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(600, 700), "chessCAMO", Style::Titlebar | Style::Close);
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -308,7 +308,10 @@ int main()
                 }
 
                 if(clicked)
-                    pieces[src].setPosition(pos.x - size_rect.x / 2, pos.y - size_rect.y / 2);
+                {
+                    if(0 <= src && src <= 63)
+                        pieces[src].setPosition(pos.x - size_rect.x / 2, pos.y - size_rect.y / 2);
+                }
             }  
         }
 
@@ -323,7 +326,7 @@ int main()
             text_bottom.setFont(font);
 
             text_bottom.setFillColor(Color::Green);
-            text_bottom.setPosition(30, 560);
+            text_bottom.setPosition(50, 560);
             text_bottom.setString("Status:  ");
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);
@@ -331,14 +334,14 @@ int main()
             string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
             
             text_bottom.setFillColor(Color::Cyan);
-            text_bottom.setPosition(120, 560);
+            text_bottom.setPosition(140, 560);
             text_bottom.setString(first_message);
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);               
 
             ifstream messageIn(filename_status);
-            // warning and status update messages are always on line 21 (or line
-            // 23 for resign / line 44 for draw)
+            // warning and status update messages are always on line 24 (or line
+            // 26 for resign / line 50 for draw)
             int line_num;
             if(draw)
                 line_num = 50;
@@ -364,7 +367,7 @@ int main()
                 if(warning == second_message)
                 {
                     text_bottom.setFillColor(Color::Yellow);
-                    text_bottom.setPosition(260, 560);
+                    text_bottom.setPosition(280, 560);
                     text_bottom.setString(second_message);
                     text_bottom.setStyle(Text::Regular);
                     window.draw(text_bottom);
@@ -375,36 +378,17 @@ int main()
             text_side.setFont(font);
             text_side.setFillColor(Color::White);
 
-            text_side.setPosition(615, 50);
-            text_side.setString("To promote, first type \none of the following \ncharacters, then make \nthe move:\n\n"
-                                "1. Q (or q)\n\n"
-                                "2. R (or r)\n\n"
-                                "3. N (or n)\n\n"
-                                "4. B (or b)\n\n");
+            text_side.setPosition(50, 600);
+            text_side.setString("To promote, type one of these, then make the move:\n"
+                                "Q/q (Queen) | R/r (Rook) | B/b (Bishop) | N/n (Knight)");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(715, 165);
-            text_side.setString("=> Queen\n\n"
-                                "=> Rook\n\n"
-                                "=> Knight\n\n"
-                                "=> Bishop");
+            text_side.setPosition(50, 640);
+            text_side.setString("--------------------------------------------------------------------\n"
+                                "Resign (Esc) | Offer draw (D/d) | Undo move (U/u)");
             text_side.setStyle(Text::Regular);
-            window.draw(text_side);
-
-            text_side.setPosition(615, 400);
-            text_side.setString("Resign:\n\n"
-                                "Offer draw:\n\n"
-                                "Undo Move:\n\n");
-            text_side.setStyle(Text::Regular);
-            window.draw(text_side);
-
-            text_side.setPosition(740, 400);
-            text_side.setString("Escape\n\n"
-                                "D (or d)\n\n"
-                                "U (or u)\n\n");
-            text_side.setStyle(Text::Regular);
-            window.draw(text_side);            
+            window.draw(text_side);          
 
             // -------------- main grid -------------- //
             // center the text inside it's bounding box
@@ -549,12 +533,12 @@ int main()
             int i = 0;
             for(int reserves_num : num_left)
             {
-                text_reservoir.setString(to_string(reserves_num));
-                text_reservoir.setCharacterSize(15);
+                text_reservoir.setString("x" + to_string(reserves_num));
+                text_reservoir.setCharacterSize(12);
                 text_reservoir.setFont(font);
-                i > 4 ? text_reservoir.setFillColor(Color(255, 128, 0)) : text_reservoir.setFillColor(Color(0, 0, 255));
+                i > 4 ? text_reservoir.setFillColor(Color(0, 102, 0)) : text_reservoir.setFillColor(Color(204, 0, 0));
                 text_reservoir.setStyle(Text::Regular);
-                text_reservoir.setPosition(590, 45 + i*48);
+                text_reservoir.setPosition(585, 45 + i*48);
 
                 window.draw(text_reservoir);
                 i++;

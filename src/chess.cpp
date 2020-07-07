@@ -484,8 +484,9 @@ bool Chess::useReservoirPiece(int src, int dest)
     // cannot replace king
     if(current_board[dest]->isKing()) { return false; }
 
-    // if the piece you want to replace matches your color, then go ahead 'src'
-    // must be in [110, 114] which is ascii values of the reservoir pairs
+    // if the piece you want to replace matches your color and your replacement
+    // piece is not of the same type, then go ahead. 'src' must be in [110, 114]
+    // which is ascii values of the reservoir pairs
     else if(current_board[dest]->getPieceColor() == current_turn)
     {
         for(int i = 0; i < 10; i++)
@@ -501,19 +502,34 @@ bool Chess::useReservoirPiece(int src, int dest)
                 switch( std::tolower(current_reservoir[i].second) )
                 {
                     case 'q':
-                        current_board[dest] = new Queen(dest, QUEEN, getTurn());
+                        if(current_board[dest]->isQueen())
+                            return false;
+                        else
+                            current_board[dest] = new Queen(dest, QUEEN, getTurn());
                         break;
                     case 'r':
-                        current_board[dest] = new Rook(dest, ROOK, getTurn());
+                        if(current_board[dest]->isRook())
+                            return false;
+                        else
+                            current_board[dest] = new Rook(dest, ROOK, getTurn());
                         break;
                     case 'o': // bishop
-                        current_board[dest] = new Bishop(dest, BISHOP, getTurn());
+                        if(current_board[dest]->isBishop())
+                            return false;
+                        else
+                            current_board[dest] = new Bishop(dest, BISHOP, getTurn());
                         break;
                     case 'n':
-                        current_board[dest] = new Knight(dest, KNIGHT, getTurn());
+                        if(current_board[dest]->isKnight())
+                            return false;
+                        else
+                            current_board[dest] = new Knight(dest, KNIGHT, getTurn());
                         break;
-                    default: // pawn 'p'
-                        current_board[dest] = new Pawn(dest, PAWN, getTurn());
+                    default: // pawn 'p' (cannot be placed in a promoting square)
+                        if(current_board[dest]->isPawn() || (dest/8 == 0 && current_turn == WHITE) || (dest/8 == 7 && current_turn == BLACK))
+                            return false;
+                        else
+                            current_board[dest] = new Pawn(dest, PAWN, getTurn());
                 }
 
                 // since the piece is brand new, can set its relevant values
