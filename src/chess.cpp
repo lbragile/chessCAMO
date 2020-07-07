@@ -52,6 +52,9 @@ ostream & operator << (ostream &out, const Chess &chess_object)
 
     out << chess_object.getCheck() << endl << chess_object.getDoubleCheck() << endl << chess_object.getCheckmate() << endl << chess_object.getStalemate() << endl;
 
+    for(const auto & elem : chess_object.getReservoir())
+        out << elem.first << elem.second << endl;
+
     out << chess_object.getTurn() << endl;
 
     return out;
@@ -122,6 +125,15 @@ istream & operator >> (istream &in, Chess &chess_object)
     chess_object.setCheckmate(input == "1");
     in >> input;
     chess_object.setStalemate(input == "1");
+
+    vector<pair<int, char>> currernt_reservoir(10);
+    for(int i = 0; i < 10; i++)
+    {
+        in >> input;
+        currernt_reservoir[i] = std::make_pair(input[0] - '0', input[1]);   
+    }
+    
+    chess_object.setReservoir(currernt_reservoir);
 
     in >> input;
     chess_object.setTurn((pieceColor) (input[0] - '0'));
@@ -242,6 +254,28 @@ namespace
 /*                              CHESS CLASS - MEMBER FUNCTIONS                       */
 /*************************************************************************************/
 /**
+ * @brief      Default constructor with default board parameter initialization -
+ *             Constructs a new instance.
+ */
+Chess::Chess()
+    : board(64), check_pieces(2), flags(4), reservoir(10), turn{WHITE}, num_moves{0} 
+{
+    for(int i = 0; i < 10; i++)
+    {
+        if(i == 0 || i == 5)
+            reservoir[i] = i == 0 ? std::make_pair(4, 'p') :  std::make_pair(4, 'P');
+        else if(i == 1 || i == 6)
+            reservoir[i] = i == 1 ? std::make_pair(2, 'n') :  std::make_pair(2, 'N');
+        else if(i == 2 || i == 7)
+            reservoir[i] = i == 2 ? std::make_pair(2, 'o') :  std::make_pair(2, 'O'); // bishop
+        else if(i == 3 || i == 8)
+            reservoir[i] = i == 3 ? std::make_pair(1, 'r') :  std::make_pair(1, 'R');
+        else
+            reservoir[i] = i == 4 ? std::make_pair(1, 'q') :  std::make_pair(1, 'Q');
+    }
+}
+
+/**
  * @brief      Destroys the object and frees any dynamically allocated
  *             memory ('new') to avoid memory leaks.
  *
@@ -274,8 +308,6 @@ void Chess::boardInit()
     // initialize the board
     for(unsigned int i = 0; i < board.size(); i++)
     {
-        delete board[i]; // GCOVR_EXCL_LINE
-
         /******************* BLACK *******************/
         if(i < board.size()/4)          // first 2 rows
         {
@@ -315,14 +347,12 @@ void Chess::boardInit()
         }
     }
 
-    delete check_pieces[0]; // GCOVR_EXCL_LINE
-    delete check_pieces[1]; // GCOVR_EXCL_LINE
     check_pieces[0] = new Empty(0, EMPTY, NEUTRAL);
     check_pieces[1] = new Empty(0, EMPTY, NEUTRAL);
 
     // printing the board and letting user know whose turn it is
     // white always starts first in chess!
-    chessCAMO::printBoard(getBoard());
+    chessCAMO::printBoard(getBoard(), getReservoir());
     chessCAMO::printFooterMessage("'s move", *this);
 
     // serializing the object to a file for later re-use
@@ -351,7 +381,11 @@ bool Chess::makeMove(int src, int dest, istream &in)
     vector<Piece*> board = getBoard(); 
     vector<Piece*> check_pieces = getCheckPieces();
 
-    if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
+    // first check to see if reservoir is used
+    // if so, there is nothing to do as everything is handled there
+    // else, check regular chess functionality
+    if(110 <= src && src <= 114 && useReservoirPiece(src, dest)) { return true; }
+    else if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
         chessCAMO::restoreObject(getNumMoves(), *this);
 
@@ -369,7 +403,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
                 // restore previous object
                 chessCAMO::restoreObject(getNumMoves(), *this);
                 
-                chessCAMO::printBoard(getBoard());
+                chessCAMO::printBoard(getBoard(), getReservoir());
 
                 cout << "___________________________________________________" << endl;
                 if(getCheck())
@@ -418,7 +452,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
     }
     else
     {
-        chessCAMO::printBoard(board);
+        chessCAMO::printBoard(board, getReservoir());
         if(getDoubleCheck())
             chessCAMO::printMessage("\nYou must move your king!\n", YELLOW);
         else
@@ -426,6 +460,86 @@ bool Chess::makeMove(int src, int dest, istream &in)
         chessCAMO::printFooterMessage("'s move", *this);
         return false;
     }
+}
+
+/**
+ * @brief      At any turn, a player can replace one of their pieces with a
+ *             piece from the reservoir if the resources are available
+ *
+ * @param[in]  src   The piece's source square (this will be an ASCII code in
+ *                   [110, 114] depending on the character the user enters)
+ * @param[in]  dest  The piece's destination square (piece that will be replaced
+ *                   on the board)
+ *
+ * @return     True if replacement is applied, False otherwise.
+ */
+bool Chess::useReservoirPiece(int src, int dest)
+{
+    chessCAMO::restoreObject(getNumMoves(), *this);
+
+    vector<Piece*> current_board = getBoard();
+    vector<pair<int, char>> current_reservoir = getReservoir();
+    pieceColor current_turn = getTurn();
+
+    // cannot replace king
+    if(current_board[dest]->isKing()) { return false; }
+
+    // if the piece you want to replace matches your color, then go ahead 'src'
+    // must be in [110, 114] which is ascii values of the reservoir pairs
+    else if(current_board[dest]->getPieceColor() == current_turn)
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            if(current_reservoir[i].first > 0 && (int) std::tolower(current_reservoir[i].second) == src &&
+              ( (std::isupper(current_reservoir[i].second) && current_turn == WHITE) || (islower(current_reservoir[i].second) && current_turn == BLACK) ) )
+            {
+                // decrement the piece reservoir count accordingle
+                current_reservoir[i].first -= 1;
+
+                // replace the piece on the board
+                delete current_board[dest]; // GCOV_EXCL_LINE
+                switch( std::tolower(current_reservoir[i].second) )
+                {
+                    case 'q':
+                        current_board[dest] = new Queen(dest, QUEEN, getTurn());
+                        break;
+                    case 'r':
+                        current_board[dest] = new Rook(dest, ROOK, getTurn());
+                        break;
+                    case 'o': // bishop
+                        current_board[dest] = new Bishop(dest, BISHOP, getTurn());
+                        break;
+                    case 'n':
+                        current_board[dest] = new Knight(dest, KNIGHT, getTurn());
+                        break;
+                    default: // pawn 'p'
+                        current_board[dest] = new Pawn(dest, PAWN, getTurn());
+                }
+
+                // since the piece is brand new, can set its relevant values
+                current_board[dest]->setEnPassantLeft(false);
+                current_board[dest]->setEnPassantRight(false);
+                current_board[dest]->setPieceMoveInfo(true); 
+                
+                // update the board and reservoir as needed
+                setBoard(current_board);
+                setReservoir(current_reservoir);
+
+                // if you use the piece reservoir, you lose your turn and the board updates
+                handleChangeTurn();
+
+                // increment move counter by 1 since a move was made 
+                setNumMoves(getNumMoves()+1);
+
+                // save the object in the corresponding file
+                chessCAMO::saveObject(getNumMoves(), *this);
+
+                return true;
+            }
+        }
+    }
+        
+    return false; // default return value
 }
 
 /**
@@ -451,7 +565,7 @@ void Chess::isCheckmate(string check_type)
     }   
     else
     {
-        chessCAMO::printBoard(getBoard());
+        chessCAMO::printBoard(getBoard(), getReservoir());
 
         if(getCheck())
             chessCAMO::printMessage("\nCheck!\n", CYAN);
@@ -599,7 +713,7 @@ void Chess::handleChangeTurn()
     setTurn(switchTurn());
 
     if(!getCheck() && !getDoubleCheck())
-        chessCAMO::printBoard(getBoard());
+        chessCAMO::printBoard(getBoard(), getReservoir());
 
     if(!getCheckmate() && !getStalemate())
         chessCAMO::printFooterMessage("'s move", *this);
@@ -615,7 +729,7 @@ void Chess::handleChangeTurn()
  */
 void Chess::handleCheckmate()
 {
-    chessCAMO::printBoard(getBoard());
+    chessCAMO::printBoard(getBoard(), getReservoir());
     chessCAMO::printFooterMessage(" won by Checkmate!\n", *this);
     setCheckmate(true);
 }
@@ -628,7 +742,7 @@ void Chess::handleCheckmate()
  */
 void Chess::handleStalemate()
 {
-    chessCAMO::printBoard(getBoard());
+    chessCAMO::printBoard(getBoard(), getReservoir());
     chessCAMO::printFooterMessage(" won by Checkmate!\n", *this);
     setStalemate(true);
 }
@@ -1054,25 +1168,25 @@ void Pawn::promotePawn(Chess &chess, istream &in)
 
         in >> piece;
         
-        if(piece == 'Q' || piece == 'q')
+        if(std::tolower(piece) == 'q')
         {
             delete board[dest]; // GCOVR_EXCL_LINE
             board[dest] = white_turn ? new Queen(dest, QUEEN, WHITE) : new Queen(dest, QUEEN, BLACK);
             break;
         }
-        else if(piece == 'R' || piece == 'r')
+        else if(std::tolower(piece) == 'r')
         {
             delete board[dest]; // GCOVR_EXCL_LINE  
             board[dest] = white_turn ? new Rook(dest, ROOK, WHITE) : new Rook(dest, ROOK, BLACK);
             break;
         }
-        else if(piece == 'B' || piece == 'b')
+        else if(std::tolower(piece) == 'b')
         {
             delete board[dest]; // GCOVR_EXCL_LINE 
             board[dest] = white_turn ? new Bishop(dest, BISHOP, WHITE) : new Bishop(dest, BISHOP, BLACK);
             break;
         }
-        else if(piece == 'N' || piece == 'n')
+        else if(std::tolower(piece) == 'n')
         {
             delete board[dest]; // GCOVR_EXCL_LINE
             board[dest] = white_turn ? new Knight(dest, KNIGHT, WHITE) : new Knight(dest, KNIGHT, BLACK);
@@ -1465,13 +1579,15 @@ namespace chessCAMO
      * @brief      Iterates through the pieces on a current board representation
      *             to produce the board on the console screen
      *
-     * @param[in]  board  The board representation
+     * @param      board      The board representation
+     * @param      reservoir  The reservoir of pieces
      *
      * @post       Each piece of the current board representation is printed to
      *             the screen using a corresponding letter inside a formatted
-     *             board
+     *             board. Additionally, the piece reservoir information is
+     *             displayed beneath the board representation.
      */
-    void printBoard(const vector<Piece*> &board)
+    void printBoard(const vector<Piece*> &board, const vector<pair<int, char>> &reservoir)
     {
         char piece_char;
         char ranks[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
@@ -1520,9 +1636,41 @@ namespace chessCAMO
             if(count % 8 == 7)
                 cout << ranks[count/8] << endl;
             if(count == 63)
-                cout << "  +---+---+---+---+---+---+---+---+\n     A   B   C   D   E   F   G   H\n";
+                cout << "  +---+---+---+---+---+---+---+---+\n    A   B   C   D   E   F   G   H\n";
             count++;
         }
+
+        // reservoir information
+        chessCAMO::printMessage("           Piece Reservoir\n    ", CYAN);
+        for(const auto & elem : reservoir)
+        {
+            if(std::tolower(elem.second) == 'o')
+            {
+                if((unsigned int) (&elem - &reservoir[0]) < reservoir.size()/2) { chessCAMO::printMessage("b", RED); }
+                else { chessCAMO::printMessage("B", GREEN); }
+            }
+            else
+            {
+                if((unsigned int) (&elem - &reservoir[0]) < reservoir.size()/2) { chessCAMO::printMessage(string(1, elem.second), RED); }
+                else { chessCAMO::printMessage(string(1, elem.second), GREEN); }
+            }
+            
+            if((unsigned int) (&elem - &reservoir[0]) != reservoir.size()/2 - 1)
+                cout << "  ";
+            else
+                cout << " | ";
+        }
+        cout << endl << "    ";
+
+        for(const auto & elem : reservoir)
+        {
+            chessCAMO::printMessage(to_string(elem.first), DEFAULT);
+            if((unsigned int) (&elem - &reservoir[0]) != reservoir.size()/2 - 1)
+                cout << "  ";
+            else
+                cout << " | ";
+        }
+        cout << endl;
     }
 
     /**
@@ -1575,7 +1723,7 @@ namespace chessCAMO
         if(std::tolower(user_input) == 'r')
         {
             chessCAMO::clearScreen(clear_screen);
-            chessCAMO::printBoard(chess.getBoard());
+            chessCAMO::printBoard(chess.getBoard(), chess.getReservoir());
             message = chess.getTurn() == WHITE ? "\nWhite resigned => Black wins\n" 
                                                : "\nBlack resigned => White wins\n";
             chessCAMO::printMessage(message, CYAN);
@@ -1584,7 +1732,7 @@ namespace chessCAMO
         else if(std::tolower(user_input) == 'd')
         {
             chessCAMO::clearScreen(clear_screen);
-            chessCAMO::printBoard(chess.getBoard());
+            chessCAMO::printBoard(chess.getBoard(), chess.getReservoir());
             chessCAMO::printMessage("\nOffered draw... do you accept? [y -> yes, n -> no] ", PINK);
             in >> draw_reply;
             in.ignore(100, '\n'); // ignore rest of the previous input
@@ -1599,7 +1747,7 @@ namespace chessCAMO
             }
 
             chessCAMO::clearScreen(clear_screen);
-            chessCAMO::printBoard(chess.getBoard());
+            chessCAMO::printBoard(chess.getBoard(), chess.getReservoir());
 
             if(std::tolower(draw_reply) == 'y')
             {
@@ -1622,7 +1770,7 @@ namespace chessCAMO
 
             // re-print board and display move information
             chessCAMO::clearScreen(clear_screen);
-            chessCAMO::printBoard(chess.getBoard());
+            chessCAMO::printBoard(chess.getBoard(), chess.getReservoir());
             chessCAMO::printFooterMessage("'s move", chess);
         }
         else { return ; } // do nothing, player wants to continue

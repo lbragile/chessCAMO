@@ -50,7 +50,7 @@ void drawReservoir(vector<Sprite> & reservoir, const vector<Sprite> & pieceType)
     for(int i = 0; i < 10; i++)
     {
         shape = reservoir[i].getGlobalBounds();
-        reservoir[i].setPosition(545, shape.height/2 + (shape.height-12) * i);
+        reservoir[i].setPosition(541, shape.height/2 + (shape.height-12) * i);
         reservoir[i].setScale((shape.width-12)/shape.width, (shape.height-12)/shape.height);
     } 
 }
@@ -141,7 +141,7 @@ int main()
         Event e;
 
         Cursor cursor;
-        if( ( (( (30 < pos.x && pos.x < 510)) && ( (30 < pos.y && pos.y < 510) )) || (540 < pos.x && pos.y < 0) ) && cursor.loadFromSystem(sf::Cursor::Hand) )
+        if( ( (( ((30 < pos.x && pos.x < 510) || (540 < pos.x && pos.x < 600)) && ( (30 < pos.y && pos.y < 510) )) || (540 < pos.x && pos.y < 0) ) && cursor.loadFromSystem(sf::Cursor::Hand) ))
             window.setMouseCursor(cursor);
         else if(cursor.loadFromSystem(sf::Cursor::NotAllowed))
             window.setMouseCursor(cursor);
@@ -178,7 +178,7 @@ int main()
                     {   
                         ofstream messageOut(filename_status, ios::trunc);
                         // fill up the first 20 lines with junk (status line reads 21st line)
-                        for(int i = 0; i < 20; i++)
+                        for(int i = 0; i < 23; i++)
                             messageOut << "temp" << endl;
                         messageOut << "Undo move applied" << endl;
                         messageOut.close();
@@ -257,7 +257,7 @@ int main()
 
                 if(e.type == Event::MouseButtonPressed)
                 {
-                    if(e.mouseButton.button == Mouse::Left && 30 < pos.x && pos.x < 510 && 30 < pos.y && pos.y < 510)
+                    if(e.mouseButton.button == Mouse::Left && ((30 < pos.x && pos.x < 510) || (540 < pos.x && pos.x < 600)) && 30 < pos.y && pos.y < 510)
                     {
                         clicked = true;
                         draw = false;
@@ -265,7 +265,19 @@ int main()
                             if(iter->getGlobalBounds().contains(pos.x, pos.y))
                                 src = iter - pieces.begin();
 
-                        getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                        // reservoir
+                        if( (540 <= pos.x && pos.x <= 600) && ( (30 <= pos.y && pos.y < 78) || (270 <= pos.y && pos.y < 318) ) ) { src = (int) 'p'; }
+                        else if( (540 <= pos.x && pos.x <= 600) && ( (78 <= pos.y && pos.y < 126) || (318 <= pos.y && pos.y < 366) ) ) { src = (int) 'n'; }
+                        else if( (540 <= pos.x && pos.x <= 600) && ( (126 <= pos.y && pos.y < 174) || (366 <= pos.y && pos.y < 414) ) ) { src = (int) 'o'; } // bishop
+                        else if( (540 <= pos.x && pos.x <= 600) && ( (174 <= pos.y && pos.y < 222) || (414 <= pos.y && pos.y < 462) ) ) { src = (int) 'r'; }
+                        else if( (540 <= pos.x && pos.x <= 600) && ( (222 <= pos.y && pos.y < 270) || (462 <= pos.y && pos.y <= 510) ) ) { src = (int) 'q'; }
+
+                        if(0 <= src && src <= 63)
+                            getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                        // else
+                        //     for(const auto & elem : chess.getBoard())
+                        //         if(!elem->isKing() && elem->getPieceColor() == chess.getTurn())
+                        //             legalMoves.push_back(elem->getPieceSquare());
                     }
                 }
 
@@ -290,8 +302,8 @@ int main()
                         drawPieces(pieces, pieceType, chess.getBoard());
 
                         // clear all legal moves for next cycle
-                        while(!legalMoves.empty())
-                            legalMoves.pop_back();
+                        if(0 <= src && src <= 63)
+                            legalMoves.clear();
                     }
                 }
 
@@ -329,11 +341,11 @@ int main()
             // 23 for resign / line 44 for draw)
             int line_num;
             if(draw)
-                line_num = 44;
+                line_num = 50;
             else if(resign)
-                line_num = 23;
+                line_num = 26;
             else
-                line_num = 21;
+                line_num = 24;
 
             for(int i = 0; i < line_num; i++)
                getline(messageIn, second_message, '\n');
@@ -479,21 +491,19 @@ int main()
                     }
 
                     // legal move highlighting
-                    auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
-                    if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && 
-                       i != 0 && j != 0 && i != 9 && j != 9)
+                    if(!legalMoves.empty())
                     {
-                        rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
-                        rect.setOutlineColor(Color::Cyan);
-                        window.draw(rect);
+                        auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
+                        if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && 
+                           i != 0 && j != 0 && i != 9 && j != 9)
+                        {
+                            rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
+                            rect.setOutlineColor(Color::Cyan);
+                        }
+                        else { rect.setOutlineThickness(0); }
                     }
-
-                    else
-                    {
-                        rect.setOutlineThickness(0);
-                        window.draw(rect);
-                    }
-
+                    
+                    window.draw(rect);
                     window.draw(text);
                 }
             }
@@ -509,25 +519,55 @@ int main()
                 }
                 else
                 {
+                    rect.setOutlineThickness(-1); // -1 means towards the center 1 pixel
+                    rect.setOutlineColor(Color::Black);
+
                     rect.setSize(Vector2f(size_rect.x, size_rect.y-12));
                     k > 5 ? rect.setFillColor(Color(255, 255, 255)) : rect.setFillColor(Color(224, 224, 224));
                     rect.setPosition(540, size_rect.x/2 + (k-1) * (distance-12));
                 }
 
                 window.draw(rect);
-
-                if(k == 0)
-                {
-                    text_reservoir.setString("RSVR");
-                    text_reservoir.setCharacterSize(20);
-                    text_reservoir.setFont(font);
-                    text_reservoir.setFillColor(Color::Black);
-                    text_reservoir.setStyle(Text::Bold);
-                    text_reservoir.setPosition(541, 5);
-
-                    window.draw(text_reservoir);
-                }
+                rect.setOutlineThickness(0);
             }
+
+            // reservoir text
+            text_reservoir.setString("RSVR");
+            text_reservoir.setCharacterSize(20);
+            text_reservoir.setFont(font);
+            text_reservoir.setFillColor(Color::Black);
+            text_reservoir.setStyle(Text::Bold);
+            text_reservoir.setPosition(541, 5);
+
+            window.draw(text_reservoir);
+
+            vector<pair<int, char>> current_resevoir = chess.getReservoir();
+            vector<int> num_left(10);
+            for(unsigned int i = 0; i < num_left.size(); i++)
+                num_left[i] = current_resevoir[i].first;
+
+            int i = 0;
+            for(int reserves_num : num_left)
+            {
+                text_reservoir.setString(to_string(reserves_num));
+                text_reservoir.setCharacterSize(15);
+                text_reservoir.setFont(font);
+                i > 4 ? text_reservoir.setFillColor(Color(255, 128, 0)) : text_reservoir.setFillColor(Color(0, 0, 255));
+                text_reservoir.setStyle(Text::Regular);
+                text_reservoir.setPosition(590, 45 + i*48);
+
+                window.draw(text_reservoir);
+                i++;
+            }
+
+            text_reservoir.setString("RSVR");
+            text_reservoir.setCharacterSize(20);
+            text_reservoir.setFont(font);
+            text_reservoir.setFillColor(Color::Black);
+            text_reservoir.setStyle(Text::Bold);
+            text_reservoir.setPosition(541, 515);
+
+            window.draw(text_reservoir);
         }
         else
         {

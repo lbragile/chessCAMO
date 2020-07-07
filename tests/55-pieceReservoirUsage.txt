@@ -1,0 +1,31 @@
+rnbqkbrr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq
+Q 52
+u
+q 60
+y
+q 63
+u
+O 63
+u
+N 63
+u
+P 63
+u
+R 63
+u
+52 36
+y
+q 12
+u
+q 4
+y
+q 7
+u
+o 7
+u
+n 7
+u
+p 62
+y
+r 6
+y

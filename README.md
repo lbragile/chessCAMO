@@ -71,8 +71,8 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 #### ChessCAMO: :grin:
 
-- [ ] Make piece reservoir (stack).
-- [ ] Allow players to replace existing pieces with reservoir pieces.
+- [x] Make piece reservoir ~~(stack)~~ used `vector<pair<int, char>>` where `int` is the quantity and `char` is the piece type.
+- [x] Allow players to replace existing pieces with reservoir pieces.
 - [ ] Implement abovementioned check and pawn promotion rules.
 - [ ] Make test cases to confirm that overall functionality still works.
 
@@ -84,7 +84,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 - `mingw32-make all_unit`
 
-- `unit --gtest_color=yes` :arrow_right: colored output (<span style="color:green">Pass</span>/<span style="color:red">Fail</span>) 
+- `unit --gtest_color=yes` :arrow_right: colored output (Pass (GREEN)/Fail (RED)) 
 
   #### <b> OR </b>
 

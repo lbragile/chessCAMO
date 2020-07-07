@@ -64,18 +64,11 @@ int main()
     // while the game is NOT finished (checkmate, stalemate, draw, resign)
     while(!chess.getCheckmate() && !chess.getStalemate())
     {   
+        chessCAMO::printMessage("\nFor reservoir use source values:\n"
+                                "|  Q/q  |  R/r |  O/o   |  N/n   |  P/p |\n"
+                                "| Queen | Rook | Bishop | Knight | Pawn |", DEFAULT);
         chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK);
         cin >> src >> dest;
-
-        // input error checking
-        while(cin.fail())
-        {
-            chessCAMO::printMessage("\nInput type is invalid... try again!\n", YELLOW);
-            cin.clear(); // clear error flag of cin
-            cin.ignore(100,'\n'); // ignore the first 100 characters until '\n' is reached
-            chessCAMO::printMessage("\nEnter a source AND destination square in [A1, H8]: ", PINK);
-            cin >> src >> dest;
-        }
 
         // makes the corresponding move and updates the board state on the console after clearing it
         chessCAMO::clearScreen(true);

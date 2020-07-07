@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['turn_273',['turn',['../class_chess.html#a996834f05cddcc153aaca82034d2c21b',1,'Chess']]],
-  ['type_274',['type',['../class_piece.html#a9b1f38cb1e0b28d80c548b07b87b396a',1,'Piece']]]
+  ['square_279',['square',['../class_piece.html#a210f49c2c0e92a1403de79856eb03478',1,'Piece']]],
+  ['src_280',['src',['../class_chess_test.html#ab0d2727046539dee78ca79c01f85a2a5',1,'ChessTest']]]
 ];

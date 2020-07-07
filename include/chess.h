@@ -52,7 +52,6 @@
 
 #include <iostream>
 #include <vector>
-#include <stack>
 #include <string>
 #include <fstream>
 #include <windows.h>    // for console text colors
@@ -122,12 +121,10 @@ class Chess
 {
 public:
     /**
-     * @brief      Default constructor with default board parameter initialization - Constructs a new instance.
-     *             
-     * \note
-     * Intentionally left blank.
+     * @brief      Default constructor with default board parameter
+     *             initialization - Constructs a new instance.
      */
-    Chess() : board(64), check_pieces(2), flags(4), turn{WHITE}, num_moves{0} {}
+    Chess();
 
     /*********************************** BIG THREE *********************************/
     /**
@@ -274,7 +271,7 @@ public:
      *
      * @return     The number of moves.
      */
-    int getNumMoves() { return num_moves;}
+    int getNumMoves() const { return num_moves;}
 
     /**
      * @brief      (Mutator) Sets the number of moves made on the board.
@@ -282,6 +279,37 @@ public:
      * @param[in]  num_moves  The number of moves made
      */
     void setNumMoves(int num_moves) {this->num_moves = num_moves;}
+
+    /*************************************************************************************/
+    /*                            CHESSCAMO RESERVOIR FUNCTIONALITY                      */
+    /*************************************************************************************/
+    /**
+     * @brief      Gets the current reservoir information (pieces and quantity).
+     *
+     * @return     The piece reservoir.
+     */
+    vector<pair<int, char>> getReservoir() const {return reservoir;}
+
+    /**
+     * @brief      Sets the piece reservoir after a piece on the current board
+     *             representation is replaced.
+     *
+     * @param[in]  reservoir  The new piece reservoir information
+     */
+    void setReservoir(const vector<pair<int, char>> & reservoir) {this->reservoir = reservoir;}
+
+    /**
+     * @brief      At any turn, a player can replace one of their pieces with a
+     *             piece from the reservoir if the resources are available
+     *
+     * @param[in]  src   The piece's source square (this will be an ASCII code in
+     *                   [110, 114] depending on the character the user enters)
+     * @param[in]  dest  The piece's destination square (piece that will be replaced
+     *                   on the board)
+     *
+     * @return     True if replacement is applied, False otherwise.
+     */
+    bool useReservoirPiece(int src, int dest);
     /************************************* END *************************************/
 
     /**
@@ -372,6 +400,9 @@ private:
 
 	/** Check, Double Check, Checkmate, Stalemate flags */
     vector<bool> flags;
+
+    /** Piece reservoir information - Unique to chessCAMO */
+    vector<pair<int, char>> reservoir;
 
 	/** For deciding whose turn it is to make a move for a given board representation */
     pieceColor turn;
@@ -1294,26 +1325,32 @@ namespace chessCAMO
     template<class T>
     int preProcessInput(T input)
     {
-        if(std::isalpha(input[0]))
+        if(std::isalpha(input[0]) && input.length() > 1)
         {
             int ascii_val = std::islower(input[0]) ? 97 : 65;
             return (int(input[0]) - ascii_val) + (8 - (int(input[1]) - 48))*8; // file + rank
         }
-        
-        return std::stoi(input);
+
+        // piece from reservoir?
+        else if(std::isalpha(input[0]))
+            return (unsigned char) std::tolower(input[0]);
+
+        else { return std::stoi(input); }
     }
 
     /**
      * @brief      Iterates through the pieces on a current board representation
      *             to produce the board on the console screen
      *
-     * @param[in]  board  The board representation
+     * @param      board      The board representation
+     * @param      reservoir  The reservoir of pieces
      *
      * @post       Each piece of the current board representation is printed to
      *             the screen using a corresponding letter inside a formatted
-     *             board
+     *             board. Additionally, the piece reservoir information is
+     *             displayed beneath the board representation.
      */
-    void printBoard(const vector<Piece*> & board);
+    void printBoard(const vector<Piece*> &board, const vector<pair<int, char>> &reservoir);
 
     /**
      * @brief      Prints the footer message before each move indicating whose
@@ -1460,8 +1497,8 @@ namespace chessCAMO
  * - [x] GUI - <strike>nice to be able to move pieces with mouse rather than inputting coordinates.</strike> in progress (more details for user in the interface will be added).
  * 
  * ### ChessCAMO:
- * - [ ] Make piece reservoir (stack).
- * - [ ] Allow players to replace existing pieces with reservoir pieces.
+ * - [x] Make piece reservoir <strike>(stack)</strike> used <span style="background-color:#F3F4F4;">vector<pair<int, char>></span> where <span style="background-color:#F3F4F4;">int</span> is the quantity and <span style="background-color:#F3F4F4;">char</span> is the piece type.
+ * - [x] Allow players to replace existing pieces with reservoir pieces.
  * - [ ] Implement abovementioned check and pawn promotion rules.
  * - [ ] Make test cases to confirm that overall functionality still works.
  * 

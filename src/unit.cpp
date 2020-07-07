@@ -751,7 +751,7 @@ TEST_F(ChessTest, pinnedWithBishop)
     ifstream myfile("tests/37-pinnedWithBishop.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    /* -------------------- Act -------------------- */ 
     fen_obtained = boardFenConverter(chess);
 
     /* ------------------- Assert ------------------ */
@@ -931,6 +931,19 @@ TEST_F(ChessTest, trickyEnPassant)
 {
     /* ------------------ Arrange ------------------ */
     ifstream myfile("tests/54-trickyEnPassant.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
+TEST_F(ChessTest, pieceReservoirUsage)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/55-pieceReservoirUsage.txt");
     SetUp(myfile);
 
     /* -------------------- Act -------------------- */

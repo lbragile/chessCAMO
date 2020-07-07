@@ -133,12 +133,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa14266c2293dda5038b0741c7df74382"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aa14266c2293dda5038b0741c7df74382">setTurn</a> (<a class="el" href="chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c">pieceColor</a> <a class="el" href="class_chess.html#a996834f05cddcc153aaca82034d2c21b">turn</a>)</td></tr>
 <tr class="memdesc:aa14266c2293dda5038b0741c7df74382"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the player's turn information.  <a href="class_chess.html#aa14266c2293dda5038b0741c7df74382">More...</a><br /></td></tr>
 <tr class="separator:aa14266c2293dda5038b0741c7df74382"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26a49175588c8c62cc73e6db926d5de7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a26a49175588c8c62cc73e6db926d5de7">getNumMoves</a> ()</td></tr>
-<tr class="memdesc:a26a49175588c8c62cc73e6db926d5de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the number of moves made.  <a href="class_chess.html#a26a49175588c8c62cc73e6db926d5de7">More...</a><br /></td></tr>
-<tr class="separator:a26a49175588c8c62cc73e6db926d5de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7c9f4114cf2ccd404678fad4617ac56"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ad7c9f4114cf2ccd404678fad4617ac56">getNumMoves</a> () const</td></tr>
+<tr class="memdesc:ad7c9f4114cf2ccd404678fad4617ac56"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the number of moves made.  <a href="class_chess.html#ad7c9f4114cf2ccd404678fad4617ac56">More...</a><br /></td></tr>
+<tr class="separator:ad7c9f4114cf2ccd404678fad4617ac56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a86771533b592cf5bca840fa1a8335e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a2a86771533b592cf5bca840fa1a8335e">setNumMoves</a> (int <a class="el" href="class_chess.html#ade396b905cebe6d95888abe8d0de7863">num_moves</a>)</td></tr>
 <tr class="memdesc:a2a86771533b592cf5bca840fa1a8335e"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Mutator) Sets the number of moves made on the board.  <a href="class_chess.html#a2a86771533b592cf5bca840fa1a8335e">More...</a><br /></td></tr>
 <tr class="separator:a2a86771533b592cf5bca840fa1a8335e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ab0a9825bc9efafecb4e0bd0697c8f0"><td class="memItemLeft" align="right" valign="top">vector&lt; pair&lt; int, char &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a1ab0a9825bc9efafecb4e0bd0697c8f0">getReservoir</a> () const</td></tr>
+<tr class="memdesc:a1ab0a9825bc9efafecb4e0bd0697c8f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current reservoir information (pieces and quantity).  <a href="class_chess.html#a1ab0a9825bc9efafecb4e0bd0697c8f0">More...</a><br /></td></tr>
+<tr class="separator:a1ab0a9825bc9efafecb4e0bd0697c8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02789ea169a90c17dedc71876d43bca7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a02789ea169a90c17dedc71876d43bca7">setReservoir</a> (const vector&lt; pair&lt; int, char &gt;&gt; &amp;<a class="el" href="class_chess.html#ac9a723ecc7b4a0c56ddf874f38699e42">reservoir</a>)</td></tr>
+<tr class="memdesc:a02789ea169a90c17dedc71876d43bca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the piece reservoir after a piece on the current board representation is replaced.  <a href="class_chess.html#a02789ea169a90c17dedc71876d43bca7">More...</a><br /></td></tr>
+<tr class="separator:a02789ea169a90c17dedc71876d43bca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ac4c29a8ddeae2b231a54761ad523b3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a8ac4c29a8ddeae2b231a54761ad523b3">useReservoirPiece</a> (int src, int dest)</td></tr>
+<tr class="memdesc:a8ac4c29a8ddeae2b231a54761ad523b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">At any turn, a player can replace one of their pieces with a piece from the reservoir if the resources are available.  <a href="class_chess.html#a8ac4c29a8ddeae2b231a54761ad523b3">More...</a><br /></td></tr>
+<tr class="separator:a8ac4c29a8ddeae2b231a54761ad523b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab64de78c01967188afa372f417a2325d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ab64de78c01967188afa372f417a2325d">boardInit</a> ()</td></tr>
 <tr class="memdesc:ab64de78c01967188afa372f417a2325d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places the pieces on the board at their correct starting positions.  <a href="class_chess.html#ab64de78c01967188afa372f417a2325d">More...</a><br /></td></tr>
 <tr class="separator:ab64de78c01967188afa372f417a2325d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,6 +199,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a154e5064761da26c3e99d6deacc6cf49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad180d6dba047d3b236d85c537cb85be0"><td class="memItemLeft" align="right" valign="top">vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ad180d6dba047d3b236d85c537cb85be0">flags</a></td></tr>
 <tr class="separator:ad180d6dba047d3b236d85c537cb85be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9a723ecc7b4a0c56ddf874f38699e42"><td class="memItemLeft" align="right" valign="top">vector&lt; pair&lt; int, char &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ac9a723ecc7b4a0c56ddf874f38699e42">reservoir</a></td></tr>
+<tr class="separator:ac9a723ecc7b4a0c56ddf874f38699e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a996834f05cddcc153aaca82034d2c21b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="chess_8h.html#a17ad7ce7c5310f2756f6f49d53a35f2c">pieceColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a996834f05cddcc153aaca82034d2c21b">turn</a></td></tr>
 <tr class="separator:a996834f05cddcc153aaca82034d2c21b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade396b905cebe6d95888abe8d0de7863"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#ade396b905cebe6d95888abe8d0de7863">num_moves</a></td></tr>
@@ -212,9 +223,6 @@ Friends</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Chess::Chess </td>
@@ -223,15 +231,9 @@ Friends</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Default constructor with default board parameter initialization - Constructs a new instance. </p>
-<dl class="section note"><dt>Note</dt><dd>Intentionally left blank. </dd></dl>
 
 </div>
 </div>
@@ -761,8 +763,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a26a49175588c8c62cc73e6db926d5de7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26a49175588c8c62cc73e6db926d5de7">&#9670;&nbsp;</a></span>getNumMoves()</h2>
+<a id="ad7c9f4114cf2ccd404678fad4617ac56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7c9f4114cf2ccd404678fad4617ac56">&#9670;&nbsp;</a></span>getNumMoves()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -774,7 +776,7 @@ Friends</h2></td></tr>
           <td class="memname">int Chess::getNumMoves </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -820,6 +822,106 @@ Friends</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a1ab0a9825bc9efafecb4e0bd0697c8f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ab0a9825bc9efafecb4e0bd0697c8f0">&#9670;&nbsp;</a></span>getReservoir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;pair&lt;int, char&gt; &gt; Chess::getReservoir </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the current reservoir information (pieces and quantity). </p>
+<dl class="section return"><dt>Returns</dt><dd>The piece reservoir. </dd></dl>
+
+</div>
+</div>
+<a id="a02789ea169a90c17dedc71876d43bca7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02789ea169a90c17dedc71876d43bca7">&#9670;&nbsp;</a></span>setReservoir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chess::setReservoir </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; pair&lt; int, char &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>reservoir</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the piece reservoir after a piece on the current board representation is replaced. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">reservoir</td><td>The new piece reservoir information </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8ac4c29a8ddeae2b231a54761ad523b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ac4c29a8ddeae2b231a54761ad523b3">&#9670;&nbsp;</a></span>useReservoirPiece()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Chess::useReservoirPiece </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>At any turn, a player can replace one of their pieces with a piece from the reservoir if the resources are available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The piece's source square (this will be an ASCII code in [110, 114] depending on the character the user enters) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dest</td><td>The piece's destination square (piece that will be replaced on the board)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if replacement is applied, False otherwise. </dd></dl>
 
 </div>
 </div>
@@ -1443,6 +1545,29 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Check, Double Check, Checkmate, Stalemate flags </p>
+
+</div>
+</div>
+<a id="ac9a723ecc7b4a0c56ddf874f38699e42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9a723ecc7b4a0c56ddf874f38699e42">&#9670;&nbsp;</a></span>reservoir</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;pair&lt;int, char&gt; &gt; Chess::reservoir</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="class_piece.html" title="This class describes the pieces on the board at any given moment. It contains functions for determini...">Piece</a> reservoir information - Unique to <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> </p>
 
 </div>
 </div>
