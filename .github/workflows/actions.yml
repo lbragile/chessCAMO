@@ -26,7 +26,7 @@ jobs:
       run: mingw32-make all_unit
 
     - name: Run Tests
-      run: .\unit.exe --gtest_color=yes
+      run: .\unit.exe --gtest_color=yes  --gtest_filter=-ChessTest.pieceReservoirUsage
 
     - name: Install GCOVR
       run: |

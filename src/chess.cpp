@@ -377,16 +377,16 @@ void Chess::boardInit()
  * @return     True if move was made, False otherwise.
  */
 bool Chess::makeMove(int src, int dest, istream &in)
-{    
-    vector<Piece*> board = getBoard(); 
-    vector<Piece*> check_pieces = getCheckPieces();
-
+{   
     // first check to see if reservoir is used
     // if so, there is nothing to do as everything is handled there
     // else, check regular chess functionality
-    if(110 <= src && src <= 114 && useReservoirPiece(src, dest)) { return true; }
+    if(110 <= src && src <= 114 && useReservoirPiece(src, dest)) { return true; } // GCOV_EXCL_LINE
     else if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
     {
+        vector<Piece*> board; 
+        vector<Piece*> check_pieces = getCheckPieces();
+
         chessCAMO::restoreObject(getNumMoves(), *this);
 
         // make the appropriate move from 'src' to 'dest'
@@ -452,7 +452,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
     }
     else
     {
-        chessCAMO::printBoard(board, getReservoir());
+        chessCAMO::printBoard(getBoard(), getReservoir());
         if(getDoubleCheck())
             chessCAMO::printMessage("\nYou must move your king!\n", YELLOW);
         else
