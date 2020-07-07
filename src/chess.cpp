@@ -482,8 +482,8 @@ bool Chess::useReservoirPiece(int src, int dest)
     vector<pair<int, char>> current_reservoir = getReservoir();
     pieceColor current_turn = getTurn();
 
-    // cannot replace king
-    if(current_board[dest]->isKing()) { return false; }
+    // cannot replace king or use reservoir when in check/double check
+    if(current_board[dest]->isKing() || getCheck() || getDoubleCheck()) { return false; }
 
     // if the piece you want to replace matches your color and your replacement
     // piece is not of the same type, then go ahead. 'src' must be in [110, 114]

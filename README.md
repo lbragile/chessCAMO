@@ -64,17 +64,18 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 
 #### Regular Chess: :smirk:
 
-- [ ] Three move repetition (draw) & 50 move rule.
 - [x] Board representation undo ~~(use queue?)~~ - used serialization.
-- [x] Input as PGN rather than two integers (template).
+- [x] Input as PGN rather than two integers (using template).
 - [x] GUI - ~~nice to be able to move pieces with mouse rather than inputting coordinates.~~ in progress (more details for user in the interface will be added).
+- [ ] Three move repetition (draw) & 50 move rule.
 
 #### ChessCAMO: :grin:
 
 - [x] Make piece reservoir ~~(stack)~~ used `vector<pair<int, char>>` where `int` is the quantity and `char` is the piece type.
-- [x] Allow players to replace existing pieces with reservoir pieces.
-- [ ] Implement abovementioned check and pawn promotion rules.
-- [ ] Make test cases to confirm that overall functionality still works.
+- [x] Allow players to replace existing pieces with reservoir pieces. 
+- [x] Display reservoir piece quantity and ensure a player cannot use more pieces than there are in the reservoir.
+- [x] Prevent reservoir piece from replacing identical piece type or king.
+- [x] Implement abovementioned ~~check~~ check/double check and pawn promotion rules. *For pawns, I allow replacing pieces on home back rank, but not opponent's back rank (cannot place directly into promotion)*.
 
 ## Tests :heart_eyes: 
 

@@ -203,18 +203,19 @@ To Do</h1>
  <h3><a class="anchor" id="autotoc_md14"></a>
 Regular Chess:</h3>
 <ul>
-<li>[ ] Three move repetition (draw) &amp; 50 move rule.</li>
 <li>[x] Board representation undo <strike>(use queue?)</strike> - used serialization.</li>
-<li>[x] Input as PGN rather than two integers (template).</li>
+<li>[x] Input as PGN rather than two integers (using template).</li>
 <li>[x] GUI - <strike>nice to be able to move pieces with mouse rather than inputting coordinates.</strike> in progress (more details for user in the interface will be added).</li>
+<li>[ ] Three move repetition (draw) &amp; 50 move rule.</li>
 </ul>
 <h3><a class="anchor" id="autotoc_md15"></a>
 ChessCAMO:</h3>
 <ul>
 <li>[x] Make piece reservoir <strike>(stack)</strike> used <span style="background-color:#F3F4F4;">vector&lt;pair&lt;int, char&gt;&gt;</span> where <span style="background-color:#F3F4F4;">int</span> is the quantity and <span style="background-color:#F3F4F4;">char</span> is the piece type.</li>
 <li>[x] Allow players to replace existing pieces with reservoir pieces.</li>
-<li>[ ] Implement abovementioned check and pawn promotion rules.</li>
-<li>[ ] Make test cases to confirm that overall functionality still works.</li>
+<li>[x] Display reservoir piece quantity and ensure a player cannot use more pieces than there are in the reservoir.</li>
+<li>[x] Prevent reservoir piece from replacing identical piece type or king.</li>
+<li>[x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules. <em>For pawns, I allow replacing pieces on home back rank, but not opponent's back rank (cannot place directly into promotion)</em>.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md16"></a>
 Tests</h1>
