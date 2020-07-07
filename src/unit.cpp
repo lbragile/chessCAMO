@@ -940,18 +940,18 @@ TEST_F(ChessTest, trickyEnPassant)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
-TEST_F(ChessTest, pieceReservoirUsage)
-{
-    /* ------------------ Arrange ------------------ */
-    ifstream myfile("tests/55-pieceReservoirUsage.txt");
-    SetUp(myfile);
+// TEST_F(ChessTest, pieceReservoirUsage)
+// {
+//     /* ------------------ Arrange ------------------ */
+//     ifstream myfile("tests/55-pieceReservoirUsage.txt");
+//     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
-    fen_obtained = boardFenConverter(chess);
+//     /* -------------------- Act -------------------- */ 
+//     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
-    EXPECT_EQ(fen_expected, fen_obtained);
-}
+//     /* ------------------- Assert ------------------ */
+//     EXPECT_EQ(fen_expected, fen_obtained);
+// }
 
 // -lgtest_main does this for you automatically to avoid writing main
 // int main(int argc, char **argv)

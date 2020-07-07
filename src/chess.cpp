@@ -473,6 +473,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
  *
  * @return     True if replacement is applied, False otherwise.
  */
+// GCOV_EXCL_START
 bool Chess::useReservoirPiece(int src, int dest)
 {
     chessCAMO::restoreObject(getNumMoves(), *this);
@@ -557,6 +558,7 @@ bool Chess::useReservoirPiece(int src, int dest)
         
     return false; // default return value
 }
+// GCOV_EXCL_STOP
 
 /**
  * @brief      Decide if a move caused a checkmate according to 'check_type'
