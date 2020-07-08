@@ -1,0 +1,51 @@
+rnb1kbnr/1ppp1pNp/p7/6q1/8/b7/PPPPQPPP/RNB1KBNR b KQkq
+Q 52
+y
+13 21
+y
+Q 53
+y
+52 31
+y
+Q 10
+y
+q 12
+y
+q 4
+y
+x x
+u
+x x
+u
+x x
+u
+x x
+u
+R 52
+y
+O 12
+y
+52 20
+y
+8 16
+y
+N 20
+y
+12 40
+y
+59 52
+y
+3 30
+y
+20 14
+y
+q 15
+y
+q 4
+y
+r 4
+y
+R 49
+y
+R 60
+y

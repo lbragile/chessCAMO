@@ -953,6 +953,19 @@ TEST_F(ChessTest, pieceReservoirUsage)
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
+TEST_F(ChessTest, pieceReservoirForCoverage)
+{
+    /* ------------------ Arrange ------------------ */
+    ifstream myfile("tests/56-pieceReservoirForCoverage.txt");
+    SetUp(myfile);
+
+    /* -------------------- Act -------------------- */ 
+    fen_obtained = boardFenConverter(chess);
+
+    /* ------------------- Assert ------------------ */
+    EXPECT_EQ(fen_expected, fen_obtained);
+}
+
 // -lgtest_main does this for you automatically to avoid writing main
 // int main(int argc, char **argv)
 // {

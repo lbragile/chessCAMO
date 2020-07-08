@@ -1402,20 +1402,18 @@ namespace chessCAMO
      * @brief      Saves an object by serializing its member fields to a text
      *             file, allowing it to later be reset.
      *
-     * @param[in]  num_moves     The number of moves made
      * @param[in]  chess_object  The chess object
      */
-    void saveObject(int num_moves, const Chess &chess_object);
+    void saveObject(const Chess &chess_object);
 
     /**
      * @brief      De-serializes an object from a file based on the number of
      *             moves made, essentially restoring the object's saved
      *             properties (in the file).
      *
-     * @param[in]  num_moves     The number of moves made
      * @param      chess_object  The chess object
      */
-    void restoreObject(int num_moves, Chess &chess_object);
+    void restoreObject(Chess &chess_object);
 } // end namespace chessCAMO
 
 #endif // CHESS_H
@@ -1501,7 +1499,7 @@ namespace chessCAMO
  * - [x] Allow players to replace existing pieces with reservoir pieces.
  * - [x] Display reservoir piece quantity and ensure a player cannot use more pieces than there are in the reservoir.
  * - [x] Prevent reservoir piece from replacing identical piece type or king.
- * - [x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules. <i>For pawns, I allow replacing pieces on home back rank, but not opponent's back rank (cannot place directly into promotion)</i>.
+ * - [x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules. Note that pawns cannot move 2 squares regardless of where they are placed, and they cannot be placed in the first rank for the respective players.
  * 
  * # Tests
  * <hr style="border: 1px solid #EAECEF;">

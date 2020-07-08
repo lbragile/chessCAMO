@@ -1,24 +1,26 @@
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-temp
-Undo move applied
+r
+
+Continue? [y -> yes, r -> resign, d -> offer draw, u -> undo move]     A   B   C   D   E   F   G   H
+  +---+---+---+---+---+---+---+---+
+8 | r | n | b | q |   | b | n | r | 8
+  +---+---+---+---+---+---+---+---+
+7 | p | p | p | p | p |   | p | p | 7
+  +---+---+---+---+---+---+---+---+
+6 |   |   |   |   |   | p | k |   | 6
+  +---+---+---+---+---+---+---+---+
+5 |   |   |   |   |   |   |   | Q | 5
+  +---+---+---+---+---+---+---+---+
+4 |   |   |   |   |   |   |   |   | 4
+  +---+---+---+---+---+---+---+---+
+3 |   |   |   |   |   |   |   |   | 3
+  +---+---+---+---+---+---+---+---+
+2 | P | P | P | P | P | P | P |   | 2
+  +---+---+---+---+---+---+---+---+
+1 | R | N | B | Q | K | B | N | R | 1
+  +---+---+---+---+---+---+---+---+
+    A   B   C   D   E   F   G   H
+           Piece Reservoir
+    p  n  b  r  q | P  N  B  R  Q  
+    4  1  2  1  0 | 4  2  2  1  1  
+
+Black resigned => White wins

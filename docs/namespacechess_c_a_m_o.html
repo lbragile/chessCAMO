@@ -92,12 +92,12 @@ Functions</h2></td></tr>
 <tr class="memitem:add24cc279c4902b0dbe57445a79e77c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#add24cc279c4902b0dbe57445a79e77c3">clearScreen</a> (bool apply)</td></tr>
 <tr class="memdesc:add24cc279c4902b0dbe57445a79e77c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the screen of the console window using a special string instead of a platform specific command.  <a href="namespacechess_c_a_m_o.html#add24cc279c4902b0dbe57445a79e77c3">More...</a><br /></td></tr>
 <tr class="separator:add24cc279c4902b0dbe57445a79e77c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d42b92096548fcf02d7d339c9458cfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a7d42b92096548fcf02d7d339c9458cfc">saveObject</a> (int num_moves, const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
-<tr class="memdesc:a7d42b92096548fcf02d7d339c9458cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an object by serializing its member fields to a text file, allowing it to later be reset.  <a href="namespacechess_c_a_m_o.html#a7d42b92096548fcf02d7d339c9458cfc">More...</a><br /></td></tr>
-<tr class="separator:a7d42b92096548fcf02d7d339c9458cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d15651e7c46a46a9cfaec9a2226afbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a2d15651e7c46a46a9cfaec9a2226afbb">restoreObject</a> (int num_moves, <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
-<tr class="memdesc:a2d15651e7c46a46a9cfaec9a2226afbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">De-serializes an object from a file based on the number of moves made, essentially restoring the object's saved properties (in the file).  <a href="namespacechess_c_a_m_o.html#a2d15651e7c46a46a9cfaec9a2226afbb">More...</a><br /></td></tr>
-<tr class="separator:a2d15651e7c46a46a9cfaec9a2226afbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade7c93e88e8535f66374c43fb3e2f400"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#ade7c93e88e8535f66374c43fb3e2f400">saveObject</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:ade7c93e88e8535f66374c43fb3e2f400"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an object by serializing its member fields to a text file, allowing it to later be reset.  <a href="namespacechess_c_a_m_o.html#ade7c93e88e8535f66374c43fb3e2f400">More...</a><br /></td></tr>
+<tr class="separator:ade7c93e88e8535f66374c43fb3e2f400"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a709a529664eab482c1381a6aed1e1d06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacechess_c_a_m_o.html#a709a529664eab482c1381a6aed1e1d06">restoreObject</a> (<a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:a709a529664eab482c1381a6aed1e1d06"><td class="mdescLeft">&#160;</td><td class="mdescRight">De-serializes an object from a file based on the number of moves made, essentially restoring the object's saved properties (in the file).  <a href="namespacechess_c_a_m_o.html#a709a529664eab482c1381a6aed1e1d06">More...</a><br /></td></tr>
+<tr class="separator:a709a529664eab482c1381a6aed1e1d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This namespace contains the global functions related to <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> which are mainly used as helper functions to print information to the console to improve user experience while playing the game. </p>
@@ -324,8 +324,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a7d42b92096548fcf02d7d339c9458cfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d42b92096548fcf02d7d339c9458cfc">&#9670;&nbsp;</a></span>saveObject()</h2>
+<a id="ade7c93e88e8535f66374c43fb3e2f400"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade7c93e88e8535f66374c43fb3e2f400">&#9670;&nbsp;</a></span>saveObject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -333,19 +333,9 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname">void chessCAMO::saveObject </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>num_moves</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
-          <td class="paramname"><em>chess_object</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>chess_object</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -353,7 +343,6 @@ template&lt;class T &gt; </div>
 <p>Saves an object by serializing its member fields to a text file, allowing it to later be reset. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_moves</td><td>The number of moves made </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">chess_object</td><td>The chess object </td></tr>
   </table>
   </dd>
@@ -361,8 +350,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a2d15651e7c46a46a9cfaec9a2226afbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d15651e7c46a46a9cfaec9a2226afbb">&#9670;&nbsp;</a></span>restoreObject()</h2>
+<a id="a709a529664eab482c1381a6aed1e1d06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a709a529664eab482c1381a6aed1e1d06">&#9670;&nbsp;</a></span>restoreObject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -370,19 +359,9 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname">void chessCAMO::restoreObject </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>num_moves</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype"><a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
-          <td class="paramname"><em>chess_object</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>chess_object</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -390,8 +369,7 @@ template&lt;class T &gt; </div>
 <p>De-serializes an object from a file based on the number of moves made, essentially restoring the object's saved properties (in the file). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_moves</td><td>The number of moves made </td></tr>
-    <tr><td class="paramdir"></td><td class="paramname">chess_object</td><td>The chess object </td></tr>
+    <tr><td class="paramname">chess_object</td><td>The chess object </td></tr>
   </table>
   </dd>
 </dl>

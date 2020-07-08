@@ -12,15 +12,23 @@ u
 P 63
 y
 R 63
-u
+y
+Q 59
+y
+O 61
+y
+N 62
+y
+P 55
+y
 52 36
 y
 q 12
 u
 q 4
 y
-q 7
-u
+q 53
+y
 o 7
 u
 n 7
@@ -29,3 +37,13 @@ p 7
 y
 r 6
 y
+62 45
+y
+15 23
+y
+P 45
+u
+x x
+u
+x x
+u

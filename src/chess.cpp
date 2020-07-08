@@ -356,7 +356,7 @@ void Chess::boardInit()
     chessCAMO::printFooterMessage("'s move", *this);
 
     // serializing the object to a file for later re-use
-    chessCAMO::saveObject(getNumMoves(), *this);
+    chessCAMO::saveObject(*this);
 }
 
 /**
@@ -387,7 +387,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
         vector<Piece*> board; 
         vector<Piece*> check_pieces = getCheckPieces();
 
-        chessCAMO::restoreObject(getNumMoves(), *this);
+        chessCAMO::restoreObject(*this);
 
         // make the appropriate move from 'src' to 'dest' (if not using piece reservoir)
         if(src <= 63)
@@ -402,7 +402,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
             if( needUndoMove(check_pieces[0]) )
             {
                 // restore previous object
-                chessCAMO::restoreObject(getNumMoves(), *this);
+                chessCAMO::restoreObject(*this);
                 
                 chessCAMO::printBoard(getBoard(), getReservoir());
 
@@ -448,7 +448,7 @@ bool Chess::makeMove(int src, int dest, istream &in)
         src <= 63 ? setNumMoves(getNumMoves()+1) : setNumMoves(getNumMoves());
 
         // save the object in the corresponding file
-        chessCAMO::saveObject(getNumMoves(), *this);
+        chessCAMO::saveObject(*this);
 
         return true;
     }
@@ -480,22 +480,20 @@ bool Chess::makeMove(int src, int dest, istream &in)
  */
 bool Chess::useReservoirPiece(int src, int dest)
 {
-    chessCAMO::restoreObject(getNumMoves(), *this);
+    chessCAMO::restoreObject(*this);
 
     vector<Piece*> current_board = getBoard();
     vector<pair<int, char>> current_reservoir = getReservoir();
-    pieceColor current_turn = getTurn();
 
     // if the piece you want to replace matches your color and your replacement
     // piece is not of the same type, then go ahead. 'src' must be in [110, 114]
     // which is ascii values of the reservoir pairs. Note cannot replace king or
     // use reservoir when in check/double check
-    if(current_board[dest]->getPieceColor() == current_turn && !current_board[dest]->isKing() && !getCheck() && !getDoubleCheck())
+    if( current_board[dest]->getPieceColor() == getTurn() && !current_board[dest]->isKing() && !getCheck() && !getDoubleCheck() ) // GCOV_EXCL_LINE
     {
         for(int i = 0; i < 10; i++)
         {
-            if(current_reservoir[i].first > 0 && (int) std::tolower(current_reservoir[i].second) == src &&
-              ( (std::isupper(current_reservoir[i].second) && current_turn == WHITE) || (islower(current_reservoir[i].second) && current_turn == BLACK) ) )
+            if(current_reservoir[i].first > 0 && (int) std::tolower(current_reservoir[i].second) == src)
             {
                 // decrement the piece reservoir count accordingle
                 current_reservoir[i].first -= 1;
@@ -562,7 +560,7 @@ bool Chess::useReservoirPiece(int src, int dest)
                 setNumMoves(getNumMoves()+1);
 
                 // save the object in the corresponding file
-                chessCAMO::saveObject(getNumMoves(), *this);
+                chessCAMO::saveObject(*this);
 
                 return true;
             }
@@ -1578,6 +1576,7 @@ namespace
         return temp->getPieceSquare();
     }
 
+    // GCOVR_EXCL_START
     /**
      * @brief      Gets the path to the object_states folder.
      *
@@ -1587,7 +1586,6 @@ namespace
      *
      * @note       The return value depends on target of the global makefile
      */
-    // GCOVR_EXCL_START
     string getPath(int num_moves)
     {
         const unsigned long maxDir = 260;
@@ -1796,7 +1794,7 @@ namespace chessCAMO
             chess.setNumMoves(chess.getNumMoves()-1);
 
             // restore previous object
-            chessCAMO::restoreObject(chess.getNumMoves(), chess);
+            chessCAMO::restoreObject(chess);
 
             // re-print board and display move information
             chessCAMO::clearScreen(clear_screen);
@@ -1835,20 +1833,33 @@ namespace chessCAMO
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT);
     }
 
-    void saveObject(int num_moves, const Chess &chess_object)
+    /**
+     * @brief      Saves an object by serializing its member fields to a text
+     *             file, allowing it to later be reset.
+     *
+     * @param[in]  chess_object  The chess object
+     */
+    void saveObject(const Chess &chess_object)
     {
-        string filename = getPath(num_moves);
+        string filename = getPath(chess_object.getNumMoves());
         ofstream out(filename, ios::trunc);
         out << chess_object;
         out.close();
     }
     
-    void restoreObject(int num_moves, Chess &chess_object)
+    /**
+     * @brief      De-serializes an object from a file based on the number of
+     *             moves made, essentially restoring the object's saved
+     *             properties (in the file).
+     *
+     * @param      chess_object  The chess object
+     */
+    void restoreObject(Chess &chess_object)
     {
         // only undo if a move was made
         if(chess_object.getNumMoves() >= 0)
         {
-            string filename = getPath(num_moves);
+            string filename = getPath(chess_object.getNumMoves());
             ifstream in(filename);
             in >> chess_object;
             in.close(); 

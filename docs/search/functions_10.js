@@ -3,7 +3,7 @@ var searchData=
   ['samecol_232',['sameCol',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a906842cd673bc29b575204fa7a3e8ffe',1,'anonymous_namespace{chess.cpp}']]],
   ['samediag_233',['sameDiag',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a7c18dbe517b955c8f8c1695803d907c6',1,'anonymous_namespace{chess.cpp}']]],
   ['samerow_234',['sameRow',['../namespaceanonymous__namespace_02chess_8cpp_03.html#a222489a0cef34070087cc160fc3b6f49',1,'anonymous_namespace{chess.cpp}']]],
-  ['saveobject_235',['saveObject',['../namespacechess_c_a_m_o.html#a7d42b92096548fcf02d7d339c9458cfc',1,'chessCAMO']]],
+  ['saveobject_235',['saveObject',['../namespacechess_c_a_m_o.html#ade7c93e88e8535f66374c43fb3e2f400',1,'chessCAMO']]],
   ['setboard_236',['setBoard',['../class_chess.html#a2679734ba5315a4f2136bad327d23167',1,'Chess']]],
   ['setcheck_237',['setCheck',['../class_chess.html#a3f1a3cceef830ccfe3a87d9922f0f134',1,'Chess']]],
   ['setcheckmate_238',['setCheckmate',['../class_chess.html#a13d1c4de3670e50b7b94d0e99e34e5a3',1,'Chess']]],

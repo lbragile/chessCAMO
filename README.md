@@ -75,7 +75,7 @@ Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" targ
 - [x] Allow players to replace existing pieces with reservoir pieces. 
 - [x] Display reservoir piece quantity and ensure a player cannot use more pieces than there are in the reservoir.
 - [x] Prevent reservoir piece from replacing identical piece type or king.
-- [x] Implement abovementioned ~~check~~ check/double check and pawn promotion rules. *For pawns, I allow replacing pieces on home back rank, but not opponent's back rank (cannot place directly into promotion)*.
+- [x] Implement abovementioned ~~check~~ check/double check and pawn promotion rules. Note that pawns cannot move 2 squares regardless of where they are placed, and they cannot be placed in the first rank for the respective players.
 
 ## Tests :heart_eyes: 
 
