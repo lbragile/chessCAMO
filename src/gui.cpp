@@ -187,7 +187,7 @@ int main()
                         chess.setNumMoves(chess.getNumMoves()-1);
 
                         // restore previous object
-                        chessCAMO::restoreObject(chess.getNumMoves(), chess);
+                        chessCAMO::restoreObject(chess);
 
                         drawPieces(pieces, pieceType, chess.getBoard());
                     }

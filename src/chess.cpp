@@ -489,80 +489,81 @@ bool Chess::useReservoirPiece(int src, int dest)
     // piece is not of the same type, then go ahead. 'src' must be in [110, 114]
     // which is ascii values of the reservoir pairs. Note cannot replace king or
     // use reservoir when in check/double check
-    if( current_board[dest]->getPieceColor() == getTurn() && !current_board[dest]->isKing() && !getCheck() && !getDoubleCheck() ) // GCOV_EXCL_LINE
+    if( current_board[dest]->getPieceColor() == getTurn() && !current_board[dest]->isKing() && !getCheck() && !getDoubleCheck() )
     {
         for(int i = 0; i < 10; i++)
         {
             if(current_reservoir[i].first > 0 && (int) std::tolower(current_reservoir[i].second) == src)
             {
-                // decrement the piece reservoir count accordingle
-                current_reservoir[i].first -= 1;
-
-                // replace the piece on the board
-                switch( std::tolower(current_reservoir[i].second) )
+                // there is no need to test the following as it is physically impossible to
+                // cover all branches in the following statement, however it is
+                // necessary to ensure the correct quantity count is adjusted
+                if((std::isupper(current_reservoir[i].second) && getTurn() == WHITE) || (std::islower(current_reservoir[i].second) && getTurn() == BLACK)) //GCOV_EXCL_LINE
                 {
-                    case 'q':
-                        if(current_board[dest]->isQueen())
-                            return false;
-                        else
-                        {
-                            delete current_board[dest]; // GCOV_EXCL_LINE
-                            current_board[dest] = new Queen(dest, QUEEN, getTurn());
-                        }
-                        break;
-                    case 'r':
-                        if(current_board[dest]->isRook())
-                            return false;
-                        else
-                        {
-                            delete current_board[dest]; // GCOV_EXCL_LINE
-                            current_board[dest] = new Rook(dest, ROOK, getTurn());
-                        }
-                        break;
-                    case 'o': // bishop
-                        if(current_board[dest]->isBishop())
-                            return false;
-                        else
-                        {
-                            delete current_board[dest]; // GCOV_EXCL_LINE
-                            current_board[dest] = new Bishop(dest, BISHOP, getTurn());
-                        }
-                        break;
-                    case 'n':
-                        if(current_board[dest]->isKnight())
-                            return false;
-                        else
-                        {
-                            delete current_board[dest]; // GCOV_EXCL_LINE
-                            current_board[dest] = new Knight(dest, KNIGHT, getTurn());
-                        }
-                        break;
-                    default: // pawn 'p' (cannot be placed in a promoting square)
-                        if(current_board[dest]->isPawn() || dest/8 == 0 || dest/8 == 7)
-                            return false;
-                        else
-                        {
-                            delete current_board[dest]; // GCOV_EXCL_LINE
-                            current_board[dest] = new Pawn(dest, PAWN, getTurn());
-                        }
+                    // decrement the piece reservoir count accordingly
+                    current_reservoir[i].first -= 1;
+
+                    // replace the piece on the board
+                    switch( std::tolower(current_reservoir[i].second) )
+                    {
+                        case 'q':
+                            if(current_board[dest]->isQueen()) { return false; }
+                            else
+                            {
+                                delete current_board[dest]; // GCOV_EXCL_LINE
+                                current_board[dest] = new Queen(dest, QUEEN, getTurn());
+                            }
+                            break;
+                        case 'r':
+                            if(current_board[dest]->isRook()) { return false; }
+                            else
+                            {
+                                delete current_board[dest]; // GCOV_EXCL_LINE
+                                current_board[dest] = new Rook(dest, ROOK, getTurn());
+                            }
+                            break;
+                        case 'o': // bishop
+                            if(current_board[dest]->isBishop()) { return false; }
+                            else
+                            {
+                                delete current_board[dest]; // GCOV_EXCL_LINE
+                                current_board[dest] = new Bishop(dest, BISHOP, getTurn());
+                            }
+                            break;
+                        case 'n':
+                            if(current_board[dest]->isKnight()) { return false; }
+                            else
+                            {
+                                delete current_board[dest]; // GCOV_EXCL_LINE
+                                current_board[dest] = new Knight(dest, KNIGHT, getTurn());
+                            }
+                            break;
+                        default: // pawn 'p' (cannot be placed in a promoting square)
+                            if(current_board[dest]->isPawn() || dest/8 == 0 || dest/8 == 7) { return false; }
+                            else
+                            {
+                                delete current_board[dest]; // GCOV_EXCL_LINE
+                                current_board[dest] = new Pawn(dest, PAWN, getTurn());
+                            }
+                    }
+
+                    // since the piece is brand new, can set its relevant values
+                    current_board[dest]->setEnPassantLeft(false);
+                    current_board[dest]->setEnPassantRight(false);
+                    current_board[dest]->setPieceMoveInfo(true); 
+                    
+                    // update the board and reservoir as needed
+                    setBoard(current_board);
+                    setReservoir(current_reservoir);
+
+                    // increment move counter by 1 since a move was made 
+                    setNumMoves(getNumMoves()+1);
+
+                    // save the object in the corresponding file
+                    chessCAMO::saveObject(*this);
+
+                    return true;
                 }
-
-                // since the piece is brand new, can set its relevant values
-                current_board[dest]->setEnPassantLeft(false);
-                current_board[dest]->setEnPassantRight(false);
-                current_board[dest]->setPieceMoveInfo(true); 
-                
-                // update the board and reservoir as needed
-                setBoard(current_board);
-                setReservoir(current_reservoir);
-
-                // increment move counter by 1 since a move was made 
-                setNumMoves(getNumMoves()+1);
-
-                // save the object in the corresponding file
-                chessCAMO::saveObject(*this);
-
-                return true;
             }
         }
     }
