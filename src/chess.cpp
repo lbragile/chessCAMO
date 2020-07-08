@@ -381,16 +381,17 @@ bool Chess::makeMove(int src, int dest, istream &in)
     // first check to see if reservoir is used
     // if so, there is nothing to do as everything is handled there
     // else, check regular chess functionality
-    if(110 <= src && src <= 114 && useReservoirPiece(src, dest)) { return true; } // GCOV_EXCL_LINE
-    else if(0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn())
+    if( ( 0 <= src && src <= 63 && board[src]->isLegalMove(dest, *this) && board[src]->getPieceColor() == getTurn()) || 
+        ( 110 <= src && src <= 114 && useReservoirPiece(src, dest) ) )
     {
         vector<Piece*> board; 
         vector<Piece*> check_pieces = getCheckPieces();
 
         chessCAMO::restoreObject(getNumMoves(), *this);
 
-        // make the appropriate move from 'src' to 'dest'
-        makeMoveForType(src, dest);
+        // make the appropriate move from 'src' to 'dest' (if not using piece reservoir)
+        if(src <= 63)
+            makeMoveForType(src, dest);
 
         if(getDoubleCheck() || getCheck())
         {    
@@ -443,21 +444,25 @@ bool Chess::makeMove(int src, int dest, istream &in)
         // after a move was made and all the above checks passed, can finally change the turn
         handleChangeTurn();
 
-        // increment move counter by 1 since a move was made 
-        setNumMoves(getNumMoves()+1);
+        // increment move counter by 1 since a move was made (if not used the reservoir)
+        src <= 63 ? setNumMoves(getNumMoves()+1) : setNumMoves(getNumMoves());
 
         // save the object in the corresponding file
         chessCAMO::saveObject(getNumMoves(), *this);
+
         return true;
     }
     else
     {
         chessCAMO::printBoard(getBoard(), getReservoir());
+
         if(getDoubleCheck())
             chessCAMO::printMessage("\nYou must move your king!\n", YELLOW);
         else
             chessCAMO::printMessage("\nInvalid move! Try again...\n", YELLOW);
+
         chessCAMO::printFooterMessage("'s move", *this);
+
         return false;
     }
 }
@@ -473,7 +478,6 @@ bool Chess::makeMove(int src, int dest, istream &in)
  *
  * @return     True if replacement is applied, False otherwise.
  */
-// GCOV_EXCL_START
 bool Chess::useReservoirPiece(int src, int dest)
 {
     chessCAMO::restoreObject(getNumMoves(), *this);
@@ -482,13 +486,11 @@ bool Chess::useReservoirPiece(int src, int dest)
     vector<pair<int, char>> current_reservoir = getReservoir();
     pieceColor current_turn = getTurn();
 
-    // cannot replace king or use reservoir when in check/double check
-    if(current_board[dest]->isKing() || getCheck() || getDoubleCheck()) { return false; }
-
     // if the piece you want to replace matches your color and your replacement
     // piece is not of the same type, then go ahead. 'src' must be in [110, 114]
-    // which is ascii values of the reservoir pairs
-    else if(current_board[dest]->getPieceColor() == current_turn)
+    // which is ascii values of the reservoir pairs. Note cannot replace king or
+    // use reservoir when in check/double check
+    if(current_board[dest]->getPieceColor() == current_turn && !current_board[dest]->isKing() && !getCheck() && !getDoubleCheck())
     {
         for(int i = 0; i < 10; i++)
         {
@@ -499,38 +501,52 @@ bool Chess::useReservoirPiece(int src, int dest)
                 current_reservoir[i].first -= 1;
 
                 // replace the piece on the board
-                delete current_board[dest]; // GCOV_EXCL_LINE
                 switch( std::tolower(current_reservoir[i].second) )
                 {
                     case 'q':
                         if(current_board[dest]->isQueen())
                             return false;
                         else
+                        {
+                            delete current_board[dest]; // GCOV_EXCL_LINE
                             current_board[dest] = new Queen(dest, QUEEN, getTurn());
+                        }
                         break;
                     case 'r':
                         if(current_board[dest]->isRook())
                             return false;
                         else
+                        {
+                            delete current_board[dest]; // GCOV_EXCL_LINE
                             current_board[dest] = new Rook(dest, ROOK, getTurn());
+                        }
                         break;
                     case 'o': // bishop
                         if(current_board[dest]->isBishop())
                             return false;
                         else
+                        {
+                            delete current_board[dest]; // GCOV_EXCL_LINE
                             current_board[dest] = new Bishop(dest, BISHOP, getTurn());
+                        }
                         break;
                     case 'n':
                         if(current_board[dest]->isKnight())
                             return false;
                         else
+                        {
+                            delete current_board[dest]; // GCOV_EXCL_LINE
                             current_board[dest] = new Knight(dest, KNIGHT, getTurn());
+                        }
                         break;
                     default: // pawn 'p' (cannot be placed in a promoting square)
-                        if(current_board[dest]->isPawn() || (dest/8 == 0 && current_turn == WHITE) || (dest/8 == 7 && current_turn == BLACK))
+                        if(current_board[dest]->isPawn() || dest/8 == 0 || dest/8 == 7)
                             return false;
                         else
+                        {
+                            delete current_board[dest]; // GCOV_EXCL_LINE
                             current_board[dest] = new Pawn(dest, PAWN, getTurn());
+                        }
                 }
 
                 // since the piece is brand new, can set its relevant values
@@ -542,9 +558,6 @@ bool Chess::useReservoirPiece(int src, int dest)
                 setBoard(current_board);
                 setReservoir(current_reservoir);
 
-                // if you use the piece reservoir, you lose your turn and the board updates
-                handleChangeTurn();
-
                 // increment move counter by 1 since a move was made 
                 setNumMoves(getNumMoves()+1);
 
@@ -555,10 +568,9 @@ bool Chess::useReservoirPiece(int src, int dest)
             }
         }
     }
-        
-    return false; // default return value
+
+    return false;  // default return value
 }
-// GCOV_EXCL_STOP
 
 /**
  * @brief      Decide if a move caused a checkmate according to 'check_type'
