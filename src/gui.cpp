@@ -65,6 +65,13 @@ void getLegalMoves(vector<int> & legalMoves, int src, Chess &chess)
             legalMoves.push_back(dest);
 }
 
+void getSideToMoveSquares(vector<int> & sideSquares, Chess &chess)
+{
+    for(const auto & elem : chess.getBoard())
+        if(elem->getPieceColor() == chess.getTurn())
+            sideSquares.push_back(elem->getPieceSquare());
+}
+
 int main()
 {
     Chess chess;
@@ -72,7 +79,7 @@ int main()
     // Create 8x8 default board
     chess.boardInit();
 
-    vector<int> legalMoves;
+    vector<int> legalMoves, sideSquares;
 
     RenderWindow window(VideoMode(600, 700), "chessCAMO", Style::Titlebar | Style::Close);
 
@@ -117,7 +124,9 @@ int main()
     Color color_yellow(255, 255, 153, 255);
     Color color_orange(255, 204, 153, 255);
     Color color_red(255, 204, 204, 255);
-    bool clicked = false, draw = false, resign = false; // moved = false;
+    bool clicked = false, draw = false, resign = false;
+    bool enable_side_highlighting = true, enable_move_highlighting = true;
+
     string filename = "../GUI/object_states/promotion.txt";
     string filename_status = "../GUI/object_states/status.txt";
 
@@ -190,6 +199,8 @@ int main()
                         chessCAMO::restoreObject(chess);
 
                         drawPieces(pieces, pieceType, chess.getBoard());
+                        sideSquares.clear();
+                        getSideToMoveSquares(sideSquares, chess);
                     }
 
                     else if(e.key.code == Keyboard::Escape)
@@ -253,6 +264,12 @@ int main()
                         outFile << 'q' << endl;
                         outFile.close();
                     }
+
+                    else if(e.key.code == Keyboard::Num1)
+                        enable_side_highlighting = !enable_side_highlighting;
+
+                    else if(e.key.code == Keyboard::Numpad1)
+                        enable_move_highlighting = !enable_move_highlighting;
                 }
 
                 if(e.type == Event::MouseButtonPressed)
@@ -273,7 +290,11 @@ int main()
                         else if( (540 <= pos.x && pos.x <= 600) && ( (222 <= pos.y && pos.y < 270) || (462 <= pos.y && pos.y <= 510) ) ) { src = (int) 'q'; }
 
                         if(0 <= src && src <= 63)
+                        {
                             getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
+                            sideSquares.clear();
+                        }
+        
                         // else
                         //     for(const auto & elem : chess.getBoard())
                         //         if(!elem->isKing() && elem->getPieceColor() == chess.getTurn())
@@ -303,7 +324,10 @@ int main()
 
                         // clear all legal moves for next cycle
                         if(0 <= src && src <= 63)
+                        {
                             legalMoves.clear();
+                            getSideToMoveSquares(sideSquares, chess); // updates sideSquares by reference
+                        }
                     }
                 }
 
@@ -326,7 +350,7 @@ int main()
             text_bottom.setFont(font);
 
             text_bottom.setFillColor(Color::Green);
-            text_bottom.setPosition(50, 560);
+            text_bottom.setPosition(30, 560);
             text_bottom.setString("Status:  ");
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);
@@ -334,7 +358,7 @@ int main()
             string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
             
             text_bottom.setFillColor(Color::Cyan);
-            text_bottom.setPosition(140, 560);
+            text_bottom.setPosition(120, 560);
             text_bottom.setString(first_message);
             text_bottom.setStyle(Text::Regular);
             window.draw(text_bottom);               
@@ -367,7 +391,7 @@ int main()
                 if(warning == second_message)
                 {
                     text_bottom.setFillColor(Color::Yellow);
-                    text_bottom.setPosition(280, 560);
+                    text_bottom.setPosition(260, 560);
                     text_bottom.setString(second_message);
                     text_bottom.setStyle(Text::Regular);
                     window.draw(text_bottom);
@@ -378,13 +402,13 @@ int main()
             text_side.setFont(font);
             text_side.setFillColor(Color::White);
 
-            text_side.setPosition(50, 600);
+            text_side.setPosition(30, 600);
             text_side.setString("To promote, type one of these, then make the move:\n"
                                 "Q/q (Queen) | R/r (Rook) | B/b (Bishop) | N/n (Knight)");
             text_side.setStyle(Text::Regular);
             window.draw(text_side);
 
-            text_side.setPosition(50, 640);
+            text_side.setPosition(30, 640);
             text_side.setString("--------------------------------------------------------------------\n"
                                 "Resign (Esc) | Offer draw (D/d) | Undo move (U/u)");
             text_side.setStyle(Text::Regular);
@@ -475,7 +499,7 @@ int main()
                     }
 
                     // legal move highlighting
-                    if(!legalMoves.empty())
+                    if(!legalMoves.empty() && enable_move_highlighting)
                     {
                         auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
                         if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && 
@@ -486,6 +510,18 @@ int main()
                         }
                         else { rect.setOutlineThickness(0); }
                     }
+
+                    if(!sideSquares.empty() && enable_side_highlighting)
+                    {
+                        auto found = std::find(sideSquares.begin(), sideSquares.end(), (i-1) * 8 + (j-1));
+                        if(found != sideSquares.end() && i != 0 && j != 0 && i != 9 && j != 9)
+                        {
+                            rect.setOutlineThickness(-1); // -1 means towards the center 1 pixel
+                            rect.setOutlineColor(Color(178, 255, 102));
+                        }
+                        else { rect.setOutlineThickness(0); }
+                    }
+                    
                     
                     window.draw(rect);
                     window.draw(text);
