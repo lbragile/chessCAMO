@@ -72,6 +72,28 @@ void getSideToMoveSquares(vector<int> & sideSquares, Chess &chess)
             sideSquares.push_back(elem->getPieceSquare());
 }
 
+void drawText(RenderWindow &window, Text &text_object, string message, int size, unsigned int pos_x, unsigned int pos_y, Font font, Color color, unsigned int style)
+{
+    text_object.setString(message);
+    text_object.setCharacterSize(size);
+    text_object.setFont(font);
+    text_object.setFillColor(color);
+    text_object.setStyle(style);
+    text_object.setPosition(pos_x, pos_y);
+
+    window.draw(text_object);
+}
+
+void drawRect(RenderWindow &window, RectangleShape &rect_object, float size_x, float size_y, unsigned int pos_x, unsigned int pos_y, Color color, int out_thick, Color out_color)
+{
+    rect_object.setSize(Vector2f(size_x, size_y));
+    rect_object.setPosition(pos_x, pos_y);
+    rect_object.setFillColor(color);
+    rect_object.setOutlineThickness(out_thick);
+    rect_object.setOutlineColor(out_color);
+    window.draw(rect_object);
+}
+
 int main()
 {
     Chess chess;
@@ -81,7 +103,7 @@ int main()
 
     vector<int> legalMoves, sideSquares;
 
-    RenderWindow window(VideoMode(600, 700), "chessCAMO", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(600, 600), "chessCAMO", Style::Titlebar | Style::Close);
 
     // pieces
     Texture blank, w1, w2, w3, w4, w5, w6, b1, b2, b3, b4, b5, b6;
@@ -140,6 +162,8 @@ int main()
     ofstream messageOut(filename_status, ios::trunc);
     messageOut << "";
     messageOut.close();
+
+    getSideToMoveSquares(sideSquares, chess); // at game start highlight white pieces
 
     while(window.isOpen())
     {
@@ -294,11 +318,6 @@ int main()
                             getLegalMoves(legalMoves, src, chess); // updates legalMoves by reference
                             sideSquares.clear();
                         }
-        
-                        // else
-                        //     for(const auto & elem : chess.getBoard())
-                        //         if(!elem->isKing() && elem->getPieceColor() == chess.getTurn())
-                        //             legalMoves.push_back(elem->getPieceSquare());
                     }
                 }
 
@@ -346,33 +365,18 @@ int main()
         {
             // -------- side & bottom panels -------- //
             // text
-            text_bottom.setCharacterSize(20);
-            text_bottom.setFont(font);
-
-            text_bottom.setFillColor(Color::Green);
-            text_bottom.setPosition(30, 560);
-            text_bottom.setString("Status:  ");
-            text_bottom.setStyle(Text::Regular);
-            window.draw(text_bottom);
+            drawText(window, text_bottom, "Status:", 20, 30, 560, font, Color::Green, Text::Regular);
 
             string first_message = chess.getTurn() == WHITE ? "White's move" : "Black's move", second_message;
-            
-            text_bottom.setFillColor(Color::Cyan);
-            text_bottom.setPosition(120, 560);
-            text_bottom.setString(first_message);
-            text_bottom.setStyle(Text::Regular);
-            window.draw(text_bottom);               
+            drawText(window, text_bottom, first_message, 20, 120, 560, font, Color::Cyan, Text::Regular);
 
             ifstream messageIn(filename_status);
             // warning and status update messages are always on line 24 (or line
             // 26 for resign / line 50 for draw)
             int line_num;
-            if(draw)
-                line_num = 50;
-            else if(resign)
-                line_num = 26;
-            else
-                line_num = 24;
+            if(draw) { line_num = 50; }
+            else if(resign) { line_num = 26; }
+            else { line_num = 24; }
 
             for(int i = 0; i < line_num; i++)
                getline(messageIn, second_message, '\n');
@@ -382,50 +386,14 @@ int main()
             string possible_warnings[] = {"White won by Checkmate!", "Black won by Checkmate!",
                                           "White has no moves -> Game is Drawn!", "Black has no moves -> Game is Drawn!", 
                                           "Game drawn by agreement", "Draw rejected. Game continues...",
-                                          "You are in check! Try again...", "You are in double check! Try again...",
                                           "Check!", "Double Check!", "You must move your king!", 
                                           "Invalid move! Try again...", "Undo move applied",
                                           "White resigned => Black wins", "Black resigned => White wins"};
             for(auto warning : possible_warnings)
-            {
                 if(warning == second_message)
-                {
-                    text_bottom.setFillColor(Color::Yellow);
-                    text_bottom.setPosition(260, 560);
-                    text_bottom.setString(second_message);
-                    text_bottom.setStyle(Text::Regular);
-                    window.draw(text_bottom);
-                }
-            }
-
-            text_side.setCharacterSize(20);
-            text_side.setFont(font);
-            text_side.setFillColor(Color::White);
-
-            text_side.setPosition(30, 600);
-            text_side.setString("To promote, type one of these, then make the move:\n"
-                                "Q/q (Queen) | R/r (Rook) | B/b (Bishop) | N/n (Knight)");
-            text_side.setStyle(Text::Regular);
-            window.draw(text_side);
-
-            text_side.setPosition(30, 640);
-            text_side.setString("--------------------------------------------------------------------\n"
-                                "Resign (Esc) | Offer draw (D/d) | Undo move (U/u)");
-            text_side.setStyle(Text::Regular);
-            window.draw(text_side);          
+                    drawText(window, text_bottom, second_message, 20, 260, 560, font, Color::Yellow, Text::Regular);       
 
             // -------------- main grid -------------- //
-            // center the text inside it's bounding box
-            FloatRect textRect = text.getLocalBounds();
-            text.setOrigin(textRect.left + textRect.width/2.0, textRect.top + textRect.height/2.0);
-
-            text.setCharacterSize(20);
-            text.setFont(font);
-            text.setFillColor(Color::Black);
-
-            string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
-            string piece_rank[8] = {"8", "7", "6", "5", "4", "3", "2", "1"};
-
             for(int i = 0; i < numRows; i++)
             {
                 for(int j = 0; j < numCols; j++)
@@ -433,166 +401,100 @@ int main()
                     // top and bottom rows
                     if((i == 0 || i == 9) && (1 <= j && j <= 8))
                     {
-                        int x = j * distance, y1 = size_rect.y/4, y2 = size_rect.y * (numRows - 1.25);
-                        i == 0 ? text.setPosition(x, y1) : text.setPosition(x, y2);
-                        text.setString(piece_file[j - 1]);
-                        
-                        rect.setSize(Vector2f(size_rect.x, size_rect.y/2));
                         if (i == 0)
-                        {
-                            text.setStyle(Text::Bold);
-                            rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
-                            rect.setPosition(j * distance - size_rect.x/2, i * distance);
-                        }
+                            drawRect(window, rect, size_rect.x, size_rect.y/2, j * distance - size_rect.x/2, i * distance, (i + j) % 2 != 0 ? color_yellow : color_orange, 0, Color::Transparent);
                         else
-                        {
-                            text.setStyle(Text::Bold);
-                            rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
-                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
-                        }
+                            drawRect(window, rect, size_rect.x, size_rect.y/2, j * distance - size_rect.x/2, i * distance - size_rect.y/2, (i + j) % 2 == 0 ? color_yellow : color_orange, 0, Color::Transparent);
                     }
 
                     // left and right columns
                     else if((j == 0 || j == 9) && (1 <= i && i <= 8))
                     {
-                        int y = i * distance, x1 = size_rect.x/4, x2 = size_rect.x * (numCols - 1.25);
-                        j == 0 ? text.setPosition(x1, y) : text.setPosition(x2, y);
-                        text.setString(piece_rank[i - 1]);
-
-                        rect.setSize(Vector2f(size_rect.x/2, size_rect.y));
                         if (j == 0)
-                        {
-                            text.setStyle(Text::Regular);
-                            rect.setFillColor((i + j) % 2 != 0 ? color_yellow : color_orange);
-                            rect.setPosition(j * distance, i * distance - size_rect.y/2);
-                        }
+                            drawRect(window, rect, size_rect.x/2, size_rect.y, j * distance, i * distance - size_rect.y/2, (i + j) % 2 != 0 ? color_yellow : color_orange, 0, Color::Transparent);
                         else
-                        {
-                            text.setStyle(Text::Bold);
-                            rect.setFillColor((i + j) % 2 == 0 ? color_yellow : color_orange);
-                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
-                        }
+                            drawRect(window, rect, size_rect.x/2, size_rect.y, j * distance - size_rect.x/2, i * distance - size_rect.y/2, (i + j) % 2 == 0 ? color_yellow : color_orange, 0, Color::Transparent);
                     }
 
                     // corners
                     else if((i == 0 && j == 0) || (i == 9 && j == 0) || (i == 0 && j == 9) || (i == 9 && j == 9))
                     {
                         if(i == 0 && j == 0)
-                            rect.setPosition(j * distance, i * distance);
+                            drawRect(window, rect, size_rect.x/2, size_rect.y/2, j * distance, i * distance, color_red, 0, Color::Transparent);
                         else if(i == 0 && j == 9)
-                            rect.setPosition(j * distance - size_rect.x/2, i * distance);
+                            drawRect(window, rect, size_rect.x/2, size_rect.y/2, j * distance - size_rect.x/2, i * distance, color_red, 0, Color::Transparent);
                         else if(i == 9 && j == 0)
-                            rect.setPosition(j * distance, i * distance - size_rect.y/2);
+                            drawRect(window, rect, size_rect.x/2, size_rect.y/2, j * distance, i * distance - size_rect.y/2, color_red, 0, Color::Transparent);
                         else if(i == 9 && j == 9)
-                            rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
-
-                        rect.setSize(Vector2f(size_rect.x/2, size_rect.y/2));
-                        rect.setFillColor(color_red);
+                            drawRect(window, rect, size_rect.x/2, size_rect.y/2, j * distance - size_rect.x/2, i * distance - size_rect.y/2, color_red, 0, Color::Transparent);
                     }
 
                     // middle squares
                     else
-                    {
-                        rect.setSize(Vector2f(size_rect.x, size_rect.y));
-                        rect.setFillColor((i + j) % 2 != 0 ? color_dark : Color::White);
-                        rect.setPosition(j * distance - size_rect.x/2, i * distance - size_rect.y/2);
-                    }
+                        drawRect(window, rect, size_rect.x, size_rect.y, j * distance - size_rect.x/2, i * distance - size_rect.y/2, (i + j) % 2 != 0 ? color_dark : Color::White, 0, Color::Transparent);
 
                     // legal move highlighting
                     if(!legalMoves.empty() && enable_move_highlighting)
                     {
                         auto found = std::find(legalMoves.begin(), legalMoves.end(), (i-1) * 8 + (j-1));
-                        if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && 
-                           i != 0 && j != 0 && i != 9 && j != 9)
-                        {
-                            rect.setOutlineThickness(-2); // -1 means towards the center 1 pixel
-                            rect.setOutlineColor(Color::Cyan);
-                        }
-                        else { rect.setOutlineThickness(0); }
+                        if(found != legalMoves.end() && chess.getBoard()[src]->getPieceColor() == chess.getTurn() && i != 0 && j != 0 && i != 9 && j != 9)
+                            drawRect(window, rect, rect.getSize().x, rect.getSize().y, rect.getPosition().x, rect.getPosition().y, rect.getFillColor(), -2, Color::Cyan);
+                        else { drawRect(window, rect, rect.getSize().x, rect.getSize().y, rect.getPosition().x, rect.getPosition().y, rect.getFillColor(), 0, Color::Transparent); }
                     }
 
                     if(!sideSquares.empty() && enable_side_highlighting)
                     {
                         auto found = std::find(sideSquares.begin(), sideSquares.end(), (i-1) * 8 + (j-1));
                         if(found != sideSquares.end() && i != 0 && j != 0 && i != 9 && j != 9)
-                        {
-                            rect.setOutlineThickness(-1); // -1 means towards the center 1 pixel
-                            rect.setOutlineColor(Color(178, 255, 102));
-                        }
-                        else { rect.setOutlineThickness(0); }
+                            drawRect(window, rect, rect.getSize().x, rect.getSize().y, rect.getPosition().x, rect.getPosition().y, rect.getFillColor(), -1, Color(178, 255, 102));
+                        else { drawRect(window, rect, rect.getSize().x, rect.getSize().y, rect.getPosition().x, rect.getPosition().y, rect.getFillColor(), 0, Color::Transparent); }
                     }
-                    
-                    
-                    window.draw(rect);
-                    window.draw(text);
                 }
+            }
+
+            // main grid text (files and ranks)
+            string piece_file[8] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+            string piece_rank[8] = {"8", "7", "6", "5", "4", "3", "2", "1"};
+
+            // top and bottom rows
+            for(int j = 1; j < numCols-1; j++)
+            {
+                int x = (j * distance) - 8, y1 = 5, y2 = size_rect.y * (numRows - 1) - 25;     
+                drawText(window, text, piece_file[j - 1], 20, x, y1, font, Color::Black, Text::Bold);
+                drawText(window, text, piece_file[j - 1], 20, x, y2, font, Color::Black, Text::Bold);
+            }
+
+            // left and right columns
+            for(int i = 1; i < numRows-1; i++)
+            {     
+                int y = (i * distance) - 10, x1 = 10, x2 = size_rect.x * (numCols - 1) - 20;
+                drawText(window, text, piece_rank[i - 1], 20, x1, y, font, Color::Black, Text::Bold);
+                drawText(window, text, piece_rank[i - 1], 20, x2, y, font, Color::Black, Text::Bold);
             }
 
             // reservoir rects
             for(int k = 0; k <= 11; k++)
             {
                 if(k == 0 || k == 11)
-                {
-                    rect.setSize(Vector2f(size_rect.x, size_rect.y/2));
-                    k == 0 ? rect.setPosition(540, 0) : rect.setPosition(540, 510);
-                    rect.setFillColor(Color(204, 255, 204));
-                }
-                else
-                {
-                    rect.setOutlineThickness(-1); // -1 means towards the center 1 pixel
-                    rect.setOutlineColor(Color::Black);
-
-                    rect.setSize(Vector2f(size_rect.x, size_rect.y-12));
-                    k > 5 ? rect.setFillColor(Color(255, 255, 255)) : rect.setFillColor(Color(224, 224, 224));
-                    rect.setPosition(540, size_rect.x/2 + (k-1) * (distance-12));
-                }
-
-                window.draw(rect);
-                rect.setOutlineThickness(0);
+                    drawRect(window, rect, size_rect.x, size_rect.y/2, 540, k == 0 ? 0 : 510, Color(204, 255, 204), 0, Color::Transparent);
+                else 
+                    drawRect(window, rect, size_rect.x, size_rect.y-12, 540, size_rect.x/2 + (k-1) * (distance-12), k > 5 ? Color(255, 255, 255) : Color(224, 224, 224), -1, Color::Black);
             }
 
             // reservoir text
-            text_reservoir.setString("RSVR");
-            text_reservoir.setCharacterSize(20);
-            text_reservoir.setFont(font);
-            text_reservoir.setFillColor(Color::Black);
-            text_reservoir.setStyle(Text::Bold);
-            text_reservoir.setPosition(541, 5);
-
-            window.draw(text_reservoir);
+            drawText(window, text_reservoir, "RSVR", 20, 541, 5, font, Color::Black, Text::Bold);
 
             vector<pair<int, char>> current_resevoir = chess.getReservoir();
             vector<int> num_left(10);
             for(unsigned int i = 0; i < num_left.size(); i++)
                 num_left[i] = current_resevoir[i].first;
 
-            int i = 0;
-            for(int reserves_num : num_left)
-            {
-                text_reservoir.setString("x" + to_string(reserves_num));
-                text_reservoir.setCharacterSize(12);
-                text_reservoir.setFont(font);
-                i > 4 ? text_reservoir.setFillColor(Color(0, 102, 0)) : text_reservoir.setFillColor(Color(204, 0, 0));
-                text_reservoir.setStyle(Text::Regular);
-                text_reservoir.setPosition(585, 45 + i*48);
+            for(unsigned int i = 0; i < num_left.size(); i++)
+                drawText(window, text_reservoir, "x" + to_string(num_left[i]), 12, 585, 45 + i*48, font, i > 4 ? Color(0, 102, 0) : Color(204, 0, 0), Text::Regular);
 
-                window.draw(text_reservoir);
-                i++;
-            }
-
-            text_reservoir.setString("RSVR");
-            text_reservoir.setCharacterSize(20);
-            text_reservoir.setFont(font);
-            text_reservoir.setFillColor(Color::Black);
-            text_reservoir.setStyle(Text::Bold);
-            text_reservoir.setPosition(541, 515);
-
-            window.draw(text_reservoir);
+            drawText(window, text_reservoir, "RSVR", 20, 541, 515, font, Color::Black, Text::Bold);
         }
-        else
-        {
-            cout << "failed to load font file" << endl;
-        }
+        else { cout << "failed to load font file" << endl; }
 
         // pieces
         for (const auto & piece : pieces)
