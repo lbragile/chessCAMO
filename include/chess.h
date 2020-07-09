@@ -1255,8 +1255,8 @@ public:
      *
      * @brief      Determines if a king moved into check after a move was made
      *
-     * @param[in]  dest   The destination
-     * @param      chess  The chess
+     * @param[in]  dest   The destination square of the piece
+     * @param      chess  The chess object
      *
      * @return     True if a piece attacks the king after the move was made,
      *             False otherwise.

@@ -999,11 +999,46 @@ bool Piece::isPathFree(int dest, const Chess &chess)
  */
 bool Piece::isLegalMove(int dest, Chess &chess)
 {
-    if(chess.getDoubleCheck() && !isKing())
-        return false;
-    else
-        return 0 <= dest && dest <= 63 && getPieceSquare() != dest && 
-               isPossibleMove(dest, chess) && !isPinned(dest, chess) && !movedIntoCheck(dest, chess);
+    vector<Piece*> check_pieces = chess.getCheckPieces();
+
+    if(0 <= dest && dest <= 63 && getPieceSquare() != dest)
+    {
+        // must move king when in double check
+        if(chess.getDoubleCheck() && !isKing())
+            return false;
+
+        // when in check, find the squares that are in the check path and see if a
+        // piece can defend the king by either capturing the attacker or moving into
+        // those squares
+        else if(chess.getCheck())
+        {
+            // obtain squares in check path
+            int attacker_sqr = check_pieces[0]->getPieceSquare(), king_sqr = check_pieces[1]->getPieceSquare();
+            int increment = incrementChoice(attacker_sqr, king_sqr);
+
+            vector<int> squares_in_path;
+            if(increment > 0)
+                for(int i = std::min(attacker_sqr, king_sqr) + increment; i < std::max(attacker_sqr, king_sqr); i += increment)
+                    squares_in_path.push_back(i);
+
+            squares_in_path.push_back(attacker_sqr); // attacker included in the path squares
+
+            // if the moving piece is not a king, see if it can move into one of the
+            // above squares (cannot be pinned)
+            if(!isKing())
+            {
+                for(const auto & square : squares_in_path)
+                    if(isPossibleMove(square, chess) && !isPinned(square, chess) && square == dest)
+                        return true;
+                return false;
+            }
+        }
+
+        // if not in check/double check, see if the piece is pinned and moves into check
+        return isPossibleMove(dest, chess) && !isPinned(dest, chess) && !movedIntoCheck(dest, chess);
+    }
+
+    else { return false; } // move is either outside the board or in the same square    
 }
 
 /**
@@ -1387,8 +1422,8 @@ bool King::canCastle(int dest, const Chess &chess)
  *
  * @brief      Determines if a king moved into check after a move was made
  *
- * @param[in]  dest   The destination
- * @param      chess  The chess
+ * @param[in]  dest   The destination square of the piece
+ * @param      chess  The chess object
  *
  * @return     True if a piece attacks the king after the move was made,
  *             False otherwise.
@@ -1396,30 +1431,20 @@ bool King::canCastle(int dest, const Chess &chess)
 bool King::movedIntoCheck(int dest, Chess &chess)
 {
     vector<Piece*> board = chess.getBoard();
-    int src, sign;
-
     pieceColor original_color = board[dest]->getPieceColor();
+    pieceType original_type = board[dest]->getPieceType();
+
     bool ret_val = false;
+
+    // change the color & type of the attacking piece so that if it is
+    // supported, one can check if the supporting piece can move into that
+    // square (in which case the king cannot capture the attacker)
+    board[dest]->setPieceColor(getPieceColor());
+    board[dest]->setPieceType(getPieceType());
 
     for(const auto & elem : board)
     {
-        src = elem->getPieceSquare();
-        sign = elem->isPieceWhite() ? 1 : -1;
-
-        // change the color of the attacking piece so that if it is supported,
-        // one can check if the supporting piece can move into that square (in
-        // which case the king cannot capture the attacker)
-        board[dest]->setPieceColor(NEUTRAL);
-
-        // pawn can only attack sideways, but the board isn't updated yet so it
-        // will always be invalid move checking dest-increment and increment
-        // since if a piece is only 1 square away dest-increment gives src=dest.
-        // However, since move isn't made it is possible that a piece of same
-        // color causes isPossibleMove(dest, chess) to be false, see
-        // 48-scholarMate.txt
-        if( !elem->isEmpty() && !isSameColor(src, chess) && 
-            ( ( !elem->isPawn() && elem->isPossibleMove(dest, chess) ) ||
-              ( elem->isPawn() && (sign*(src - dest) == 9 || sign*(src - dest) == 7) ) ))
+        if( !elem->isEmpty() && elem->getPieceColor() != getPieceColor() && elem->isPossibleMove(dest, chess) )
         {
             ret_val = true;
             break;
@@ -1427,6 +1452,8 @@ bool King::movedIntoCheck(int dest, Chess &chess)
     }
 
     board[dest]->setPieceColor(original_color);
+    board[dest]->setPieceType(original_type);
+
     return ret_val;
 }
 
