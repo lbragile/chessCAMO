@@ -1411,8 +1411,8 @@ namespace chessCAMO
  * *chessCAMO* is a newly proposed chess engine with a built-in variant that stands for <b>C</b>alculations <b>A</b>lways <b>M</b>ake <b>O</b>pportunities
  * and was inspired by the very popular chess variant <a href="https://en.wikipedia.org/wiki/Crazyhouse" target="__blank" style="text-decoration: none;">Crazyhouse</a>.
  * 
- * The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their pieces with a piece from the "piece reservoir".
- * This has the affect of camouflaging each piece that is currently on the board. 
+ * The "CAMO" portion comes from the idea that in this variant, at any turn, a player can sacrifice making a move to replace one of their
+ * pieces with a piece from the "piece reservoir". This has the affect of camouflaging each piece that is currently on the board. 
  * 
  * [![Build](https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master)](https://github.com/lbragile/chessCAMO/actions)
  * [![Coverage](https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master)](https://codecov.io/gh/lbragile/chessCAMO/commits)
@@ -1425,7 +1425,7 @@ namespace chessCAMO
  * [![License](https://img.shields.io/github/license/lbragile/chessCAMO)](https://github.com/lbragile/chessCAMO/blob/master/LICENSE)
  * 
  * <img src="gui.gif" alt="checkmate" style="float: left; zoom:100%;" />
- * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+ * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
  * 
  * <img src="gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" />
  * \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
@@ -1434,7 +1434,7 @@ namespace chessCAMO
  * <hr style="border: 1px solid #EAECEF;">
  * ## Graphical User Interface (GUI)
  * ### Compiler
- * - Can be used **without** any pre-requests besides the files found in this repository
+ * - Can be used <b>without</b> any pre-requests besides the files found in this repository
  * 
  * ### Clone
  * - <span style="background-color:#F3F4F4;">git clone https://github.com/lbragile/chessCAMO.git</span>
@@ -1455,6 +1455,55 @@ namespace chessCAMO
  * - <span style="background-color:#F3F4F4;">mingw32-make all_main</span>
  * - <span style="background-color:#F3F4F4;">main</span>
  *
+ * # Usage
+ * <hr style="border: 1px solid #EAECEF;">
+ * ## Graphical User Interface (GUI) 
+ * 
+ * For any board representation, the user can press one of the following keys on their keyboard for a respective action to occur.
+ * 
+ * ### Regular Move
+ * - <b>Esc</b> - Resign (forfeit the game)
+ * - <b>D</b> - Offer a draw
+ * - <b>U</b> - Undo a move
+ * 
+ * ### Prior to Promotion
+ * If you would like to have a specific promotion piece type, you must indicate so prior to making the move with the following keys.
+ * Otherwise, the default type <i>(Queen)</i> will be applied.
+ * 
+ * - <b>Q</b> - Queen
+ * - <b>R</b> - Rook
+ * - <b>B</b> - Bishop
+ * - <b>N</b> - Knight
+ * 
+ * ### Move & Side Highlighting
+ * The "Cyan" highlighted squares indicate the legal moves you can make for any board position.
+ * Similarly, the "Green" highlighted squares indicate the side whose turn it currently is for a more visual feel.
+ * Side movement is also displayed at the bottom, in the *status* field. 
+ * 
+ * - <b>1</b> - Toggle on/off *side* highlighting
+ * - <b>Numpad 1</b> - Toggle on/off *move* highlighting
+ * 
+ * ### Note
+ * The above keys are NOT case sensitive, thus pressing <b>U</b> (shift + u) is the same as simply pressing <b>u</b>.
+ * 
+ * ## Console (Windows)
+ * 
+ * The console provides instructions after each move and is thus more transparent to the user.
+ * This means that the user must enter the required information at each step.
+ * 
+ * ### Reservoir
+ * Unlike the GUI, where you can drag and drop a piece from the reservoir to the board,
+ * the Console requires you to input a special type of source square <i>character</i>,
+ * followed by the regular destination square. Follow the instructions in the console window to do this correctly.
+ * Remember that there is a fixed quantity of pieces in the reservoir (as indicated by the quantity numbers) and thus
+ * a move can fail if you do not have any more of that piece in the reservoir. 
+ * 
+ * For example, <span style="background-color:#F3F4F4;">Enter a source AND destination square in [A1, H8]: Q E2</span>,
+ * will place a <i>Queen</i> from the piece reservoir on <span style="background-color:#F3F4F4;">E2</span> and replace the existing piece,
+ * assuming it is that side's turn, and at the same time decrease the side's piece reservoir quantity count to <span style="background-color:#F3F4F4;">Queen x0</span>.
+ * Note that the destination square can also be <span style="background-color:#F3F4F4;">e2</span> or <span style="background-color:#F3F4F4;">52</span>
+ * for the same affect to occur.
+ * 
  * # Variant's Rules
  * <hr style="border: 1px solid #EAECEF;">
  * 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
@@ -1467,7 +1516,8 @@ namespace chessCAMO
  * <hr style="border: 1px solid #EAECEF;">
  * [![Documentation](https://img.shields.io/badge/doc-available-brightgreen.svg)](https://lbragile.github.io/chessCAMO/)
  * 
- * Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a> to clear up any questions you might have.
+ * Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a>
+ * to clear up any questions you might have.
  * 
  * # To Do
  * <hr style="border: 1px solid #EAECEF;">
@@ -1478,11 +1528,13 @@ namespace chessCAMO
  * - [ ] Three move repetition (draw) & 50 move rule.
  * 
  * ### ChessCAMO:
- * - [x] Make piece reservoir <strike>(stack)</strike> used <span style="background-color:#F3F4F4;">vector<pair<int, char>></span> where <span style="background-color:#F3F4F4;">int</span> is the quantity and <span style="background-color:#F3F4F4;">char</span> is the piece type.
+ * - [x] Make piece reservoir <strike>(stack)</strike> used <span style="background-color:#F3F4F4;">vector<pair<int, char>></span>
+ *       where <span style="background-color:#F3F4F4;">int</span> is the quantity and <span style="background-color:#F3F4F4;">char</span> is the piece type.
  * - [x] Allow players to replace existing pieces with reservoir pieces.
  * - [x] Display reservoir piece quantity and ensure a player cannot use more pieces than there are in the reservoir.
  * - [x] Prevent reservoir piece from replacing identical piece type or king.
- * - [x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules. Note that pawns cannot move 2 squares regardless of where they are placed, and they cannot be placed in the first rank for the respective players.
+ * - [x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules.
+ *       Note that pawns cannot move 2 squares regardless of where they are placed, and they cannot be placed in the first rank for the respective players.
  * 
  * # Tests
  * <hr style="border: 1px solid #EAECEF;">
@@ -1506,7 +1558,8 @@ namespace chessCAMO
  * to create test fixtures that cover as much of the implementation file as possible.
  * 
  * You can contribute to this project by making test cases that can challenge the chessCAMO engine in unique ways to ensure that it follows proper chess rules.
- * To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a> in the documentation file.
+ * To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a>
+ * in the documentation file.
  * 
  * # Contributing 
  * <hr style="border: 1px solid #EAECEF;">
@@ -1543,8 +1596,8 @@ namespace chessCAMO
  * <hr style="border: 1px solid #EAECEF;">
  * Be on the look out for a detailed YouTube video series explaining the various sections of this project.
  * I feel like others could benefit from the logic involved in creating a project on this scale, which is relatively large and requires a substantial time commitment.
- * Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before anything major is finished.
- * I was in the same boat before and understand the frustration of wanting to work on an interesting project, but simply not being able to. 
+ * Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before
+ * anything major is finished. I was in the same boat before and understand the frustration of wanting to work on an interesting project, but simply not being able to. 
  * It is often best to work on small pieces and build your way to the final product. 
  * This gives you a sense of accomplishment at each step and prevents you from experiencing the overwhelmed feeling. 
  * Let me know if you are interested in me making the videos and what you would like to see.

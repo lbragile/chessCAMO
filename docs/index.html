@@ -104,10 +104,6 @@ Project Description</h1>
 <br  />
 <br  />
 <br  />
-<br  />
-<br  />
-<br  />
-<br  />
  <img src="gameplay.gif" alt="checkmate" style="float: left; zoom:100%;" class="inline"/> <br  />
 <br  />
 <br  />
@@ -184,6 +180,45 @@ Run</h3>
 <li><span style="background-color:#F3F4F4;">main</span></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md11"></a>
+Usage</h1>
+<hr  style="border: 1px solid #EAECEF;" />
+ <h2><a class="anchor" id="autotoc_md12"></a>
+Graphical User Interface (GUI)</h2>
+<p>For any board representation, the user can press one of the following keys on their keyboard for a respective action to occur.</p>
+<h3><a class="anchor" id="autotoc_md13"></a>
+Regular Move</h3>
+<ul>
+<li><b>Esc</b> - Resign (forfeit the game)</li>
+<li><b>D</b> - Offer a draw</li>
+<li><b>U</b> - Undo a move</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md14"></a>
+Prior to Promotion</h3>
+<p>If you would like to have a specific promotion piece type, you must indicate so prior to making the move with the following keys. Otherwise, the default type <em>(<a class="el" href="class_queen.html" title="This class describes a queen and provides functions related to queen movements.">Queen</a>)</em> will be applied.</p>
+<ul>
+<li><b>Q</b> - <a class="el" href="class_queen.html" title="This class describes a queen and provides functions related to queen movements.">Queen</a></li>
+<li><b>R</b> - <a class="el" href="class_rook.html" title="This class describes a rook and provides functions related to rook movements.">Rook</a></li>
+<li><b>B</b> - <a class="el" href="class_bishop.html" title="This class describes a bishop and provides functions related to bishop movements.">Bishop</a></li>
+<li><b>N</b> - <a class="el" href="class_knight.html" title="This class describes a knight and provides functions related to knight movements.">Knight</a></li>
+</ul>
+<h3><a class="anchor" id="autotoc_md15"></a>
+Move &amp; Side Highlighting</h3>
+<p>The "Cyan" highlighted squares indicate the legal moves you can make for any board position. Similarly, the "Green" highlighted squares indicate the side whose turn it currently is for a more visual feel. Side movement is also displayed at the bottom, in the <em>status</em> field.</p>
+<ul>
+<li><b>1</b> - Toggle on/off <em>side</em> highlighting</li>
+<li><b>Numpad 1</b> - Toggle on/off <em>move</em> highlighting</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md16"></a>
+Note</h3>
+<p>The above keys are NOT case sensitive, thus pressing <b>U</b> (shift + u) is the same as simply pressing <b>u</b>.</p>
+<h2><a class="anchor" id="autotoc_md17"></a>
+Console (Windows)</h2>
+<p>The console provides instructions after each move and is thus more transparent to the user. This means that the user must enter the required information at each step.</p>
+<h3><a class="anchor" id="autotoc_md18"></a>
+Reservoir</h3>
+<p>Unlike the GUI, where you can drag and drop a piece from the reservoir to the board, the Console requires you to input a special type of source square <em>character</em>, followed by the regular destination square. Follow the instructions in the console window to do this correctly. Remember that there is a fixed quantity of pieces in the reservoir (as indicated by the quantity numbers) and thus a move can fail if you do not have any more of that piece in the reservoir.</p>
+<p>For example, <span style="background-color:#F3F4F4;">Enter a source AND destination square in [A1, H8]: Q E2</span>, will place a <em><a class="el" href="class_queen.html" title="This class describes a queen and provides functions related to queen movements.">Queen</a></em> from the piece reservoir on <span style="background-color:#F3F4F4;">E2</span> and replace the existing piece, assuming it is that side's turn, and at the same time decrease the side's piece reservoir quantity count to <span style="background-color:#F3F4F4;"><a class="el" href="class_queen.html" title="This class describes a queen and provides functions related to queen movements.">Queen</a> x0</span>. Note that the destination square can also be <span style="background-color:#F3F4F4;">e2</span> or <span style="background-color:#F3F4F4;">52</span> for the same affect to occur.</p>
+<h1><a class="anchor" id="autotoc_md19"></a>
 Variant's Rules</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <ol type="1">
@@ -192,15 +227,15 @@ Variant's Rules</h1>
 <li>An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.</li>
 <li>Additionally, just like in the <em>Crazyhouse</em> variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Documentation</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> <a href="https://lbragile.github.io/chessCAMO/"><img src="https://img.shields.io/badge/doc-available-brightgreen.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a></p>
 <p>Check out the very detailed <a href="https://lbragile.github.io/chessCAMO/" target="__blank" style="text-decoration: none;">documentation file</a> to clear up any questions you might have.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 To Do</h1>
 <hr  style="border: 1px solid #EAECEF;" />
- <h3><a class="anchor" id="autotoc_md14"></a>
+ <h3><a class="anchor" id="autotoc_md22"></a>
 Regular Chess:</h3>
 <ul>
 <li>[x] Board representation undo <strike>(use queue?)</strike> - used serialization.</li>
@@ -208,7 +243,7 @@ Regular Chess:</h3>
 <li>[x] GUI - <strike>nice to be able to move pieces with mouse rather than inputting coordinates.</strike> in progress (more details for user in the interface will be added).</li>
 <li>[ ] Three move repetition (draw) &amp; 50 move rule.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md15"></a>
+<h3><a class="anchor" id="autotoc_md23"></a>
 ChessCAMO:</h3>
 <ul>
 <li>[x] Make piece reservoir <strike>(stack)</strike> used <span style="background-color:#F3F4F4;">vector&lt;pair&lt;int, char&gt;&gt;</span> where <span style="background-color:#F3F4F4;">int</span> is the quantity and <span style="background-color:#F3F4F4;">char</span> is the piece type.</li>
@@ -217,7 +252,7 @@ ChessCAMO:</h3>
 <li>[x] Prevent reservoir piece from replacing identical piece type or king.</li>
 <li>[x] Implement abovementioned <strike>check</strike> check/double check and pawn promotion rules. Note that pawns cannot move 2 squares regardless of where they are placed, and they cannot be placed in the first rank for the respective players.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md16"></a>
+<h1><a class="anchor" id="autotoc_md24"></a>
 Tests</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> <a href="https://github.com/lbragile/chessCAMO/actions"><img src="https://img.shields.io/github/workflow/status/lbragile/chessCAMO/Unit_Testing/master" alt="Build" class="inline"/></a> <a href="https://codecov.io/gh/lbragile/chessCAMO/commits"><img src="https://img.shields.io/codecov/c/github/lbragile/chessCAMO/master" alt="Coverage" class="inline"/></a></p>
@@ -253,7 +288,7 @@ Tests</h1>
 <br  />
 <br  />
  </p>
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Run</h2>
 <ul>
 <li><span style="background-color:#F3F4F4;">mingw32-make all_unit</span></li>
@@ -263,20 +298,20 @@ Run</h2>
 <li><span style="background-color:#F3F4F4;">mingw32-make all_unit</span></li>
 <li><span style="background-color:#F3F4F4;">unit</span> <span>&larr;</span> regular output (no color)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 Unit Testing</h2>
 <p>Currently <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> utilizes the <a href="https://github.com/google/googletest" target="__blank" style="text-decoration: none;">GoogleTest</a> Framework to create test fixtures that cover as much of the implementation file as possible.</p>
 <p>You can contribute to this project by making test cases that can challenge the <a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a> engine in unique ways to ensure that it follows proper chess rules. To do so, please refer to the appropriate <a href="https://lbragile.github.io/chessCAMO/unit.html" target="__blank" style="text-decoration: none;">section</a> in the documentation file.</p>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Contributing</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO/issues"><img src="https://img.shields.io/github/issues/lbragile/chessCAMO" alt="Issues" class="inline"/></a> <a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/github/forks/lbragile/chessCAMO" alt="Forks" class="inline"/></a> <br  />
 <br  />
 Please refer to the <a href="https://github.com/lbragile/chessCAMO/blob/master/CONTRIBUTING.md" target="__blank" style="text-decoration: none;">CONTRIBUTING.md</a> document.</p>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Like What You See?</h1>
 <p><a href="https://github.com/lbragile/chessCAMO"><img src="https://img.shields.io/github/stars/lbragile/chessCAMO" alt="Stars" class="inline"/></a> </p>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md29"></a>
 Give Stars</h2>
 <p>Make the maintainer happy by hitting the star icon for this repository! <br  />
 <img src="star.PNG" alt="star this repo" style="float: left; zoom:100%;" class="inline"/> <br  />
@@ -285,7 +320,7 @@ Give Stars</h2>
 <br  />
 <br  />
  </p>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md30"></a>
 Add to Watch List</h2>
 <p>Consider adding this repository to your watch list to stay updated on what new feature is implements. <br  />
 <img src="watch.PNG" alt="watch list addition" style="float: left; zoom:100%;" class="inline"/> <br  />
@@ -306,15 +341,15 @@ Add to Watch List</h2>
 <br  />
 <br  />
  </p>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<h1><a class="anchor" id="autotoc_md31"></a>
 Inspiration​</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> I decided to create this project due to my growing interest in software development. Coming from an Engineering background with Deep Learning research experience (Recent Master of Applied Science graduate), I realized that writing and developing code (both front and back end) were highly appealing to me. Thus, I spent a lot of time building upon my existing coding knowledge through online material and knew that it is time to test my knowledge on a challenging project. Additionally, I played chess (not very seriously) consistently since the age of about 4-5, so one can say that it is a very big part of my life. As a result, this project allowed me to gain valuable experience and knowledge while working on a topic that I am passionate about and have expertise in.</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<h1><a class="anchor" id="autotoc_md32"></a>
 YouTube - Look Out</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> Be on the look out for a detailed YouTube video series explaining the various sections of this project. I feel like others could benefit from the logic involved in creating a project on this scale, which is relatively large and requires a substantial time commitment. Often times, when starting from scratch, an inexperienced software developer will quickly get overwhelmed by the complexity and decide to end the project before anything major is finished. I was in the same boat before and understand the frustration of wanting to work on an interesting project, but simply not being able to. It is often best to work on small pieces and build your way to the final product. This gives you a sense of accomplishment at each step and prevents you from experiencing the overwhelmed feeling. Let me know if you are interested in me making the videos and what you would like to see.</p>
-<h1><a class="anchor" id="autotoc_md25"></a>
+<h1><a class="anchor" id="autotoc_md33"></a>
 Need Support?</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> Reach out to me at any of the following:</p><ul>
@@ -322,7 +357,7 @@ Need Support?</h1>
 <li><a href="https://www.facebook.com/lbragi/" target="__blank" style="text-decoration: none;">Facebook</a></li>
 <li><a href="#" onclick="location.href='mai'+'lto:'+'lbr'+'ag'+'ile'+'.m'+'asc'+'@g'+'mai'+'l.'+'com'; return false;">lbrag<span style="display: none;">.nosp@m.</span>ile.<span style="display: none;">.nosp@m.</span>masc@<span style="display: none;">.nosp@m.</span>gmai<span style="display: none;">.nosp@m.</span>l.com</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<h1><a class="anchor" id="autotoc_md34"></a>
 License</h1>
 <hr  style="border: 1px solid #EAECEF;" />
 <p> <a href="https://github.com/lbragile/chessCAMO/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lbragile/chessCAMO" alt="License" class="inline"/></a></p><ul>

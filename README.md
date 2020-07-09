@@ -47,6 +47,48 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 - `mingw32-make all_main`
 - `main`
 
+## Usage
+
+### Graphical User Interface (GUI) 
+
+For any board representation, the user can press one of the following keys on their keyboard for a respective action to occur.
+
+#### <u>Regular Move</u>
+
+- **Esc** - Resign (forfeit the game)
+- **D** - Offer a draw
+- **U** - Undo a move
+
+#### <u>Prior to Promotion</u>
+
+If you would like to have a specific promotion piece type, you must indicate so prior to making the move with the following keys. Otherwise, the default type *(Queen)* will be applied.
+
+- **Q** - Queen
+- **R** - Rook
+- **B** - Bishop
+- **N** - Knight
+
+#### <u>Move & Side Highlighting</u>
+
+The "Cyan" highlighted squares indicate the legal moves you can make for any board position. Similarly, the "Green" highlighted squares indicate the side whose turn it currently is for a more visual feel. Side movement is also displayed at the bottom, in the *status* field. 
+
+- **1** - Toggle on/off *side* highlighting
+- **Numpad 1** - Toggle on/off *move* highlighting
+
+#### <u>Note</u>
+
+The above keys are NOT case sensitive, thus pressing **U** (shift + u) is the same as simply pressing **u**.
+
+### Console (Windows)
+
+The console provides instructions after each move and is thus more transparent to the user. This means that the user must enter the required information at each step.
+
+#### <u>Reservoir</u>
+
+Unlike the GUI, where you can drag and drop a piece from the reservoir to the board, the Console requires you to input a special type of source square *character*, followed by the regular destination square. Follow the instructions in the console window to do this correctly. Remember that there is a fixed quantity of pieces in the reservoir (as indicated by the quantity numbers) and thus a move can fail if you do not have any more of that piece in the reservoir. 
+
+For example, `Enter a source AND destination square in [A1, H8]: Q E2`, will place a *Queen* from the piece reservoir on `E2` and replace the existing piece, assuming it is that side's turn, and at the same time decrease the side's piece reservoir quantity count to `Queen x0`. Note that the destination square can also be `e2` or `52` for the same affect to occur.
+
 ## Variant's Rules :straight_ruler::notebook:
 
 1. The piece reservoir is limited in size and cannot be re-stocked with pieces.
