@@ -178,9 +178,6 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">handleStalemate</a> ()</td></tr>
 <tr class="memdesc:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates the game is drawn via a message to console.  <a href="class_chess.html#a16d7f2a9c4cb971dbbd7803cee31dbf9">More...</a><br /></td></tr>
 <tr class="separator:a16d7f2a9c4cb971dbbd7803cee31dbf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a03dc9cc3449fdc28d9bb6654bf9e4225">needUndoMove</a> (<a class="el" href="class_piece.html">Piece</a> *piece)</td></tr>
-<tr class="memdesc:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="mdescLeft">&#160;</td><td class="mdescRight">After a move is made, can undo it if move was invalid and return to previous board state.  <a href="class_chess.html#a03dc9cc3449fdc28d9bb6654bf9e4225">More...</a><br /></td></tr>
-<tr class="separator:a03dc9cc3449fdc28d9bb6654bf9e4225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">singleCheckPieceIterator</a> (<a class="el" href="class_piece.html">Piece</a> *piece, <a class="el" href="class_piece.html">Piece</a> *king)</td></tr>
 <tr class="memdesc:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If in a single check, see if piece can defend the king, capture attacking piece, or move the king out of check. Used in isCheckmate("single")  <a href="class_chess.html#a46eb33b62b96fcc09cbc612964ba6cd1">More...</a><br /></td></tr>
 <tr class="separator:a46eb33b62b96fcc09cbc612964ba6cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1228,43 +1225,6 @@ Friends</h2></td></tr>
 <p>Indicates the game is drawn via a message to console. </p>
 <dl class="section pre"><dt>Precondition</dt><dd>The chess object is created. A move was made.</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>Object's stalemate state is set to true (to end the algorithm) </dd></dl>
-
-</div>
-</div>
-<a id="a03dc9cc3449fdc28d9bb6654bf9e4225"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03dc9cc3449fdc28d9bb6654bf9e4225">&#9670;&nbsp;</a></span>needUndoMove()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Chess::needUndoMove </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_piece.html">Piece</a> *&#160;</td>
-          <td class="paramname"><em>piece</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>After a move is made, can undo it if move was invalid and return to previous board state. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">piece</td><td>The piece that is attacking the king currently</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section pre"><dt>Precondition</dt><dd>The chess object is created. A move was made.</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>None</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>True if after move, the 'king' is still in check (single or double) or the move was invalid, output warning message and undo the move. Else, False and continue the game without undoing the move. </dd></dl>
 
 </div>
 </div>

@@ -393,32 +393,9 @@ bool Chess::makeMove(int src, int dest, istream &in)
         if(src <= 63)
             makeMoveForType(src, dest);
 
-        if(getDoubleCheck() || getCheck())
-        {    
-            // When in double check you must move the king. When in single check
-            // you have three choices: move the king, defend the path, attack
-            // the checking piece. If the move failed, undo the board
-            // representation and do not set check_pieces
-            if( needUndoMove(check_pieces[0]) )
-            {
-                // restore previous object
-                chessCAMO::restoreObject(*this);
-                
-                chessCAMO::printBoard(getBoard(), getReservoir());
-
-                cout << "___________________________________________________" << endl;
-                if(getCheck())
-                    chessCAMO::printMessage("You are in check! Try again...\n", YELLOW);
-                else
-                    chessCAMO::printMessage("You are in double check! Try again...\n", YELLOW);
-
-                return false;
-            }
-
-            // did not return so set the appropriate member variables
-            setDoubleCheck(false);
-            setCheck(false);
-        }
+        // reset the appropriate member variables
+        setDoubleCheck(false);
+        setCheck(false);
 
         board = getBoard();
 
@@ -774,48 +751,6 @@ void Chess::handleStalemate()
     chessCAMO::printBoard(getBoard(), getReservoir());
     chessCAMO::printFooterMessage(" won by Checkmate!\n", *this);
     setStalemate(true);
-}
-
-/**
- * @brief      After a move is made, can undo it if move was invalid and return
- *             to previous board state
- *
- * @param      piece  The piece that is attacking the king currently
- *
- * @pre        The chess object is created. A move was made.
- *
- * @post       None
- *
- * @return     True if after move, the 'king' is still in check (single or
- *             double) or the move was invalid, output warning message and undo
- *             the move. Else, False and continue the game without undoing the
- *             move.
- */
-bool Chess::needUndoMove(Piece *piece)
-{
-    // move was already made, so check if the piece can still attack the king
-    // while making sure that the king did not move to or away from the piece
-    // (its square will be empty if so)
-    vector<Piece*> board = getBoard();
-
-    int king_pos_single = findKingPos(piece->getPieceSquare(), *this, true);  // opposite color
-    int king_pos_double = findKingPos(piece->getPieceSquare(), *this, false); // same color
-
-    if(getCheck())
-    {
-        switchTurn(); // player turn was not switched yet even though move was made
-        return piece->isPossibleMove(king_pos_single, *this);
-    }
-    else // getDoubleCheck()
-    {
-        for(const auto & elem : board)
-        {
-            if(elem->isPossibleMove(king_pos_double, *this))
-                return true;
-        }
-
-        return false;
-    }
 } 
        
 /**
@@ -1007,6 +942,14 @@ bool Piece::isLegalMove(int dest, Chess &chess)
         if(chess.getDoubleCheck() && !isKing())
             return false;
 
+        // king cannot move in same path as check path
+        else if(chess.getDoubleCheck())
+        {
+            for(const auto & elem : chess.getBoard())
+                if(!elem->isSameColor(getPieceSquare(), chess) && squareOfPieceInPath(elem->getPieceSquare(), dest, chess) == getPieceSquare())
+                    return false;
+        }
+
         // when in check, find the squares that are in the check path and see if a
         // piece can defend the king by either capturing the attacker or moving into
         // those squares
@@ -1031,6 +974,14 @@ bool Piece::isLegalMove(int dest, Chess &chess)
                     if(isPossibleMove(square, chess) && !isPinned(square, chess) && square == dest)
                         return true;
                 return false;
+            }
+
+            // king cannot move in same path as check path
+            else 
+            {
+                for(const auto & elem : chess.getBoard())
+                    if(!elem->isSameColor(getPieceSquare(), chess) && squareOfPieceInPath(elem->getPieceSquare(), dest, chess) == getPieceSquare())
+                        return false;
             }
         }
 
@@ -1444,13 +1395,14 @@ bool King::movedIntoCheck(int dest, Chess &chess)
 
     for(const auto & elem : board)
     {
-        if( !elem->isEmpty() && elem->getPieceColor() != getPieceColor() && elem->isPossibleMove(dest, chess) )
+        if( elem->isPossibleMove(dest, chess) )
         {
             ret_val = true;
             break;
         }
     }
 
+    // return values back to original for piece
     board[dest]->setPieceColor(original_color);
     board[dest]->setPieceType(original_type);
 

@@ -476,23 +476,6 @@ private:
     void handleStalemate();
 
     /**
-     * @brief      After a move is made, can undo it if move was invalid and
-     *             return to previous board state
-     *
-     * @param      piece  The piece that is attacking the king currently
-     *
-     * @pre        The chess object is created. A move was made.
-     *
-     * @post       None
-     *
-     * @return     True if after move, the 'king' is still in check (single or
-     *             double) or the move was invalid, output warning message and
-     *             undo the move. Else, False and continue the game without
-     *             undoing the move.
-     */
-    bool needUndoMove(Piece *piece);
-
-    /**
      * @brief      If in a single check, see if piece can defend the king,
      *             capture attacking piece, or move the king out of check. Used
      *             in isCheckmate("single")
