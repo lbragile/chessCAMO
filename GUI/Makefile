@@ -1,16 +1,26 @@
 CXX = g++
-
-# CXXFLAGS  = -g -c -Wall
-CXXFLAGS = -g -Wall
+CXXFLAGS  = -g -c -Wall
+AFLAGS = -g -Wall
 
 SFML_CFLAGS = -I ../../SFML/include/ -I ../include/ -I ../src/ -L ../../SFML/lib/
 SFML_LFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -mwindows
+CHESS_CFLAGS = -I ../include/
 
 vpath %.cpp ../src
 vpath %.h ../include
 
-all: gui
+.PHONY: all
+all: clean chess.o gui.o gui.exe
 
-.PHONY: gui
-gui: gui.cpp chess.cpp
-	$(CXX) $(CXXFLAGS) $(SFML_CFLAGS) $^ -o chessCAMO $(SFML_LFLAGS)
+chess.o: chess.cpp chess.h
+	$(CXX) $(CXXFLAGS) $(CHESS_CFLAGS) $<
+
+gui.o: gui.cpp chess.h
+	$(CXX) $(CXXFLAGS) $(SFML_CFLAGS) $<
+
+gui.exe:
+	$(CXX) $(AFLAGS) $(SFML_CFLAGS) chess.o gui.o -o chessCAMO $(SFML_LFLAGS)
+
+clean:
+	@echo "remove binaries from folder"
+	rm *.o*

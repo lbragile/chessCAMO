@@ -1,5 +1,5 @@
 /**
- * \page main Main Implementation File Description (Allow User to Play)
+ * \page main Main Implementation File Description (Allow User to Play via a Windows Console)
  * 
  * <b>Title</b><br>
  * <span>&emsp;&emsp;&emsp;main.cpp</span>
@@ -16,16 +16,13 @@
  * This implementation file is meant to be used by avid chess players. Once the program is running,
  * the player inputs a source ('src') coordinate and destination ('dest') coordinate to make a move.
  * If the user enters an invalid move, an appropriate error message is displayed. At any given moment,
- * a player can decide to either continue, offer a draw, or resign.
+ * a player can decide to either continue, offer a draw, resign, or undo the move.
  *
  * Simply run <b>mingw32-make all_main && main</b> on a Windows machine to start the game.
  *
  * \note
  *   - Currently all standard chess rules are supported, except three move repetition & 50 move rule.
- *   - There is no undo board representation (yet!).
- *   - You can choose to input PGN notation ('e2 e4') rather than coordinates ('52 36'), but you must be
- *     consistant at each input. That is, you cannot input mixed notations such as 'e2 36'.
- *   - GUI is in the works, stay tuned!      
+ *   - You can choose to input PGN notation ('e2 E4') rather than coordinates ('52 36'), or a mix of both ('e2 36').   
 */
 
 #include "chess.h"

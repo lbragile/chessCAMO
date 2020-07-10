@@ -47,7 +47,7 @@ The "CAMO" portion comes from the idea that in this variant, at any turn, a play
 - `mingw32-make all_main`
 - `main`
 
-## Usage
+## Usage :arrow_forward:
 
 ### Graphical User Interface (GUI) 
 
@@ -58,6 +58,7 @@ For any board representation, the user can press one of the following keys on th
 - **Esc** - Resign (forfeit the game)
 - **D** - Offer a draw
 - **U** - Undo a move
+- **S** - Start a new game
 
 #### <u>Prior to Promotion</u>
 

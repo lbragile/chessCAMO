@@ -58,38 +58,43 @@ using namespace chessCAMO;
 class ChessTest;
 
 /*************************************************************************************/
-/*                              FUNCTION DECLARATION                                 */
+/*                             LOCAL FUNCTION DECLARATIONS                           */
 /*************************************************************************************/
-/**
- * @brief      Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation
- *
- * @param      chess  The chess object
- *
- * \pre
- * Start with an initialized board vector
- * 
- * \post
- * None
- * 
- * @return     The FEN string based on piece type and common FEN making rules
- */
-string boardFenConverter(Chess &chess);
+namespace
+{
+    /**
+     * @brief      Converts a given board position into a <a
+     *             href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation"
+     *             target="__blank">FEN</a> string representation
+     *
+     * @param      chess  The chess object
+     *
+     * @pre        Start with an initialized board vector
+     *
+     * @post       None
+     *
+     * @return     The FEN string based on piece type and common FEN making rules
+     */
+    string boardFenConverter(Chess &chess);
 
-/**
- * @brief      Decides what type of character to append to the formed FEN string
- *
- * @param      fen          The FEN string that characters will be appended to (can be empty)
- * @param      empty_count  The number of empty squares found in the current row
- * @param[in]  next_char    The next character to append to 'fen', must be one of P, N, B, Q, K (upper case)
- * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
- * 
- * \pre
- * An empty 'fen' string
- * 
- * \post
- * Appends 'next_char' to 'fen' and returns updated variables by reference
- */
-void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
+    /**
+     * @brief      Decides what type of character to append to the formed FEN string
+     *
+     * @param      fen          The FEN string that characters will be appended to
+     *                          (can be empty)
+     * @param      empty_count  The number of empty squares found in the current row
+     * @param[in]  next_char    The next character to append to 'fen', must be one
+     *                          of P, N, B, Q, K (upper case)
+     * @param[in]  isWhite      True if the passed piece is white, False otherwise.
+     *                          Used to determine piece's letter case in 'fen'.
+     *
+     * @pre        An empty 'fen' string
+     *
+     * @post       Appends 'next_char' to 'fen' and returns updated variables by
+     *             reference
+     */
+    void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite);
+}
 
 /*************************************************************************************/
 /*                              TEST FIXTURE SETUP                                   */
@@ -191,778 +196,778 @@ protected:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 TEST_F(ChessTest, unableToOpenFileString)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/unableToOpenFileString.txt");
     SetUp(myfile);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, "-");
 }
 
 TEST_F(ChessTest, stringInputsResignForCoverage)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/00-stringInputsResignForCoverage.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, stringInputsNDrawFeaturesForCoverage)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/00-stringInputsNDrawFeaturesForCoverage.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleAfterKingMoved)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/01-castleAfterKingMoved.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleAfterKingSideRookMoved)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/02-castleAfterKingSideRookMoved.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleAfterQueenSideRookMoved)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/03-castleAfterQueenSideRookMoved.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleKingSide)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/04-castleKingSide.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleQueenSide)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/05-castleQueenSide.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, kingMoveIntoCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/06-kingMoveIntoCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenMate)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/07-queenMate.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckKingMoves)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/08-queenCheckKingMoves.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, queenCheckPieceDefends)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/09-queenCheckPieceDefends.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionRookWhite)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/11-pawnPromotionRookWhite.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionRookBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/11-pawnPromotionRookBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionQueenWhite)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/12-pawnPromotionQueenWhite.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionQueenBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/12-pawnPromotionQueenBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionKnightWhite)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/13-pawnPromotionKnightWhite.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionKnightBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/13-pawnPromotionKnightBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionBishopWhite)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/14-pawnPromotionBishopWhite.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pawnPromotionBishopBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/14-pawnPromotionBishopBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, trickyCastle)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/15-trickyCastle.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleWhenInCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/16-castleWhenInCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleThroughCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/17-castleThroughCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, castleIntoCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/18-castleIntoCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantTakeRight)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/19-enPassantTakeRight.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantTakeLeft)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/19-enPassantTakeLeft.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantWithoutCapture)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/20-enPassantWithoutCapture.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/21-knightCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightCheckKingMoves)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/22-knightCheckKingMoves.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, knightMate)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/23-knightMate.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPieceBishop)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/24-pinnedPieceBishop.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPieceQueen)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/25-pinnedPieceQueen.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedPiecePawnCanCapture)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/26-pinnedPiecePawnCanCapture.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, moveIntoKnightCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/27-moveIntoKnightCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, moveIntoPawnCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/28-moveIntoPawnCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, stalemate)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/29-stalemate.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckWithKnight)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/30-doubleCheckWithKnight.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckwithBishop)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/31-doubleCheckwithBishop.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckmateKnight)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/32-doubleCheckmateKnight.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckmateBishop)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/33-doubleCheckmateBishop.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingMovesOutofCheck)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/34-doubleCheckPawnKingMovesOutofCheck.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingChoosesToTake)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/35-doubleCheckPawnKingChoosesToTake.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, doubleCheckPawnKingMustTake)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/36-doubleCheckPawnKingMustTake.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedWithBishop)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/37-pinnedWithBishop.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */ 
+    // -------------------- Act -------------------- 
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedWithQueen)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/37-pinnedWithQueen.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinnedWithRook)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/37-pinnedWithRook.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantPawnRight)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/39-enPassantPawnLeft.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enPassantPawnLeft)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/40-enPassantPawnRight.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, checkmateQueenBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/45-checkmateQueenBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, stalemateBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/46-stalemateBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, resignBlack)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/47-resignBlack.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, scholarMate)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/48-scholarMate.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enpassantDeniedPawnMoves)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/49-enpassantDeniedPawnMoves.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, scholarAttemptWithJustQueen)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/50-scholarAttemptWithJustQueen.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, enpassantWithBlackPawn)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/51-enpassantWithBlackPawn.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pinWithWrongPiece)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/52-pinWithWrongPiece.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, promotionWithCheckKingMoves)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/53-promotionWithCheckKingMoves.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, trickyEnPassant)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/54-trickyEnPassant.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */
+    // -------------------- Act --------------------
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pieceReservoirUsage)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/55-pieceReservoirUsage.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */ 
+    // -------------------- Act -------------------- 
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
 TEST_F(ChessTest, pieceReservoirForCoverage)
 {
-    /* ------------------ Arrange ------------------ */
+    // ------------------ Arrange ------------------
     ifstream myfile("tests/56-pieceReservoirForCoverage.txt");
     SetUp(myfile);
 
-    /* -------------------- Act -------------------- */ 
+    // -------------------- Act -------------------- 
     fen_obtained = boardFenConverter(chess);
 
-    /* ------------------- Assert ------------------ */
+    // ------------------- Assert ------------------
     EXPECT_EQ(fen_expected, fen_obtained);
 }
 
@@ -975,105 +980,110 @@ TEST_F(ChessTest, pieceReservoirForCoverage)
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*************************************************************************************/
-/*                              FUNCTION DEFINITION                                  */
+/*                       LOCAL FUNCTION DEFINITIONS                                  */
 /*************************************************************************************/
-/**
- * @brief      Converts a given board position into a <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation" target="__blank">FEN</a> string representation
- *
- * @param      chess  The chess object
- *
- * \pre
- * Start with an initialized board vector
- * 
- * \post
- * None
- * 
- * @return     The FEN string based on piece type and common FEN making rules
- */   
-string boardFenConverter(Chess &chess)
+namespace
 {
-    int elem_count = 0, empty_count = 0;
-    string fen;
-    char temp[15];
-
-    vector<Piece*> board = chess.getBoard();
-    for(auto elem : board)
+    /**
+     * @brief      Converts a given board position into a <a
+     *             href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation"
+     *             target="__blank">FEN</a> string representation
+     *
+     * @param      chess  The chess object
+     *
+     * @pre        Start with an initialized board vector
+     *
+     * @post       None
+     *
+     * @return     The FEN string based on piece type and common FEN making rules
+     */   
+    string boardFenConverter(Chess &chess)
     {
-        // piece square handling
-        if(elem->isPawn())
-            appendFEN(fen, empty_count, 'P', elem->isPieceWhite());
-        else if(elem->isKnight())
-            appendFEN(fen, empty_count, 'N', elem->isPieceWhite());
-        else if(elem->isBishop())
-            appendFEN(fen, empty_count, 'B', elem->isPieceWhite());
-        else if(elem->isRook())
-            appendFEN(fen, empty_count, 'R', elem->isPieceWhite());
-        else if(elem->isQueen())
-            appendFEN(fen, empty_count, 'Q', elem->isPieceWhite());
-        else if(elem->isKing())
-            appendFEN(fen, empty_count, 'K', elem->isPieceWhite());
-        else{empty_count++;} // elem->isEmpty() -> don't append anything to the FEN string
+        int elem_count = 0, empty_count = 0;
+        string fen;
+        char temp[15];
 
-        // empty square handling (must count number of empty square before and after a figure in a given row)
-        // E.g. _ _ _ _ P _ _ _ = 4P3
-        if(empty_count == 8 || (elem_count % 8 == 7 && empty_count != 0))
+        vector<Piece*> board = chess.getBoard();
+        for(auto elem : board)
         {
-            sprintf(temp, "%i", empty_count);
-            fen.append(temp);
-            empty_count = 0;
+            // piece square handling
+            if(elem->isPawn())
+                appendFEN(fen, empty_count, 'P', elem->isPieceWhite());
+            else if(elem->isKnight())
+                appendFEN(fen, empty_count, 'N', elem->isPieceWhite());
+            else if(elem->isBishop())
+                appendFEN(fen, empty_count, 'B', elem->isPieceWhite());
+            else if(elem->isRook())
+                appendFEN(fen, empty_count, 'R', elem->isPieceWhite());
+            else if(elem->isQueen())
+                appendFEN(fen, empty_count, 'Q', elem->isPieceWhite());
+            else if(elem->isKing())
+                appendFEN(fen, empty_count, 'K', elem->isPieceWhite());
+            else{empty_count++;} // elem->isEmpty() -> don't append anything to the FEN string
+
+            // empty square handling (must count number of empty square before and after a figure in a given row)
+            // E.g. _ _ _ _ P _ _ _ = 4P3
+            if(empty_count == 8 || (elem_count % 8 == 7 && empty_count != 0))
+            {
+                sprintf(temp, "%i", empty_count);
+                fen.append(temp);
+                empty_count = 0;
+            }
+
+            // end of row handling
+            if(elem_count % 8 == 7 && elem_count != 63){fen.append("/");}
+
+            elem_count++;
         }
 
-        // end of row handling
-        if(elem_count % 8 == 7 && elem_count != 63){fen.append("/");}
+        // player turn handling
+        fen.append(chess.getTurn() == WHITE ? " w " : " b ");
 
-        elem_count++;
+        // castle handling (for both sides)
+        // White player
+        if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, chess) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
+            fen.append("K");
+        if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, chess) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
+            fen.append("Q");
+
+        // Black player
+        if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, chess) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
+            fen.append("k");
+        if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, chess) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
+            fen.append("q");
+
+        return fen;
     }
 
-    // player turn handling
-    fen.append(chess.getTurn() == WHITE ? " w " : " b ");
-
-    // castle handling (for both sides)
-    /***** White player *****/
-    if(board[63]->isRook() && board[60]->isKing() && board[60]->isSameColor(63, chess) && !board[60]->getPieceMoveInfo() && !board[63]->getPieceMoveInfo())
-        fen.append("K");
-    if(board[56]->isRook() && board[60]->isKing() && board[60]->isSameColor(56, chess) && !board[56]->getPieceMoveInfo() && !board[60]->getPieceMoveInfo())
-        fen.append("Q");
-
-    /***** Black player *****/
-    if(board[7]->isRook() && board[4]->isKing() && board[4]->isSameColor(7, chess) && !board[4]->getPieceMoveInfo() && !board[7]->getPieceMoveInfo())
-        fen.append("k");
-    if(board[0]->isRook() && board[4]->isKing() && board[4]->isSameColor(0, chess) && !board[0]->getPieceMoveInfo() && !board[4]->getPieceMoveInfo())
-        fen.append("q");
-
-    return fen;
-}
-
-/**
- * @brief      Decides what type of character to append to the formed FEN string
- *
- * @param      fen          The FEN string that characters will be appended to (can be empty)
- * @param      empty_count  The number of empty squares found in the current row
- * @param[in]  next_char    The next character to append to 'fen', must be one of P, N, B, Q, K (upper case)
- * @param[in]  isWhite      True if the passed piece is white, False otherwise. Used to determine piece's letter case in 'fen'.
- * 
- * \pre
- * An empty 'fen' string
- * 
- * \post
- * Appends 'next_char' to 'fen' and returns updated variables by reference
- */
-void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite)
-{
-    // accumulated empty squares leading up to a piece in a given row?
-    // append this number to the FEN string and reset the empty squares counter for the row
-    if(empty_count > 0)
+    /**
+     * @brief      Decides what type of character to append to the formed FEN string
+     *
+     * @param      fen          The FEN string that characters will be appended to
+     *                          (can be empty)
+     * @param      empty_count  The number of empty squares found in the current row
+     * @param[in]  next_char    The next character to append to 'fen', must be one
+     *                          of P, N, B, Q, K (upper case)
+     * @param[in]  isWhite      True if the passed piece is white, False otherwise.
+     *                          Used to determine piece's letter case in 'fen'.
+     *
+     * @pre        An empty 'fen' string
+     *
+     * @post       Appends 'next_char' to 'fen' and returns updated variables by
+     *             reference
+     */
+    void appendFEN(string & fen, int & empty_count, char next_char, bool isWhite)
     {
-        char temp[15];
-        sprintf(temp, "%i", empty_count);
-        fen.append(temp);
-        empty_count = 0; // found a piece or went to new line, so empty square counter cannot be > 0
-    }
+        // accumulated empty squares leading up to a piece in a given row?
+        // append this number to the FEN string and reset the empty squares counter for the row
+        if(empty_count > 0)
+        {
+            char temp[15];
+            sprintf(temp, "%i", empty_count);
+            fen.append(temp);
+            empty_count = 0; // found a piece or went to new line, so empty square counter cannot be > 0
+        }
 
-    // White piece -> upper case letter, black piece -> lower case letter
-    isWhite ? fen.push_back((char) next_char) : fen.push_back((char) tolower(next_char));
+        // White piece -> upper case letter, black piece -> lower case letter
+        isWhite ? fen.push_back((char) next_char) : fen.push_back((char) tolower(next_char));
+    }
 }

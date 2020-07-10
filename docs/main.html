@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>chessCAMO: Main Implementation File Description (Allow User to Play)</title>
+<title>chessCAMO: Main Implementation File Description (Allow User to Play via a Windows Console)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
 </div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Main Implementation File Description (Allow User to Play) </div>  </div>
+<div class="title">Main Implementation File Description (Allow User to Play via a Windows Console) </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><b>Title</b><br  />
@@ -74,14 +74,12 @@ $(function() {
 <p><b>Project</b><br  />
  <span>&emsp;&emsp;&emsp;<a class="el" href="namespacechess_c_a_m_o.html" title="This namespace contains the global functions related to chessCAMO which are mainly used as helper fun...">chessCAMO</a></span><br  />
  </p><dl class="section version"><dt>Version</dt><dd>2.1 </dd></dl>
-<dl class="section date"><dt>Date</dt><dd>July 7th, 2020</dd></dl>
-<p>This implementation file is meant to be used by avid chess players. Once the program is running, the player inputs a source ('src') coordinate and destination ('dest') coordinate to make a move. If the user enters an invalid move, an appropriate error message is displayed. At any given moment, a player can decide to either continue, offer a draw, or resign.</p>
+<dl class="section date"><dt>Date</dt><dd>July 9th, 2020</dd></dl>
+<p>This implementation file is meant to be used by avid chess players. Once the program is running, the player inputs a source ('src') coordinate and destination ('dest') coordinate to make a move. If the user enters an invalid move, an appropriate error message is displayed. At any given moment, a player can decide to either continue, offer a draw, resign, or undo the move.</p>
 <p>Simply run <b>mingw32-make all_main &amp;&amp; main</b> on a Windows machine to start the game.</p>
 <dl class="section note"><dt>Note</dt><dd><ul>
 <li>Currently all standard chess rules are supported, except three move repetition &amp; 50 move rule.</li>
-<li>There is no undo board representation (yet!).</li>
-<li>You can choose to input PGN notation ('e2 e4') rather than coordinates ('52 36'), but you must be consistant at each input. That is, you cannot input mixed notations such as 'e2 36'.</li>
-<li>GUI is in the works, stay tuned! <br  />
+<li>You can choose to input PGN notation ('e2 E4') rather than coordinates ('52 36'), or a mix of both ('e2 36'). <br  />
  </li>
 </ul>
 </dd></dl>

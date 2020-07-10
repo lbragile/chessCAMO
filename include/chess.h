@@ -1465,6 +1465,7 @@ namespace chessCAMO
  * - <b>Esc</b> - Resign (forfeit the game)
  * - <b>D</b> - Offer a draw
  * - <b>U</b> - Undo a move
+ * - <b>S</b> - Start a new game
  * 
  * ### Prior to Promotion
  * If you would like to have a specific promotion piece type, you must indicate so prior to making the move with the following keys.

@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['red_96',['RED',['../chess_8h.html#a8d23feea868a983c8c2b661e1e16972f',1,'chess.h']]],
-  ['reservoir_97',['reservoir',['../class_chess.html#ac9a723ecc7b4a0c56ddf874f38699e42',1,'Chess']]],
-  ['restoreobject_98',['restoreObject',['../namespacechess_c_a_m_o.html#a709a529664eab482c1381a6aed1e1d06',1,'chessCAMO']]],
-  ['rook_99',['Rook',['../class_rook.html',1,'Rook'],['../class_rook.html#a0cce560130c640f82c99937ce5781ac1',1,'Rook::Rook()'],['../class_rook.html#a741becdfadb1ca917cc390b4ff4cfd6b',1,'Rook::Rook(int square, pieceType type, pieceColor color)'],['../chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549a49b75ad9a5137e805c60f32ed9cc2820',1,'ROOK():&#160;chess.h']]]
+  ['red_106',['RED',['../chess_8h.html#a8d23feea868a983c8c2b661e1e16972f',1,'chess.h']]],
+  ['reservoir_107',['reservoir',['../class_chess.html#ac9a723ecc7b4a0c56ddf874f38699e42',1,'Chess']]],
+  ['resetposition_108',['resetPosition',['../class_chess_g_u_i.html#af40ffcf44a62cca2d8aa3241dfdc6516',1,'ChessGUI']]],
+  ['restoreobject_109',['restoreObject',['../namespacechess_c_a_m_o.html#a709a529664eab482c1381a6aed1e1d06',1,'chessCAMO']]],
+  ['rook_110',['Rook',['../class_rook.html',1,'Rook'],['../class_rook.html#a0cce560130c640f82c99937ce5781ac1',1,'Rook::Rook()'],['../class_rook.html#a741becdfadb1ca917cc390b4ff4cfd6b',1,'Rook::Rook(int square, pieceType type, pieceColor color)'],['../chess_8h.html#a9cd244f2b694e9673cce6f0e7185e549a49b75ad9a5137e805c60f32ed9cc2820',1,'ROOK():&#160;chess.h']]]
 ];
