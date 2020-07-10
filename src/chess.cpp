@@ -293,6 +293,43 @@ Chess::~Chess()
         delete elem; // GCOVR_EXCL_LINE
 }
 
+// GCOV_EXCL_START
+/**
+ * @brief      Copy constructor - Constructs a new instance and copies the
+ *             calling object's values to it.
+ *
+ * @param[in]  chess_object  The object whose values will be copied
+ */
+Chess::Chess(const Chess &chess_object)
+{
+    // create the new object via a dynamic allocation
+    Chess *chess_ptr = new Chess;
+
+    // assign it the same number of moves as current object and then restore the
+    // member variables based on that move number (into the NEW object)
+    chess_ptr->setNumMoves(chess_object.getNumMoves());
+    chessCAMO::restoreObject(*chess_ptr);
+}
+
+/**
+ * @brief      Copy Assignment operator - assigns values of one object to
+ *             another existing object
+ *
+ * @param[in]  chess_object  The object whose values will be copied
+ *
+ * @return     The resulting object from the assignment
+ */
+Chess & Chess::operator =(const Chess &chess_object)
+{
+    // assign it the same number of moves as current object and then restore the
+    // member variables based on that move number (into the EXISTING object)
+    setNumMoves(chess_object.getNumMoves());
+    chessCAMO::restoreObject(*this);
+
+    return *this;
+}
+// GCOV_EXCL_STOP
+
 /**
  * @brief      Places the pieces on the board at their correct starting
  *             positions
@@ -596,20 +633,17 @@ bool Chess::isStalemate()
     vector<Piece*> board = getBoard();
 
     // this is a list of all the possible increments (moves) a piece on the board could have
-    int possible_moves[22] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18,
-                              21, 27, 28, 35, 36, 42, 45, 49, 54, 56, 63};
+    int possible_moves[] = {1, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 21, 27, 28, 35, 36, 42, 45, 49, 54, 56, 63};
     
     for(const auto & elem : board)
     {
+        // see if a piece from the other turn's side can move
         if(elem->getPieceColor() == switchTurn())
         {
             for(int move : possible_moves)
             {
-                if( elem->isLegalMove(elem->getPieceSquare() + move, *this) ||
-                    elem->isLegalMove(elem->getPieceSquare() - move, *this) )
-                {
-                    return false; // at least one piece could move on the board
-                }
+                if( elem->isLegalMove(elem->getPieceSquare() + move, *this) || elem->isLegalMove(elem->getPieceSquare() - move, *this) )
+                    return false; // at least one piece from the next turn's side could move on the board
             }
         }
     }
@@ -942,18 +976,10 @@ bool Piece::isLegalMove(int dest, Chess &chess)
         if(chess.getDoubleCheck() && !isKing())
             return false;
 
-        // king cannot move in same path as check path
-        else if(chess.getDoubleCheck())
-        {
-            for(const auto & elem : chess.getBoard())
-                if(!elem->isSameColor(getPieceSquare(), chess) && squareOfPieceInPath(elem->getPieceSquare(), dest, chess) == getPieceSquare())
-                    return false;
-        }
-
         // when in check, find the squares that are in the check path and see if a
         // piece can defend the king by either capturing the attacker or moving into
         // those squares
-        else if(chess.getCheck())
+        else if(chess.getCheck() && !isKing())
         {
             // obtain squares in check path
             int attacker_sqr = check_pieces[0]->getPieceSquare(), king_sqr = check_pieces[1]->getPieceSquare();
@@ -966,23 +992,19 @@ bool Piece::isLegalMove(int dest, Chess &chess)
 
             squares_in_path.push_back(attacker_sqr); // attacker included in the path squares
 
-            // if the moving piece is not a king, see if it can move into one of the
-            // above squares (cannot be pinned)
-            if(!isKing())
-            {
-                for(const auto & square : squares_in_path)
-                    if(isPossibleMove(square, chess) && !isPinned(square, chess) && square == dest)
-                        return true;
-                return false;
-            }
+            // see if piece can move into one of the above squares (cannot be pinned)
+            for(const auto & square : squares_in_path)
+                if(isPossibleMove(square, chess) && !isPinned(square, chess) && square == dest)
+                    return true;
+            return false;
+        }
 
-            // king cannot move in same path as check path
-            else 
-            {
-                for(const auto & elem : chess.getBoard())
-                    if(!elem->isSameColor(getPieceSquare(), chess) && squareOfPieceInPath(elem->getPieceSquare(), dest, chess) == getPieceSquare())
-                        return false;
-            }
+        // king cannot move in same path as check path
+        else if( chess.getCheck() || chess.getDoubleCheck() )
+        {
+            for(const auto & elem : chess.getBoard())
+                if(!elem->isSameColor(getPieceSquare(), chess) && squareOfPieceInPath(elem->getPieceSquare(), dest, chess) == getPieceSquare())
+                    return false;
         }
 
         // if not in check/double check, see if the piece is pinned and moves into check
@@ -1008,36 +1030,41 @@ bool Piece::causeCheck(int dest, Chess &chess)
     
     int king_pos = findKingPos(dest, chess, true); // opposite color king position
 
-    if(board[dest]->isPossibleMove(king_pos, chess))
+    // must look at all pieces since the moving piece can open an attacking path
+    for(const auto & elem : board)
     {
-        // push the king and checking piece onto the stack and set the corresponding 
-        // object variables (checkStack and setCheck)
-        delete check_pieces[0]; // GCOVR_EXCL_LINE
-        delete check_pieces[1]; // GCOVR_EXCL_LINE
-
-        switch(board[dest]->getPieceType())
+        if(elem->isPossibleMove(king_pos, chess))
         {
-            case 0:
-                check_pieces[0] = new Pawn(dest, PAWN, board[dest]->getPieceColor());
-                break;
-            case 1:
-                check_pieces[0] = new Knight(dest, KNIGHT, board[dest]->getPieceColor());
-                break;
-            case 2:
-                check_pieces[0] = new Bishop(dest, BISHOP, board[dest]->getPieceColor());
-                break;
-            case 3:
-                check_pieces[0] = new Rook(dest, ROOK, board[dest]->getPieceColor());
-                break;
-            default:
-                check_pieces[0] = new Queen(dest, QUEEN, board[dest]->getPieceColor());
+            // push the king and checking piece onto the stack and set the corresponding 
+            // object variables (checkStack and setCheck)
+            delete check_pieces[0]; // GCOVR_EXCL_LINE
+            delete check_pieces[1]; // GCOVR_EXCL_LINE
+
+            switch(elem->getPieceType())
+            {
+                case 0:
+                    check_pieces[0] = new Pawn(elem->getPieceSquare(), PAWN, elem->getPieceColor());
+                    break;
+                case 1:
+                    check_pieces[0] = new Knight(elem->getPieceSquare(), KNIGHT, elem->getPieceColor());
+                    break;
+                case 2:
+                    check_pieces[0] = new Bishop(elem->getPieceSquare(), BISHOP, elem->getPieceColor());
+                    break;
+                case 3:
+                    check_pieces[0] = new Rook(elem->getPieceSquare(), ROOK, elem->getPieceColor());
+                    break;
+                default:
+                    check_pieces[0] = new Queen(elem->getPieceSquare(), QUEEN, elem->getPieceColor());
+            }
+
+            check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor());
+            chess.setCheckPieces(check_pieces);
+            chess.setCheck(true);
+            break;
         }
-
-        check_pieces[1] = new King(king_pos, KING, board[king_pos]->getPieceColor());
-        chess.setCheckPieces(check_pieces);
-        chess.setCheck(true);
-    } 
-
+    }
+     
     return chess.getCheck();
 }
 
@@ -1328,8 +1355,8 @@ bool King::isPossibleMove(int dest, const Chess &chess)
 {
     int src = getPieceSquare();
     int diff = std::abs(src - dest);
-    int col_diff = std::abs(src%8 - dest%8), row_diff = std::abs(src/8 - dest/8);
-    return ( (col_diff <= 1 && row_diff <= 1) && (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !isSameColor(dest, chess) ) ||
+    int col_diff = std::abs(src%8 - dest%8);
+    return ( col_diff <= 1 && (diff == 1 || diff == 7 || diff == 8 || diff == 9) && !isSameColor(dest, chess) ) ||
            ( (diff == 3 || diff == 4) && canCastle(dest, chess) ) ;
 }
 
@@ -1524,7 +1551,7 @@ namespace
             return 8;
         else if(sameDiag(src, dest))    // diagonal path
             return std::abs(src - dest) % 7 == 0 ? 7 : 9;
-        else
+        else                            // knight / impossible path
             return 0;
     }
 
@@ -1544,14 +1571,8 @@ namespace
         Piece *temp;
 
         for(const auto & elem : chess.getBoard())
-        {
-            if( (enemy && elem->isKing() && !elem->isSameColor(src, chess) ) ||
-                ( !enemy && elem->isKing() && elem->isSameColor(src, chess) ) )
-            {
+            if( ( (enemy && !elem->isSameColor(src, chess)) || (!enemy && elem->isSameColor(src, chess)) ) && elem->isKing() )
                 temp = elem;
-                break;
-            }
-        } 
 
         return temp->getPieceSquare();
     }

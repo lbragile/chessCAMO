@@ -85,12 +85,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8">~Chess</a> ()</td></tr>
 <tr class="memdesc:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the object and frees any dynamically allocated memory ('new') to avoid memory leaks.  <a href="class_chess.html#aa9717ab5263bc4fbb844e78bbe5587a8">More...</a><br /></td></tr>
 <tr class="separator:aa9717ab5263bc4fbb844e78bbe5587a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85e31b96a929e21c1502f7c11a0033ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a85e31b96a929e21c1502f7c11a0033ee">Chess</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;object)=default</td></tr>
-<tr class="memdesc:a85e31b96a929e21c1502f7c11a0033ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor - Constructs a new instance and copies the calling object's values to it.  <a href="class_chess.html#a85e31b96a929e21c1502f7c11a0033ee">More...</a><br /></td></tr>
-<tr class="separator:a85e31b96a929e21c1502f7c11a0033ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30c101ca0cc850be82e59301c544dd2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a30c101ca0cc850be82e59301c544dd2f">operator=</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;object)=default</td></tr>
-<tr class="memdesc:a30c101ca0cc850be82e59301c544dd2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Assignment operator - assigns values of one object to another existing object.  <a href="class_chess.html#a30c101ca0cc850be82e59301c544dd2f">More...</a><br /></td></tr>
-<tr class="separator:a30c101ca0cc850be82e59301c544dd2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a877ff0f172326d337129658521ef97e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a877ff0f172326d337129658521ef97e1">Chess</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:a877ff0f172326d337129658521ef97e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor - Constructs a new instance and copies the calling object's values to it.  <a href="class_chess.html#a877ff0f172326d337129658521ef97e1">More...</a><br /></td></tr>
+<tr class="separator:a877ff0f172326d337129658521ef97e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39074bcb5394cf0bbc924e20b169781f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a39074bcb5394cf0bbc924e20b169781f">operator=</a> (const <a class="el" href="class_chess.html">Chess</a> &amp;chess_object)</td></tr>
+<tr class="memdesc:a39074bcb5394cf0bbc924e20b169781f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Assignment operator - assigns values of one object to another existing object.  <a href="class_chess.html#a39074bcb5394cf0bbc924e20b169781f">More...</a><br /></td></tr>
+<tr class="separator:a39074bcb5394cf0bbc924e20b169781f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a008d126d4430bdf95c79f935f8185c8e"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_piece.html">Piece</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">getBoard</a> () const</td></tr>
 <tr class="memdesc:a008d126d4430bdf95c79f935f8185c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">(Accessor) Gets the board representation at the top of the board positions stack.  <a href="class_chess.html#a008d126d4430bdf95c79f935f8185c8e">More...</a><br /></td></tr>
 <tr class="separator:a008d126d4430bdf95c79f935f8185c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -254,75 +254,57 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a85e31b96a929e21c1502f7c11a0033ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85e31b96a929e21c1502f7c11a0033ee">&#9670;&nbsp;</a></span>Chess() <span class="overload">[2/2]</span></h2>
+<a id="a877ff0f172326d337129658521ef97e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a877ff0f172326d337129658521ef97e1">&#9670;&nbsp;</a></span>Chess() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Chess::Chess </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
-          <td class="paramname"><em>object</em></td><td>)</td>
+          <td class="paramname"><em>chess_object</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Copy constructor - Constructs a new instance and copies the calling object's values to it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">object</td><td>The object whose values will be copied</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">chess_object</td><td>The object whose values will be copied </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>This is needed to be able to stack different board representations in the board positions stack. Otherwise, since the vector&lt;Piece*&gt; contains pointers, any updates to the position will be reflected in each layer. </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a30c101ca0cc850be82e59301c544dd2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30c101ca0cc850be82e59301c544dd2f">&#9670;&nbsp;</a></span>operator=()</h2>
+<a id="a39074bcb5394cf0bbc924e20b169781f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39074bcb5394cf0bbc924e20b169781f">&#9670;&nbsp;</a></span>operator=()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_chess.html">Chess</a>&amp; Chess::operator= </td>
+          <td class="memname"><a class="el" href="class_chess.html">Chess</a> &amp; Chess::operator= </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_chess.html">Chess</a> &amp;&#160;</td>
-          <td class="paramname"><em>object</em></td><td>)</td>
+          <td class="paramname"><em>chess_object</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Copy Assignment operator - assigns values of one object to another existing object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">object</td><td>The object whose values will be copied</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">chess_object</td><td>The object whose values will be copied</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting object from the assignment</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Default </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting object from the assignment </dd></dl>
 
 </div>
 </div>

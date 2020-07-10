@@ -130,11 +130,6 @@ public:
     /**
      * @brief      Destroys the object and frees any dynamically allocated
      *             memory ('new') to avoid memory leaks.
-     *
-     * @note       This is needed since a game can end before a corresponding
-     *             checkmate/stalemate flag is reached and thus 'board' and
-     *             'check_pieces' will have dynamically allocated memory that
-     *             isn't freed.
      */
     ~Chess();
 
@@ -142,26 +137,19 @@ public:
      * @brief      Copy constructor - Constructs a new instance and copies the
      *             calling object's values to it.
      *
-     * @param[in]  object  The object whose values will be copied
-     *
-     * @note       This is needed to be able to stack different board
-     *             representations in the board positions stack. Otherwise,
-     *             since the vector<Piece*> contains pointers, any updates to
-     *             the position will be reflected in each layer.
+     * @param[in]  chess_object  The object whose values will be copied
      */
-    Chess(const Chess &object) = default;
+    Chess(const Chess &chess_object);
 
     /**
      * @brief      Copy Assignment operator - assigns values of one object to
      *             another existing object
      *
-     * @param[in]  object  The object whose values will be copied
+     * @param[in]  chess_object  The object whose values will be copied
      *
      * @return     The resulting object from the assignment
-     *
-     * @note       Default
      */
-    Chess & operator =(const Chess &object) = default;
+    Chess & operator =(const Chess &chess_object);
     /************************************* END *************************************/
 
     /************************ MUTATOR & ACCESSOR FUNCTIONS ************************/

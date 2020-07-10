@@ -4,7 +4,7 @@ var searchData=
   ['causecheck_9',['causeCheck',['../class_piece.html#ae0b21149be8db025b5af1e158ac58aba',1,'Piece']]],
   ['causedoublecheck_10',['causeDoubleCheck',['../class_piece.html#aae6fb7bf2fe4ede5d90fd447f54d4fd4',1,'Piece']]],
   ['check_5fpieces_11',['check_pieces',['../class_chess.html#a154e5064761da26c3e99d6deacc6cf49',1,'Chess']]],
-  ['chess_12',['Chess',['../class_chess.html',1,'Chess'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../class_chess.html#a85e31b96a929e21c1502f7c11a0033ee',1,'Chess::Chess(const Chess &amp;object)=default'],['../class_chess_test.html#a4aa8bd9e50aca118f234a95262dbeb3f',1,'ChessTest::chess()'],['../chess.html',1,'(Global Namespace)']]],
+  ['chess_12',['Chess',['../class_chess.html',1,'Chess'],['../class_chess.html#a8b493f742d0ceced6f853fa30d3c05a8',1,'Chess::Chess()'],['../class_chess.html#a877ff0f172326d337129658521ef97e1',1,'Chess::Chess(const Chess &amp;chess_object)'],['../class_chess_test.html#a4aa8bd9e50aca118f234a95262dbeb3f',1,'ChessTest::chess()'],['../chess.html',1,'(Global Namespace)']]],
   ['chess_2ecpp_13',['chess.cpp',['../chess_8cpp.html',1,'']]],
   ['chess_2eh_14',['chess.h',['../chess_8h.html',1,'']]],
   ['chesscamo_15',['chessCAMO',['../namespacechess_c_a_m_o.html',1,'']]],
