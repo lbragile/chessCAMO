@@ -320,7 +320,7 @@ int main()
     Color color_red(255, 204, 204, 255);
 
     // variables for non-event driven behaviour
-    bool clicked = false, draw = false, resign = false;
+    bool clicked = false, draw = false, resign = false, new_game = false;
     bool enable_side_highlighting = true, enable_move_highlighting = true;
 
     // files for promotion and status information updates
@@ -356,33 +356,40 @@ int main()
             if(e.type == Event::Closed)
                 window.close();
 
-            // reset the game
-            if(e.type == Event::KeyPressed && e.key.code == Keyboard::S)
+            if(e.type == Event::KeyPressed)
             {
-                chess_gui.resetPosition(filename_status, filename_promotion, "New game started, good luck!", 0, chess, sideSquares);
+                // reset the game
+                if(e.key.code == Keyboard::S) 
+                {
+                    chess_gui.resetPosition(filename_status, filename_promotion, "New game started, good luck!", 0, chess, sideSquares);
 
-                // form the pieces for the new board representation
-                chess_gui.formPieces(pieces, pieceType, chess.getBoard()); 
+                    // form the pieces for the new board representation
+                    chess_gui.formPieces(pieces, pieceType, chess.getBoard());
+
+                    new_game = true;
+                    resign = false;
+                }
+                 
+                // undo move
+                else if(e.key.code == Keyboard::U && !resign) 
+                {   
+                    chess_gui.resetPosition(filename_status, filename_promotion, "Undo move applied", chess.getNumMoves()-1, chess, sideSquares);
+
+                    // form the pieces for the new board representation
+                    chess_gui.formPieces(pieces, pieceType, chess.getBoard());
+                }
             }
 
             if(!chess.getCheckmate() && !chess.getStalemate())
             {
                 if(e.type == Event::KeyPressed)
                 {
-                    // undo move
-                    if(e.key.code == Keyboard::U) 
-                    {   
-                        chess_gui.resetPosition(filename_status, filename_promotion, "Undo move applied", chess.getNumMoves()-1, chess, sideSquares);
-
-                        // form the pieces for the new board representation
-                        chess_gui.formPieces(pieces, pieceType, chess.getBoard());
-                    }
-
                     // resign
-                    else if(e.key.code == Keyboard::Escape)
+                    if(e.key.code == Keyboard::Escape)
                     {
                         chess_gui.streamIO(filename_status, "r", true, chess);
                         resign = true;
+                        new_game = false;
                     }
 
                     // draw
@@ -390,6 +397,7 @@ int main()
                     {
                         chess_gui.streamIO(filename_status, "dn", true, chess);
                         draw = true;
+                        new_game = false;
                     }
 
                     // promotion handling
@@ -418,6 +426,7 @@ int main()
                     {
                         clicked = true;
                         draw = false;
+
                         for(iter = pieces.begin(); iter != pieces.end(); iter++)
                             if(iter->getGlobalBounds().contains(pos.x, pos.y))
                                 src = iter - pieces.begin();
@@ -493,8 +502,8 @@ int main()
             // warning and status update messages are always on line 24 (or line 26 for resign / line 50 for draw)
             ifstream messageIn(filename_status);
             int line_num;
-            if(draw) { line_num = 50; }
-            else if(resign) { line_num = 26; }
+            if(draw && !new_game) { line_num = 50; }
+            else if(resign && !new_game) { line_num = 26; }
             else { line_num = 24; }
 
             for(int i = 0; i < line_num; i++)
