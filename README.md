@@ -96,6 +96,7 @@ For example, `Enter a source AND destination square in [A1, H8]: Q E2`, will pla
 2. Once a player decides to use a piece from the reservoir to replace one of his existing pieces on the board, their turn is over.
 3. An obvious rule is that player cannot use the reservoir while in check as they must make a move to avoid check.
 4. Additionally, just like in the *Crazyhouse* variant, a player cannot directly promote a pawn from the reservoir. That is a pawn from the reservoir must be placed on the board first and is only allowed to be promoted on the next move.
+5. A game is drawn under the same conditions as in regular chess, regardless of the quantity of pieces in the reservoir. Thus, the piece reservoir cannot be used to avoid a draw and prolong the game.
 
 ## Documentation :raised_hands:
 
